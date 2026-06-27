@@ -1015,6 +1015,40 @@ body::before {
   color: var(--text-tertiary);
 }
 
+/* Skeleton */
+.skeleton-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.skeleton-cover {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-overlay) 50%, var(--bg-tertiary) 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s infinite;
+}
+.skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-overlay) 50%, var(--bg-tertiary) 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s infinite;
+}
+.skeleton-line-badge { width: 60px; height: 20px; }
+.skeleton-line-title { width: 80%; height: 18px; }
+.skeleton-line-desc { width: 100%; height: 36px; }
+.skeleton-line-footer { width: 60%; height: 16px; margin-top: auto; }
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ================================================================ */
 /*  EDITOR PAGE (hidden by default)                                  */
 /* ================================================================ */
@@ -2432,6 +2466,8 @@ async function api(url, opts = {}) {
   return res;
 }
 async function fetchTree() { return (await api('/api/files/tree')).json(); }
+async function fetchProjectList() { return (await api('/api/projects/list')).json(); }
+async function fetchProjectTree(path) { return (await api(`/api/projects/tree?path=${encodeURIComponent(path)}`)).json(); }
 async function fetchContent(path) { return (await api(`/api/files/content?path=${encodeURIComponent(path)}`)).json(); }
 async function fetchSearch(q) { return (await api(`/api/files/search?q=${encodeURIComponent(q)}`)).json(); }
 
@@ -2550,6 +2586,9 @@ const PROJECT_COVERS = {
   'codinghou/学习资料': 'https://aka.doubaocdn.com/s/Crq51wkXZR',
   'codinghou/点亮家乡': 'https://aka.doubaocdn.com/s/Crq51wkXZR',
   '每日励志语句': 'https://aka.doubaocdn.com/s/Crq51wkXZR',
+  'Python水果忍者': 'https://aka.doubaocdn.com/s/JKwf1woKoD',
+  'fathers-day': 'https://aka.doubaocdn.com/s/RfsI1woKo9',
+  'python父亲节祝福': 'https://aka.doubaocdn.com/s/JsIP1woKoD',
 };
 
 function getProjectCover(name) {
@@ -2832,20 +2871,17 @@ function updateStats(projects) {
 }
 
 // ==================== VIEW SWITCHING ====================
-function openProject(projectPath) {
+async function openProject(projectPath) {
   const project = state.projects.find(p => p.path === projectPath);
   if (!project) return;
 
-  // 记录最近访问
   addRecentProject(project);
 
-  // 网页游戏：直接打开游戏页面
   if (project.type === 'web-game' && project.webGameUrl) {
     window.location.href = project.webGameUrl;
     return;
   }
 
-  // 弹窗预览项目：打开模态窗口展示
   if (project.type === 'popup-preview' && project.popupUrl) {
     openPopupPreview(project.popupUrl, project.name);
     return;
@@ -2857,15 +2893,30 @@ function openProject(projectPath) {
   $('#editorPage').style.display = 'flex';
   state.view = 'editor';
 
-  // 重置编辑器状态
   state.openTabs = [];
   state.activeTabIdx = -1;
   state.expandedDirs = new Set();
   showEmptyState();
   renderTabs();
 
-  // 文件树只显示当前项目文件夹（折叠状态，点击展开）
-  renderProjectFileTree([project.treeNode]);
+  $('#sidebarTree').innerHTML = '<div class="home-loading" style="padding:20px"><div class="spinner"></div> 加载中...</div>';
+
+  try {
+    const treeData = await fetchProjectTree(projectPath);
+    const projectTreeNode = {
+      name: project.name,
+      type: 'directory',
+      path: project.path,
+      themeColor: project.themeColor,
+      lastModified: project.lastModified,
+      children: treeData
+    };
+    state.currentProjectTreeNode = projectTreeNode;
+    state.flatFiles = flattenTree([projectTreeNode]);
+    renderProjectFileTree([projectTreeNode]);
+  } catch(err) {
+    $('#sidebarTree').innerHTML = `<div class="home-loading" style="padding:20px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
+  }
 }
 
 function goHome() {
@@ -3408,39 +3459,80 @@ async function likeProject(projectPath) {
 
 async function init() {
   try {
-    const tree = await fetchTree();
-    state.fileTree = tree;
-    state.flatFiles = flattenTree(tree);
-    state.projects = buildProjects(tree);
+    showSkeleton();
+    const projects = await fetchProjectList();
+    state.projects = projects.map(p => ({
+      ...p,
+      icon: getProjectIcon(p.name),
+      cardClass: getProjectCardClass(p.type),
+      lastModified: formatDate(p.lastModified),
+      cover: getProjectCover(p.name),
+    }));
     updateStats(state.projects);
     renderCards(state.projects);
-    loadAllCommentCounts();
-    loadAllLikeCounts();
-    // 初始化最近访问和收藏显示
+    projects.forEach(p => {
+      const likeEl = document.getElementById('lk-' + p.path.replace(/[/\\]/g, '-'));
+      if (likeEl) likeEl.textContent = p.likes || 0;
+      const commentEl = document.getElementById('cc-' + p.path.replace(/[/\\]/g, '-'));
+      if (commentEl) commentEl.textContent = p.comments || 0;
+    });
     renderRecentProjects();
     renderBookmarks();
-    // 每 5 秒轮询一次评论数和点赞数，保持实时更新
     var pollTimer = setInterval(() => {
-      loadAllCommentCounts();
-      loadAllLikeCounts();
-    }, 5000);
-    // 标签页不可见时暂停轮询，避免网络挂起错误
+      refreshProjectMeta();
+    }, 15000);
     document.addEventListener('visibilitychange', function() {
       if (document.hidden) {
         clearInterval(pollTimer);
       } else {
-        // 回到页面时立即刷新一次，再恢复轮询
-        loadAllCommentCounts();
-        loadAllLikeCounts();
+        refreshProjectMeta();
         pollTimer = setInterval(() => {
-          loadAllCommentCounts();
-          loadAllLikeCounts();
-        }, 5000);
+          refreshProjectMeta();
+        }, 15000);
       }
     });
   } catch(err) {
     $('#cardsGrid').innerHTML = `<div class="home-loading" style="grid-column:1/-1;padding:60px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
   }
+}
+
+function showSkeleton() {
+  const grid = $('#cardsGrid');
+  const skeletonCards = Array(8).fill(0).map(() => `
+    <div class="skeleton-card">
+      <div class="skeleton-cover"></div>
+      <div class="skeleton-line skeleton-line-badge"></div>
+      <div class="skeleton-line skeleton-line-title"></div>
+      <div class="skeleton-line skeleton-line-desc"></div>
+      <div class="skeleton-line skeleton-line-footer"></div>
+    </div>
+  `).join('');
+  grid.innerHTML = skeletonCards;
+}
+
+async function refreshProjectMeta() {
+  if (document.hidden) return;
+  try {
+    const projects = await fetchProjectList();
+    projects.forEach(p => {
+      const likeEl = document.getElementById('lk-' + p.path.replace(/[/\\]/g, '-'));
+      if (likeEl) likeEl.textContent = p.likes || 0;
+      const commentEl = document.getElementById('cc-' + p.path.replace(/[/\\]/g, '-'));
+      if (commentEl) commentEl.textContent = p.comments || 0;
+    });
+  } catch(_) {}
+}
+
+function getProjectCardClass(type) {
+  const clsMap = {
+    'web-game': 'card-game',
+    'game': 'card-game',
+    'ai': 'card-ai',
+    'tool': 'card-tool',
+    'popup-preview': 'card-tool',
+    'other': ''
+  };
+  return clsMap[type] || '';
 }
 
 // ==================== 欢迎弹窗（父亲节时效） ====================

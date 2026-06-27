@@ -405,6 +405,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   const needAuth = path.startsWith('/api/files/') ||
     path.startsWith('/api/comments') ||
     path === '/api/likes' ||
+    path.startsWith('/api/projects/') ||
     path === '/api/admin/dashboard';
 
   if (needAuth) {
@@ -417,6 +418,78 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     const tree = await getFileTree(env);
     const resp = jsonResponse(tree);
     addCacheHeader(resp.headers, 300);
+    return resp;
+  }
+
+  // ---- 项目列表 API（轻量级，合并点赞/评论数）----
+  if (path === '/api/projects/list') {
+    const CACHE_KEY = 'cache:project-meta';
+    const CACHE_TTL = 300;
+    try {
+      const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' });
+      if (cached && (Date.now() - cached.timestamp) < CACHE_TTL * 1000) {
+        const resp = jsonResponse(cached.projects);
+        addCacheHeader(resp.headers, 60);
+        return resp;
+      }
+    } catch {}
+
+    const listResp = await fetchFromGitHub('public/project-list.json', env);
+    if (!listResp.ok) return errorResponse('项目列表不存在', 404);
+    const projects = await listResp.json();
+
+    const likesMap: Record<string, number> = {};
+    const commentsMap: Record<string, number> = {};
+    try {
+      const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
+      for (const key of likesList.keys) {
+        const project = key.name.substring('likes:'.length);
+        const value = await env.CODE_EXPLORER_KV.get(key.name);
+        likesMap[project] = parseInt(value || '0', 10) || 0;
+      }
+    } catch {}
+    try {
+      const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
+      for (const key of commentsList.keys) {
+        const project = key.name.substring('comments:'.length);
+        const value = await env.CODE_EXPLORER_KV.get(key.name);
+        try {
+          const parsed = JSON.parse(value || '{}');
+          commentsMap[project] = (parsed.comments || []).length;
+        } catch { commentsMap[project] = 0; }
+      }
+    } catch {}
+
+    const projectsWithMeta = projects.map((p: any) => ({
+      ...p,
+      likes: likesMap[p.path] || 0,
+      comments: commentsMap[p.path] || 0
+    }));
+
+    try {
+      await env.CODE_EXPLORER_KV.put(CACHE_KEY, JSON.stringify({
+        projects: projectsWithMeta,
+        timestamp: Date.now()
+      }), { expirationTtl: CACHE_TTL });
+    } catch {}
+
+    const resp = jsonResponse(projectsWithMeta);
+    addCacheHeader(resp.headers, 60);
+    return resp;
+  }
+
+  // ---- 项目文件树 API（按需加载）----
+  if (path === '/api/projects/tree') {
+    const projPath = url.searchParams.get('path') || '';
+    if (!projPath) return errorResponse('缺少 path 参数');
+    if (projPath.includes('..') || projPath.startsWith('/')) return errorResponse('访问被拒绝', 403);
+    const safeName = projPath.replace(/\//g, '__').replace(/\\/g, '__');
+    const treeGhPath = `public/project-trees/${safeName}.json`;
+    const treeResp = await fetchFromGitHub(treeGhPath, env);
+    if (!treeResp.ok) return errorResponse('项目文件树不存在', 404);
+    const treeData = await treeResp.json();
+    const resp = jsonResponse(treeData);
+    addCacheHeader(resp.headers, 86400);
     return resp;
   }
 
@@ -586,6 +659,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         projectData.comments.push(comment);
         await env.CODE_EXPLORER_KV.put(key, JSON.stringify(projectData));
         try { await env.CODE_EXPLORER_KV.delete('cache:comment-counts'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
         return jsonResponse(comment, 201);
       } catch {
         return errorResponse('无效的请求', 400);
@@ -704,6 +778,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         current += 1;
         await env.CODE_EXPLORER_KV.put(key, String(current));
         try { await env.CODE_EXPLORER_KV.delete('cache:likes'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
         return jsonResponse({ project, likes: current });
       } catch {
         return errorResponse('点赞失败', 500);
