@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️ 父亲节爱心祝福</title>
+    <style>
+        /* ============================================================
+           全局重置 & 基础
+           ============================================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #1a1a3e 30%, #16213e 60%, #0f3460 100%);
+            background-size: 400% 400%;
+            animation: bgDrift 20s ease-in-out infinite;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 背景渐变流动 */
+        @keyframes bgDrift {
+            0%   { background-position: 0% 50%; }
+            25%  { background-position: 100% 0%; }
+            50%  { background-position: 100% 100%; }
+            75%  { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ============================================================
+           极光背景层
+           ============================================================ */
+        .aurora-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .aurora-wave {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.2;
+            animation: auroraDrift var(--aurora-dur, 12s) ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraDrift {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.15;
+            }
+            33% {
+                transform: translate(var(--dx1), var(--dy1)) scale(var(--s1));
+                opacity: var(--o1);
+            }
+            66% {
+                transform: translate(var(--dx2), var(--dy2)) scale(var(--s2));
+                opacity: var(--o2);
+            }
+            100% {
+                transform: translate(var(--dx3), var(--dy3)) scale(var(--s3));
+                opacity: 0.15;
+            }
+        }
+
+        /* ============================================================
+           流星
+           ============================================================ */
+        .shooting-star {
+            position: fixed;
+            pointer-events: none;
+            z-index: 2;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.4);
+            animation: shoot linear forwards;
+        }
+
+        .shooting-star::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(to left, rgba(255,255,255,0.6), transparent);
+            right: 3px;
+        }
+
+        @keyframes shoot {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--sx), var(--sy));
+            }
+        }
+
+        /* ============================================================
+           页面主容器
+           ============================================================ */
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* ============================================================
+           爱心容器
+           ============================================================ */
+        .heart-container {
+            position: relative;
+            cursor: pointer;
+            transform: translate(0, 0);
+            transition: opacity 0.2s ease;
+            width: clamp(160px, 26vw, 280px);
+            height: clamp(160px, 26vw, 280px);
+            z-index: 10;
+        }
+
+        .heart-container.dragging {
+            opacity: 0.8;
+            cursor: grabbing;
+        }
+
+        /* ============================================================
+           SVG 爱心 — 流光渐变 + 呼吸光晕
+           ============================================================ */
+        .heart-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* 默认光晕呼吸 */
+            filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.4))
+                    drop-shadow(0 0 60px rgba(196, 77, 255, 0.2));
+            animation: breatheGlow 3s ease-in-out infinite;
+        }
+
+        /* 呼吸光晕 */
+        @keyframes breatheGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.35))
+                        drop-shadow(0 0 60px rgba(196, 77, 255, 0.15));
+            }
+            50% {
+                filter: drop-shadow(0 0 35px rgba(255, 107, 157, 0.6))
+                        drop-shadow(0 0 90px rgba(196, 77, 255, 0.35))
+                        drop-shadow(0 0 140px rgba(255, 107, 157, 0.15));
+            }
+        }
+
+        /* 流光渐变 — 通过 animation 驱动 gradient 移动 */
+        @keyframes gradientShift {
+            0%   { --c1: #ff6b9d; --c2: #ff4757; --c3: #c44dff; }
+            25%  { --c1: #ff9ff3; --c2: #ff6b9d; --c3: #f368e0; }
+            50%  { --c1: #c44dff; --c2: #ff9ff3; --c3: #ff4757; }
+            75%  { --c1: #f368e0; --c2: #c44dff; --c3: #ff6b9d; }
+            100% { --c1: #ff6b9d; --c2: #ff4757; --c3: #c44dff; }
+        }
+
+        .heart-svg path {
+            animation: gradientShift 6s ease-in-out infinite;
+            transition: fill 0.5s ease;
+        }
+
+        /* ============================================================
+           逐笔绘制动画（turtle 风格）
+           ============================================================ */
+        .heart-svg path.drawing {
+            fill: transparent !important;
+            stroke: #ff6b9d;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: var(--path-len);
+            stroke-dashoffset: var(--path-len);
+            animation: drawStroke 1.8s ease forwards;
+        }
+
+        @keyframes drawStroke {
+            0%   { stroke-dashoffset: var(--path-len); opacity: 0; }
+            5%   { opacity: 1; }
+            85%  { opacity: 1; }
+            100% { stroke-dashoffset: 0; opacity: 1; }
+        }
+
+        .heart-svg path.drawn {
+            stroke: none;
+            fill: url(#heartGradient) !important;
+            transition: fill 0.5s ease;
+            animation: gradientShift 6s ease-in-out infinite;
+        }
+
+        /* ============================================================
+           页面标题
+           ============================================================ */
+        .page-title {
+            color: #fff;
+            font-size: clamp(24px, 4vw, 42px);
+            font-weight: 700;
+            letter-spacing: 6px;
+            text-align: center;
+            margin-bottom: 20px;
+            z-index: 10;
+            position: relative;
+            background: linear-gradient(90deg, #ff9ff3, #ff6b9d, #c44dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .page-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .page-title .sub {
+            display: block;
+            font-size: clamp(13px, 1.6vw, 18px);
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin-top: 6px;
+            background: linear-gradient(90deg, #ffd93d, #ff9f43, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 悬停放大 */
+        .heart-container:hover .heart-svg,
+        .heart-container.hover-active .heart-svg {
+            transform: scale(1.15);
+            animation: breatheGlowHover 2s ease-in-out infinite;
+        }
+
+        @keyframes breatheGlowHover {
+            0%, 100% {
+                filter: drop-shadow(0 0 30px rgba(255, 107, 157, 0.7))
+                        drop-shadow(0 0 80px rgba(196, 77, 255, 0.4));
+            }
+            50% {
+                filter: drop-shadow(0 0 50px rgba(255, 107, 157, 0.9))
+                        drop-shadow(0 0 120px rgba(196, 77, 255, 0.6))
+                        drop-shadow(0 0 180px rgba(255, 107, 157, 0.3));
+            }
+        }
+
+        /* 心跳动画（点击） */
+        @keyframes heartbeat {
+            0%   { transform: scale(1); }
+            14%  { transform: scale(1.35); }
+            28%  { transform: scale(1); }
+            42%  { transform: scale(1.25); }
+            56%  { transform: scale(1); }
+            70%  { transform: scale(1.1); }
+            85%  { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+        .heart-svg.beating {
+            animation: heartbeat 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        }
+
+        /* ============================================================
+           浮动祝福语卡片
+           ============================================================ */
+        .blessing-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .blessing-card {
+            position: absolute;
+            padding: 12px 22px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: clamp(13px, 1.4vw, 17px);
+            font-weight: 500;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: cardFloat linear infinite;
+        }
+
+        /* 每张卡片不同颜色倾向 */
+        .blessing-card:nth-child(1) { border-color: rgba(255, 107, 157, 0.3); }
+        .blessing-card:nth-child(2) { border-color: rgba(255, 200, 100, 0.3); }
+        .blessing-card:nth-child(3) { border-color: rgba(100, 200, 255, 0.3); }
+        .blessing-card:nth-child(4) { border-color: rgba(196, 77, 255, 0.3); }
+        .blessing-card:nth-child(5) { border-color: rgba(255, 150, 100, 0.3); }
+        .blessing-card:nth-child(6) { border-color: rgba(100, 255, 200, 0.3); }
+        .blessing-card:nth-child(7) { border-color: rgba(255, 100, 150, 0.3); }
+        .blessing-card:nth-child(8) { border-color: rgba(150, 100, 255, 0.3); }
+
+        @keyframes cardFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.6) rotateZ(var(--rot, 0deg));
+            }
+            8% {
+                opacity: 1;
+                transform: translateY(8%) scale(1) rotateZ(var(--rot, 0deg));
+            }
+            75% {
+                opacity: 1;
+                transform: translateY(65%) scale(1) rotateZ(var(--rot, 0deg));
+            }
+            92% {
+                opacity: 0.6;
+                transform: translateY(80%) scale(0.9) rotateZ(var(--rot, 0deg));
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100%) scale(0.6) rotateZ(var(--rot, 0deg));
+            }
+        }
+
+        /* ============================================================
+           点击爆散粒子
+           ============================================================ */
+        .burst-particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 20;
+            animation: burstFly var(--duration, 1s) ease-out forwards;
+        }
+
+        @keyframes burstFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0.2);
+            }
+        }
+
+        /* ============================================================
+           爱心爆炸 + 重生动画
+           ============================================================ */
+        /* 爆炸：爱心膨胀后缩为 0 消失 */
+        @keyframes heartExplode {
+            0%   { transform: scale(1);   opacity: 1; filter: brightness(1); }
+            20%  { transform: scale(1.6); opacity: 1; filter: brightness(2); }
+            40%  { transform: scale(0.8); opacity: 0.8; filter: brightness(3); }
+            60%  { transform: scale(0.3); opacity: 0.4; filter: brightness(4); }
+            100% { transform: scale(0);   opacity: 0; filter: brightness(5); }
+        }
+
+        /* 重生：从 0 弹出恢复 */
+        @keyframes heartReform {
+            0%   { transform: scale(0);   opacity: 0; }
+            40%  { transform: scale(1.25); opacity: 1; }
+            65%  { transform: scale(0.9);  opacity: 1; }
+            85%  { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1);    opacity: 1; }
+        }
+
+        .heart-svg.exploding {
+            animation: heartExplode var(--explode-speed, 0.7s) ease-in forwards !important;
+        }
+
+        .heart-svg.reforming {
+            animation: heartReform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+        }
+
+        /* ============================================================
+           爆炸闪光层
+           ============================================================ */
+        .explosion-flash {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 19;
+            background: radial-gradient(circle, rgba(255,255,255,0.6), rgba(255,107,157,0.3), transparent);
+            animation: flashFade 0.6s ease-out forwards;
+        }
+
+        @keyframes flashFade {
+            0%   { transform: scale(0.5); opacity: 1; }
+            50%  { transform: scale(3);   opacity: 0.6; }
+            100% { transform: scale(5);   opacity: 0; }
+        }
+
+        /* ============================================================
+           祝福语飞散碎片
+           ============================================================ */
+        .blessing-shrapnel {
+            position: fixed;
+            pointer-events: none;
+            z-index: 25;
+            font-size: clamp(18px, 3.2vw, 30px);
+            font-weight: 700;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            text-shadow: 0 0 20px rgba(255,107,157,0.8), 0 0 60px rgba(196,77,255,0.5), 0 0 100px rgba(255,107,157,0.3);
+            animation: shrapnelFly 1.4s ease-out forwards;
+        }
+
+        @keyframes shrapnelFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0.5) rotateZ(0deg);
+            }
+            15% {
+                opacity: 1;
+                transform: translate(calc(var(--sx) * 0.3), calc(var(--sy) * 0.3)) scale(1.1) rotateZ(calc(var(--rot) * 0.3));
+            }
+            50% {
+                opacity: 1;
+                transform: translate(calc(var(--sx) * 0.7), calc(var(--sy) * 0.7)) scale(1) rotateZ(calc(var(--rot) * 0.7));
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--sx), var(--sy)) scale(0.4) rotateZ(var(--rot));
+            }
+        }
+
+        /* ============================================================
+           闪光爆发（背景闪烁）
+           ============================================================ */
+        @keyframes bgFlash {
+            0%   { background: rgba(255,255,255,0); }
+            20%  { background: rgba(255,255,255,0.15); }
+            40%  { background: rgba(255,255,255,0.05); }
+            100% { background: rgba(255,255,255,0); }
+        }
+
+        .bg-flash-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 30;
+            animation: bgFlash 0.8s ease-out forwards;
+        }
+
+        /* ============================================================
+           心跳动画（点击 — 仅作为备用，爆炸为主要效果）
+           ============================================================ */
+        .trail-dot {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 15;
+            animation: trailFade 0.6s ease-out forwards;
+        }
+
+        @keyframes trailFade {
+            0% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.2);
+            }
+        }
+
+        /* ============================================================
+           底部祝福语（打字机效果区域）
+           ============================================================ */
+        .blessing-bar {
+            margin-top: 36px;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        .blessing-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: clamp(15px, 2vw, 22px);
+            font-weight: 300;
+            letter-spacing: 3px;
+            min-height: 1.6em;
+            transition: opacity 0.4s ease;
+        }
+
+        .blessing-text .highlight {
+            background: linear-gradient(90deg, #ff6b9d, #c44dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        /* ============================================================
+           背景星星
+           ============================================================ */
+        .star {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            background: #fff;
+            animation: twinkle var(--star-dur, 3s) ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0%   { opacity: 0.1; transform: scale(0.8); }
+            100% { opacity: 1;   transform: scale(1.2); }
+        }
+
+        /* ============================================================
+           提示文字
+           ============================================================ */
+        .hint-text {
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: clamp(11px, 1.2vw, 14px);
+            letter-spacing: 1px;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* ============================================================
+           响应式
+           ============================================================ */
+        @media (max-width: 480px) {
+            .heart-container {
+                width: clamp(130px, 38vw, 180px);
+                height: clamp(130px, 38vw, 180px);
+            }
+            .blessing-card {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .heart-container {
+                width: 110px;
+                height: 110px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         背景星星（JS 生成）
+         ============================================================ -->
+    <div id="starField"></div>
+
+    <!-- ============================================================
+         极光背景层
+         ============================================================ -->
+    <div class="aurora-layer" id="auroraLayer"></div>
+
+    <!-- ============================================================
+         浮动祝福语容器
+         ============================================================ -->
+    <div class="blessing-container" id="blessingContainer"></div>
+
+    <!-- ============================================================
+         主容器
+         ============================================================ -->
+    <div class="page-wrapper">
+        <h1 class="page-title" id="pageTitle">
+            父亲节快乐
+            <span class="sub">Happy Father's Day</span>
+        </h1>
+        <div class="heart-container" id="heartContainer">
+            <svg class="heart-svg" id="heartSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%"   stop-color="#ff6b9d" />
+                        <stop offset="50%"  stop-color="#ff4757" />
+                        <stop offset="100%" stop-color="#c44dff" />
+                    </linearGradient>
+                </defs>
+                <!-- 经典爱心贝塞尔路径 — 初始无 fill，由 JS 控制绘制动画 -->
+                <path d="M 100 30
+                         C 100 10, 60 0, 35 20
+                         C 5 40, 0 70, 30 100
+                         L 100 170
+                         L 170 100
+                         C 200 70, 195 40, 165 20
+                         C 140 0, 100 10, 100 30 Z"
+                      fill="transparent" stroke="none" />
+            </svg>
+        </div>
+
+        <!-- 底部祝福语 -->
+        <div class="blessing-bar">
+            <div class="blessing-text" id="blessingText"></div>
+        </div>
+
+        <p class="hint-text">🖱 悬停 · 点击 · 长按超爆发 · 拖拽</p>
+    </div>
+
+    <!-- ============================================================
+         JavaScript 交互逻辑
+         ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            /* ---------- DOM 引用 ---------- */
+            const container = document.getElementById('heartContainer');
+            const svg = document.getElementById('heartSvg');
+            const path = svg.querySelector('path');
+            const blessingText = document.getElementById('blessingText');
+
+            /* ---------- 状态 ---------- */
+            let isDragging = false;
+            let dragStartX = 0, dragStartY = 0;
+            let offsetX = 0, offsetY = 0;
+            let isAnimating = false;
+
+            /* ============================================================
+               祝福语数据（父亲节主题 — 137 条）
+               ============================================================ */
+            const BLESSINGS = [
+                "祝我家超人爸爸，父亲节快乐，平安顺遂，岁岁安康。",
+                "从前你扛生活，如今我护你余生，老爸节日快乐。",
+                "不善言辞，却爱我一生，父亲节致我最伟大的父亲。",
+                "小时候你遮风挡雨，往后换我伴你朝夕。",
+                "世间万般美好，都不及爸爸宽厚的肩膀。",
+                "父爱沉默如山，岁岁护我周全，老爸节日快乐。",
+                "愿时光慢些走，好好善待我的老父亲。",
+                "你是我的靠山，也是我的底气，父亲节安康。",
+                "承蒙您半生操劳，换我岁岁无忧，老爸节日快乐。",
+                "小时候仰望你的背影，长大后读懂你的温柔。",
+                "爸爸节日快乐，愿您少点辛苦，多点舒心。",
+                "无声父爱，藏在岁岁年年，祝父亲安康喜乐。",
+                "我的超级英雄，父亲节快乐，万事顺意。",
+                "以前你为我遮风雨，今后我陪你度朝夕。",
+                "岁月染白您黑发，爱意从未减少分毫。",
+                "父爱不喧哗，却护我长大，老爸节日快乐。",
+                "愿老爸无病无灾，三餐温暖，四季心安。",
+                "有您在，我永远有退路，父亲节快乐。",
+                "一身重担扛全家，半生温柔予儿女。",
+                "致最可靠的男人，我的爸爸，节日快乐。",
+                "不求大富大贵，只愿父亲平安健康。",
+                "您不言辛苦，我记一辈子恩情。",
+                "儿时依靠您肩膀，成年守护您安康。",
+                "如山父爱，岁岁相伴，祝老爸喜乐无忧。",
+                "时光善待我的父亲，平安喜乐常伴左右。",
+                "爸爸辛苦了，往后轻松度日，自在随心。",
+                "沉默是您，守护是您，深爱也是您。",
+                "人间最好的依靠，是父亲坚实臂膀。",
+                "祝父亲节日快乐，岁岁平安，笑口常开。",
+                "半生奔波为家人，余生轻松享清欢。",
+                "您给我全世界，我愿伴您岁岁年年。",
+                "父爱藏日常，温柔且绵长，节日快乐。",
+                "小时候您护我长大，长大后我陪您变老。",
+                "愿风霜远离父亲，健康常伴朝夕。",
+                "我的专属超人，父亲节快乐，万事无忧。",
+                "纵岁月流转，父爱永远不变。",
+                "扛起生活所有难，留给家人全温暖。",
+                "祝老爸身体康健，日日舒心，年年欢喜。",
+                "无言的付出，最深的疼爱，致父亲。",
+                "有父可依，便是人间最大福气。",
+                "愿时光温柔，抚平您半生沧桑。",
+                "爸爸节日快乐，少操劳，多享福。",
+                "厚重父爱，不必言说，早已入心。",
+                "从前您撑伞护我，如今我伴您余生。",
+                "青丝渐霜，爱意如常，祝父亲安康。",
+                "一生操劳皆儿女，只求平安伴身旁。",
+                "您是我的榜样，一生的骄傲。",
+                "平凡父亲，予我世间全部温暖。",
+                "祝老爸岁岁无忧，平安顺遂每一天。",
+                "父爱无声，却贯穿我整个人生。",
+                "扛起柴米油盐，守护岁岁团圆。",
+                "愿父亲三餐有味，四季安康，万事顺心。",
+                "儿时不懂您沉默，长大方知您不易。",
+                "全世界最好的爸爸，节日快乐常开心。",
+                "您的肩膀，撑起我整片晴空。",
+                "半生风雨独自扛，归来依旧温柔模样。",
+                "惟愿父亲无烦无恼，健康长寿。",
+                "深沉父爱，岁岁年年不曾褪色。",
+                "小时候总盼长大，长大后盼您不老。",
+                "祝我最敬爱的爸爸，父亲节喜乐安康。",
+                "默默付出不求回报，父爱最是动人。",
+                "人生路上的引路人，我的父亲。",
+                "愿岁月放缓脚步，多留陪伴时光。",
+                "爸爸少操心，好好享受生活的温柔。",
+                "如山似海，父爱绵长，节日快乐。",
+                "所有风雨您抵挡，所有温柔予家人。",
+                "平安健康便是送给父亲最好礼物。",
+                "您养育我长大，我陪伴您晚年。",
+                "沉默温柔，坚定可靠，我的老爸。",
+                "祝父亲年年安康，日日有好心情。",
+                "生活重担一人担，满心温柔给小家。",
+                "父爱藏于点滴，温暖整个人生。",
+                "有您在身后，我便勇敢无畏。",
+                "愿老爸远离病痛，自在安稳度日。",
+                "时光磨不去您对我的疼爱。",
+                "致家里永远的顶梁柱，节日快乐。",
+                "不求荣华富贵，只求父亲岁岁平安。",
+                "半生辛苦不言累，一心只为儿女安。",
+                "厚重如山的父爱，温暖岁岁年年。",
+                "小时候依靠您，长大后牵挂您。",
+                "祝父亲喜乐常伴，万事皆如心意。",
+                "无声守护，长久偏爱，我的爸爸。",
+                "岁月染白发丝，爱意一如既往。",
+                "您为家倾尽所有，我愿伴您长久。",
+                "人间至爱是父爱，深沉又温暖。",
+                "愿父亲轻松自在，少忧少烦。",
+                "坚实臂膀遮风雨，温柔内心护家人。",
+                "父亲节，祝我的超级老爸万事顺遂。",
+                "儿时避风港，晚年守护者，皆是父亲。",
+                "所有辛苦独自承受，所有美好留给我。",
+                "惟愿父亲身体健康，平安喜乐长久。",
+                "不善表达爱意，却用行动爱我一生。",
+                "时光请善待辛苦半生的父亲。",
+                "家里有您，便是安稳幸福。",
+                "祝老爸笑对日常，岁岁平安无忧。",
+                "父爱绵长无声，治愈半生风雨。",
+                "从前遮风挡雨，往后共享朝夕温柔。",
+                "半生操劳终落幕，余生自在享清闲。",
+                "您是我一生骄傲，永远依靠。",
+                "平凡日子里，藏着父亲全部温柔。",
+                "愿风霜不侵，健康常伴父亲身旁。",
+                "父亲节安康，愿老爸万事舒心如意。",
+                "默默扛起生活，静静守护全家。",
+                "最深沉的爱，从来无需多言。",
+                "小时候总牵您手，如今换我陪伴您。",
+                "祝父亲岁岁常欢愉，年年皆安康。",
+                "如山父爱，托举我整个人生。",
+                "一生奔波劳碌，只为儿女无忧。",
+                "愿老爸无琐事烦忧，日日舒心自在。",
+                "沉默的守护者，温柔的依靠者。",
+                "岁月漫长，父爱永远不会退场。",
+                "家里顶梁柱，心中温柔人，老爸节日快乐。",
+                "所有艰难自己扛，满心温柔给家人。",
+                "祝父亲平安健康，福寿绵长喜乐。",
+                "儿时不懂父爱重，长大方知养育恩。",
+                "愿时光慢一点，多陪我的老父亲。",
+                "不善甜言蜜语，却给我全部底气。",
+                "父亲节快乐，愿老爸日日开心无烦恼。",
+                "厚重父爱，藏在三餐四季之中。",
+                "您撑起小家烟火，予我岁岁安稳。",
+                "惟愿父亲身体硬朗，岁岁平安顺遂。",
+                "一生默默付出，温柔从未缺席。",
+                "有父亲相伴，人生便不惧风浪。",
+                "祝家里最辛苦的男人节日快乐安康。",
+                "岁月悄悄白了您头发，爱意从未变淡。",
+                "如山深沉父爱，伴我岁岁成长。",
+                "从前您护我前行，如今我守您安康。",
+                "愿老爸远离辛劳，尽享岁月温柔。",
+                "无言大爱，藏在每一个平凡日常。",
+                "父亲节，致敬我最敬爱的父亲。",
+                "坚实背影，撑起我所有安全感。",
+                "半生风雨为家人，余生安稳享清闲。",
+                "祝父亲笑口常开，平安健康常相伴。",
+                "父爱安静厚重，温暖往后余生。",
+                "您吞下世间苦，留给全家万般甜。",
+                "愿时光温柔以待操劳半生的您。",
+                "小时候仰望您，长大后心疼您。",
+                "祝老爸万事顺意，岁岁平安无忧。",
+                "沉默付出，长久偏爱，父爱最动人。",
+                "家中有父，万事心安，节日快乐。",
+                "半生扛起柴米，余生尽享欢喜。",
+                "如山父爱，岁岁守护，从未远离。",
+                "惟愿父亲无病无痛，平安喜乐一生。",
+                "您给我底气，予我依靠，护我成长。",
+                "父亲节安康，愿老爸轻松自在度日。",
+                "岁月沧桑刻眉眼，爱意温暖在心间。",
+                "平凡父亲，给予我不平凡的爱。",
+                "从前您遮风雨，往后共赏四季。",
+                "祝父亲年年平安，日日舒心开怀。",
+                "深沉父爱，无需言语，入心绵长。",
+                "一生辛苦为儿女，不求半分回报。",
+                "愿风霜远离，健康常伴我的父亲。",
+                "家里永远的英雄，祝父亲节快乐。",
+                "坚实臂膀挡风雨，温柔真心暖全家。",
+                "时光慢走，让我多爱父亲一点。",
+                "祝老爸少操心，多喜乐，岁岁安康。",
+                "父爱藏于行动，温柔贯穿岁月。",
+                "半生独自扛艰难，归来温柔待家人。",
+                "惟愿父亲三餐温暖，四季平安无忧。",
+                "有您做后盾，我敢奔赴远方。",
+                "父亲节喜乐，致敬默默付出的父亲。",
+                "岁月染白双鬓，疼爱一如当年。",
+                "如山似海的父爱，治愈所有不安。",
+                "从前养育我长大，如今换我守护您。",
+                "祝父亲身体康健，岁岁笑逐颜开。",
+                "沉默是温柔，坚守是父爱。",
+                "一生奔波操劳，只为小家圆满。",
+                "愿老爸远离烦忧，自在安稳欢喜。",
+                "平凡日常里，藏父亲全部深情。",
+                "坚实背影，是我一生的避风港。",
+                "父亲节安康，愿万事皆顺父亲心意。",
+                "您咽下生活苦难，赠予全家温暖。",
+                "时光请善待我最爱的老父亲。",
+                "祝家里顶梁柱岁岁平安，喜乐常伴。",
+                "深沉无言父爱，伴我岁岁年年成长。",
+                "半生扛尽人间苦，留给家人全是甜。",
+                "惟愿父亲福寿安康，平安顺遂长久。",
+                "小时候依赖您，长大后牵挂您安康。",
+                "祝老爸日日舒心，年年平安无忧。",
+                "父爱厚重绵长，温暖岁岁朝夕。",
+                "默默守护小家，撑起人间烟火。",
+                "愿岁月放缓，留住父亲年轻模样。",
+                "父亲节快乐，感谢您一生悉心养育。",
+                "不善言辞的爱，最踏实的依靠。",
+                "家中安稳，皆因父亲半生付出。",
+                "祝父亲无烦无忧，健康喜乐常伴。",
+                "如山父爱托举我，奔赴人生山海。",
+                "从前您撑伞护我，余生相伴不离。",
+                "岁月沧桑添白发，深爱始终如一。",
+                "惟愿父亲少辛劳，多享人间清欢。",
+                "祝我专属超人老爸，父亲节安康喜乐。",
+                "沉默扛起风雨，温柔留给家人朝夕。",
+                "有父亲在，永远有回家方向。",
+                "愿老爸身强体健，岁岁平安开怀。",
+                "人间烟火，因您而温暖安稳。",
+                "感恩父亲半生托举，护我一路前行。",
+                "不必光芒万丈，却是我的全部光亮。",
+                "祝老爸岁岁常安宁，年年皆顺意。",
+                "您把温柔留给家人，独自对抗世间风霜。",
+                "父爱无声无息，却贯穿我岁岁朝夕。",
+                "愿往后岁月，您只管享福不用奔波。",
+                "我的老父亲，节日快乐，平安相伴。",
+                "一肩挑起生活，一心守护家人。",
+                "岁月带走青春，带不走您对我的偏爱。",
+                "祝父亲心无琐事，日日自在轻松。",
+                "有您这座山，我永远不必慌张。",
+                "半生隐忍辛劳，只换儿女安稳成长。",
+                "父亲节，愿所有美好奔赴我的父亲。",
+                "您不懂浪漫，却给我最踏实的陪伴。",
+                "愿健康常伴，喜乐相随，老爸节日快乐。",
+                "从前牵着我的手，如今换我陪您走。",
+                "厚重父爱藏流年，岁岁温暖岁岁安。",
+                "祝家中男神平安康健，万事无忧。",
+                "您承受生活重压，赠予我无忧童年。",
+                "时光温柔，抚平您所有疲惫与沧桑。",
+                "父爱无需告白，行动即是深爱。",
+                "惟愿父亲三餐香甜，四季无忧无愁。",
+                "家里的靠山，心中的暖阳，节日快乐。",
+                "一路遮风挡雨，伴我走过岁岁春秋。",
+                "祝老爸少些疲惫，多些悠闲欢喜。",
+                "青丝化作白发，疼爱从未减半分。",
+                "平凡的父亲，给我不平凡的一生庇护。",
+                "愿余生清闲自在，无奔波无操劳。",
+                "致敬我的父亲，节日快乐，福寿安康。",
+                "您扛住生活万千难，予我人间万般甜。",
+                "有父相伴，前路再难也有归处。",
+                "祝父亲岁岁平安，日日拥有好心情。",
+                "沉默藏深情，负重守全家，我的老爸。",
+                "岁月漫长，感恩您做我一辈子靠山。",
+                "愿病痛远离，喜乐常伴父亲左右。",
+                "儿时总依赖您，成年方知您不易。",
+                "父亲节快乐，愿老爸万事顺心无烦忧。",
+                "一双手撑起小家，一颗心盛满温柔。",
+                "父爱静水流深，温暖漫长岁月。",
+                "愿往后日子轻松，三餐四季皆舒心。",
+                "全世界最靠谱的男人，我的父亲。",
+                "半生耕耘生活，只为儿女岁岁无忧。",
+                "时光慢一点，让我好好报答您。",
+                "祝父亲笑纳人间温柔，岁岁平安长久。",
+                "您从不擅长表达，却事事都为我着想。",
+                "坚实臂膀，为我隔绝世间所有风雨。",
+                "惟愿老父亲身康体健，自在随心度日。",
+                "烟火寻常，因有父亲才圆满安稳。",
+                "父亲节，把最好祝福送给我的超人。",
+                "岁月刻下皱纹，藏不住满心疼爱。",
+                "从前您护我长大，余生我伴您看风景。",
+                "祝老爸无忧无虑，平安喜乐伴朝夕。",
+                "深沉如山的父爱，支撑我整个人生。",
+                "独自咽下委屈辛苦，留给家人欢声笑语。",
+                "愿清风暖阳，常伴我的老父亲身旁。",
+                "有您做靠山，我才有奔赴远方勇气。",
+                "祝父亲福寿绵长，岁岁年年皆安康。",
+                "不善情话，却用半生行动宠爱我。"
+            ];
+
+            let blessingIndex = -1; // -1 表示未初始化
+
+            /** 随机选取一条祝福语（不重复） */
+            function getRandomBlessing() {
+                var idx;
+                do {
+                    idx = Math.floor(Math.random() * BLESSINGS.length);
+                } while (idx === blessingIndex && BLESSINGS.length > 1);
+                blessingIndex = idx;
+                return BLESSINGS[idx];
+            }
+
+            /** 打字机效果显示祝福语 */
+            function typeBlessing(text, callback) {
+                blessingText.textContent = '';
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        const char = text[i];
+                        if (char === '❤' || char === '⛰' || char === '🙏' || char === '🦸' ||
+                            char === '🕰' || char === '🌟' || char === '🌹' || char === '💪' ||
+                            char === '🎉' || char === '🏠') {
+                            // emoji 直接附加
+                            blessingText.textContent += char;
+                            i++;
+                            setTimeout(type, 80);
+                        } else {
+                            blessingText.textContent += char;
+                            i++;
+                            setTimeout(type, 60);
+                        }
+                    } else {
+                        if (callback) setTimeout(callback, 2500);
+                    }
+                }
+                type();
+            }
+
+            /** 轮播祝福语（随机不重复） */
+            function rotateBlessing() {
+                typeBlessing(getRandomBlessing(), function() {
+                    setTimeout(rotateBlessing, 500);
+                });
+            }
+
+            // 启动祝福语轮播（首次随机）
+            setTimeout(function() {
+                typeBlessing(getRandomBlessing(), function() {
+                    setTimeout(rotateBlessing, 2500);
+                });
+            }, 800);
+
+            /* ============================================================
+               背景星星
+               ============================================================ */
+            const starField = document.getElementById('starField');
+            function createStars(count) {
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    const size = Math.random() * 2.5 + 0.5;
+                    star.style.width = size + 'px';
+                    star.style.height = size + 'px';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.setProperty('--star-dur', (Math.random() * 3 + 2) + 's');
+                    star.style.animationDelay = Math.random() * 5 + 's';
+                    starField.appendChild(star);
+                }
+            }
+            createStars(window.innerWidth < 480 ? 40 : 80);
+
+            /* ============================================================
+               浮动祝福语卡片
+               ============================================================ */
+            const FLOATING_BLESSINGS = [
+                '老爸最帅 👔', '福如东海 🎊',
+                '健康长寿 💪', '笑口常开 😊',
+                '万事如意 🎯', '平安喜乐 🏮',
+                '感恩父爱 ❤️', '幸福安康 🏡'
+            ];
+
+            const blessingContainer = document.getElementById('blessingContainer');
+
+            function createFloatingCards() {
+                FLOATING_BLESSINGS.forEach(function(text, i) {
+                    const card = document.createElement('div');
+                    card.className = 'blessing-card';
+                    card.textContent = text;
+
+                    // 随机水平位置（避开中心区域 25%-75%）
+                    let left;
+                    if (i % 2 === 0) {
+                        left = Math.random() * 18 + 2;       // 2% ~ 20%
+                    } else {
+                        left = Math.random() * 18 + 62;      // 62% ~ 80%
+                    }
+                    card.style.left = left + '%';
+                    card.style.top = '-8%';
+
+                    // 动画时长 10~16s
+                    const dur = Math.random() * 6 + 10;
+                    card.style.animationDuration = dur + 's';
+                    card.style.animationDelay = (i * 1.8 + Math.random()) + 's';
+
+                    // 随机微旋转
+                    const rot = (Math.random() - 0.5) * 12;
+                    card.style.setProperty('--rot', rot + 'deg');
+
+                    blessingContainer.appendChild(card);
+                });
+            }
+            createFloatingCards();
+
+            /* ============================================================
+               流光渐变 — JS 动态更新 SVG 渐变颜色
+               ============================================================ */
+            const GRADIENT_COLORS = [
+                ['#ff6b9d', '#ff4757', '#c44dff'],
+                ['#ff9ff3', '#ff6b9d', '#f368e0'],
+                ['#c44dff', '#ff9ff3', '#ff4757'],
+                ['#f368e0', '#c44dff', '#ff6b9d'],
+            ];
+            let gradIndex = 0;
+
+            function shiftGradient() {
+                gradIndex = (gradIndex + 1) % GRADIENT_COLORS.length;
+                const stops = path.querySelectorAll('stop') || path.parentElement.querySelectorAll('stop');
+                // 如果 gradient 在 defs 中
+                const defs = document.querySelector('defs');
+                if (defs) {
+                    const grad = defs.querySelector('#heartGradient');
+                    if (grad) {
+                        const stopEls = grad.querySelectorAll('stop');
+                        if (stopEls.length >= 3) {
+                            const cols = GRADIENT_COLORS[gradIndex];
+                            stopEls[0].setAttribute('stop-color', cols[0]);
+                            stopEls[1].setAttribute('stop-color', cols[1]);
+                            stopEls[2].setAttribute('stop-color', cols[2]);
+                        }
+                    }
+                }
+            }
+
+            // 每 4 秒换一次渐变色
+            setInterval(shiftGradient, 4000);
+
+            /* ============================================================
+               极光光晕
+               ============================================================ */
+            const auroraLayer = document.getElementById('auroraLayer');
+
+            function createAuroraWaves() {
+                const waveConfigs = [
+                    { color: 'rgba(255, 107, 157, 0.25)', size: 600, dur: 14 },
+                    { color: 'rgba(196, 77, 255, 0.2)', size: 500, dur: 18 },
+                    { color: 'rgba(100, 200, 255, 0.15)', size: 700, dur: 16 },
+                    { color: 'rgba(255, 200, 100, 0.1)', size: 400, dur: 20 },
+                ];
+
+                waveConfigs.forEach(function(cfg) {
+                    const wave = document.createElement('div');
+                    wave.className = 'aurora-wave';
+                    wave.style.width = cfg.size + 'px';
+                    wave.style.height = cfg.size + 'px';
+                    wave.style.background = 'radial-gradient(circle, ' + cfg.color + ', transparent)';
+                    wave.style.left = (Math.random() * 60 - 20) + '%';
+                    wave.style.top = (Math.random() * 60 - 20) + '%';
+                    wave.style.setProperty('--aurora-dur', cfg.dur + 's');
+
+                    // 随机漂移路径 3 个关键点
+                    wave.style.setProperty('--dx1', (Math.random() * 400 - 200) + 'px');
+                    wave.style.setProperty('--dy1', (Math.random() * 300 - 150) + 'px');
+                    wave.style.setProperty('--s1', (Math.random() * 0.5 + 0.8));
+                    wave.style.setProperty('--o1', (Math.random() * 0.15 + 0.15));
+
+                    wave.style.setProperty('--dx2', (Math.random() * 400 - 200) + 'px');
+                    wave.style.setProperty('--dy2', (Math.random() * 300 - 150) + 'px');
+                    wave.style.setProperty('--s2', (Math.random() * 0.6 + 0.7));
+                    wave.style.setProperty('--o2', (Math.random() * 0.15 + 0.15));
+
+                    wave.style.setProperty('--dx3', (Math.random() * 400 - 200) + 'px');
+                    wave.style.setProperty('--dy3', (Math.random() * 300 - 150) + 'px');
+                    wave.style.setProperty('--s3', (Math.random() * 0.5 + 0.8));
+
+                    wave.style.animationDelay = (Math.random() * 5) + 's';
+                    auroraLayer.appendChild(wave);
+                });
+            }
+            createAuroraWaves();
+
+            /* ============================================================
+               流星
+               ============================================================ */
+            function createShootingStar() {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+
+                // 从顶部随机位置开始
+                const startX = Math.random() * 80 + 10; // 10%~90%
+                star.style.left = startX + '%';
+                star.style.top = '-5px';
+
+                // 向右下方向飞行
+                const distX = (Math.random() * 300 + 200);
+                const distY = (Math.random() * 400 + 300);
+                star.style.setProperty('--sx', distX + 'px');
+                star.style.setProperty('--sy', distY + 'px');
+
+                // 动画时长 0.8~1.5s
+                const dur = Math.random() * 0.7 + 0.8;
+                star.style.animationDuration = dur + 's';
+
+                document.body.appendChild(star);
+                star.addEventListener('animationend', function() {
+                    if (star.parentNode) star.parentNode.removeChild(star);
+                });
+            }
+
+            // 每隔 3~6 秒随机生成流星
+            function scheduleShootingStar() {
+                createShootingStar();
+                const nextDelay = Math.random() * 3000 + 3000; // 3~6s
+                setTimeout(scheduleShootingStar, nextDelay);
+            }
+            // 首次延迟后开始
+            setTimeout(scheduleShootingStar, 2000);
+
+            /* ============================================================
+               悬停交互
+               ============================================================ */
+            container.addEventListener('mouseenter', function() {
+                container.classList.add('hover-active');
+            });
+
+            container.addEventListener('mouseleave', function() {
+                if (!isDragging) {
+                    container.classList.remove('hover-active');
+                }
+            });
+
+            /* ============================================================
+               核心：触发爆炸（直接执行，无蓄力）
+               ============================================================ */
+            function triggerExplosion(isLongPress) {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                const rect = container.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+
+                // ---- 随机爆炸参数 ----
+                var particleCount;
+                var explodeSpeed;
+                if (isLongPress) {
+                    // 长按：大爆发
+                    particleCount = Math.floor(Math.random() * 60 + 100); // 100~160
+                    explodeSpeed = 0.5 + Math.random() * 0.2;            // 0.5~0.7s
+                } else {
+                    // 点击：普通爆发
+                    particleCount = Math.floor(Math.random() * 40 + 60);  // 60~100
+                    explodeSpeed = 0.6 + Math.random() * 0.3;            // 0.6~0.9s
+                }
+
+                // ---- 随机爆炸风格 ----
+                var style = Math.random();
+                if (style < 0.33) {
+                    // 风格 A：标准 radial 爆散
+                    svg.style.setProperty('--explode-speed', explodeSpeed + 's');
+                } else if (style < 0.66) {
+                    // 风格 B：闪白更强
+                    svg.style.setProperty('--explode-speed', (explodeSpeed * 0.8) + 's');
+                } else {
+                    // 风格 C：更慢膨胀
+                    svg.style.setProperty('--explode-speed', (explodeSpeed * 1.2) + 's');
+                    svg.style.setProperty('filter', 'brightness(2)');
+                }
+
+                svg.style.animation = 'none';
+
+                // ---- 爆炸闪光 ----
+                createExplosionFlash(cx, cy);
+
+                // ---- 背景闪烁 ----
+                var flashOverlay = document.createElement('div');
+                flashOverlay.className = 'bg-flash-overlay';
+                document.body.appendChild(flashOverlay);
+                setTimeout(function() {
+                    if (flashOverlay.parentNode) flashOverlay.parentNode.removeChild(flashOverlay);
+                }, 900);
+
+                // ---- 爱心爆炸 ----
+                svg.classList.add('exploding');
+
+                // ---- 粒子爆散（随机数量） ----
+                createBurstParticles(cx, cy, particleCount);
+
+                // ---- 祝福语飞散（从 137 条中随机取 8 条） ----
+                createShrapnelBlessings(cx, cy);
+
+                // ---- 更新底部祝福语 ----
+                typeBlessing(getRandomBlessing());
+
+                // ---- 爱心重生 ----
+                setTimeout(function() {
+                    svg.classList.remove('exploding');
+                    svg.classList.add('reforming');
+
+                    svg.addEventListener('animationend', function onReformEnd() {
+                        svg.classList.remove('reforming');
+                        svg.style.animation = '';
+                        svg.style.filter = '';
+                        svg.style.setProperty('--explode-speed', '');
+                        isAnimating = false;
+                        svg.removeEventListener('animationend', onReformEnd);
+                    }, { once: true });
+
+                    setTimeout(function() {
+                        if (isAnimating) {
+                            svg.classList.remove('exploding', 'reforming');
+                            svg.style.animation = '';
+                            svg.style.filter = '';
+                            isAnimating = false;
+                        }
+                    }, 1500);
+                }, 800);
+            }
+
+            /** 爆炸闪光效果 */
+            function createExplosionFlash(cx, cy) {
+                const flash = document.createElement('div');
+                flash.className = 'explosion-flash';
+                const size = 60;
+                flash.style.width = size + 'px';
+                flash.style.height = size + 'px';
+                flash.style.left = (cx - size / 2) + 'px';
+                flash.style.top = (cy - size / 2) + 'px';
+                document.body.appendChild(flash);
+                flash.addEventListener('animationend', function() {
+                    if (flash.parentNode) flash.parentNode.removeChild(flash);
+                });
+            }
+
+            /** 祝福语碎片飞散（从 137 条祝福语中随机取 8 条） */
+            function createShrapnelBlessings(cx, cy) {
+                // 随机选 8 条不重复祝福语
+                var chosen = [];
+                var pool = BLESSINGS.slice();
+                for (var s = 0; s < 8 && pool.length > 0; s++) {
+                    var idx = Math.floor(Math.random() * pool.length);
+                    chosen.push(pool[idx]);
+                    pool.splice(idx, 1);
+                }
+
+                chosen.forEach(function(text, i) {
+                    var el = document.createElement('div');
+                    el.className = 'blessing-shrapnel';
+                    el.textContent = text;
+
+                    // 8 个方向随机散布
+                    var angle = (i / chosen.length) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+                    var dist = Math.random() * 200 + 160;
+                    var sx = Math.cos(angle) * dist;
+                    var sy = Math.sin(angle) * dist;
+                    var rot = (Math.random() - 0.5) * 100;
+
+                    el.style.left = cx + 'px';
+                    el.style.top = cy + 'px';
+                    el.style.setProperty('--sx', sx + 'px');
+                    el.style.setProperty('--sy', sy + 'px');
+                    el.style.setProperty('--rot', rot + 'deg');
+
+                    var colors = ['#ff6b9d', '#ff9ff3', '#c44dff', '#ffd93d', '#6bcbff', '#ff9f43', '#ff4757', '#f368e0'];
+                    el.style.color = colors[i % colors.length];
+
+                    document.body.appendChild(el);
+                    el.addEventListener('animationend', function() {
+                        if (el.parentNode) el.parentNode.removeChild(el);
+                    });
+                });
+            }
+
+            /** 创建爆散粒子 */
+            function createBurstParticles(cx, cy, count) {
+                const colors = ['#ff6b9d', '#ff9ff3', '#c44dff', '#f368e0', '#ff4757', '#ffd93d', '#6bcbff', '#ff9f43'];
+                for (let i = 0; i < count; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'burst-particle';
+                    const size = Math.random() * 8 + 3;
+                    p.style.width = size + 'px';
+                    p.style.height = size + 'px';
+                    p.style.left = cx + 'px';
+                    p.style.top = cy + 'px';
+                    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = Math.random() * 280 + 100;
+                    const tx = Math.cos(angle) * dist;
+                    const ty = Math.sin(angle) * dist;
+                    p.style.setProperty('--tx', tx + 'px');
+                    p.style.setProperty('--ty', ty + 'px');
+                    p.style.setProperty('--duration', (Math.random() * 0.8 + 0.4) + 's');
+
+                    document.body.appendChild(p);
+                    p.addEventListener('animationend', function() {
+                        if (p.parentNode) p.parentNode.removeChild(p);
+                    });
+                }
+            }
+
+            /** 拖尾光点 */
+            function createTrailDot(x, y) {
+                const dot = document.createElement('div');
+                dot.className = 'trail-dot';
+                const size = Math.random() * 6 + 3;
+                dot.style.width = size + 'px';
+                dot.style.height = size + 'px';
+                dot.style.left = (x + (Math.random() - 0.5) * 20) + 'px';
+                dot.style.top = (y + (Math.random() - 0.5) * 20) + 'px';
+                const colors = ['#ff6b9d', '#c44dff', '#ff9ff3', '#f368e0', '#ffd93d'];
+                dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+                dot.style.boxShadow = '0 0 6px ' + dot.style.background;
+
+                document.body.appendChild(dot);
+                dot.addEventListener('animationend', function() {
+                    if (dot.parentNode) dot.parentNode.removeChild(dot);
+                });
+            }
+
+            /* ============================================================
+               三态手势识别：普通点击 / 长按 / 拖动
+               ============================================================ */
+            var DRAG_THRESHOLD = 10;   // px
+            var LONG_PRESS_MS = 600;   // ms
+            var CLICK_MAX_MS = 400;    // ms
+
+            var pressStartTime = 0;
+            var pressStartX = 0;
+            var pressStartY = 0;
+            var longPressFired = false;
+            var longPressTimer = null;
+
+            function getDist(x1, y1, x2, y2) {
+                return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+            }
+
+            function clearLongPressTimer() {
+                if (longPressTimer) {
+                    clearTimeout(longPressTimer);
+                    longPressTimer = null;
+                }
+            }
+
+            // ---- mousedown: 记录起点，启动长按定时器 ----
+            container.addEventListener('mousedown', function(e) {
+                if (isAnimating) return;
+
+                pressStartTime = Date.now();
+                pressStartX = e.clientX;
+                pressStartY = e.clientY;
+                longPressFired = false;
+                isDragging = false;
+
+                container.classList.add('hover-active');
+
+                // 长按定时器
+                clearLongPressTimer();
+                longPressTimer = setTimeout(function() {
+                    longPressFired = true;
+                    container.classList.remove('hover-active');
+                    triggerExplosion(true); // 长按 → 大爆发
+                }, LONG_PRESS_MS);
+
+                e.preventDefault();
+            });
+
+            // ---- mousemove: 判断是否超出阈值进入拖拽 ----
+            document.addEventListener('mousemove', function(e) {
+                if (isAnimating) return;
+
+                if (isDragging) {
+                    // 已有拖拽状态 → 继续拖拽
+                    offsetX = e.clientX - dragStartX;
+                    offsetY = e.clientY - dragStartY;
+                    container.style.transform = 'translate(' + offsetX + 'px, ' + offsetY + 'px)';
+                    createTrailDot(e.clientX, e.clientY);
+                    return;
+                }
+
+                // 未在拖拽: 检查是否按下且有足够位移
+                if (pressStartTime > 0) {
+                    var dist = getDist(pressStartX, pressStartY, e.clientX, e.clientY);
+                    if (dist > DRAG_THRESHOLD) {
+                        // 超出阈值 → 取消长按，进入拖拽
+                        clearLongPressTimer();
+                        container.classList.remove('hover-active');
+                        isDragging = true;
+                        container.classList.add('dragging');
+                        dragStartX = e.clientX - offsetX;
+                        dragStartY = e.clientY - offsetY;
+                    }
+                }
+            });
+
+            // ---- mouseup: 判断是点击还是拖拽结束 ----
+            document.addEventListener('mouseup', function(e) {
+                clearLongPressTimer();
+
+                if (isDragging) {
+                    // 拖拽结束
+                    isDragging = false;
+                    container.classList.remove('dragging');
+                    return;
+                }
+
+                // 如果不是拖拽也不是长按
+                if (isAnimating) return;
+                if (longPressFired) return;
+
+                var elapsed = Date.now() - pressStartTime;
+                var dist = getDist(pressStartX, pressStartY, e.clientX, e.clientY);
+
+                if (dist < DRAG_THRESHOLD && elapsed < CLICK_MAX_MS) {
+                    // 普通点击 → 直接爆炸
+                    container.classList.remove('hover-active');
+                    triggerExplosion(false);
+                }
+
+                // 按下超过 400ms 但未被长按触发 → 什么也不做（静默取消）
+                pressStartTime = 0;
+            });
+
+            // ---- 触摸事件 ----
+            container.addEventListener('touchstart', function(e) {
+                if (isAnimating) return;
+
+                var touch = e.touches[0];
+                pressStartTime = Date.now();
+                pressStartX = touch.clientX;
+                pressStartY = touch.clientY;
+                longPressFired = false;
+                isDragging = false;
+
+                clearLongPressTimer();
+                longPressTimer = setTimeout(function() {
+                    longPressFired = true;
+                    container.classList.remove('hover-active');
+                    triggerExplosion(true);
+                }, LONG_PRESS_MS);
+            }, { passive: true });
+
+            document.addEventListener('touchmove', function(e) {
+                if (isAnimating) return;
+                var touch = e.touches[0];
+
+                if (isDragging) {
+                    offsetX = touch.clientX - dragStartX;
+                    offsetY = touch.clientY - dragStartY;
+                    container.style.transform = 'translate(' + offsetX + 'px, ' + offsetY + 'px)';
+                    createTrailDot(touch.clientX, touch.clientY);
+                    return;
+                }
+
+                if (pressStartTime > 0) {
+                    var dist = getDist(pressStartX, pressStartY, touch.clientX, touch.clientY);
+                    if (dist > DRAG_THRESHOLD) {
+                        clearLongPressTimer();
+                        container.classList.remove('hover-active');
+                        isDragging = true;
+                        container.classList.add('dragging');
+                        dragStartX = touch.clientX - offsetX;
+                        dragStartY = touch.clientY - offsetY;
+                    }
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', function() {
+                clearLongPressTimer();
+
+                if (isDragging) {
+                    isDragging = false;
+                    container.classList.remove('dragging');
+                    return;
+                }
+
+                if (isAnimating) return;
+                if (longPressFired) return;
+
+                var elapsed = Date.now() - pressStartTime;
+                if (elapsed < CLICK_MAX_MS) {
+                    container.classList.remove('hover-active');
+                    triggerExplosion(false);
+                }
+                pressStartTime = 0;
+            });
+
+            /* ============================================================
+               Resize 适配
+               ============================================================ */
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                // 不做大幅重建，仅保证显示正常
+            });
+
+            /* ============================================================
+               页面加载 — 逐笔绘制爱心（turtle 风格）
+               ============================================================ */
+            const heartPath = path;
+            const pageTitle = document.getElementById('pageTitle');
+
+            function initDrawAnimation() {
+                // 获取路径总长度
+                const len = heartPath.getTotalLength();
+                heartPath.style.setProperty('--path-len', len);
+
+                // 暂停呼吸动画，开始绘制
+                heartPath.closest('.heart-svg').style.animation = 'none';
+                heartPath.classList.add('drawing');
+
+                // 1.8s 后绘制完成
+                setTimeout(function() {
+                    heartPath.classList.remove('drawing');
+                    heartPath.classList.add('drawn');
+
+                    // 恢复呼吸光晕
+                    heartPath.closest('.heart-svg').style.animation = '';
+
+                    // 标题渐显
+                    pageTitle.classList.add('visible');
+
+                    // 重新启用 gradientShift
+                    //（drawn 类移除后 path 的默认 gradientShift 会恢复）
+                }, 1900);
+            }
+
+            // 页面加载后延迟 300ms 开始绘制
+            if (document.readyState === 'complete') {
+                setTimeout(initDrawAnimation, 300);
+            } else {
+                window.addEventListener('load', function() {
+                    setTimeout(initDrawAnimation, 300);
+                });
+            }
+
+            console.log('❤️ 父亲节爱心祝福已加载！');
+        })();
+    </script>
+
+</body>
+</html>

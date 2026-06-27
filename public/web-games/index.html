@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网页游戏中心 - Web Games Hub</title>
+<style>
+  :root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --bg-overlay: #30363d;
+    --border-color: #30363d;
+    --border-light: #21262d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-tertiary: #6e7681;
+    --accent-blue: #58a6ff;
+    --accent-green: #3fb950;
+    --accent-yellow: #d29922;
+    --accent-red: #f85149;
+    --accent-purple: #a371f7;
+    --radius-sm: 6px;
+    --radius-lg: 12px;
+    --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    min-height: 100vh;
+  }
+  .hero {
+    text-align: center;
+    padding: 120px 20px 80px;
+    position: relative;
+    overflow: hidden;
+    background-image: linear-gradient(rgba(13, 17, 23, 0.6), rgba(13, 17, 23, 0.6)), url('https://aka.doubaocdn.com/s/zjea1wlnby');
+    background-size: cover;
+    background-position: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(13, 17, 23, 0.5) 100%);
+    pointer-events: none;
+  }
+  .hero > * {
+    position: relative;
+    z-index: 1;
+  }
+  .hero h1 {
+    font-size: 42px;
+    color: #f0f6fc;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+  }
+  .hero .subtitle {
+    font-size: 15px;
+    color: #8b949e;
+    margin-bottom: 8px;
+  }
+  .hero .tags {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .hero .tags span {
+    padding: 4px 12px;
+    background: #21262d;
+    color: #58a6ff;
+    border-radius: 20px;
+    font-size: 12px;
+    border: 1px solid #30363d;
+  }
+  .games-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .game-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .game-card:hover {
+    border-color: #58a6ff;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(88, 166, 255, 0.15);
+  }
+  .game-cover {
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--g1, #1f6feb), var(--g2, #58a6ff));
+  }
+  .game-cover .cover-emoji {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    z-index: 0;
+  }
+  .game-cover img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    z-index: 1;
+  }
+  .game-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .game-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f0f6fc;
+    margin-bottom: 6px;
+  }
+  .game-desc {
+    font-size: 13px;
+    color: #8b949e;
+    line-height: 1.5;
+    flex: 1;
+    margin-bottom: 12px;
+  }
+  .game-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+  }
+  .badge {
+    padding: 3px 8px;
+    background: #21262d;
+    color: #58a6ff;
+    border-radius: 4px;
+    border: 1px solid #30363d;
+  }
+  .badge.action { color: #f85149; }
+  .badge.puzzle { color: #d29922; }
+  .badge.strategy { color: #3fb950; }
+  .badge.edu { color: #a371f7; }
+  .play-btn {
+    margin-top: 12px;
+    padding: 8px 16px;
+    background: #238636;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.15s;
+    align-self: flex-start;
+  }
+  .play-btn:hover { background: #2ea043; }
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6e7681;
+    font-size: 13px;
+  }
+
+
+  /* ========== 登录页面（独立全屏） ========== */
+  .auth-page {
+    position: fixed; inset: 0; z-index: 99999;
+    display: none;
+  }
+  .auth-page.active { display: flex; }
+  .auth-left {
+    flex: 1;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(88,166,255,0.18) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(163,113,247,0.15) 0%, transparent 50%),
+      linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 48px; position: relative; overflow: hidden;
+  }
+  .auth-left::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 25% 30%, rgba(88,166,255,0.08) 0%, transparent 1px),
+      radial-gradient(circle at 75% 60%, rgba(163,113,247,0.08) 0%, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .auth-brand {
+    position: relative; z-index: 1;
+    text-align: center;
+  }
+  .auth-brand-icon {
+    width: 72px; height: 72px; margin: 0 auto 20px;
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
+    border-radius: 18px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 32px rgba(88,166,255,0.25);
+  }
+  .auth-brand-icon svg { width: 36px; height: 36px; color: #fff; }
+  .auth-brand h1 { font-size: 32px; color: var(--text-primary); margin-bottom: 8px; font-weight: 700; letter-spacing: -0.5px; }
+  .auth-brand p { font-size: 15px; color: var(--text-secondary); max-width: 320px; line-height: 1.6; }
+  .auth-features {
+    margin-top: 48px; display: flex; flex-direction: column; gap: 12px;
+    position: relative; z-index: 1;
+  }
+  .auth-feature {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--text-secondary); font-size: 14px;
+  }
+  .auth-feature-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(88,166,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-blue);
+  }
+  .auth-right {
+    flex: 1;
+    background: var(--bg-secondary);
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 48px;
+    border-left: 1px solid var(--border-color);
+  }
+  .auth-card { width: 100%; max-width: 400px; }
+  .auth-card h2 { font-size: 24px; color: var(--text-primary); margin-bottom: 6px; font-weight: 600; }
+  .auth-card .auth-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+  .auth-field { margin-bottom: 16px; }
+  .auth-field label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
+  .auth-field input {
+    width: 100%; padding: 11px 14px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary); font-size: 15px;
+    outline: none; transition: all 0.15s;
+    font-family: inherit;
+  }
+  .auth-field input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(88,166,255,0.12);
+  }
+  .auth-btn-primary {
+    width: 100%; padding: 12px 16px;
+    background: linear-gradient(135deg, #58a6ff, #388bfd);
+    color: white; border: none; border-radius: 8px;
+    cursor: pointer; font-size: 15px; font-weight: 600;
+    transition: all 0.15s; font-family: inherit;
+  }
+  .auth-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(88,166,255,0.3);
+  }
+  .auth-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+  .auth-btn-admin { background: linear-gradient(135deg, #a371f7, #8957e5); }
+  .auth-btn-admin:hover { box-shadow: 0 4px 16px rgba(163,113,247,0.3); }
+  .auth-error {
+    color: var(--accent-red); font-size: 13px;
+    margin-top: 12px; min-height: 20px;
+    padding: 8px 12px;
+    background: rgba(248,81,73,0.08);
+    border: 1px solid rgba(248,81,73,0.2);
+    border-radius: 6px; display: none;
+  }
+  .auth-error.show { display: block; }
+  .auth-switch {
+    margin-top: 24px; text-align: center;
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .auth-switch a {
+    color: var(--accent-blue); cursor: pointer;
+    text-decoration: none; font-weight: 500;
+  }
+  .auth-switch a:hover { text-decoration: underline; }
+
+  /* ========== 管理员仪表板 ========== */
+  .admin-page {
+    position: fixed; inset: 0; z-index: 99998;
+    display: none; flex-direction: column;
+    background: var(--bg-primary);
+  }
+  .admin-page.active { display: flex; }
+  .admin-header {
+    height: 56px; padding: 0 24px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .admin-header-left { display: flex; align-items: center; gap: 16px; }
+  .admin-back-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px; color: var(--text-secondary);
+    cursor: pointer; font-size: 13px;
+    transition: all 0.15s;
+  }
+  .admin-back-btn:hover {
+    color: var(--text-primary); border-color: var(--text-tertiary);
+    background: var(--bg-tertiary);
+  }
+  .admin-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+  }
+  .admin-title-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, #a371f7, #8957e5);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+  }
+  .admin-header-right { display: flex; align-items: center; gap: 12px; }
+  .admin-refresh-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px; color: var(--text-secondary);
+    cursor: pointer; font-size: 13px;
+    transition: all 0.15s;
+  }
+  .admin-refresh-btn:hover { color: var(--text-primary); border-color: var(--text-tertiary); }
+  .admin-logout-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; background: transparent;
+    border: 1px solid rgba(248,81,73,0.3);
+    border-radius: 6px; color: var(--accent-red);
+    cursor: pointer; font-size: 13px;
+    transition: all 0.15s;
+  }
+  .admin-logout-btn:hover { background: rgba(248,81,73,0.08); border-color: var(--accent-red); }
+  .admin-body { flex: 1; overflow-y: auto; padding: 32px; }
+  .admin-body-inner { max-width: 1200px; margin: 0 auto; }
+  .admin-section { margin-bottom: 32px; }
+  .admin-section-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  .admin-cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .admin-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px; padding: 20px;
+    transition: all 0.15s;
+  }
+  .admin-card:hover { border-color: var(--text-tertiary); transform: translateY(-1px); }
+  .admin-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .admin-card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .admin-card-icon.blue { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
+  .admin-card-icon.green { background: rgba(63,185,80,0.12); color: var(--accent-green); }
+  .admin-card-icon.purple { background: rgba(163,113,247,0.12); color: #a371f7; }
+  .admin-card-icon.red { background: rgba(248,81,73,0.12); color: var(--accent-red); }
+  .admin-card-icon.yellow { background: rgba(210,153,34,0.12); color: #d29922; }
+  .admin-card-title { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
+  .admin-card-value { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; line-height: 1.2; }
+  .admin-card-desc { font-size: 12px; color: var(--text-tertiary); word-break: break-all; font-family: var(--font-mono); }
+  .admin-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+  }
+  .admin-badge.on { background: rgba(63,185,80,0.1); color: var(--accent-green); }
+  .admin-badge.off { background: rgba(248,81,73,0.1); color: var(--accent-red); }
+  .admin-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* ========== 用户菜单 ========== */
+  .user-menu-btn {
+    position: fixed; top: 12px; right: 12px;
+    z-index: 99997; width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.15s;
+  }
+  .user-menu-btn:hover { transform: scale(1.05); }
+  .user-menu-btn.hidden { display: none; }
+  .user-dropdown {
+    position: fixed; top: 56px; right: 12px;
+    z-index: 99998;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    display: none; overflow: hidden;
+  }
+  .user-dropdown.show { display: block; }
+  .user-dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    color: var(--text-secondary);
+    cursor: pointer; font-size: 13px;
+    transition: background 0.15s;
+    border: none; background: none; width: 100%;
+    text-align: left; font-family: inherit;
+  }
+  .user-dropdown-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+  .user-dropdown-item.danger:hover { background: rgba(248,81,73,0.08); color: var(--accent-red); }
+  .user-dropdown-divider { height: 1px; background: var(--border-color); margin: 4px 0; }
+  .user-dropdown-item svg { width: 16px; height: 16px; }
+
+  @media (max-width: 768px) {
+    .auth-left { display: none; }
+    .auth-right { border-left: none; padding: 24px; }
+    .admin-cards { grid-template-columns: 1fr; }
+    .admin-body { padding: 16px; }
+    .admin-header { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== 登录/认证页面（全屏） ========== -->
+<div class="auth-page" id="authPage">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="auth-brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+      </div>
+      <h1>网页游戏中心</h1>
+      <p>经典HTML5游戏合集，即点即玩，无需安装，随时随地享受游戏乐趣</p>
+    </div>
+    <div class="auth-features">
+      <div class="auth-feature">
+        <div class="auth-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+        </div>
+        <span>多款经典HTML5游戏任你选择</span>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="5 11 4 11 4 4 20 4 20 11 19 11"></polyline><path d="M9 21V12h6v9"></path><circle cx="12" cy="7" r="2"></circle></svg>
+        </div>
+        <span>纯前端运行，无需下载安装</span>
+      </div>
+      <div class="auth-feature">
+        <div class="auth-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <span>安全可靠，保护您的隐私</span>
+      </div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-card">
+      <!-- 用户登录 -->
+      <div id="userLoginForm">
+        <h2>欢迎回来</h2>
+        <p class="auth-subtitle">输入访问密码以继续游戏</p>
+        <div class="auth-field">
+          <label for="loginPasswordInput">访问密码</label>
+          <input type="password" id="loginPasswordInput" placeholder="请输入密码" autocomplete="off">
+        </div>
+        <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
+        <div class="auth-error" id="loginErrorMsg"></div>
+        <div class="auth-switch">
+          使用 <a id="switchToAdmin">管理员身份</a> 登录
+        </div>
+      </div>
+      <!-- 管理员登录 -->
+      <div id="adminLoginForm" style="display:none">
+        <h2>管理员登录</h2>
+        <p class="auth-subtitle">输入管理员密码以访问后台</p>
+        <div class="auth-field">
+          <label for="adminPasswordInput">管理员密码</label>
+          <input type="password" id="adminPasswordInput" placeholder="请输入管理员密码" autocomplete="off">
+        </div>
+        <button class="auth-btn-primary auth-btn-admin" id="adminLoginSubmitBtn">进入后台</button>
+        <div class="auth-error" id="adminLoginErrorMsg"></div>
+        <div class="auth-switch">
+          返回 <a id="switchToUser">用户登录</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 管理员仪表板（全屏） ========== -->
+<div class="admin-page" id="adminPage">
+  <div class="admin-header">
+    <div class="admin-header-left">
+      <button class="admin-back-btn" id="adminBackBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        返回
+      </button>
+      <div class="admin-title">
+        <div class="admin-title-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        </div>
+        管理员后台
+      </div>
+    </div>
+    <div class="admin-header-right">
+      <button class="admin-refresh-btn" id="adminRefreshBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        刷新
+      </button>
+      <button class="admin-logout-btn" id="adminLogoutBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        退出
+      </button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-body-inner" id="adminDashboardContent">
+      <div style="text-align:center;padding:40px;color:var(--text-tertiary)">加载中...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 用户菜单（右上角头像） ========== -->
+<button class="user-menu-btn hidden" id="userMenuBtn">U</button>
+<div class="user-dropdown" id="userDropdown">
+  <button class="user-dropdown-item" id="openAdminFromMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+    管理员后台
+  </button>
+  <div class="user-dropdown-divider"></div>
+  <button class="user-dropdown-item danger" id="logoutFromMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+    退出登录
+  </button>
+</div>
+
+<div class="hero">
+  <h1>🎮 网页游戏中心</h1>
+  <p class="subtitle">经典游戏 · 纯HTML5 Canvas · 即点即玩</p>
+  <div class="tags">
+    <span>HTML5 Canvas</span>
+    <span>JavaScript</span>
+    <span>无安装</span>
+    <span>响应式</span>
+  </div>
+</div>
+
+<div class="games-grid" id="gamesGrid"></div>
+
+<div class="footer">
+  使用 HTML5 Canvas 与原生 JavaScript 开发 · 兼容现代浏览器
+</div>
+
+<script>
+// ========== 工具函数 ==========
+function setCookie(name, value, days) {
+  const d = new Date();
+  d.setTime(d.getTime() + days * 86400000);
+  document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/`;
+}
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
+
+function delCookie(name) {
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
+}
+
+// ========== 元素引用 ==========
+const authPage = document.getElementById('authPage');
+const userLoginForm = document.getElementById('userLoginForm');
+const adminLoginForm = document.getElementById('adminLoginForm');
+const loginPasswordInput = document.getElementById('loginPasswordInput');
+const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+const loginErrorMsg = document.getElementById('loginErrorMsg');
+const adminPasswordInput = document.getElementById('adminPasswordInput');
+const adminLoginSubmitBtn = document.getElementById('adminLoginSubmitBtn');
+const adminLoginErrorMsg = document.getElementById('adminLoginErrorMsg');
+const switchToAdmin = document.getElementById('switchToAdmin');
+const switchToUser = document.getElementById('switchToUser');
+
+const adminPage = document.getElementById('adminPage');
+const adminBackBtn = document.getElementById('adminBackBtn');
+const adminRefreshBtn = document.getElementById('adminRefreshBtn');
+const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+const adminDashboardContent = document.getElementById('adminDashboardContent');
+
+const userMenuBtn = document.getElementById('userMenuBtn');
+const userDropdown = document.getElementById('userDropdown');
+const openAdminFromMenu = document.getElementById('openAdminFromMenu');
+const logoutFromMenu = document.getElementById('logoutFromMenu');
+
+// ========== API 封装 ==========
+async function api(url, opts = {}) {
+  const res = await fetch(url, opts);
+  if (res.status === 401) {
+    delCookie('wg_token');
+    userMenuBtn.classList.add('hidden');
+    userDropdown.classList.remove('show');
+    hideAdminDashboard();
+    showLoginPage(false);
+    throw new Error('登录已过期，请重新登录');
+  }
+  if (!res.ok) throw new Error((await res.json().catch(() => ({ error: `HTTP ${res.status}` }))).error);
+  return res;
+}
+
+// ========== 登录页面控制 ==========
+function showLoginPage(showUser = true) {
+  authPage.classList.add('active');
+  adminPage.classList.remove('active');
+  userMenuBtn.classList.add('hidden');
+  userDropdown.classList.remove('show');
+  if (showUser) {
+    userLoginForm.style.display = 'block';
+    adminLoginForm.style.display = 'none';
+    setTimeout(() => loginPasswordInput.focus(), 100);
+  } else {
+    userLoginForm.style.display = 'none';
+    adminLoginForm.style.display = 'block';
+    setTimeout(() => adminPasswordInput.focus(), 100);
+  }
+}
+
+function hideLoginPage() {
+  authPage.classList.remove('active');
+  loginErrorMsg.classList.remove('show');
+  adminLoginErrorMsg.classList.remove('show');
+  loginPasswordInput.value = '';
+  adminPasswordInput.value = '';
+}
+
+// ========== 用户登录 ==========
+async function doUserLogin() {
+  const password = loginPasswordInput.value.trim();
+  if (!password) {
+    loginErrorMsg.textContent = '请输入密码';
+    loginErrorMsg.classList.add('show');
+    return;
+  }
+  loginSubmitBtn.disabled = true;
+  loginSubmitBtn.textContent = '登录中...';
+  loginErrorMsg.classList.remove('show');
+  try {
+    const resp = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+    const data = await resp.json();
+    if (resp.ok && data.token) {
+      setCookie('wg_token', data.token, 7);
+      hideLoginPage();
+      userMenuBtn.classList.remove('hidden');
+      reloadCoverImages();
+    } else {
+      loginErrorMsg.textContent = data.error || '密码错误';
+      loginErrorMsg.classList.add('show');
+    }
+  } catch {
+    loginErrorMsg.textContent = '网络错误，请重试';
+    loginErrorMsg.classList.add('show');
+  }
+  loginSubmitBtn.disabled = false;
+  loginSubmitBtn.textContent = '登录';
+}
+
+// ========== 管理员登录 ==========
+async function doAdminLogin() {
+  const pw = adminPasswordInput.value.trim();
+  if (!pw) {
+    adminLoginErrorMsg.textContent = '请输入管理员密码';
+    adminLoginErrorMsg.classList.add('show');
+    return;
+  }
+  adminLoginSubmitBtn.disabled = true;
+  adminLoginSubmitBtn.textContent = '验证中...';
+  adminLoginErrorMsg.classList.remove('show');
+  try {
+    const r = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    });
+    const d = await r.json();
+    if (r.ok && d.token) {
+      setCookie('wg_token', d.token, 7);
+      hideLoginPage();
+      userMenuBtn.classList.remove('hidden');
+      showAdminDashboard();
+      reloadCoverImages();
+    } else {
+      adminLoginErrorMsg.textContent = d.error || '密码错误';
+      adminLoginErrorMsg.classList.add('show');
+    }
+  } catch (e) {
+    adminLoginErrorMsg.textContent = '网络错误，请重试';
+    adminLoginErrorMsg.classList.add('show');
+  }
+  adminLoginSubmitBtn.disabled = false;
+  adminLoginSubmitBtn.textContent = '进入后台';
+}
+
+// ========== 退出登录 ==========
+async function doLogout() {
+  try {
+    await fetch('/api/logout', { method: 'POST' });
+  } catch (e) {}
+  delCookie('wg_token');
+  userMenuBtn.classList.add('hidden');
+  userDropdown.classList.remove('show');
+  hideAdminDashboard();
+  showLoginPage(true);
+}
+
+// ========== 管理员仪表板 ==========
+function showAdminDashboard() {
+  authPage.classList.remove('active');
+  adminPage.classList.add('active');
+  userDropdown.classList.remove('show');
+  loadDashboard();
+}
+
+function hideAdminDashboard() {
+  adminPage.classList.remove('active');
+}
+
+function renderDashboard(data) {
+  const escape = (s) => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+  const authStatus = data.auth.password_set
+    ? '<span class="admin-badge on"><span class="dot"></span>已设置</span>'
+    : '<span class="admin-badge off"><span class="dot"></span>未设置</span>';
+  const adminStatus = data.auth.admin_password_set
+    ? '<span class="admin-badge on"><span class="dot"></span>已设置</span>'
+    : '<span class="admin-badge off"><span class="dot"></span>未设置</span>';
+  const commentRows = data.data.comment_files.map(f =>
+    `<div style="font-size:12px;color:var(--text-secondary);font-family:var(--font-mono);padding:4px 0;border-bottom:1px solid var(--border-light)">${escape(f.name)} <span style="color:var(--text-tertiary)">(${f.size} B)</span></div>`
+  ).join('');
+
+  adminDashboardContent.innerHTML = `
+    <div class="admin-section">
+      <div class="admin-section-title">服务器状态</div>
+      <div class="admin-cards">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            </div>
+            <div class="admin-card-title">运行时间</div>
+          </div>
+          <div class="admin-card-value" style="font-size:20px">${escape(data.server.uptime)}</div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            </div>
+            <div class="admin-card-title">文件总数</div>
+          </div>
+          <div class="admin-card-value">${data.server.total_files}</div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </div>
+            <div class="admin-card-title">服务端口</div>
+          </div>
+          <div class="admin-card-value">${data.server.port}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">登录认证</div>
+      <div class="admin-cards">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="admin-card-title">用户密码</div>
+          </div>
+          <div style="margin-top:8px">${authStatus}</div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <div class="admin-card-title">管理员密码</div>
+          </div>
+          <div style="margin-top:8px">${adminStatus}</div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div class="admin-card-title">活跃会话</div>
+          </div>
+          <div class="admin-card-value">${data.auth.active_sessions}</div>
+          <div class="admin-card-desc">管理员会话: ${data.auth.admin_sessions}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">数据文件</div>
+      <div class="admin-cards">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon red">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </div>
+            <div class="admin-card-title">点赞数据</div>
+          </div>
+          <div class="admin-card-value" style="font-size:22px">${data.data.likes_count}</div>
+          <div class="admin-card-desc">${escape(data.data.likes_file)}</div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <div class="admin-card-title">评论文件</div>
+          </div>
+          <div class="admin-card-value">${data.data.comment_files.length}</div>
+          <div class="admin-card-desc">${escape(data.data.comments_dir)}</div>
+          ${commentRows ? `<div style="margin-top:10px;max-height:100px;overflow-y:auto">${commentRows}</div>` : ''}
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-icon yellow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            </div>
+            <div class="admin-card-title">上传文件</div>
+          </div>
+          <div class="admin-card-value">${data.data.uploaded_files_count}</div>
+          <div class="admin-card-desc">${escape(data.data.uploads_dir)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadDashboard() {
+  adminDashboardContent.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-tertiary)">加载中...</div>';
+  try {
+    const res = await api('/api/admin/dashboard');
+    const data = await res.json();
+    renderDashboard(data);
+  } catch (e) {
+    adminDashboardContent.innerHTML = `<div style="text-align:center;padding:40px;color:var(--accent-red)">加载失败: ${e.message}</div>`;
+  }
+}
+
+// ========== 重新加载封面图片 ==========
+function reloadCoverImages() {
+  document.querySelectorAll('.game-cover img').forEach(img => {
+    img.style.display = '';
+    const src = img.src;
+    img.src = '';
+    img.src = src;
+  });
+}
+
+// ========== 用户菜单 ==========
+userMenuBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  userDropdown.classList.toggle('show');
+});
+
+document.addEventListener('click', () => {
+  userDropdown.classList.remove('show');
+});
+
+openAdminFromMenu.addEventListener('click', () => {
+  showAdminDashboard();
+});
+
+logoutFromMenu.addEventListener('click', () => {
+  doLogout();
+});
+
+// ========== 登录表单切换 ==========
+switchToAdmin.addEventListener('click', () => {
+  userLoginForm.style.display = 'none';
+  adminLoginForm.style.display = 'block';
+  loginErrorMsg.classList.remove('show');
+  adminLoginErrorMsg.classList.remove('show');
+  adminPasswordInput.focus();
+});
+
+switchToUser.addEventListener('click', () => {
+  userLoginForm.style.display = 'block';
+  adminLoginForm.style.display = 'none';
+  loginErrorMsg.classList.remove('show');
+  adminLoginErrorMsg.classList.remove('show');
+  loginPasswordInput.focus();
+});
+
+// ========== 事件绑定 ==========
+loginSubmitBtn.addEventListener('click', doUserLogin);
+loginPasswordInput.addEventListener('keydown', e => { if (e.key === 'Enter') doUserLogin(); });
+
+adminLoginSubmitBtn.addEventListener('click', doAdminLogin);
+adminPasswordInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAdminLogin(); });
+
+adminBackBtn.addEventListener('click', () => {
+  hideAdminDashboard();
+});
+
+adminRefreshBtn.addEventListener('click', loadDashboard);
+
+adminLogoutBtn.addEventListener('click', () => {
+  doLogout();
+});
+
+// ========== 初始化 ==========
+(async function init() {
+  try {
+    const resp = await fetch('/api/auth-check');
+    const data = await resp.json();
+    if (data.authenticated) {
+      hideLoginPage();
+      userMenuBtn.classList.remove('hidden');
+    } else {
+      showLoginPage(true);
+    }
+  } catch {
+    showLoginPage(true);
+  }
+})();
+
+// ========== 游戏列表 ==========
+const games = [
+  { title: '飞机大战', icon: '✈️', cover: '/web-games/images/plane-war-cover.jpeg', desc: '经典射击游戏，驾驶战机击落陨石，收集道具，挑战最高分。', badge: '射击', badgeClass: 'action', url: '/web-games/plane-war/index.html', g1: '#1f6feb', g2: '#58a6ff' },
+  { title: '植物大战僵尸', icon: '🧟', cover: '/web-games/images/pvz-cover.jpeg', desc: '策略塔防游戏，布置植物防线，抵御僵尸入侵。', badge: '塔防', badgeClass: 'strategy', url: '/web-games/pvz_tmp/game/index.html', g1: '#238636', g2: '#3fb950' },
+  { title: '中国象棋', icon: '♟️', cover: '/web-games/images/chinese-chess-cover.jpeg', desc: '经典中国象棋对弈，支持人机对战，体验传统棋盘博弈。', badge: '棋类', badgeClass: 'puzzle', url: '/web-games/chinese-chess/index.html', g1: '#9e6a03', g2: '#d29922' },
+  { title: '我的世界', icon: '🧱', cover: '/web-games/images/my-world-cover.jpeg', desc: '2D方块建造游戏，挖掘资源，搭建属于你的像素世界。', badge: '沙盒', badgeClass: 'strategy', url: '/web-games/my-world/index.html', g1: '#7d4e13', g2: '#bf8738' },
+  { title: '口算战争', icon: '🔢', cover: '/web-games/images/math-war-cover.jpeg', desc: '将数学口算与射击游戏结合，寓教于乐，提升计算能力。', badge: '教育', badgeClass: 'edu', url: '/web-games/math-war/index.html', g1: '#8957e5', g2: '#a371f7' },
+  { title: '成语接龙', icon: '📖', cover: '/web-games/images/idiom-chain-cover.jpeg', desc: '中华文字游戏，接龙挑战，考验你的成语储备量。', badge: '益智', badgeClass: 'edu', url: '/web-games/idiom-chain/index.html', g1: '#db6d28', g2: '#f0883e' },
+];
+
+const grid = document.getElementById('gamesGrid');
+games.forEach(g => {
+  const card = document.createElement('div');
+  card.className = 'game-card';
+  card.style.setProperty('--g1', g.g1);
+  card.style.setProperty('--g2', g.g2);
+  card.innerHTML = `
+    <div class="game-cover">
+      <div class="cover-emoji">${g.icon}</div>
+      <img src="${g.cover}" alt="${g.title}" onerror="this.style.display='none'">
+    </div>
+    <div class="game-body">
+      <div class="game-title">${g.title}</div>
+      <div class="game-desc">${g.desc}</div>
+      <div class="game-meta">
+        <span class="badge ${g.badgeClass}">${g.badge}</span>
+      </div>
+      <button class="play-btn">▶ 开始游戏</button>
+    </div>
+  `;
+  card.onclick = () => window.location.href = g.url;
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>

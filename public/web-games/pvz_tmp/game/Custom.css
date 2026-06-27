@@ -1,0 +1,1516 @@
+/* briannetod.ttf */
+@font-face {
+	font-family: "briannetod";
+	src: url("fonts/briannetod2.ttf");
+}
+/* dwarventodcraft.ttf */
+@font-face {
+	font-family: "dwarventodcraft";
+	src: url("fonts/dwarventodcraft.ttf");
+}
+/* houseofterrormedium.ttf */
+@font-face {
+	font-family: "houseofterrormedium";
+	src: url("fonts/houseofterrormedium.ttf");
+}
+/* pico12.ttf */
+@font-face {
+	font-family: "pico12";
+	src: url("fonts/pico12.ttf");
+}
+/* continuumbold.ttf */
+@font-face {
+	font-family: "continuumbold";
+	src: url("fonts/continuumbold.ttf");
+}
+* {
+	font-family: "briannetod" !important;
+}
+[class^="tp-"] {
+	font-family: initial;
+}
+[id^="sSunNum"]:not([id="sSunNum"]) {
+	text-shadow: 1px 1px 2px #ffffff;
+	font-family: "pico12" !important;
+	margin-right: 7px !important;
+	font-size: 20px !important;
+	position: relative !important;
+	float: right !important;
+	width: 100% !important;
+	left: 0 !important;
+	top: 36px !important;
+}
+#sSunNum {
+	font-family: "continuumbold" !important;
+	margin-top: -2px !important;
+}
+#DivTeach {
+	width: 50% !important;
+	left: 36% !important;
+	cursor: url(images/interface/Pointer.cur), pointer !important;
+	color: #000 !important;
+}
+#DivTeachBar {
+	font-family: "houseofterrormedium" !important;
+}
+#dTitle,
+#dTitle * {
+	font-family: "pico12" !important;
+	z-index: 999999 !important;
+}
+#bMainMenu {
+	text-transform: uppercase;
+	visibility: hidden;
+	position: absolute;
+	left: 770px;
+	top: 17px;
+	text-align: center;
+	cursor: url(images/interface/Pointer.cur), pointer;
+	width: 89px;
+	height: 26px;
+	z-index: 201;
+	line-height: 26px;
+	background: url(images/interface/Almanac_BlankButton.png) no-repeat;
+	color: rgb(40, 50, 90);
+	font-size: 14px;
+	box-sizing: border-box;
+	padding-top: 1px;
+}
+.span2 {
+	text-shadow: 1px 1px 2px #ffffff;
+	font-family: "pico12" !important;
+	margin-right: 7px !important;
+	font-size: 18px !important;
+	position: relative !important;
+	float: right !important;
+	width: 100% !important;
+	left: 0 !important;
+	top: 21px !important;
+}
+#dHandBookZCard .span1 .span2 {
+	display: none !important;
+}
+.menu,
+.lvl,
+.BigLevel,
+#lAutoSun,
+#lSilence,
+.OptionsMenuButtonSpan,
+#dHandBookPlantName,
+#btnViewPlant,
+#btnViewZombie,
+#dHandBookZ > div.title,
+#dHandBookZombieName,
+#dNewPlantTitle {
+	font-family: "dwarventodcraft" !important;
+}
+.OptionsMenuButtonSpan {
+	color: #00c400 !important;
+	text-shadow:
+		1px 1px 0px rgb(92 97 111),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7) !important;
+	display: flex;
+	font-size: 3rem;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.OptionsMenuButtonSpan:hover {
+	color: #01e901 !important;
+}
+.hidden {
+	display: none;
+}
+#dNewPlantTitle {
+	font-size: 30px !important;
+	margin-top: 6px;
+	/* case uppercase */
+	text-transform: uppercase;
+	color: #d0932b !important;
+}
+#dHandBookZombieName {
+	color: #00c400 !important;
+	text-shadow:
+		1px 1px 0px rgba(255, 255, 255, 0.1),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7) !important;
+
+	/* text-shadow: #2e293e -1px -2px, #2e293e -2px 0px, #37354b 1px -2px,
+        #757692 2px 0px, #757692 1px 2px, #757692 2px 2px !important; */
+	font-size: x-large !important;
+	/* -webkit-text-stroke: 0.2px rgb(0 0 0 / 27%) !important; */
+	margin-left: -10px !important;
+	margin-top: 4px;
+}
+#btnViewZombie {
+	width: 155px !important;
+	color: #00c400 !important;
+	text-shadow:
+		1px 1px 0px rgba(255, 255, 255, 0.1),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7) !important;
+
+	/* text-shadow: #2e293e -1px -2px, #2e293e -2px 0px, #37354b 1px -2px,
+        #757692 2px 0px, #757692 1px 2px, #757692 2px 2px !important; */
+	font-size: x-large !important;
+	/* -webkit-text-stroke: 0.2px rgb(0 0 0 / 27%) !important; */
+	margin-left: -10px !important;
+	margin-top: 4px;
+}
+
+.cost_cool {
+	position: relative;
+	z-index: 257;
+}
+
+.Menu {
+	color: #06bd00 !important;
+	text-shadow:
+		1px 1px 0px rgba(255, 255, 255, 0.1),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7) !important;
+
+	font-size: x-large !important;
+	padding-top: 0px;
+	/* -webkit-text-stroke: 0.2px rgb(0 0 0 / 27%) !important; */
+}
+.Menu:hover {
+	color: #01e901 !important;
+	background: url(images/interface/Button.png) no-repeat;
+	padding-top: 0px;
+}
+.Menu:active {
+	background: url(images/interface/ButtonDown.png) no-repeat;
+	padding-top: 1.5px;
+}
+#dNewPlantName {
+	color: #d0932b !important;
+	font-family: dwarventodcraft !important;
+	text-transform: uppercase;
+	text-shadow:
+		1px 1px 0px rgba(255, 255, 255, 0.1),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7) !important;
+
+	/* text-shadow: #2e293e -1px -2px, #2e293e -2px 0px, #37354b 1px -2px,
+        #757692 2px 0px, #757692 1px 2px, #757692 2px 2px !important; */
+	-webkit-text-stroke: 0.2px rgb(0 0 0 / 27%) !important;
+	margin-top: -23px;
+}
+#iNewPlantCard {
+	height: calc(120px / 2) !important;
+	object-fit: cover;
+	object-position: center top;
+	margin-top: 60px;
+}
+#dNewPlantTooltip {
+	font-size: 19px !important;
+	margin-top: -14px;
+	color: rgb(40, 50, 90) !important;
+	/* unbold */
+	font-weight: normal !important;
+}
+#dHandBookPlantName {
+	color: #d0932b !important;
+	text-shadow:
+		1px 1px 0px rgba(255, 255, 255, 0.1),
+		-1px -0.5px 0px rgba(0, 0, 0, 0.7) !important;
+
+	/* text-shadow: #2e293e -1px -2px, #2e293e -2px 0px, #37354b 1px -2px,
+        #757692 2px 0px, #757692 1px 2px, #757692 2px 2px !important; */
+	font-size: x-large !important;
+	-webkit-text-stroke: 0.2px rgb(0 0 0 / 27%) !important;
+	margin-left: -10px !important;
+	margin-top: -4px;
+}
+#btnViewPlant {
+	color: #d0932b !important;
+	text-shadow:
+		1px 1px 0px rgba(255, 255, 255, 0.1),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7) !important;
+
+	/* text-shadow: #2e293e -1px -2px, #2e293e -2px 0px, #37354b 1px -2px,
+        #757692 2px 0px, #757692 1px 2px, #757692 2px 2px !important; */
+	font-size: x-large !important;
+	-webkit-text-stroke: 0.2px rgb(0 0 0 / 27%) !important;
+	margin-left: -10px !important;
+	margin-top: -4px;
+}
+#dHandBookP > div.title,
+#dHandBook > div.title,
+#dMiniSmallTitle,
+#dAdvSmallTitle,
+#dChoseTitle,
+#iz-menu-title {
+	margin-top: -8px;
+	font-size: 28px;
+	/*	-webkit-text-stroke: 1px #ceaa31; */
+	font-weight: lighter;
+	text-shadow:
+		0px 3px 0px #000,
+		1px 3px 0px #000,
+		2px 3px 0px #000,
+		3px 3px 0px #000,
+		3px 2px 0px #000,
+		3px 1px 0px #000,
+		3px 0px 0px #000,
+		3px -1px 0px #000,
+		3px -2px 0px #000,
+		3px -3px 0px #000,
+		2px -1px 0px #000,
+		2px -2px 0px #000,
+		2px -3px 0px #000,
+		1px -1px 0px #000,
+		1px -2px 0px #000,
+		1px -3px 0px #000,
+		0px -1px 0px #000,
+		0px -2px 0px #000,
+		0px -3px 0px #000,
+		-1px -1px 0px #000,
+		-1px -2px 0px #000,
+		-1px -3px 0px #000,
+		-2px -1px 0px #000,
+		-2px -2px 0px #000,
+		-2px -3px 0px #000,
+		-3px -1px 0px #000,
+		-3px -2px 0px #000,
+		-3px -3px 0px #000,
+		-3px 0px 0px #000,
+		-3px 1px 0px #000,
+		-3px 2px 0px #000,
+		-3px 3px 0px #000,
+		2px 5px 0px #000,
+		3px 5px 0px #000,
+		4px 5px 0px #000,
+		5px 5px 0px #000,
+		5px 4px 0px #000,
+		5px 3px 0px #000,
+		5px 2px 0px #000,
+		5px 1px 0px #000,
+		5px 0px 0px #000,
+		5px -1px 0px #000,
+		4px 1px 0px #000,
+		4px 0px 0px #000,
+		4px -1px 0px #000,
+		3px 1px 0px #000,
+		3px 0px 0px #000,
+		3px -1px 0px #000,
+		2px 1px 0px #000,
+		2px 0px 0px #000,
+		2px -1px 0px #000,
+		1px 1px 0px #000,
+		1px 0px 0px #000,
+		1px -1px 0px #000,
+		0px 1px 0px #000,
+		0px 0px 0px #000,
+		0px -1px 0px #000,
+		-1px 1px 0px #000,
+		-1px -0px 0px #000,
+		-1px -1px 0px #000,
+		-1px 2px 0px #000,
+		-1px 3px 0px #000,
+		-1px 4px 0px #000,
+		-1px 5px 0px #000;
+}
+#dHandBook > div.title,
+#dMiniSmallTitle,
+#dAdvSmallTitle,
+#dChoseTitle,
+#iz-menu-title {
+	color: #dfdfdf;
+	font-family: "houseofterrormedium" !important;
+	/*	-webkit-text-stroke: 1px #cacaca; */
+	margin-top: 1px;
+	font-weight: lighter !important;
+}
+#dAdvSmallTitle {
+	margin-left: -50px;
+	margin-top: 4px;
+}
+#dHandBookZ > div.title,
+#dNewPlantTitle {
+	text-shadow:
+		0px 0px 2px #000,
+		0px 0px 3px #00000069,
+		0px 0px 3px #00000069,
+		0px 0px 2px #000,
+		0px 0px 1px #000;
+	color: #00d100;
+	font-size: 33px;
+	-webkit-text-stroke: #39384d87 0.5px;
+}
+.menu {
+	font-weight: normal !important;
+	font-size: 1.35em;
+}
+body {
+	min-height: 530px;
+}
+label {
+	color: white !important;
+}
+#sFlagMeterTitleF,
+#dHandBookP > div.title {
+	font-family: "houseofterrormedium" !important;
+}
+#sFlagMeterTitleB {
+	display: none;
+}
+#sFlagMeterTitleF {
+	color: #e5bf64 !important;
+	text-shadow:
+		0px 2px 0px #000000,
+		2px 2px 0px #000000,
+		2px 0px 0px #000000,
+		2px -2px 0px #000000,
+		0px -2px 0px #000000,
+		-2px -2px 0px #000000,
+		-2px 0px 0px #000000,
+		-2px 2px 0px #000000 !important;
+}
+
+#iSurfaceBackground .trophy {
+	position: absolute;
+	background: url(images/interface/trophy.png) no-repeat;
+	background-size: contain !important;
+	left: 469px;
+	top: 468px;
+	width: 99px;
+	height: 99px;
+	cursor: url(images/interface/Pointer.cur), pointer;
+}
+
+#iSurfaceBackground .trophy:hover {
+	filter: brightness(1.1);
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+td {
+	padding-top: 16px !important;
+}
+
+#dMini0 > table > tbody > tr:nth-child(2) td {
+	padding-top: 17px !important;
+}
+#dMini0::-webkit-scrollbar {
+	width: 9px;
+}
+#dMini0::-webkit-scrollbar-thumb {
+	background: #954f19;
+	border-radius: 10px;
+	box-shadow:
+		inset -1px -1px 2px 0 rgba(0, 0, 0, 0.2),
+		inset 1px 1px 2px 0 #b6703b;
+	background: linear-gradient(133deg, #954f19, #904b17);
+}
+#dMini0::-webkit-scrollbar-thumb:hover {
+	/*	background: #a4571b; */
+	background: linear-gradient(133deg, #a4571b, #9a5018);
+}
+#dMini0::-webkit-scrollbar-track {
+	/*	background: #e4a865; */
+	border-radius: 10px;
+	box-shadow:
+		inset -0.5px -0.5px 2px 0 rgba(255, 255, 255, 0.5),
+		inset 0.5px 0.5px 2px 0 rgba(0, 0, 0, 0.2);
+	background: linear-gradient(133deg, #e4a865, #d29a59);
+}
+
+@keyframes wallnutSpin {
+	0% {
+		rotate: 0deg;
+		transform: translate(0px, 0px);
+	}
+	8.33% {
+		rotate: 25deg;
+		transform: translate(0px, -1px);
+	}
+	16.67% {
+		rotate: 55deg;
+		transform: translate(2px, 0px);
+	}
+	25% {
+		rotate: 90deg;
+		transform: translate(4px, 0px);
+	}
+	33.33% {
+		rotate: 120deg;
+		transform: translate(4px, 0px);
+	}
+	41.67% {
+		rotate: 150deg;
+		transform: translate(0px, 0px);
+	}
+	50% {
+		rotate: 180deg;
+		transform: translate(0px, 2px);
+	}
+	58.33% {
+		rotate: 210deg;
+		transform: translate(1px, 0px);
+	}
+	66.67% {
+		rotate: 235deg;
+		transform: translate(-2px, -2px);
+	}
+	75% {
+		rotate: 270deg;
+		transform: translate(-6px, 0px);
+	}
+	83.33% {
+		rotate: 305deg;
+		transform: translate(-3px, -1px);
+	}
+	91.67% {
+		rotate: 330deg;
+		transform: translate(-2px, -1px);
+	}
+	100% {
+		rotate: 360deg;
+		transform: translate(0px, 0px);
+	}
+}
+
+@keyframes hugeWallnutSpin {
+	0% {
+		rotate: 0deg;
+		transform: translate(0px, 0px);
+	}
+	8.33% {
+		rotate: 25deg;
+		transform: translate(-1px, -2px);
+	}
+	16.67% {
+		rotate: 55deg;
+		transform: translate(2px, 2px);
+	}
+	25% {
+		rotate: 90deg;
+		transform: translate(11px, 0px);
+	}
+	33.33% {
+		rotate: 120deg;
+		transform: translate(9px, -6px);
+	}
+	41.67% {
+		rotate: 150deg;
+		transform: translate(3px, -4px);
+	}
+	50% {
+		rotate: 180deg;
+		transform: translate(0px, 0px);
+	}
+	58.33% {
+		rotate: 210deg;
+		transform: translate(-1px, -2px);
+	}
+	66.67% {
+		rotate: 235deg;
+		transform: translate(-5px, -4px);
+	}
+	75% {
+		rotate: 270deg;
+		transform: translate(-11px, 0px);
+	}
+	83.33% {
+		rotate: 305deg;
+		transform: translate(-3px, 4px);
+	}
+	91.67% {
+		rotate: 330deg;
+		transform: translate(0px, 1px);
+	}
+	100% {
+		rotate: 360deg;
+		transform: translate(0px, 0px);
+	}
+}
+
+@keyframes threepeaterDown {
+	/* threepeaterDown 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards */
+	0% {
+		transform: translateY(0px);
+	}
+	100% {
+		transform: translateY(100px);
+	}
+}
+@keyframes threepeaterUp {
+	/* threepeaterUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards */
+	0% {
+		transform: translateY(0px);
+	}
+	100% {
+		transform: translateY(-100px);
+	}
+}
+
+#dZombieFail .list div {
+	position: relative;
+	width: 100%;
+}
+
+#dZombieFail .button {
+	position: absolute;
+	cursor: url(images/interface/Pointer.cur), pointer;
+	top: 410px;
+	font-family: 宋体;
+	color: #f93;
+	font-size: 24px;
+	font-weight: 700;
+}
+
+#dZombieFail .button {
+	left: 150px;
+	top: 404px;
+}
+
+#dZombieFailAD {
+	left: 0;
+	height: 100%;
+}
+
+#dZombieFail {
+	position: absolute;
+	left: 233px;
+	top: 20px;
+	width: 434px;
+	display: none;
+	font-weight: bold;
+}
+
+#dZombieFail .list {
+	position: absolute;
+	left: 0;
+	top: 90px;
+	z-index: 200;
+	width: 100%;
+	text-align: center;
+}
+
+#dZombieFail .list .hidden {
+	cursor: url(images/interface/Pointer.cur), pointer;
+	height: 20px;
+	color: #f93;
+	font-size: 16px;
+	line-height: 20px;
+}
+
+#dZombieFail .list .pause {
+	color: #000;
+	font-size: 18px;
+	line-height: 30px;
+}
+
+#imgSF {
+	z-index: 9999 !important;
+}
+
+#sSunNum {
+	top: 50% !important;
+	transform: translateY(-50%) !important;
+}
+
+#stolen-warning {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.95);
+	z-index: 999999;
+	display: none;
+	justify-content: center;
+	align-items: center;
+}
+
+.stolen-warning-content {
+	background: #fff;
+	padding: 2em;
+	border-radius: 20px;
+	text-align: center;
+	max-width: 80%;
+	border: 8px solid #ff9800; /* Changed from red to orange to be less alarming */
+	box-shadow: 0 0 50px rgba(255, 152, 0, 0.3); /* Changed from red to orange */
+}
+
+.stolen-warning-content h2 {
+	color: #ff9800; /* Changed from red to orange */
+	margin-top: 0;
+	font-size: 2.5em;
+	margin-bottom: 0.5em;
+	font-family: "houseofterrormedium" !important;
+	text-shadow:
+		0px 3px 0px #000,
+		1px 3px 0px #000,
+		2px 3px 0px #000,
+		3px 3px 0px #000,
+		3px 2px 0px #000,
+		3px 1px 0px #000,
+		3px 0px 0px #000,
+		3px -1px 0px #000,
+		3px -2px 0px #000,
+		3px -3px 0px #000,
+		2px -1px 0px #000,
+		2px -2px 0px #000,
+		2px -3px 0px #000,
+		1px -1px 0px #000,
+		1px -2px 0px #000,
+		1px -3px 0px #000,
+		0px -1px 0px #000,
+		0px -2px 0px #000,
+		0px -3px 0px #000,
+		-1px -1px 0px #000,
+		-1px -2px 0px #000,
+		-1px -3px 0px #000,
+		-2px -1px 0px #000,
+		-2px -2px 0px #000,
+		-2px -3px 0px #000,
+		-3px -1px 0px #000,
+		-3px -2px 0px #000,
+		-3px -3px 0px #000,
+		-3px 0px 0px #000,
+		-3px 1px 0px #000,
+		-3px 2px 0px #000,
+		-3px 3px 0px #000,
+		2px 5px 0px #000,
+		3px 5px 0px #000,
+		4px 5px 0px #000,
+		5px 5px 0px #000,
+		5px 4px 0px #000,
+		5px 3px 0px #000,
+		5px 2px 0px #000,
+		5px 1px 0px #000,
+		5px 0px 0px #000,
+		5px -1px 0px #000,
+		4px 1px 0px #000,
+		4px 0px 0px #000,
+		4px -1px 0px #000,
+		3px 1px 0px #000,
+		3px 0px 0px #000,
+		3px -1px 0px #000,
+		2px 1px 0px #000,
+		2px 0px 0px #000,
+		2px -1px 0px #000,
+		1px 1px 0px #000,
+		1px 0px 0px #000,
+		1px -1px 0px #000,
+		0px 1px 0px #000,
+		0px 0px 0px #000,
+		0px -1px 0px #000,
+		-1px 1px 0px #000,
+		-1px -0px 0px #000,
+		-1px -1px 0px #000,
+		-1px 2px 0px #000,
+		-1px 3px 0px #000,
+		-1px 4px 0px #000,
+		-1px 5px 0px #000;
+}
+
+.stolen-warning-content a {
+	display: inline-block;
+	color: #0066cc;
+	font-size: 1.4em;
+	margin: 1em 0;
+	text-decoration: none;
+	font-family: "continuumbold" !important;
+}
+
+.stolen-warning-content a:hover {
+	text-decoration: underline;
+	color: #1378dd;
+}
+
+.stolen-warning-content .big-button {
+	font-family: "dwarventodcraft" !important;
+	/*	background: #4caf50; */
+	color: #e6edc8;
+	padding: 15px 30px;
+	border-radius: 10px;
+	text-decoration: none;
+	margin: 20px 0;
+	display: block;
+	transition: transform 0.2s;
+	box-shadow:
+		inset -1px -1px 2px 0 rgba(0, 0, 0, 0.2),
+		inset 1px 1px 2px 0 #6be56f;
+	background: linear-gradient(90deg, #4caf50, #409d44);
+}
+
+.stolen-warning-content .big-button:hover {
+	color: rgb(242, 254, 190);
+	transform: scale(1.05);
+	background: linear-gradient(90deg, #57c05b, #51b256);
+	text-decoration: none;
+}
+
+.stolen-warning-content .small-button {
+	background: #666;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: url(images/interface/Pointer.cur), pointer;
+	margin-top: 10px;
+	font-size: 0.9em;
+	opacity: 0.7;
+	box-shadow:
+		inset -1px -1px 2px 0 rgba(0, 0, 0, 0.2),
+		inset 1px 1px 2px 0 #a8a8a8;
+	background: linear-gradient(90deg, #666, #504f4f);
+}
+
+.stolen-warning-content .small-button:hover {
+	opacity: 1;
+}
+
+.stolen-warning-content .note-box {
+	background: #f5f5f5;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 10px;
+	margin: 15px 0;
+}
+
+.WindowFrame {
+	cursor:
+		url(images/interface/Cursor.cur) 0 0,
+		auto;
+}
+
+.WindowFrame a,
+.WindowFrame button,
+.WindowFrame input[type="button"],
+.WindowFrame input[type="submit"],
+.WindowFrame select,
+.WindowFrame label,
+.WindowFrame [role="button"],
+.WindowFrame area {
+	cursor: url(images/interface/Pointer.cur), pointer;
+}
+
+.cardboard {
+	filter: url("#cardboard");
+}
+.cardboardNoShadow {
+	filter: url("#cardboardNoShadow");
+}
+
+/*.balloonIdleSheet {
+	background-image: url(images/Zombies/Balloon/balloonidle.png);
+	background-repeat: no-repeat;
+	
+}
+
+.balloonPopSheet {
+	background-image: url(images/Zombies/Balloon/popped.png);
+	background-repeat: no-repeat;
+	animation: spritesheet 0.84s steps(21) forwards;
+}*/
+
+@keyframes floatingPlant {
+	0% {
+		transform: translatey(1px);
+	}
+	50% {
+		transform: translatey(-4px);
+	}
+	100% {
+		transform: translatey(1px);
+	}
+}
+
+@keyframes spritesheetIdle {
+	to {
+		background-position-x: -4620px; /* -(width_of_one_frame * number_of_frames) */
+	}
+}
+
+@keyframes spritesheetPop {
+	to {
+		background-position-x: -3234px; /* -(width_of_one_frame * number_of_frames) */
+	}
+}
+
+.floatingPlant {
+	animation: floatingPlant 3s alternate infinite ease-in-out;
+}
+
+input[type="checkbox"] {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+
+	width: 32px;
+	height: 32px;
+	margin: 0 4px 0 0;
+	vertical-align: middle;
+
+	background: url("images/interface/options_checkbox0.png") center center no-repeat;
+	background-size: contain;
+
+	cursor: url(images/interface/Pointer.cur), pointer !important;
+	outline: none;
+	border: none;
+	box-shadow: none;
+}
+
+input[type="checkbox"]:checked {
+	background: url("images/interface/options_checkbox1.png") center center no-repeat;
+	background-size: contain;
+}
+#lAutoSun,
+#lSilence {
+	color: #6b6d91 !important;
+	font-size: x-large !important;
+	text-shadow:
+		0px 0px 3px #000000,
+		0px 0px 3px #000000,
+		0px 0px 3px #000000,
+		0px 0px 3px #000000,
+		0px 0px 3px #000000,
+		0px 0px 3px #000000,
+		0px 0px 3px #000000,
+		0px 0px 3px #000000;
+}
+.BigLevel {
+	color: #00c400 !important;
+	text-shadow:
+		1px 1px 0px rgb(92 97 111),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7) !important;
+	font-size: x-large !important;
+	margin-left: 27.6%;
+	background: url(images/interface/Button_long.png) no-repeat;
+	background-size: 100% 100%;
+	line-height: 1.41;
+}
+.BigLevel:hover {
+	color: #01e901 !important;
+	background: url(images/interface/Button_long.png) no-repeat;
+	background-size: 100% 100%;
+	line-height: 1.41;
+}
+.BigLevel:active {
+	background: url(images/interface/Button_long_down.png) no-repeat;
+	background-size: 100% 100%;
+	line-height: 1.49;
+}
+.BigLevel:active + img {
+	transform: translateY(1.5px);
+}
+
+.BigLevel:active + img[src="images/interface/icon_house.png"] {
+	transform: translateY(1px);
+}
+
+#dOptionsMenu .OMd0 {
+	margin-left: -45px;
+}
+#dAdvSmallContainer .lvl {
+	color: #00c400 !important;
+	text-shadow:
+		1px 1px 0px rgb(92 97 111),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7) !important;
+	background: url(images/interface/Button_veryshort.png) no-repeat;
+	background-size: 100% 100%;
+	font-size: 22.5px;
+	height: 35px;
+	width: 40px;
+	text-align: center;
+}
+#dAdvSmallContainer .lvl:hover {
+	color: #01e901 !important;
+}
+#dAdvSmallContainer .lvl:active {
+	background: url(images/interface/Button_veryshort_down.png) no-repeat;
+	background-size: 100% 100%;
+	line-height: 1.65;
+}
+
+#dCoinBank {
+	user-select: none;
+	display: none;
+	position: absolute;
+	top: 512px;
+	left: 50%;
+	margin-left: -300px;
+	cursor: url(images/interface/Cursor.cur), default;
+	background: url(images/interface/coinbank.png) no-repeat;
+	width: 128px;
+	height: 31px;
+	z-index: 256;
+}
+
+#dCoinBank #dCoinBankText {
+	position: absolute;
+	top: 17%;
+	left: 39px;
+	visibility: visible;
+	font-family: "continuumbold" !important;
+	text-align: right;
+	width: 80px;
+	height: 16px;
+	font-size: 18px;
+	color: rgb(180, 255, 90);
+}
+
+.day-text {
+	color: #9ee69e !important;
+	font-family: "houseofterrormedium" !important;
+	text-align: center;
+	font-size: 31px !important;
+	text-shadow:
+		0px 2px 0px #000000,
+		2px 2px 0px #000000,
+		2px 0px 0px #000000,
+		2px -2px 0px #000000,
+		0px -2px 0px #000000,
+		-2px -2px 0px #000000,
+		-2px 0px 0px #000000,
+		-2px 2px 0px #000000 !important;
+	font-weight: normal !important;
+}
+.night-text {
+	color: #9ebce6 !important;
+	font-family: "houseofterrormedium" !important;
+	text-align: center;
+	font-size: 31px !important;
+	text-shadow:
+		0px 2px 0px #000000,
+		2px 2px 0px #000000,
+		2px 0px 0px #000000,
+		2px -2px 0px #000000,
+		0px -2px 0px #000000,
+		-2px -2px 0px #000000,
+		-2px 0px 0px #000000,
+		-2px 2px 0px #000000 !important;
+	font-weight: normal !important;
+}
+.pool-text {
+	color: #9ee6e4 !important;
+	font-family: "houseofterrormedium" !important;
+	text-align: center;
+	font-size: 31px !important;
+	text-shadow:
+		0px 2px 0px #000000,
+		2px 2px 0px #000000,
+		2px 0px 0px #000000,
+		2px -2px 0px #000000,
+		0px -2px 0px #000000,
+		-2px -2px 0px #000000,
+		-2px 0px 0px #000000,
+		-2px 2px 0px #000000 !important;
+	font-weight: normal !important;
+}
+.dragonpalace-text {
+	color: #9ee6c3 !important;
+	font-family: "houseofterrormedium" !important;
+	text-align: center;
+	font-size: 31px !important;
+	text-shadow:
+		0px 2px 0px #000000,
+		2px 2px 0px #000000,
+		2px 0px 0px #000000,
+		2px -2px 0px #000000,
+		0px -2px 0px #000000,
+		-2px -2px 0px #000000,
+		-2px 0px 0px #000000,
+		-2px 2px 0px #000000 !important;
+	font-weight: normal !important;
+}
+.watertown-text {
+	color: #9ee6e6 !important;
+	font-family: "houseofterrormedium" !important;
+	text-align: center;
+	font-size: 31px !important;
+	text-shadow:
+		0px 2px 0px #000000,
+		2px 2px 0px #000000,
+		2px 0px 0px #000000,
+		2px -2px 0px #000000,
+		0px -2px 0px #000000,
+		-2px -2px 0px #000000,
+		-2px 0px 0px #000000,
+		-2px 2px 0px #000000 !important;
+	font-weight: normal !important;
+}
+/* yes i know this fix sucks*/
+
+.iz-level-play {
+	color: #00c400;
+	text-shadow:
+		1px 1px 0px rgb(92 97 111),
+		-1px -1.5px 0px rgba(0, 0, 0, 0.7);
+	font-size: x-large;
+	background: url(images/interface/Button_long.png) no-repeat;
+	background-size: 100% 100%;
+	line-height: 1.41;
+	border: none;
+	font-family: dwarventodcraft !important;
+	width: 170px;
+	height: 37px;
+	position: absolute;
+	bottom: 5px;
+	left: 10px;
+	text-align: center;
+	padding-bottom: 5px;
+	cursor: url(images/interface/Pointer.cur), pointer;
+}
+.iz-level-play:hover {
+	color: #01e901;
+}
+.iz-level-favorite {
+	box-shadow:
+		0 4px 1px -1px rgb(0 0 0 / 0.4),
+		0 2px 1px -2px rgb(0 0 0 / 0.4);
+	position: absolute !important;
+	top: 168px !important;
+	left: 185px !important;
+	height: 33px !important;
+	width: 80px !important;
+}
+.iz-level-report {
+	display: inline-block;
+	width: 1.35em;
+	height: 1.35em;
+	vertical-align: -0.3375em;
+	background: url("images/interface/icon_exclamation.png") no-repeat;
+	background-size: contain;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	border-width: 0;
+}
+.iz-level-title {
+	font-size: x-large;
+	font-weight: bolder;
+	margin: 7px 10px 0 10px;
+	color: #28325a;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	overflow-wrap: break-word;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.iz-level {
+	box-shadow:
+		0 4px 6px -1px rgb(0 0 0 / 0.25),
+		0 2px 4px -2px rgb(0 0 0 / 0.25);
+	position: relative;
+	border: 1px solid #511414;
+	background: linear-gradient(to left, #e8b57d, #fbc488, #e8b57d);
+	height: 210px;
+	border-radius: 5px;
+	overflow: hidden;
+}
+.iz-level-container {
+	border: solid transparent;
+	border-width: 100px 0 0 25px;
+	width: calc(100% - 50px);
+	height: 439px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+	gap: 10px;
+	align-content: start;
+}
+.iz-level-thumbnail {
+	width: 135px;
+	height: 90px;
+	margin-left: 10px;
+	margin-top: 5px;
+	overflow: hidden;
+	position: relative;
+	float: left;
+}
+.iz-level-stats {
+	margin-top: 5px;
+	margin-right: 10px;
+	float: right;
+	text-align: right;
+	max-width: 115px;
+}
+.iz-level-stats span {
+	font-size: 16px;
+	color: #28325a;
+	white-space: nowrap;
+}
+.iz-level-stats span#author::before {
+	content: "";
+	display: inline-block;
+	width: 1.35em;
+	height: 1.35em;
+	vertical-align: -0.3375em;
+	margin-right: 5px;
+	background: url("images/interface/icon_author.png") no-repeat;
+	background-size: contain;
+}
+/* <img src="images/interface/icon_sun.png" alt="Sun" style="width:1.35em;vertical-align:middle;margin-left:5px"> */
+.iz-level-stats span#sun::before {
+	content: "";
+	display: inline-block;
+	width: 1.35em;
+	height: 1.35em;
+	vertical-align: -0.3375em;
+	margin-right: 5px;
+	background: url("images/interface/icon_sun.png") no-repeat;
+	background-size: contain;
+}
+.iz-level-stats span#downloads::before {
+	content: "";
+	display: inline-block;
+	width: 1.35em;
+	height: 1.35em;
+	vertical-align: -0.3375em;
+	margin-right: 5px;
+	background: url("images/interface/icon_download.png") no-repeat;
+	background-size: contain;
+}
+.iz-level-stats span#favorites::before {
+	content: "";
+	display: inline-block;
+	width: 1.35em;
+	height: 1.35em;
+	vertical-align: -0.3375em;
+	margin-right: 5px;
+	background: url("images/interface/icon_favorite.png") no-repeat;
+	background-size: contain;
+}
+.iz-pagination {
+	width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+}
+.iz-pagination-button {
+	width: 28px !important;
+}
+.iz-pagination-current {
+	cursor: url(images/interface/Cursor.cur), default !important;
+	pointer-events: none;
+	filter: brightness(0.7);
+}
+.iz-pagination-first,
+.iz-pagination-last {
+	width: 30px !important;
+}
+.iz-pagination-button:disabled {
+	display: none;
+}
+.iz-pagination-first:disabled,
+.iz-pagination-last:disabled,
+.iz-pagination-next:disabled,
+.iz-pagination-prev:disabled {
+	display: inline;
+	opacity: 0.5;
+	pointer-events: none;
+}
+.iz-reload {
+	padding-right: 8px !important;
+	position: absolute;
+	top: 60px;
+	left: 10px;
+	width: 89px !important;
+	background-image: url("images/interface/refreshbutton.png") !important;
+}
+.iz-sort {
+	padding-right: 20px !important;
+	position: absolute;
+	top: 60px;
+	left: 801px;
+	width: 89px !important;
+	background-image: url("images/interface/sortbutton.png") !important;
+}
+#iz-menu-title {
+	margin-bottom: -88px;
+}
+
+@keyframes showNameDiv0 {
+	0% {
+		top: -260px;
+	}
+	12.35% {
+		top: -94px;
+	}
+	24.69% {
+		top: -6px;
+	}
+	37.04% {
+		top: -8px;
+	}
+	58.02% {
+		top: -8px;
+	}
+	79.01% {
+		top: -8px;
+	}
+	100% {
+		top: -8px;
+	}
+}
+
+@keyframes showNameDiv1 {
+	0% {
+		top: 96px;
+	}
+	12.35% {
+		top: 96px;
+	}
+	24.69% {
+		top: 127px;
+	}
+	37.04% {
+		top: 134px;
+	}
+	58.02% {
+		top: 130px;
+	}
+	79.01% {
+		top: 136px;
+	}
+	100% {
+		top: 134px;
+	}
+}
+
+@keyframes showNameDiv2 {
+	0% {
+		top: 136px;
+	}
+	12.35% {
+		top: 136px;
+	}
+	24.69% {
+		top: 176px;
+	}
+	37.04% {
+		top: 188px;
+	}
+	58.02% {
+		top: 179px;
+	}
+	79.01% {
+		top: 189px;
+	}
+	100% {
+		top: 187px;
+	}
+}
+
+#dNameDiv0.animate {
+	animation: showNameDiv0 810ms linear forwards;
+}
+
+#dNameDiv0.animate > #dNameDiv1 {
+	animation: showNameDiv1 810ms linear forwards;
+}
+
+#dNameDiv0.animate > #dNameDiv2 {
+	animation: showNameDiv2 810ms linear forwards;
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+#cover {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: black;
+	z-index: 9999;
+	animation: fadeOut 2s linear forwards;
+}
+body.game-paused #cover {
+	animation-play-state: running !important;
+}
+.cantSelect {
+	user-select: none;
+	pointer-events: none;
+}
+
+#dSelectCard.zombies {
+	background: url("images/interface/ZombieChooser_Background.png") no-repeat;
+}
+#dSelectCard.zombies .span1 .zombie-check {
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	z-index: 2;
+	margin: 0;
+	cursor: url(images/interface/Pointer.cur), pointer;
+	pointer-events: auto;
+}
+#dSelectCard.zombies #btnOK,
+#dSelectCard.zombies #btnReset {
+	color: #00f500 !important;
+	background-color: #5a5d78;
+	border-left: 3px solid #6c6c85;
+	border-right: 3px solid #595674;
+	border-top: 3px solid #6c6c85;
+	border-bottom: 3px solid #54546b;
+}
+
+@keyframes credits_scroll {
+	from {
+		translate: 0 400px;
+	}
+	to {
+		translate: 0 -82.5%;
+	}
+}
+
+@keyframes credits_exit {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(112.5%);
+	}
+}
+
+#dMenu_credits {
+	text-align: center;
+	background-color: #000;
+	color: #fff;
+	color-scheme: dark;
+	overflow: hidden;
+	& > .credits-finale {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%) scale(1.3);
+		opacity: 0;
+		transition: opacity 2s ease-in;
+		font-family: "houseofterrormedium" !important;
+		text-transform: uppercase;
+		& * {
+			font-family: "houseofterrormedium" !important;
+			font-weight: normal;
+		}
+		& h1,
+		& h2 {
+			margin-top: 0.5rem;
+			margin-bottom: 0.5rem;
+		}
+	}
+	& > .credits-bottom-bar {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 57px;
+		background: #000;
+	}
+	& > .credits-menu-btn {
+		position: absolute;
+		bottom: 20px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 1;
+		background: url("images/interface/Button_long.png") no-repeat;
+		background-size: 100% 100%;
+		border: none;
+		width: 32%;
+		height: 37px;
+		line-height: 1.41;
+		font-family: "dwarventodcraft" !important;
+		font-size: x-large;
+		color: #00c400;
+		text-shadow:
+			1px 1px 0px rgb(92 97 111),
+			-1px -1.5px 0px rgba(0, 0, 0, 0.7);
+		text-transform: uppercase;
+		cursor: url(images/interface/Pointer.cur), pointer;
+		&:hover {
+			color: #01e901;
+		}
+		&:active {
+			background-image: url("images/interface/Button_long_down.png");
+			line-height: 1.49;
+		}
+	}
+	& > .content-container {
+		transform: scale(1.3);
+		transform-origin: top center;
+		& > .content {
+			max-width: 565px;
+			margin-left: auto;
+			margin-right: auto;
+			margin-top: 2rem;
+			animation:
+				credits_scroll 60s linear forwards,
+				credits_exit 1.5s ease-in 58.5s forwards;
+			pointer-events: none;
+			font-family: "houseofterrormedium" !important;
+			text-transform: uppercase;
+			text-decoration-thickness: 2px;
+			&:hover {
+				animation-play-state: paused;
+			}
+			& * {
+				font-family: "houseofterrormedium" !important;
+				padding-top: 2px;
+				font-weight: normal;
+				text-transform: uppercase;
+			}
+			& a {
+				color: #fff;
+				text-decoration: underline;
+				pointer-events: auto;
+			}
+			& h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6 {
+				margin-top: 0.5rem;
+				margin-bottom: 0.5rem;
+			}
+			& small {
+				opacity: 0.5;
+				font-size: 0.675em;
+				font-family: "briannetod", sans-serif !important;
+				max-width: 67.5%;
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+				margin-top: -1rem;
+				text-transform: none;
+			}
+		}
+	}
+}
+.credit-line {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+	max-width: 800px;
+	margin: 0 auto 5px auto;
+}
+.credit-role {
+	text-align: right;
+}
+.credit-name {
+	text-align: left;
+}
+#dProduceZombie p {
+	margin-bottom: 12px;
+	margin-top: 9px;
+}
+#dProducePlant p {
+	margin-bottom: 12px;
+	margin-top: 9px;
+}
