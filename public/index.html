@@ -3396,29 +3396,96 @@ async function likeProject(projectPath) {
 }
 
 async function init() {
-  try {
-    showSkeleton();
-    const projects = await fetchProjectList();
-    state.projects = projects.map(p => ({
+  const LS_KEY = 'cache:project-list';
+  const LS_TTL = 5 * 60 * 1000;
+
+  function processProjects(projects) {
+    return projects.map(p => ({
       ...p,
       icon: getProjectIcon(p.name),
       cardClass: getProjectCardClass(p.type),
       lastModified: formatDate(p.lastModified),
       cover: getProjectCover(p.name),
     }));
-    updateStats(state.projects);
-    renderCards(state.projects);
+  }
+
+  function renderProjectMeta(projects) {
     projects.forEach(p => {
       const likeEl = document.getElementById('lk-' + p.path.replace(/[/\\]/g, '-'));
       if (likeEl) likeEl.textContent = p.likes || 0;
       const commentEl = document.getElementById('cc-' + p.path.replace(/[/\\]/g, '-'));
       if (commentEl) commentEl.textContent = p.comments || 0;
     });
-    renderRecentProjects();
-    renderBookmarks();
+  }
+
+  function saveToCache(projects) {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        projects,
+        timestamp: Date.now()
+      }));
+    } catch {}
+  }
+
+  function loadFromCache() {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data.projects && data.timestamp && (Date.now() - data.timestamp) < LS_TTL) {
+          return data.projects;
+        }
+      }
+    } catch {}
+    return null;
+  }
+
+  async function fetchAndUpdate() {
+    try {
+      const projects = await fetchProjectList();
+      state.projects = processProjects(projects);
+      updateStats(state.projects);
+      renderCards(state.projects);
+      renderProjectMeta(state.projects);
+      renderRecentProjects();
+      renderBookmarks();
+      saveToCache(projects);
+    } catch(err) {
+      if (!state.projects || state.projects.length === 0) {
+        $('#cardsGrid').innerHTML = `<div class="home-loading" style="grid-column:1/-1;padding:60px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
+      }
+    }
+  }
+
+  try {
+    const initialProjects = (window as any).__INITIAL_PROJECTS__;
+    const cachedProjects = loadFromCache();
+
+    if (initialProjects && initialProjects.length > 0) {
+      state.projects = processProjects(initialProjects);
+      updateStats(state.projects);
+      renderCards(state.projects);
+      renderProjectMeta(state.projects);
+      renderRecentProjects();
+      renderBookmarks();
+      saveToCache(initialProjects);
+      setTimeout(fetchAndUpdate, 2000);
+    } else if (cachedProjects && cachedProjects.length > 0) {
+      state.projects = processProjects(cachedProjects);
+      updateStats(state.projects);
+      renderCards(state.projects);
+      renderProjectMeta(state.projects);
+      renderRecentProjects();
+      renderBookmarks();
+      fetchAndUpdate();
+    } else {
+      showSkeleton();
+      await fetchAndUpdate();
+    }
+
     var pollTimer = setInterval(() => {
       refreshProjectMeta();
-    }, 15000);
+    }, 30000);
     document.addEventListener('visibilitychange', function() {
       if (document.hidden) {
         clearInterval(pollTimer);
@@ -3426,7 +3493,7 @@ async function init() {
         refreshProjectMeta();
         pollTimer = setInterval(() => {
           refreshProjectMeta();
-        }, 15000);
+        }, 30000);
       }
     });
   } catch(err) {

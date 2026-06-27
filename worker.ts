@@ -424,12 +424,12 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- 项目列表 API（轻量级，合并点赞/评论数）----
   if (path === '/api/projects/list') {
     const CACHE_KEY = 'cache:project-meta';
-    const CACHE_TTL = 300;
+    const CACHE_TTL = 1800;
     try {
       const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' });
       if (cached && (Date.now() - cached.timestamp) < CACHE_TTL * 1000) {
         const resp = jsonResponse(cached.projects);
-        addCacheHeader(resp.headers, 60);
+        addCacheHeader(resp.headers, 300);
         return resp;
       }
     } catch {}
@@ -441,22 +441,42 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     const likesMap: Record<string, number> = {};
     const commentsMap: Record<string, number> = {};
     try {
-      const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
-      for (const key of likesList.keys) {
-        const project = key.name.substring('likes:'.length);
-        const value = await env.CODE_EXPLORER_KV.get(key.name);
-        likesMap[project] = parseInt(value || '0', 10) || 0;
+      const cachedLikes = await env.CODE_EXPLORER_KV.get('cache:likes', { type: 'json' });
+      if (cachedLikes) {
+        Object.assign(likesMap, cachedLikes);
+      } else {
+        const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
+        for (const key of likesList.keys) {
+          const project = key.name.substring('likes:'.length);
+          const value = await env.CODE_EXPLORER_KV.get(key.name);
+          likesMap[project] = parseInt(value || '0', 10) || 0;
+        }
+        try {
+          await env.CODE_EXPLORER_KV.put('cache:likes', JSON.stringify(likesMap), {
+            expirationTtl: 1800
+          });
+        } catch {}
       }
     } catch {}
     try {
-      const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
-      for (const key of commentsList.keys) {
-        const project = key.name.substring('comments:'.length);
-        const value = await env.CODE_EXPLORER_KV.get(key.name);
+      const cachedComments = await env.CODE_EXPLORER_KV.get('cache:comment-counts', { type: 'json' });
+      if (cachedComments) {
+        Object.assign(commentsMap, cachedComments);
+      } else {
+        const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
+        for (const key of commentsList.keys) {
+          const project = key.name.substring('comments:'.length);
+          const value = await env.CODE_EXPLORER_KV.get(key.name);
+          try {
+            const parsed = JSON.parse(value || '{}');
+            commentsMap[project] = (parsed.comments || []).length;
+          } catch { commentsMap[project] = 0; }
+        }
         try {
-          const parsed = JSON.parse(value || '{}');
-          commentsMap[project] = (parsed.comments || []).length;
-        } catch { commentsMap[project] = 0; }
+          await env.CODE_EXPLORER_KV.put('cache:comment-counts', JSON.stringify(commentsMap), {
+            expirationTtl: 1800
+          });
+        } catch {}
       }
     } catch {}
 
@@ -474,7 +494,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     } catch {}
 
     const resp = jsonResponse(projectsWithMeta);
-    addCacheHeader(resp.headers, 60);
+    addCacheHeader(resp.headers, 300);
     return resp;
   }
 
@@ -833,14 +853,14 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 // ------------------------------------------------------------
 async function serveHomePage(request: Request, env: Env): Promise<Response> {
   const CACHE_KEY = 'cache:home-page';
-  const CACHE_TTL = 300;
+  const CACHE_TTL = 1800;
 
   try {
     const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'text' });
     if (cached) {
       return new Response(cached, {
         status: 200,
-        headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' }
+        headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60' }
       });
     }
   } catch {}
@@ -861,22 +881,42 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
   const likesMap: Record<string, number> = {};
   const commentsMap: Record<string, number> = {};
   try {
-    const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
-    for (const key of likesList.keys) {
-      const project = key.name.substring('likes:'.length);
-      const value = await env.CODE_EXPLORER_KV.get(key.name);
-      likesMap[project] = parseInt(value || '0', 10) || 0;
+    const cachedLikes = await env.CODE_EXPLORER_KV.get('cache:likes', { type: 'json' });
+    if (cachedLikes) {
+      Object.assign(likesMap, cachedLikes);
+    } else {
+      const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
+      for (const key of likesList.keys) {
+        const project = key.name.substring('likes:'.length);
+        const value = await env.CODE_EXPLORER_KV.get(key.name);
+        likesMap[project] = parseInt(value || '0', 10) || 0;
+      }
+      try {
+        await env.CODE_EXPLORER_KV.put('cache:likes', JSON.stringify(likesMap), {
+          expirationTtl: 1800
+        });
+      } catch {}
     }
   } catch {}
   try {
-    const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
-    for (const key of commentsList.keys) {
-      const project = key.name.substring('comments:'.length);
-      const value = await env.CODE_EXPLORER_KV.get(key.name);
+    const cachedComments = await env.CODE_EXPLORER_KV.get('cache:comment-counts', { type: 'json' });
+    if (cachedComments) {
+      Object.assign(commentsMap, cachedComments);
+    } else {
+      const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
+      for (const key of commentsList.keys) {
+        const project = key.name.substring('comments:'.length);
+        const value = await env.CODE_EXPLORER_KV.get(key.name);
+        try {
+          const parsed = JSON.parse(value || '{}');
+          commentsMap[project] = (parsed.comments || []).length;
+        } catch { commentsMap[project] = 0; }
+      }
       try {
-        const parsed = JSON.parse(value || '{}');
-        commentsMap[project] = (parsed.comments || []).length;
-      } catch { commentsMap[project] = 0; }
+        await env.CODE_EXPLORER_KV.put('cache:comment-counts', JSON.stringify(commentsMap), {
+          expirationTtl: 1800
+        });
+      } catch {}
     }
   } catch {}
 
@@ -895,7 +935,7 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
 
   return new Response(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' }
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60' }
   });
 }
 
