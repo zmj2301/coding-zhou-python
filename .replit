@@ -1,0 +1,8 @@
+run = "cd code-explorer && python server.py"
+language = "python3"
+
+[packager]
+language = "python3"
+
+[deployment]
+run = "cd code-explorer && python server.py"
