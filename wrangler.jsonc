@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "coding-zhou-python",
+  "compatibility_date": "2026-06-27",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "code-explorer"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
