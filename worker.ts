@@ -49,7 +49,7 @@ async function getKey(secret: string): Promise<CryptoKey> {
 async function signJwt(
   payload: Record<string, any>,
   secret: string,
-  expiresInSeconds: number = 86400
+  expiresInSeconds: number = 604800
 ): Promise<string> {
   const header = { alg: 'HS256', typ: 'JWT' };
   const now = Math.floor(Date.now() / 1000);
@@ -369,10 +369,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const token = await signJwt(
         { sub: 'user', is_admin: false },
         env.JWT_SECRET || 'default-secret-change-me',
-        86400
+        604800
       );
       const resp = jsonResponse({ token });
-      return setCookie(resp, 'wg_token', token, 86400 * 7);
+      return setCookie(resp, 'wg_token', token, 604800);
     } catch {
       return errorResponse('无效的请求', 400);
     }
@@ -392,10 +392,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const token = await signJwt(
         { sub: 'admin', is_admin: true },
         env.JWT_SECRET || 'default-secret-change-me',
-        86400
+        604800
       );
       const resp = jsonResponse({ token });
-      return setCookie(resp, 'wg_token', token, 86400 * 7);
+      return setCookie(resp, 'wg_token', token, 604800);
     } catch {
       return errorResponse('无效的请求', 400);
     }
