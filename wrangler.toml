@@ -5,7 +5,6 @@ main = "worker.ts"
 [vars]
 GITHUB_REPO = "zmj2301/coding-zhou-python"
 GITHUB_BRANCH = "main"
-JWT_SECRET = "change-me-in-prod"
 
 account_id = "d6b8ca32610afe0fd9407736b9266cb3"
 
