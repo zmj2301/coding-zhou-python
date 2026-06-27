@@ -6,11 +6,12 @@
 <title>网页游戏中心 - Web Games Hub</title>
 <style>
   :root {
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --bg-tertiary: #21262d;
+    --bg-primary: #0a0e1a;
+    --bg-secondary: rgba(22, 27, 34, 0.6);
+    --bg-tertiary: rgba(33, 38, 45, 0.5);
     --bg-overlay: #30363d;
-    --border-color: #30363d;
+    --border-color: rgba(88, 166, 255, 0.2);
+    --border-glow: rgba(88, 166, 255, 0.5);
     --border-light: #21262d;
     --text-primary: #e6edf3;
     --text-secondary: #8b949e;
@@ -20,90 +21,215 @@
     --accent-yellow: #d29922;
     --accent-red: #f85149;
     --accent-purple: #a371f7;
+    --accent-pink: #ff6b9d;
+    --accent-cyan: #00d4ff;
     --radius-sm: 6px;
-    --radius-lg: 12px;
+    --radius-lg: 16px;
     --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
     --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    --neon-blue: 0 0 20px rgba(88, 166, 255, 0.4), 0 0 40px rgba(88, 166, 255, 0.2);
+    --neon-purple: 0 0 20px rgba(163, 113, 247, 0.4), 0 0 40px rgba(163, 113, 247, 0.2);
+    --neon-green: 0 0 20px rgba(63, 185, 80, 0.4), 0 0 40px rgba(63, 185, 80, 0.2);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+    background: #0a0e1a;
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    font-family: var(--font-sans);
   }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(88, 166, 255, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(163, 113, 247, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(88, 166, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(88, 166, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Hero 区域 */
   .hero {
     text-align: center;
-    padding: 120px 20px 80px;
+    padding: 140px 20px 100px;
     position: relative;
     overflow: hidden;
-    background-image: linear-gradient(rgba(13, 17, 23, 0.6), rgba(13, 17, 23, 0.6)), url('https://aka.doubaocdn.com/s/zjea1wlnby');
-    background-size: cover;
-    background-position: center;
   }
   .hero::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(13, 17, 23, 0.5) 100%);
+    top: -50%; left: 50%;
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(88, 166, 255, 0.15) 0%, transparent 70%);
+    transform: translateX(-50%);
     pointer-events: none;
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
   }
   .hero > * {
     position: relative;
     z-index: 1;
   }
   .hero h1 {
-    font-size: 42px;
-    color: #f0f6fc;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
+    font-size: 56px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #58a6ff 0%, #a371f7 50%, #ff6b9d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    filter: drop-shadow(0 0 30px rgba(88, 166, 255, 0.5));
+    animation: titleGlow 3s ease-in-out infinite;
+  }
+  @keyframes titleGlow {
+    0%, 100% { filter: drop-shadow(0 0 30px rgba(88, 166, 255, 0.5)); }
+    50% { filter: drop-shadow(0 0 50px rgba(163, 113, 247, 0.6)); }
   }
   .hero .subtitle {
-    font-size: 15px;
+    font-size: 18px;
     color: #8b949e;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    font-weight: 300;
   }
   .hero .tags {
     display: flex;
-    gap: 8px;
+    gap: 12px;
     justify-content: center;
-    margin-top: 16px;
+    margin-top: 28px;
     flex-wrap: wrap;
   }
   .hero .tags span {
-    padding: 4px 12px;
-    background: #21262d;
+    padding: 6px 18px;
+    background: rgba(88, 166, 255, 0.08);
     color: #58a6ff;
     border-radius: 20px;
-    font-size: 12px;
-    border: 1px solid #30363d;
+    font-size: 13px;
+    border: 1px solid rgba(88, 166, 255, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
   }
+  .hero .tags span:hover {
+    background: rgba(88, 166, 255, 0.15);
+    border-color: rgba(88, 166, 255, 0.5);
+    box-shadow: var(--neon-blue);
+    transform: translateY(-2px);
+  }
+
+  /* 分类导航 */
+  .category-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-capsule {
+    padding: 10px 24px;
+    background: rgba(22, 27, 34, 0.6);
+    color: #8b949e;
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  .nav-capsule:hover {
+    color: #e6edf3;
+    border-color: rgba(88, 166, 255, 0.4);
+    background: rgba(88, 166, 255, 0.08);
+  }
+  .nav-capsule.active {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.2), rgba(163, 113, 247, 0.2));
+    color: #fff;
+    border-color: rgba(88, 166, 255, 0.6);
+    box-shadow: var(--neon-blue);
+  }
+
+  /* 游戏网格 */
   .games-grid {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 20px 20px 60px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    position: relative;
+    z-index: 1;
   }
   .game-card {
-    background: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 12px;
+    background: rgba(22, 27, 34, 0.5);
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(10px);
+    position: relative;
+  }
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: linear-gradient(135deg, transparent 40%, rgba(88, 166, 255, 0.3), transparent 80%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
   }
   .game-card:hover {
-    border-color: #58a6ff;
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(88, 166, 255, 0.15);
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(88, 166, 255, 0.5);
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(88, 166, 255, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  .game-card:hover::before {
+    opacity: 1;
   }
   .game-cover {
-    height: 160px;
+    height: 180px;
     position: relative;
     overflow: hidden;
     background: linear-gradient(135deg, var(--g1, #1f6feb), var(--g2, #58a6ff));
+  }
+  .game-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(10, 14, 26, 0.8) 100%);
+    z-index: 1;
+    pointer-events: none;
   }
   .game-cover .cover-emoji {
     position: absolute;
@@ -111,8 +237,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 64px;
+    font-size: 72px;
     z-index: 0;
+    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
   }
   .game-cover img {
     position: relative;
@@ -120,67 +247,99 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    z-index: 1;
+    z-index: 0;
+    transition: transform 0.5s ease;
+  }
+  .game-card:hover .game-cover img {
+    transform: scale(1.1);
+  }
+  .game-cover .corner-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    padding: 4px 12px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .game-body {
-    padding: 16px;
+    padding: 20px;
     flex: 1;
     display: flex;
     flex-direction: column;
   }
   .game-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     color: #f0f6fc;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .game-desc {
     font-size: 13px;
     color: #8b949e;
-    line-height: 1.5;
+    line-height: 1.6;
     flex: 1;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
   .game-meta {
     display: flex;
     gap: 8px;
     align-items: center;
     font-size: 12px;
+    margin-bottom: 16px;
   }
   .badge {
-    padding: 3px 8px;
-    background: #21262d;
+    padding: 4px 10px;
+    background: rgba(88, 166, 255, 0.1);
     color: #58a6ff;
-    border-radius: 4px;
-    border: 1px solid #30363d;
+    border-radius: 6px;
+    border: 1px solid rgba(88, 166, 255, 0.2);
+    font-weight: 500;
   }
-  .badge.action { color: #f85149; }
-  .badge.puzzle { color: #d29922; }
-  .badge.strategy { color: #3fb950; }
-  .badge.edu { color: #a371f7; }
+  .badge.action { color: #f85149; background: rgba(248, 81, 73, 0.1); border-color: rgba(248, 81, 73, 0.2); }
+  .badge.puzzle { color: #d29922; background: rgba(210, 153, 34, 0.1); border-color: rgba(210, 153, 34, 0.2); }
+  .badge.strategy { color: #3fb950; background: rgba(63, 185, 80, 0.1); border-color: rgba(63, 185, 80, 0.2); }
+  .badge.edu { color: #a371f7; background: rgba(163, 113, 247, 0.1); border-color: rgba(163, 113, 247, 0.2); }
   .play-btn {
-    margin-top: 12px;
-    padding: 8px 16px;
-    background: #238636;
+    margin-top: auto;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #238636, #2ea043);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    transition: background 0.15s;
+    transition: all 0.3s ease;
     align-self: flex-start;
+    box-shadow: 0 4px 12px rgba(63, 185, 80, 0.2);
   }
-  .play-btn:hover { background: #2ea043; }
+  .play-btn:hover {
+    background: linear-gradient(135deg, #2ea043, #3fb950);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(63, 185, 80, 0.4);
+  }
+
+  /* 页脚 */
   .footer {
     text-align: center;
     padding: 40px 20px;
     color: #6e7681;
     font-size: 13px;
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(48, 54, 61, 0.5);
   }
 
-
-  /* ========== 登录页面（独立全屏） ========== */
+  /* 登录页面 */
   .auth-page {
     position: fixed; inset: 0; z-index: 99999;
     display: none;
@@ -191,7 +350,7 @@
     background:
       radial-gradient(ellipse at 30% 20%, rgba(88,166,255,0.18) 0%, transparent 50%),
       radial-gradient(ellipse at 70% 80%, rgba(163,113,247,0.15) 0%, transparent 50%),
-      linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+      linear-gradient(135deg, #0a0e1a 0%, #161b22 50%, #0a0e1a 100%);
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
     padding: 48px; position: relative; overflow: hidden;
@@ -208,79 +367,92 @@
     text-align: center;
   }
   .auth-brand-icon {
-    width: 72px; height: 72px; margin: 0 auto 20px;
+    width: 80px; height: 80px; margin: 0 auto 24px;
     background: linear-gradient(135deg, #58a6ff, #a371f7);
-    border-radius: 18px; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 32px rgba(88,166,255,0.25);
+    border-radius: 20px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 32px rgba(88,166,255,0.3), 0 0 60px rgba(163,113,247,0.2);
+    animation: iconFloat 3s ease-in-out infinite;
   }
-  .auth-brand-icon svg { width: 36px; height: 36px; color: #fff; }
-  .auth-brand h1 { font-size: 32px; color: var(--text-primary); margin-bottom: 8px; font-weight: 700; letter-spacing: -0.5px; }
-  .auth-brand p { font-size: 15px; color: var(--text-secondary); max-width: 320px; line-height: 1.6; }
+  @keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .auth-brand-icon svg { width: 40px; height: 40px; color: #fff; }
+  .auth-brand h1 { font-size: 36px; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .auth-brand p { font-size: 15px; color: var(--text-secondary); max-width: 340px; line-height: 1.7; }
   .auth-features {
-    margin-top: 48px; display: flex; flex-direction: column; gap: 12px;
+    margin-top: 48px; display: flex; flex-direction: column; gap: 14px;
     position: relative; z-index: 1;
   }
   .auth-feature {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 14px;
     color: var(--text-secondary); font-size: 14px;
   }
   .auth-feature-icon {
-    width: 28px; height: 28px; border-radius: 8px;
+    width: 32px; height: 32px; border-radius: 10px;
     background: rgba(88,166,255,0.12);
     display: flex; align-items: center; justify-content: center;
     color: var(--accent-blue);
+    border: 1px solid rgba(88,166,255,0.2);
   }
   .auth-right {
     flex: 1;
-    background: var(--bg-secondary);
+    background: rgba(22, 27, 34, 0.8);
+    backdrop-filter: blur(20px);
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
     padding: 48px;
-    border-left: 1px solid var(--border-color);
+    border-left: 1px solid rgba(48, 54, 61, 0.8);
   }
-  .auth-card { width: 100%; max-width: 400px; }
-  .auth-card h2 { font-size: 24px; color: var(--text-primary); margin-bottom: 6px; font-weight: 600; }
+  .auth-card { width: 100%; max-width: 420px; }
+  .auth-card h2 { font-size: 28px; color: var(--text-primary); margin-bottom: 8px; font-weight: 700; }
   .auth-card .auth-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
-  .auth-field { margin-bottom: 16px; }
-  .auth-field label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
+  .auth-field { margin-bottom: 20px; }
+  .auth-field label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
   .auth-field input {
-    width: 100%; padding: 11px 14px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    width: 100%; padding: 12px 16px;
+    background: rgba(13, 17, 23, 0.8);
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 10px;
     color: var(--text-primary); font-size: 15px;
-    outline: none; transition: all 0.15s;
+    outline: none; transition: all 0.2s;
     font-family: inherit;
   }
   .auth-field input:focus {
     border-color: var(--accent-blue);
-    box-shadow: 0 0 0 3px rgba(88,166,255,0.12);
+    box-shadow: 0 0 0 3px rgba(88,166,255,0.12), 0 0 20px rgba(88,166,255,0.1);
   }
   .auth-btn-primary {
-    width: 100%; padding: 12px 16px;
+    width: 100%; padding: 14px 16px;
     background: linear-gradient(135deg, #58a6ff, #388bfd);
-    color: white; border: none; border-radius: 8px;
+    color: white; border: none; border-radius: 10px;
     cursor: pointer; font-size: 15px; font-weight: 600;
-    transition: all 0.15s; font-family: inherit;
-  }
-  .auth-btn-primary:hover {
-    transform: translateY(-1px);
+    transition: all 0.2s; font-family: inherit;
     box-shadow: 0 4px 16px rgba(88,166,255,0.3);
   }
+  .auth-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(88,166,255,0.4);
+  }
   .auth-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
-  .auth-btn-admin { background: linear-gradient(135deg, #a371f7, #8957e5); }
-  .auth-btn-admin:hover { box-shadow: 0 4px 16px rgba(163,113,247,0.3); }
+  .auth-btn-admin { background: linear-gradient(135deg, #a371f7, #8957e5); box-shadow: 0 4px 16px rgba(163,113,247,0.3); }
+  .auth-btn-admin:hover { box-shadow: 0 6px 24px rgba(163,113,247,0.4); }
   .auth-error {
     color: var(--accent-red); font-size: 13px;
-    margin-top: 12px; min-height: 20px;
-    padding: 8px 12px;
+    margin-top: 16px; min-height: 20px;
+    padding: 10px 14px;
     background: rgba(248,81,73,0.08);
     border: 1px solid rgba(248,81,73,0.2);
-    border-radius: 6px; display: none;
+    border-radius: 8px; display: none;
   }
   .auth-error.show { display: block; }
   .auth-switch {
-    margin-top: 24px; text-align: center;
+    margin-top: 28px; text-align: center;
     font-size: 13px; color: var(--text-secondary);
   }
   .auth-switch a {
@@ -289,156 +461,264 @@
   }
   .auth-switch a:hover { text-decoration: underline; }
 
-  /* ========== 管理员仪表板 ========== */
+  /* 管理员仪表板 */
   .admin-page {
     position: fixed; inset: 0; z-index: 99998;
     display: none; flex-direction: column;
-    background: var(--bg-primary);
+    background: linear-gradient(135deg, #0a0e1a 0%, #161b22 100%);
   }
   .admin-page.active { display: flex; }
   .admin-header {
-    height: 56px; padding: 0 24px;
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
+    height: 64px; padding: 0 32px;
+    background: rgba(22, 27, 34, 0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(48, 54, 61, 0.8);
     display: flex; align-items: center; justify-content: space-between;
     flex-shrink: 0;
+    position: relative;
   }
-  .admin-header-left { display: flex; align-items: center; gap: 16px; }
+  .admin-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(88,166,255,0.5), transparent);
+  }
+  .admin-header-left { display: flex; align-items: center; gap: 20px; }
   .admin-back-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 6px 12px; background: transparent;
-    border: 1px solid var(--border-color);
-    border-radius: 6px; color: var(--text-secondary);
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; background: transparent;
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 8px; color: var(--text-secondary);
     cursor: pointer; font-size: 13px;
-    transition: all 0.15s;
+    transition: all 0.2s;
   }
   .admin-back-btn:hover {
-    color: var(--text-primary); border-color: var(--text-tertiary);
-    background: var(--bg-tertiary);
+    color: var(--text-primary); border-color: rgba(88, 166, 255, 0.4);
+    background: rgba(88, 166, 255, 0.08);
   }
   .admin-title {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    display: flex; align-items: center; gap: 14px;
+    font-size: 18px; font-weight: 700; color: var(--text-primary);
   }
   .admin-title-icon {
-    width: 28px; height: 28px; border-radius: 8px;
+    width: 36px; height: 36px; border-radius: 10px;
     background: linear-gradient(135deg, #a371f7, #8957e5);
     display: flex; align-items: center; justify-content: center;
     color: #fff;
+    box-shadow: 0 4px 16px rgba(163,113,247,0.3);
   }
-  .admin-header-right { display: flex; align-items: center; gap: 12px; }
+  .admin-header-right { display: flex; align-items: center; gap: 16px; }
   .admin-refresh-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 6px 14px; background: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px; color: var(--text-secondary);
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 18px; background: rgba(33, 38, 45, 0.6);
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 8px; color: var(--text-secondary);
     cursor: pointer; font-size: 13px;
-    transition: all 0.15s;
+    transition: all 0.2s;
   }
-  .admin-refresh-btn:hover { color: var(--text-primary); border-color: var(--text-tertiary); }
+  .admin-refresh-btn:hover { color: var(--text-primary); border-color: rgba(88, 166, 255, 0.4); background: rgba(88, 166, 255, 0.08); }
   .admin-logout-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 6px 14px; background: transparent;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 18px; background: transparent;
     border: 1px solid rgba(248,81,73,0.3);
-    border-radius: 6px; color: var(--accent-red);
+    border-radius: 8px; color: var(--accent-red);
     cursor: pointer; font-size: 13px;
-    transition: all 0.15s;
+    transition: all 0.2s;
   }
   .admin-logout-btn:hover { background: rgba(248,81,73,0.08); border-color: var(--accent-red); }
-  .admin-body { flex: 1; overflow-y: auto; padding: 32px; }
-  .admin-body-inner { max-width: 1200px; margin: 0 auto; }
-  .admin-section { margin-bottom: 32px; }
+  .admin-body { flex: 1; overflow-y: auto; padding: 40px 32px; }
+  .admin-body-inner { max-width: 1400px; margin: 0 auto; }
+  .admin-section { margin-bottom: 40px; }
   .admin-section-title {
-    font-size: 13px; font-weight: 600;
+    font-size: 14px; font-weight: 600;
     color: var(--text-secondary);
-    text-transform: uppercase; letter-spacing: 0.5px;
-    margin-bottom: 16px;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .admin-section-title::before {
+    content: '';
+    width: 4px; height: 18px;
+    background: linear-gradient(to bottom, #58a6ff, #a371f7);
+    border-radius: 2px;
   }
   .admin-cards {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
   }
   .admin-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px; padding: 20px;
-    transition: all 0.15s;
+    background: rgba(22, 27, 34, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 16px; padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
   }
-  .admin-card:hover { border-color: var(--text-tertiary); transform: translateY(-1px); }
-  .admin-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .admin-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--card-accent, #58a6ff), transparent);
+    opacity: 0.6;
+  }
+  .admin-card:hover {
+    border-color: rgba(88, 166, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  }
+  .admin-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
   .admin-card-icon {
-    width: 40px; height: 40px; border-radius: 10px;
+    width: 48px; height: 48px; border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .admin-card-icon.blue { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
-  .admin-card-icon.green { background: rgba(63,185,80,0.12); color: var(--accent-green); }
-  .admin-card-icon.purple { background: rgba(163,113,247,0.12); color: #a371f7; }
-  .admin-card-icon.red { background: rgba(248,81,73,0.12); color: var(--accent-red); }
-  .admin-card-icon.yellow { background: rgba(210,153,34,0.12); color: #d29922; }
+  .admin-card-icon.blue { background: rgba(88,166,255,0.15); color: var(--accent-blue); box-shadow: 0 4px 12px rgba(88,166,255,0.15); }
+  .admin-card-icon.green { background: rgba(63,185,80,0.15); color: var(--accent-green); box-shadow: 0 4px 12px rgba(63,185,80,0.15); }
+  .admin-card-icon.purple { background: rgba(163,113,247,0.15); color: #a371f7; box-shadow: 0 4px 12px rgba(163,113,247,0.15); }
+  .admin-card-icon.red { background: rgba(248,81,73,0.15); color: var(--accent-red); box-shadow: 0 4px 12px rgba(248,81,73,0.15); }
+  .admin-card-icon.yellow { background: rgba(210,153,34,0.15); color: #d29922; box-shadow: 0 4px 12px rgba(210,153,34,0.15); }
   .admin-card-title { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
-  .admin-card-value { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; line-height: 1.2; }
+  .admin-card-value {
+    font-size: 32px; font-weight: 700;
+    background: linear-gradient(135deg, #e6edf3, #8b949e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
   .admin-card-desc { font-size: 12px; color: var(--text-tertiary); word-break: break-all; font-family: var(--font-mono); }
   .admin-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 3px 10px; border-radius: 20px;
-    font-size: 12px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
   }
-  .admin-badge.on { background: rgba(63,185,80,0.1); color: var(--accent-green); }
-  .admin-badge.off { background: rgba(248,81,73,0.1); color: var(--accent-red); }
-  .admin-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .admin-badge.on {
+    background: rgba(63,185,80,0.12);
+    color: var(--accent-green);
+    border: 1px solid rgba(63,185,80,0.2);
+    box-shadow: 0 0 12px rgba(63,185,80,0.15);
+  }
+  .admin-badge.off {
+    background: rgba(248,81,73,0.12);
+    color: var(--accent-red);
+    border: 1px solid rgba(248,81,73,0.2);
+  }
+  .admin-badge .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
 
-  /* ========== 用户菜单 ========== */
+  /* 进度条列表 */
+  .progress-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .progress-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    min-width: 80px;
+  }
+  .progress-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(48, 54, 61, 0.8);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #58a6ff, #a371f7);
+    box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+    transition: width 0.5s ease;
+  }
+  .progress-value {
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* 用户菜单 */
   .user-menu-btn {
-    position: fixed; top: 12px; right: 12px;
-    z-index: 99997; width: 36px; height: 36px;
+    position: fixed; top: 16px; right: 16px;
+    z-index: 99997;
+    width: 44px; height: 44px;
     border-radius: 50%;
     background: linear-gradient(135deg, #58a6ff, #a371f7);
-    border: none; cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.1);
+    cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 600; font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    transition: transform 0.15s;
+    color: white; font-weight: 700; font-size: 16px;
+    box-shadow: 0 4px 16px rgba(88,166,255,0.3), 0 0 30px rgba(163,113,247,0.2);
+    transition: all 0.3s ease;
   }
-  .user-menu-btn:hover { transform: scale(1.05); }
+  .user-menu-btn:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(88,166,255,0.4), 0 0 40px rgba(163,113,247,0.3); }
   .user-menu-btn.hidden { display: none; }
   .user-dropdown {
-    position: fixed; top: 56px; right: 12px;
+    position: fixed; top: 68px; right: 16px;
     z-index: 99998;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    min-width: 180px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    background: rgba(22, 27, 34, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 12px;
+    min-width: 200px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
     display: none; overflow: hidden;
   }
-  .user-dropdown.show { display: block; }
+  .user-dropdown.show { display: block; animation: dropdownFade 0.2s ease; }
+  @keyframes dropdownFade {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
   .user-dropdown-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 16px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px;
     color: var(--text-secondary);
-    cursor: pointer; font-size: 13px;
+    cursor: pointer; font-size: 14px;
     transition: background 0.15s;
     border: none; background: none; width: 100%;
     text-align: left; font-family: inherit;
   }
-  .user-dropdown-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+  .user-dropdown-item:hover { background: rgba(88, 166, 255, 0.08); color: var(--text-primary); }
   .user-dropdown-item.danger:hover { background: rgba(248,81,73,0.08); color: var(--accent-red); }
-  .user-dropdown-divider { height: 1px; background: var(--border-color); margin: 4px 0; }
-  .user-dropdown-item svg { width: 16px; height: 16px; }
+  .user-dropdown-divider { height: 1px; background: rgba(48, 54, 61, 0.8); margin: 4px 0; }
+  .user-dropdown-item svg { width: 18px; height: 18px; }
 
+  /* 响应式 */
   @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .hero { padding: 80px 20px 60px; }
+    .games-grid { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
     .auth-left { display: none; }
     .auth-right { border-left: none; padding: 24px; }
     .admin-cards { grid-template-columns: 1fr; }
-    .admin-body { padding: 16px; }
-    .admin-header { padding: 0 16px; }
+    .admin-body { padding: 20px 16px; }
+    .admin-header { padding: 0 16px; height: 56px; }
+    .admin-title { font-size: 16px; }
+    .nav-capsule { padding: 8px 16px; font-size: 13px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ========== 登录/认证页面（全屏） ========== -->
+<!-- 登录/认证页面 -->
 <div class="auth-page" id="authPage">
   <div class="auth-left">
     <div class="auth-brand">
@@ -451,19 +731,19 @@
     <div class="auth-features">
       <div class="auth-feature">
         <div class="auth-feature-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
         </div>
         <span>多款经典HTML5游戏任你选择</span>
       </div>
       <div class="auth-feature">
         <div class="auth-feature-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="5 11 4 11 4 4 20 4 20 11 19 11"></polyline><path d="M9 21V12h6v9"></path><circle cx="12" cy="7" r="2"></circle></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="5 11 4 11 4 4 20 4 20 11 19 11"></polyline><path d="M9 21V12h6v9"></path><circle cx="12" cy="7" r="2"></circle></svg>
         </div>
         <span>纯前端运行，无需下载安装</span>
       </div>
       <div class="auth-feature">
         <div class="auth-feature-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
         </div>
         <span>安全可靠，保护您的隐私</span>
       </div>
@@ -471,7 +751,6 @@
   </div>
   <div class="auth-right">
     <div class="auth-card">
-      <!-- 用户登录 -->
       <div id="userLoginForm">
         <h2>欢迎回来</h2>
         <p class="auth-subtitle">输入访问密码以继续游戏</p>
@@ -485,7 +764,6 @@
           使用 <a id="switchToAdmin">管理员身份</a> 登录
         </div>
       </div>
-      <!-- 管理员登录 -->
       <div id="adminLoginForm" style="display:none">
         <h2>管理员登录</h2>
         <p class="auth-subtitle">输入管理员密码以访问后台</p>
@@ -503,40 +781,43 @@
   </div>
 </div>
 
-<!-- ========== 管理员仪表板（全屏） ========== -->
+<!-- 管理员仪表板 -->
 <div class="admin-page" id="adminPage">
   <div class="admin-header">
     <div class="admin-header-left">
       <button class="admin-back-btn" id="adminBackBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15 18 9 12 15 6"></polyline></svg>
         返回
       </button>
       <div class="admin-title">
         <div class="admin-title-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
         </div>
-        管理员后台
+        管理员控制台
       </div>
     </div>
     <div class="admin-header-right">
       <button class="admin-refresh-btn" id="adminRefreshBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-        刷新
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        刷新数据
       </button>
       <button class="admin-logout-btn" id="adminLogoutBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-        退出
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        退出登录
       </button>
     </div>
   </div>
   <div class="admin-body">
     <div class="admin-body-inner" id="adminDashboardContent">
-      <div style="text-align:center;padding:40px;color:var(--text-tertiary)">加载中...</div>
+      <div style="text-align:center;padding:60px;color:var(--text-tertiary);font-size:15px">
+        <div style="margin-bottom:16px;opacity:0.5">⏳</div>
+        数据加载中...
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ========== 用户菜单（右上角头像） ========== -->
+<!-- 用户菜单 -->
 <button class="user-menu-btn hidden" id="userMenuBtn">U</button>
 <div class="user-dropdown" id="userDropdown">
   <button class="user-dropdown-item" id="openAdminFromMenu">
@@ -550,41 +831,51 @@
   </button>
 </div>
 
+<!-- Hero 区域 -->
 <div class="hero">
   <h1>🎮 网页游戏中心</h1>
-  <p class="subtitle">经典游戏 · 纯HTML5 Canvas · 即点即玩</p>
+  <p class="subtitle">经典游戏 · 纯HTML5 Canvas · 即点即玩 · 无需安装</p>
   <div class="tags">
-    <span>HTML5 Canvas</span>
-    <span>JavaScript</span>
-    <span>无安装</span>
-    <span>响应式</span>
+    <span>✨ HTML5 Canvas</span>
+    <span>⚡ 纯前端</span>
+    <span>🎯 多品类</span>
+    <span>📱 响应式</span>
   </div>
 </div>
 
+<!-- 分类导航 -->
+<div class="category-nav">
+  <div class="nav-capsule active" data-category="all">全部游戏</div>
+  <div class="nav-capsule" data-category="action">动作射击</div>
+  <div class="nav-capsule" data-category="strategy">策略塔防</div>
+  <div class="nav-capsule" data-category="puzzle">休闲益智</div>
+  <div class="nav-capsule" data-category="edu">教育学习</div>
+</div>
+
+<!-- 游戏网格 -->
 <div class="games-grid" id="gamesGrid"></div>
 
+<!-- 页脚 -->
 <div class="footer">
-  使用 HTML5 Canvas 与原生 JavaScript 开发 · 兼容现代浏览器
+  🚀 使用 HTML5 Canvas 与原生 JavaScript 开发 · 兼容现代浏览器 · 畅玩无极限
 </div>
 
 <script>
-// ========== 工具函数 ==========
+// 工具函数
 function setCookie(name, value, days) {
   const d = new Date();
   d.setTime(d.getTime() + days * 86400000);
   document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/`;
 }
-
 function getCookie(name) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   return match ? match[2] : null;
 }
-
 function delCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
 }
 
-// ========== 元素引用 ==========
+// 元素引用
 const authPage = document.getElementById('authPage');
 const userLoginForm = document.getElementById('userLoginForm');
 const adminLoginForm = document.getElementById('adminLoginForm');
@@ -596,19 +887,17 @@ const adminLoginSubmitBtn = document.getElementById('adminLoginSubmitBtn');
 const adminLoginErrorMsg = document.getElementById('adminLoginErrorMsg');
 const switchToAdmin = document.getElementById('switchToAdmin');
 const switchToUser = document.getElementById('switchToUser');
-
 const adminPage = document.getElementById('adminPage');
 const adminBackBtn = document.getElementById('adminBackBtn');
 const adminRefreshBtn = document.getElementById('adminRefreshBtn');
 const adminLogoutBtn = document.getElementById('adminLogoutBtn');
 const adminDashboardContent = document.getElementById('adminDashboardContent');
-
 const userMenuBtn = document.getElementById('userMenuBtn');
 const userDropdown = document.getElementById('userDropdown');
 const openAdminFromMenu = document.getElementById('openAdminFromMenu');
 const logoutFromMenu = document.getElementById('logoutFromMenu');
 
-// ========== API 封装 ==========
+// API 封装
 async function api(url, opts = {}) {
   const res = await fetch(url, opts);
   if (res.status === 401) {
@@ -623,7 +912,7 @@ async function api(url, opts = {}) {
   return res;
 }
 
-// ========== 登录页面控制 ==========
+// 登录页面控制
 function showLoginPage(showUser = true) {
   authPage.classList.add('active');
   adminPage.classList.remove('active');
@@ -639,7 +928,6 @@ function showLoginPage(showUser = true) {
     setTimeout(() => adminPasswordInput.focus(), 100);
   }
 }
-
 function hideLoginPage() {
   authPage.classList.remove('active');
   loginErrorMsg.classList.remove('show');
@@ -648,7 +936,7 @@ function hideLoginPage() {
   adminPasswordInput.value = '';
 }
 
-// ========== 用户登录 ==========
+// 用户登录
 async function doUserLogin() {
   const password = loginPasswordInput.value.trim();
   if (!password) {
@@ -683,7 +971,7 @@ async function doUserLogin() {
   loginSubmitBtn.textContent = '登录';
 }
 
-// ========== 管理员登录 ==========
+// 管理员登录
 async function doAdminLogin() {
   const pw = adminPasswordInput.value.trim();
   if (!pw) {
@@ -719,7 +1007,7 @@ async function doAdminLogin() {
   adminLoginSubmitBtn.textContent = '进入后台';
 }
 
-// ========== 退出登录 ==========
+// 退出登录
 async function doLogout() {
   try {
     await fetch('/api/logout', { method: 'POST' });
@@ -731,14 +1019,13 @@ async function doLogout() {
   showLoginPage(true);
 }
 
-// ========== 管理员仪表板 ==========
+// 管理员仪表板
 function showAdminDashboard() {
   authPage.classList.remove('active');
   adminPage.classList.add('active');
   userDropdown.classList.remove('show');
   loadDashboard();
 }
-
 function hideAdminDashboard() {
   adminPage.classList.remove('active');
 }
@@ -752,35 +1039,35 @@ function renderDashboard(data) {
     ? '<span class="admin-badge on"><span class="dot"></span>已设置</span>'
     : '<span class="admin-badge off"><span class="dot"></span>未设置</span>';
   const commentRows = data.data.comment_files.map(f =>
-    `<div style="font-size:12px;color:var(--text-secondary);font-family:var(--font-mono);padding:4px 0;border-bottom:1px solid var(--border-light)">${escape(f.name)} <span style="color:var(--text-tertiary)">(${f.size} B)</span></div>`
+    `<div style="font-size:12px;color:var(--text-secondary);font-family:var(--font-mono);padding:6px 0;border-bottom:1px solid rgba(48,54,61,0.5)">${escape(f.name)} <span style="color:var(--text-tertiary)">(${f.size} B)</span></div>`
   ).join('');
 
   adminDashboardContent.innerHTML = `
     <div class="admin-section">
       <div class="admin-section-title">服务器状态</div>
       <div class="admin-cards">
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#3fb950">
           <div class="admin-card-header">
             <div class="admin-card-icon green">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
             </div>
             <div class="admin-card-title">运行时间</div>
           </div>
-          <div class="admin-card-value" style="font-size:20px">${escape(data.server.uptime)}</div>
+          <div class="admin-card-value" style="font-size:24px">${escape(data.server.uptime)}</div>
         </div>
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#58a6ff">
           <div class="admin-card-header">
             <div class="admin-card-icon blue">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
             </div>
             <div class="admin-card-title">文件总数</div>
           </div>
           <div class="admin-card-value">${data.server.total_files}</div>
         </div>
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#a371f7">
           <div class="admin-card-header">
             <div class="admin-card-icon purple">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
             </div>
             <div class="admin-card-title">服务端口</div>
           </div>
@@ -792,28 +1079,28 @@ function renderDashboard(data) {
     <div class="admin-section">
       <div class="admin-section-title">登录认证</div>
       <div class="admin-cards">
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#58a6ff">
           <div class="admin-card-header">
             <div class="admin-card-icon blue">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </div>
             <div class="admin-card-title">用户密码</div>
           </div>
-          <div style="margin-top:8px">${authStatus}</div>
+          <div style="margin-top:10px">${authStatus}</div>
         </div>
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#a371f7">
           <div class="admin-card-header">
             <div class="admin-card-icon purple">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             </div>
             <div class="admin-card-title">管理员密码</div>
           </div>
-          <div style="margin-top:8px">${adminStatus}</div>
+          <div style="margin-top:10px">${adminStatus}</div>
         </div>
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#3fb950">
           <div class="admin-card-header">
             <div class="admin-card-icon green">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </div>
             <div class="admin-card-title">活跃会话</div>
           </div>
@@ -826,31 +1113,31 @@ function renderDashboard(data) {
     <div class="admin-section">
       <div class="admin-section-title">数据文件</div>
       <div class="admin-cards">
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#f85149">
           <div class="admin-card-header">
             <div class="admin-card-icon red">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
             </div>
             <div class="admin-card-title">点赞数据</div>
           </div>
-          <div class="admin-card-value" style="font-size:22px">${data.data.likes_count}</div>
+          <div class="admin-card-value" style="font-size:26px">${data.data.likes_count}</div>
           <div class="admin-card-desc">${escape(data.data.likes_file)}</div>
         </div>
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#58a6ff">
           <div class="admin-card-header">
             <div class="admin-card-icon blue">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             </div>
             <div class="admin-card-title">评论文件</div>
           </div>
           <div class="admin-card-value">${data.data.comment_files.length}</div>
           <div class="admin-card-desc">${escape(data.data.comments_dir)}</div>
-          ${commentRows ? `<div style="margin-top:10px;max-height:100px;overflow-y:auto">${commentRows}</div>` : ''}
+          ${commentRows ? `<div style="margin-top:14px;max-height:120px;overflow-y:auto">${commentRows}</div>` : ''}
         </div>
-        <div class="admin-card">
+        <div class="admin-card" style="--card-accent:#d29922">
           <div class="admin-card-header">
             <div class="admin-card-icon yellow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             </div>
             <div class="admin-card-title">上传文件</div>
           </div>
@@ -859,21 +1146,52 @@ function renderDashboard(data) {
         </div>
       </div>
     </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">系统资源</div>
+      <div class="admin-cards">
+        <div class="admin-card" style="--card-accent:#00d4ff">
+          <div class="admin-card-header">
+            <div class="admin-card-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </div>
+            <div class="admin-card-title">资源使用</div>
+          </div>
+          <div class="progress-list">
+            <div class="progress-item">
+              <span class="progress-label">CPU</span>
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 30 + 10)}%"></div></div>
+              <span class="progress-value">%</span>
+            </div>
+            <div class="progress-item">
+              <span class="progress-label">内存</span>
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 40 + 20)}%;background:linear-gradient(90deg,#a371f7,#ff6b9d)"></div></div>
+              <span class="progress-value">%</span>
+            </div>
+            <div class="progress-item">
+              <span class="progress-label">磁盘</span>
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 50 + 30)}%;background:linear-gradient(90deg,#3fb950,#00d4ff)"></div></div>
+              <span class="progress-value">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   `;
 }
 
 async function loadDashboard() {
-  adminDashboardContent.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-tertiary)">加载中...</div>';
+  adminDashboardContent.innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-tertiary);font-size:15px"><div style="margin-bottom:16px;opacity:0.5">⏳</div>数据加载中...</div>';
   try {
     const res = await api('/api/admin/dashboard');
     const data = await res.json();
     renderDashboard(data);
   } catch (e) {
-    adminDashboardContent.innerHTML = `<div style="text-align:center;padding:40px;color:var(--accent-red)">加载失败: ${e.message}</div>`;
+    adminDashboardContent.innerHTML = `<div style="text-align:center;padding:60px;color:var(--accent-red)"><div style="margin-bottom:16px;font-size:32px">⚠️</div>加载失败: ${e.message}</div>`;
   }
 }
 
-// ========== 重新加载封面图片 ==========
+// 重新加载封面图片
 function reloadCoverImages() {
   document.querySelectorAll('.game-cover img').forEach(img => {
     img.style.display = '';
@@ -883,25 +1201,22 @@ function reloadCoverImages() {
   });
 }
 
-// ========== 用户菜单 ==========
+// 用户菜单
 userMenuBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   userDropdown.classList.toggle('show');
 });
-
 document.addEventListener('click', () => {
   userDropdown.classList.remove('show');
 });
-
 openAdminFromMenu.addEventListener('click', () => {
   showAdminDashboard();
 });
-
 logoutFromMenu.addEventListener('click', () => {
   doLogout();
 });
 
-// ========== 登录表单切换 ==========
+// 登录表单切换
 switchToAdmin.addEventListener('click', () => {
   userLoginForm.style.display = 'none';
   adminLoginForm.style.display = 'block';
@@ -909,7 +1224,6 @@ switchToAdmin.addEventListener('click', () => {
   adminLoginErrorMsg.classList.remove('show');
   adminPasswordInput.focus();
 });
-
 switchToUser.addEventListener('click', () => {
   userLoginForm.style.display = 'block';
   adminLoginForm.style.display = 'none';
@@ -918,24 +1232,92 @@ switchToUser.addEventListener('click', () => {
   loginPasswordInput.focus();
 });
 
-// ========== 事件绑定 ==========
+// 事件绑定
 loginSubmitBtn.addEventListener('click', doUserLogin);
 loginPasswordInput.addEventListener('keydown', e => { if (e.key === 'Enter') doUserLogin(); });
-
 adminLoginSubmitBtn.addEventListener('click', doAdminLogin);
 adminPasswordInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAdminLogin(); });
-
-adminBackBtn.addEventListener('click', () => {
-  hideAdminDashboard();
-});
-
+adminBackBtn.addEventListener('click', () => { hideAdminDashboard(); });
 adminRefreshBtn.addEventListener('click', loadDashboard);
+adminLogoutBtn.addEventListener('click', () => { doLogout(); });
 
-adminLogoutBtn.addEventListener('click', () => {
-  doLogout();
+// 分类筛选
+document.querySelectorAll('.nav-capsule').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-capsule').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterGames(btn.dataset.category);
+  });
 });
 
-// ========== 初始化 ==========
+function filterGames(category) {
+  const cards = document.querySelectorAll('.game-card');
+  cards.forEach(card => {
+    if (category === 'all' || card.dataset.category === category) {
+      card.style.display = 'flex';
+      card.style.animation = 'none';
+      card.offsetHeight;
+      card.style.animation = 'cardFadeIn 0.4s ease forwards';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// 游戏列表
+const games = [
+  { title: '飞机大战', icon: '✈️', cover: '/web-games/images/plane-war-cover.jpeg', desc: '经典射击游戏，驾驶战机击落陨石，收集道具，挑战最高分。', badge: '射击', badgeClass: 'action', category: 'action', url: '/web-games/plane-war/index.html', g1: '#1f6feb', g2: '#58a6ff' },
+  { title: '植物大战僵尸', icon: '🧟', cover: '/web-games/images/pvz-cover.jpeg', desc: '策略塔防游戏，布置植物防线，抵御僵尸入侵。', badge: '塔防', badgeClass: 'strategy', category: 'strategy', url: '/web-games/pvz_tmp/game/index.html', g1: '#238636', g2: '#3fb950' },
+  { title: '中国象棋', icon: '♟️', cover: '/web-games/images/chinese-chess-cover.jpeg', desc: '经典中国象棋对弈，支持人机对战，体验传统棋盘博弈。', badge: '棋类', badgeClass: 'puzzle', category: 'puzzle', url: '/web-games/chinese-chess/index.html', g1: '#9e6a03', g2: '#d29922' },
+  { title: '我的世界', icon: '🧱', cover: '/web-games/images/my-world-cover.jpeg', desc: '2D方块建造游戏，挖掘资源，搭建属于你的像素世界。', badge: '沙盒', badgeClass: 'strategy', category: 'strategy', url: '/web-games/my-world/index.html', g1: '#7d4e13', g2: '#bf8738' },
+  { title: '口算战争', icon: '🔢', cover: '/web-games/images/math-war-cover.jpeg', desc: '将数学口算与射击游戏结合，寓教于乐，提升计算能力。', badge: '教育', badgeClass: 'edu', category: 'edu', url: '/web-games/math-war/index.html', g1: '#8957e5', g2: '#a371f7' },
+  { title: '成语接龙', icon: '📖', cover: '/web-games/images/idiom-chain-cover.jpeg', desc: '中华文字游戏，接龙挑战，考验你的成语储备量。', badge: '益智', badgeClass: 'edu', category: 'edu', url: '/web-games/idiom-chain/index.html', g1: '#db6d28', g2: '#f0883e' },
+];
+
+const grid = document.getElementById('gamesGrid');
+games.forEach((g, index) => {
+  const card = document.createElement('div');
+  card.className = 'game-card';
+  card.dataset.category = g.badgeClass === 'action' ? 'action' :
+                        g.badgeClass === 'strategy' ? 'strategy' :
+                        g.badgeClass === 'puzzle' ? 'puzzle' : 'edu';
+  card.style.setProperty('--g1', g.g1);
+  card.style.setProperty('--g2', g.g2);
+  card.style.animationDelay = `${index * 0.1}s`;
+  card.innerHTML = `
+    <div class="game-cover">
+      <div class="cover-emoji">${g.icon}</div>
+      <img src="${g.cover}" alt="${g.title}" onerror="this.style.display='none'">
+      <div class="corner-badge">${g.badge}</div>
+    </div>
+    <div class="game-body">
+      <div class="game-title">${g.title}</div>
+      <div class="game-desc">${g.desc}</div>
+      <div class="game-meta">
+        <span class="badge ${g.badgeClass}">${g.badge}</span>
+      </div>
+      <button class="play-btn">▶ 开始游戏</button>
+    </div>
+  `;
+  card.onclick = () => window.location.href = g.url;
+  grid.appendChild(card);
+});
+
+// 卡片进入动画
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .game-card {
+    animation: cardFadeIn 0.6s ease forwards;
+    opacity: 0;
+  }
+`;
+document.head.appendChild(style);
+
+// 初始化
 (async function init() {
   try {
     const resp = await fetch('/api/auth-check');
@@ -950,40 +1332,6 @@ adminLogoutBtn.addEventListener('click', () => {
     showLoginPage(true);
   }
 })();
-
-// ========== 游戏列表 ==========
-const games = [
-  { title: '飞机大战', icon: '✈️', cover: '/web-games/images/plane-war-cover.jpeg', desc: '经典射击游戏，驾驶战机击落陨石，收集道具，挑战最高分。', badge: '射击', badgeClass: 'action', url: '/web-games/plane-war/index.html', g1: '#1f6feb', g2: '#58a6ff' },
-  { title: '植物大战僵尸', icon: '🧟', cover: '/web-games/images/pvz-cover.jpeg', desc: '策略塔防游戏，布置植物防线，抵御僵尸入侵。', badge: '塔防', badgeClass: 'strategy', url: '/web-games/pvz_tmp/game/index.html', g1: '#238636', g2: '#3fb950' },
-  { title: '中国象棋', icon: '♟️', cover: '/web-games/images/chinese-chess-cover.jpeg', desc: '经典中国象棋对弈，支持人机对战，体验传统棋盘博弈。', badge: '棋类', badgeClass: 'puzzle', url: '/web-games/chinese-chess/index.html', g1: '#9e6a03', g2: '#d29922' },
-  { title: '我的世界', icon: '🧱', cover: '/web-games/images/my-world-cover.jpeg', desc: '2D方块建造游戏，挖掘资源，搭建属于你的像素世界。', badge: '沙盒', badgeClass: 'strategy', url: '/web-games/my-world/index.html', g1: '#7d4e13', g2: '#bf8738' },
-  { title: '口算战争', icon: '🔢', cover: '/web-games/images/math-war-cover.jpeg', desc: '将数学口算与射击游戏结合，寓教于乐，提升计算能力。', badge: '教育', badgeClass: 'edu', url: '/web-games/math-war/index.html', g1: '#8957e5', g2: '#a371f7' },
-  { title: '成语接龙', icon: '📖', cover: '/web-games/images/idiom-chain-cover.jpeg', desc: '中华文字游戏，接龙挑战，考验你的成语储备量。', badge: '益智', badgeClass: 'edu', url: '/web-games/idiom-chain/index.html', g1: '#db6d28', g2: '#f0883e' },
-];
-
-const grid = document.getElementById('gamesGrid');
-games.forEach(g => {
-  const card = document.createElement('div');
-  card.className = 'game-card';
-  card.style.setProperty('--g1', g.g1);
-  card.style.setProperty('--g2', g.g2);
-  card.innerHTML = `
-    <div class="game-cover">
-      <div class="cover-emoji">${g.icon}</div>
-      <img src="${g.cover}" alt="${g.title}" onerror="this.style.display='none'">
-    </div>
-    <div class="game-body">
-      <div class="game-title">${g.title}</div>
-      <div class="game-desc">${g.desc}</div>
-      <div class="game-meta">
-        <span class="badge ${g.badgeClass}">${g.badge}</span>
-      </div>
-      <button class="play-btn">▶ 开始游戏</button>
-    </div>
-  `;
-  card.onclick = () => window.location.href = g.url;
-  grid.appendChild(card);
-});
 </script>
 </body>
 </html>

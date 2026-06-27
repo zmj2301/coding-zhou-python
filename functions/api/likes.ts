@@ -52,6 +52,7 @@ export async function onRequestPost(context: any): Promise<Response> {
     current += 1;
 
     await kv.put(key, String(current));
+    await kv.delete('cache:project-meta');
     return jsonResponse({ project, likes: current });
   } catch (e) {
     return errorResponse('点赞失败', 500);

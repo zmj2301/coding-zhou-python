@@ -81,6 +81,7 @@ export async function onRequestPost(context: any): Promise<Response> {
 
     projectData.comments.push(comment);
     await kv.put(key, JSON.stringify(projectData));
+    await kv.delete('cache:project-meta');
 
     return jsonResponse(comment, 201);
   } catch (e) {
