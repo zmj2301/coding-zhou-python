@@ -660,6 +660,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         await env.CODE_EXPLORER_KV.put(key, JSON.stringify(projectData));
         try { await env.CODE_EXPLORER_KV.delete('cache:comment-counts'); } catch {}
         try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:home-page'); } catch {}
         return jsonResponse(comment, 201);
       } catch {
         return errorResponse('无效的请求', 400);
@@ -779,6 +780,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         await env.CODE_EXPLORER_KV.put(key, String(current));
         try { await env.CODE_EXPLORER_KV.delete('cache:likes'); } catch {}
         try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:home-page'); } catch {}
         return jsonResponse({ project, likes: current });
       } catch {
         return errorResponse('点赞失败', 500);
@@ -827,19 +829,84 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 }
 
 // ------------------------------------------------------------
+// 首页服务（内联项目数据 + KV 缓存）
+// ------------------------------------------------------------
+async function serveHomePage(request: Request, env: Env): Promise<Response> {
+  const CACHE_KEY = 'cache:home-page';
+  const CACHE_TTL = 300;
+
+  try {
+    const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'text' });
+    if (cached) {
+      return new Response(cached, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' }
+      });
+    }
+  } catch {}
+
+  const [htmlResp, listResp] = await Promise.all([
+    fetchFromGitHub('code-explorer/index.html', env),
+    fetchFromGitHub('public/project-list.json', env)
+  ]);
+
+  if (!htmlResp.ok) return new Response('首页加载失败', { status: 500 });
+  let html = await htmlResp.text();
+
+  let projects: any[] = [];
+  if (listResp.ok) {
+    try { projects = await listResp.json(); } catch {}
+  }
+
+  const likesMap: Record<string, number> = {};
+  const commentsMap: Record<string, number> = {};
+  try {
+    const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
+    for (const key of likesList.keys) {
+      const project = key.name.substring('likes:'.length);
+      const value = await env.CODE_EXPLORER_KV.get(key.name);
+      likesMap[project] = parseInt(value || '0', 10) || 0;
+    }
+  } catch {}
+  try {
+    const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
+    for (const key of commentsList.keys) {
+      const project = key.name.substring('comments:'.length);
+      const value = await env.CODE_EXPLORER_KV.get(key.name);
+      try {
+        const parsed = JSON.parse(value || '{}');
+        commentsMap[project] = (parsed.comments || []).length;
+      } catch { commentsMap[project] = 0; }
+    }
+  } catch {}
+
+  const projectsWithMeta = projects.map(p => ({
+    ...p,
+    likes: likesMap[p.path] || 0,
+    comments: commentsMap[p.path] || 0
+  }));
+
+  const injectScript = `<script>window.__INITIAL_PROJECTS__ = ${JSON.stringify(projectsWithMeta)};</script>`;
+  html = html.replace('</head>', injectScript + '</head>');
+
+  try {
+    await env.CODE_EXPLORER_KV.put(CACHE_KEY, html, { expirationTtl: CACHE_TTL });
+  } catch {}
+
+  return new Response(html, {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' }
+  });
+}
+
+// ------------------------------------------------------------
 // 静态文件代理
 // ------------------------------------------------------------
 
 async function handleStatic(request: Request, env: Env, path: string): Promise<Response> {
   // 首页
   if (path === '/' || path === '') {
-    const ghResp = await fetchFromGitHub('code-explorer/index.html', env);
-    if (!ghResp.ok) return new Response('首页加载失败', { status: 500 });
-    const html = await ghResp.text();
-    return new Response(html, {
-      status: 200,
-      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' }
-    });
+    return serveHomePage(request, env);
   }
 
   // web-games 页面保护

@@ -3459,8 +3459,14 @@ async function likeProject(projectPath) {
 
 async function init() {
   try {
-    showSkeleton();
-    const projects = await fetchProjectList();
+    let projects;
+    const initialProjects = (window as any).__INITIAL_PROJECTS__;
+    if (initialProjects && Array.isArray(initialProjects) && initialProjects.length > 0) {
+      projects = initialProjects;
+    } else {
+      showSkeleton();
+      projects = await fetchProjectList();
+    }
     state.projects = projects.map(p => ({
       ...p,
       icon: getProjectIcon(p.name),
