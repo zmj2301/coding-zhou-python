@@ -1,0 +1,9 @@
+# 中国象棋AI对弈系统依赖库
+torch>=1.10.0
+numpy>=1.19.0
+requests>=2.25.0
+beautifulsoup4>=4.9.0
+matplotlib>=3.3.0
+tqdm>=4.50.0
+Pillow>=8.0.0
+asyncio>=3.4.3

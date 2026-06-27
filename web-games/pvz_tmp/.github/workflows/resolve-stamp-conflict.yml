@@ -1,0 +1,29 @@
+name: Auto-resolve stamp conflict
+
+on:
+  pull_request:
+    paths:
+      - 'game/images/Zombies/CX/v.html'
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Reset version file to base branch
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git checkout origin/${{ github.base_ref }} -- game/images/Zombies/CX/v.html
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet && echo "No changes" || git commit -m "chore: reset version file to base branch" && git push

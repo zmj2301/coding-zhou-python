@@ -1,0 +1,1 @@
+2026-02-09 13:23:52.138 run_wx.py[4] <module> -> Find Control Timeout(10s): {Name: '微信', ControlType: WindowControl}

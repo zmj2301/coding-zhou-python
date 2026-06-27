@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逗神归来 - 项目展示</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --accent: #238636;
+            --accent-hover: #2ea043;
+            --link-color: #58a6ff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .repo-header {
+            margin-bottom: 24px;
+        }
+
+        .repo-path {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .repo-path a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .repo-path a:hover {
+            text-decoration: underline;
+        }
+
+        .repo-path .repo-name {
+            font-weight: 600;
+        }
+
+        .repo-description {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .repo-stats {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .repo-stats span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            border-color: var(--text-secondary);
+            background: var(--border-color);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .btn-run {
+            background: #f0883e;
+            border-color: #f0883e;
+        }
+
+        .btn-run:hover {
+            background: #ffa657;
+            border-color: #ffa657;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0;
+        }
+
+        .tab {
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--text-primary);
+            border-bottom-color: #f78166;
+        }
+
+        .file-browser {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .file-header {
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .file-list {
+            padding: 0;
+        }
+
+        .file-item {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .file-item .folder-icon {
+            color: #54aeff;
+        }
+
+        .file-item .html-icon {
+            color: #e34c26;
+        }
+
+        .file-item .py-icon {
+            color: #3572A5;
+        }
+
+        .file-item .md-icon {
+            color: #083fa1;
+        }
+
+        .file-name {
+            flex: 1;
+            color: var(--link-color);
+        }
+
+        .file-message {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .file-date {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .code-viewer {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .code-header {
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .code-path {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        .code-content pre {
+            margin: 0;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .readme-viewer {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-top: 24px;
+        }
+
+        .readme-header {
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .readme-content {
+            padding: 24px;
+        }
+
+        .readme-content h1 {
+            font-size: 32px;
+            margin: 24px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .readme-content h2 {
+            font-size: 24px;
+            margin: 24px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .readme-content p {
+            margin: 16px 0;
+            color: var(--text-secondary);
+        }
+
+        .readme-content ul,
+        .readme-content ol {
+            padding-left: 24px;
+            margin: 16px 0;
+            color: var(--text-secondary);
+        }
+
+        .readme-content code {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 13px;
+        }
+
+        .readme-content pre {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        .readme-content pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .preview-container {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-top: 24px;
+        }
+
+        .preview-header {
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .preview-title {
+            font-weight: 600;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 600px;
+            border: none;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .file-message,
+            .file-date {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fab fa-github"></i>
+                <span>GitHub</span>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> 项目首页</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="repo-header">
+            <div class="repo-path">
+                <i class="fas fa-book" style="color: var(--text-secondary);"></i>
+                <a href="index.html">逗神文化</a>
+                <span>/</span>
+                <a href="#" class="repo-name">逗神归来</a>
+            </div>
+            <p class="repo-description">
+                <i class="fas fa-star"></i> 一个设计精美的本地视频播放网站，采用极简设计风格
+            </p>
+            <div class="repo-stats">
+                <span><i class="fas fa-star"></i> 128</span>
+                <span><i class="fas fa-code-branch"></i> 32</span>
+                <span><i class="fas fa-eye"></i> 256</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-run" onclick="openLivePreview()">
+                <i class="fas fa-play"></i> 运行项目
+            </button>
+            <a href="#" class="btn btn-primary" onclick="downloadProject()">
+                <i class="fas fa-download"></i> 下载源码
+            </a>
+            <button class="btn">
+                <i class="fas fa-code-branch"></i> Fork
+            </button>
+            <button class="btn">
+                <i class="fas fa-star"></i> Star
+            </button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('code')">
+                <i class="fas fa-code"></i> Code
+            </div>
+            <div class="tab" onclick="showTab('issues')">
+                <i class="fas fa-exclamation-circle"></i> Issues
+            </div>
+            <div class="tab" onclick="showTab('pulls')">
+                <i class="fas fa-code-pull-request"></i> Pull requests
+            </div>
+            <div class="tab" onclick="showTab('settings')">
+                <i class="fas fa-cog"></i> Settings
+            </div>
+        </div>
+
+        <div id="fileBrowser" class="file-browser">
+            <div class="file-header">
+                <span><i class="fas fa-folder"></i> e:\coding-zhou\Python\python 逗神文化管理</span>
+                <span style="color: var(--text-secondary);">Updated 2 days ago</span>
+            </div>
+            <div class="file-list" id="fileList"></div>
+        </div>
+
+        <div id="codeViewer" class="code-viewer">
+            <div class="code-header">
+                <span class="code-path" id="codePath"></span>
+                <div class="code-actions">
+                    <button class="btn" onclick="copyCode()">
+                        <i class="fas fa-copy"></i> 复制
+                    </button>
+                    <button class="btn" onclick="closeCode()">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
+                </div>
+            </div>
+            <div class="code-content">
+                <pre><code id="codeContent"></code></pre>
+            </div>
+        </div>
+
+        <div id="previewContainer" class="preview-container">
+            <div class="preview-header">
+                <span class="preview-title"><i class="fas fa-play-circle"></i> 项目预览</span>
+                <button class="btn" onclick="closePreview()">
+                    <i class="fas fa-times"></i> 关闭
+                </button>
+            </div>
+            <iframe id="previewFrame" class="preview-frame"></iframe>
+        </div>
+
+        <div class="readme-viewer">
+            <div class="readme-header">
+                <i class="fas fa-book-open"></i> README.md
+            </div>
+            <div class="readme-content" id="readmeContent">
+                <h1>逗神归来 - 视频学习平台</h1>
+                <p>一个设计精美的本地视频播放网站，采用极简设计风格，支持本地视频加载、分类筛选、搜索等功能。</p>
+                
+                <h2>功能特点</h2>
+                <ul>
+                    <li><strong>极简设计</strong> - 简洁优雅的用户界面</li>
+                    <li><strong>文件夹扫描</strong> - 自动扫描并分类本地视频文件</li>
+                    <li><strong>搜索与筛选</strong> - 按分类和关键词搜索视频</li>
+                    <li><strong>响应式布局</strong> - 支持桌面和移动设备</li>
+                    <li><strong>视频播放</strong> - 内置视频播放器</li>
+                    <li><strong>暗色模式</strong> - 自动适配系统主题</li>
+                </ul>
+                
+                <h2>快速开始</h2>
+                <ol>
+                    <li>直接在浏览器中打开 <code>index.html</code></li>
+                    <li>点击"选择文件夹"按钮，选择包含视频的文件夹</li>
+                    <li>点击视频卡片即可播放</li>
+                </ol>
+                
+                <h2>文件结构</h2>
+                <pre><code>逗神文化管理/
+├── index.html          # 原应用主页面
+├── index-app.html      # 简化版应用
+├── github-style.html   # GitHub风格项目展示页
+├── server.py           # Python后端服务器
+├── README.md           # 说明文档
+└── 启动服务器.bat      # 一键启动脚本</code></pre>
+
+                <h2>技术栈</h2>
+                <ul>
+                    <li>HTML5 + CSS3 + JavaScript</li>
+                    <li>Font Awesome 图标库</li>
+                    <li>Google Fonts (Inter)</li>
+                    <li>Python HTTP Server (可选)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projectFiles = [
+            { name: 'index.html', type: 'file', icon: 'html-icon', message: 'Initial commit - 添加主页面', date: '2 days ago' },
+            { name: 'index-app.html', type: 'file', icon: 'html-icon', message: '添加简化版应用', date: '1 day ago' },
+            { name: 'github-style.html', type: 'file', icon: 'html-icon', message: '添加GitHub风格项目展示', date: '1 day ago' },
+            { name: 'server.py', type: 'file', icon: 'py-icon', message: '添加Python后端服务器', date: '2 days ago' },
+            { name: 'README.md', type: 'file', icon: 'md-icon', message: '更新文档', date: '1 day ago' },
+        ];
+
+        let fileContents = {};
+        let currentFile = null;
+
+        async function loadFileContents() {
+            for (const file of projectFiles) {
+                try {
+                    const response = await fetch(file.name);
+                    if (response.ok) {
+                        fileContents[file.name] = await response.text();
+                    }
+                } catch (e) {
+                    fileContents[file.name] = '// File content not available\n// Please download the source code to view.';
+                }
+            }
+            renderFileList();
+        }
+
+        function renderFileList() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = projectFiles.map(file => `
+                <div class="file-item" onclick="viewFile('${file.name}')">
+                    <i class="fas fa-file ${file.icon}"></i>
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-message">${file.message}</span>
+                    <span class="file-date">${file.date}</span>
+                </div>
+            `).join('');
+        }
+
+        function viewFile(filename) {
+            currentFile = filename;
+            document.getElementById('fileBrowser').style.display = 'none';
+            document.getElementById('codeViewer').style.display = 'block';
+            document.getElementById('codePath').textContent = filename;
+            document.getElementById('codeContent').textContent = fileContents[filename] || 'File not found';
+        }
+
+        function closeCode() {
+            document.getElementById('codeViewer').style.display = 'none';
+            document.getElementById('fileBrowser').style.display = 'block';
+            currentFile = null;
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeContent').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('代码已复制到剪贴板！');
+            }).catch(() => {
+                alert('复制失败，请手动选择复制');
+            });
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.tab').classList.add('active');
+            if (tab === 'code') {
+                document.getElementById('fileBrowser').style.display = 'block';
+                document.getElementById('codeViewer').style.display = 'none';
+            } else {
+                alert('该功能正在开发中...');
+            }
+        }
+
+        function openLivePreview() {
+            document.getElementById('previewContainer').style.display = 'block';
+            document.getElementById('previewFrame').src = 'index-app.html';
+            window.scrollTo({ top: document.getElementById('previewContainer').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function closePreview() {
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('previewFrame').src = '';
+        }
+
+        function downloadProject() {
+            alert('正在准备下载...\n\n提示：您可以直接复制整个文件夹来获取完整源码！\n\n文件夹位置：e:\\coding-zhou\\Python\\python 逗神文化管理');
+        }
+
+        loadFileContents();
+    </script>
+</body>
+</html>

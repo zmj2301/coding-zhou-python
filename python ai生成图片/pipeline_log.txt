@@ -1,0 +1,6 @@
+1. Starting...
+2. torch OK, version=2.5.1+cpu
+3. diffusers OK, version=0.38.0
+4. Importing StableDiffusionPipeline...
+5. StableDiffusionPipeline imported!
+All OK!

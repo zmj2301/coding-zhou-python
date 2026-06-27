@@ -1,0 +1,52 @@
+# card_game_oo.py 代码作用思维导图（含行数信息）
+
+┌─ card_game_oo.py
+│  
+├─ Card类 - 行 12-51
+│  ├─ __init__() - 行 15-31
+│  ├─ __str__() - 行 32-35
+│  ├─ __repr__() - 行 36-39
+│  ├─ __eq__() - 行 40-45
+│  ├─ __lt__() - 行 46-51
+│  
+├─ Deck类 - 行 52-84
+│  ├─ __init__() - 行 55-60
+│  ├─ shuffle() - 行 61-64
+│  ├─ deal() - 行 65-80
+│  ├─ __len__() - 行 81-84
+│  
+├─ Player类 - 行 85-169
+│  ├─ __init__() - 行 88-97
+│  ├─ add_cards() - 行 98-108
+│  ├─ remove_card() - 行 109-124
+│  ├─ remove_cards_by_value() - 行 125-144
+│  ├─ sort_cards() - 行 145-153
+│  ├─ get_card_values() - 行 154-161
+│  ├─ __str__() - 行 162-165
+│  ├─ __repr__() - 行 166-169
+│  
+├─ HumanPlayer类 - 行 170-199
+│  ├─ __init__() - 行 173-180
+│  ├─ select_cards() - 行 181-199
+│  
+├─ AIPlayer类 - 行 200-538
+│  ├─ __init__() - 行 203-210
+│  ├─ get_card_pattern() - 行 211-327
+│  ├─ check_qualified() - 行 328-480
+│  ├─ auto_play() - 行 481-538
+│  
+├─ CardGame类 - 行 539-674
+│  ├─ __init__() - 行 542-551
+│  ├─ start_game() - 行 552-571
+│  ├─ get_winner() - 行 572-585
+│  ├─ player_play() - 行 586-624
+│  ├─ ai_play() - 行 625-659
+│  ├─ get_game_status() - 行 660-674
+│  
+├─ GameUI类 - 行 675-873
+│  ├─ __init__() - 行 678-726
+│  ├─ load_images() - 行 727-758
+│  ├─ calculate_card_positions() - 行 759-787
+│  ├─ draw_game() - 行 788-817
+│  ├─ handle_events() - 行 818-850
+│  ├─ run() - 行 851-869

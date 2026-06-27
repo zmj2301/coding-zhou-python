@@ -1,0 +1,61 @@
+{
+    "player_state": {
+        "coin_count": 694,
+        "owned_backgrounds": [
+            "default"
+        ],
+        "current_background": "default",
+        "owned_items": [
+            "easy_question",
+            "shield"
+        ],
+        "attack_speed_level": 0,
+        "damage_level": 0,
+        "easy_question_level": 0,
+        "extra_time_level": 0,
+        "inventory": {
+            "easy_question": 0,
+            "extra_time": 0,
+            "shield": 0,
+            "double_coin": 0,
+            "hint_answer": 0,
+            "attack_speed_1": 0,
+            "attack_speed_2": 0,
+            "attack_speed_3": 0,
+            "damage_1": 0,
+            "damage_2": 0,
+            "damage_3": 0
+        }
+    },
+    "config_state": {
+        "developer_mode": true,
+        "settings": {
+            "music_volume": 0.3,
+            "sfx_volume": 0.5,
+            "screen_width": 500,
+            "screen_height": 600
+        }
+    },
+    "level_progress": [
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+    ]
+}

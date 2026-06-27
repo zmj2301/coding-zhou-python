@@ -1,0 +1,138 @@
+{
+    "pet": {
+        "size": 100,
+        "x_offset": 50,
+        "y_offset": 200,
+        "bg_color": "white",
+        "icon_path": "icon.png",
+        "transparent": false
+    },
+    "timer": {
+        "work_minutes": 20,
+        "break_minutes": 5
+    },
+    "menus": {
+        "cctv_channels": [
+            {
+                "name": "CCTV-1 综合",
+                "url": "https://tv.cctv.com/cctv1/"
+            },
+            {
+                "name": "CCTV-2 财经",
+                "url": "https://tv.cctv.com/cctv2/"
+            },
+            {
+                "name": "CCTV-3 综艺",
+                "url": "https://tv.cctv.com/cctv3/"
+            },
+            {
+                "name": "CCTV-4 中文国际",
+                "url": "https://tv.cctv.com/cctv4/"
+            },
+            {
+                "name": "CCTV-5 体育",
+                "url": "https://tv.cctv.com/cctv5/"
+            },
+            {
+                "name": "CCTV-5+ 体育赛事",
+                "url": "https://tv.cctv.com/cctv5plus/"
+            },
+            {
+                "name": "CCTV-6 电影",
+                "url": "https://tv.cctv.com/cctv6/"
+            },
+            {
+                "name": "CCTV-7 国防军事",
+                "url": "https://tv.cctv.com/cctv7/"
+            },
+            {
+                "name": "CCTV-8 电视剧",
+                "url": "https://tv.cctv.com/cctv8/"
+            },
+            {
+                "name": "CCTV-9 纪录",
+                "url": "https://tv.cctv.com/cctv9/"
+            },
+            {
+                "name": "CCTV-10 科教",
+                "url": "https://tv.cctv.com/cctv10/"
+            },
+            {
+                "name": "CCTV-11 戏曲",
+                "url": "https://tv.cctv.com/cctv11/"
+            },
+            {
+                "name": "CCTV-12 社会与法",
+                "url": "https://tv.cctv.com/cctv12/"
+            },
+            {
+                "name": "CCTV-13 新闻",
+                "url": "https://tv.cctv.com/cctv13/"
+            },
+            {
+                "name": "CCTV-14 少儿",
+                "url": "https://tv.cctv.com/cctv14/"
+            },
+            {
+                "name": "CCTV-15 音乐",
+                "url": "https://tv.cctv.com/cctv15/"
+            },
+            {
+                "name": "CCTV-16 奥林匹克",
+                "url": "https://tv.cctv.com/cctv16/"
+            },
+            {
+                "name": "CCTV-17 农业农村",
+                "url": "https://tv.cctv.com/cctv17/"
+            }
+        ],
+        "ai_models": [
+            {
+                "name": "DeepSeek 深度求索",
+                "url": "https://chat.deepseek.com/"
+            },
+            {
+                "name": "Qwen 通义千问",
+                "url": "https://tongyi.aliyun.com/"
+            },
+            {
+                "name": "ERNIE 文心一言",
+                "url": "https://yiyan.baidu.com/"
+            },
+            {
+                "name": "Kimi 月之暗面",
+                "url": "https://kimi.moonshot.cn/"
+            },
+            {
+                "name": "ChatGLM 智谱清言",
+                "url": "https://chatglm.cn/"
+            },
+            {
+                "name": "Doubao 豆包",
+                "url": "https://www.doubao.com/"
+            },
+            {
+                "name": "Yuanbao 腾讯元宝",
+                "url": "https://yuanbao.tencent.com/"
+            },
+            {
+                "name": "Spark 讯飞星火",
+                "url": "https://xinghuo.xfyun.cn/"
+            },
+            {
+                "name": "Metaso 秘塔搜索",
+                "url": "https://metaso.cn/"
+            },
+            {
+                "name": "NanoAI 360搜索",
+                "url": "https://n.cn/"
+            }
+        ],
+        "custom_links": []
+    },
+    "history": {
+        "texts": [
+            "你好"
+        ]
+    }
+}

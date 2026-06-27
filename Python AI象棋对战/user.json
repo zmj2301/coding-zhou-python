@@ -1,0 +1,41 @@
+{
+  "name": "Player",
+  "profile_created": "2026-05-01 22:03:52",
+  "last_updated": "2026-05-01 22:03:52",
+  "total_games": 8,
+  "total_moves": 57,
+  "playing_style": "平衡型",
+  "preferred_pieces": {
+    "兵": 284,
+    "炮": 96,
+    "車": 108,
+    "馬": 94,
+    "相": 114,
+    "仕": 114,
+    "帥": 57
+  },
+  "tactical_patterns": [],
+  "weaknesses": [],
+  "strengths": [
+    "攻防平衡，全面发展"
+  ],
+  "move_preferences": {
+    "aggressive": 0,
+    "defensive": 0,
+    "counterattack": 0,
+    "positional": 0
+  },
+  "piece_sacrifice_rate": 0.0,
+  "average_thinking_time": 0.0,
+  "favorite_pieces": [
+    "兵",
+    "相",
+    "仕"
+  ],
+  "opening_preference": "",
+  "check_skill": 6.0,
+  "defensive_skill": 6.0,
+  "offensive_skill": 5.5,
+  "common_mistakes": [],
+  "notes": ""
+}

@@ -1,0 +1,20 @@
+{
+	"name": "pvz",
+	"version": "1.0.0",
+	"description": "",
+	"keywords": [],
+	"license": "PolyForm-Noncommercial-1.0.0",
+	"author": "",
+	"scripts": {
+		"lint": "oxlint",
+		"fix": "oxlint --fix",
+		"build": "bash scripts/build.sh"
+	},
+	"devDependencies": {
+		"html-minifier-terser": "^7.2.0",
+		"oxfmt": "^0.24.0",
+		"terser": "^5.31.6",
+		"wrangler": "^4.54.0"
+	},
+	"packageManager": "pnpm@10.10.0"
+}

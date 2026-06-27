@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stroop 金字塔能力评估 - 官方常模标准与个人训练数据的对比分析报告">
+    <title>Stroop 金字塔 - 官方标准 vs 个人数据对比</title>
+    <style>
+        /* 动态注入：以下 CSS 变量由 Python 在渲染时替换为真实数据 */
+        :root {
+            --time-pct-width: {time_pct}%;
+            --accuracy-pct-width: {accuracy_pct}%;
+            --percentile-width: {percentile}%;
+        }
+        /* ========================================
+           基础变量
+           ======================================== */
+        :root {
+            --bg-deep: #0b1120;
+            --bg-panel: #111827;
+            --bg-card: #1f2937;
+            --bg-card-hover: #27354f;
+            --border-subtle: rgba(148, 163, 184, 0.10);
+            --border-glow: rgba(99, 102, 241, 0.30);
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --text-tertiary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent-gold: #fbbf24;
+            --accent-green: #34d399;
+            --accent-blue: #60a5fa;
+            --accent-purple: #a78bfa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 24px 32px;
+        }
+
+        /* ========================================
+           布局容器
+           ======================================== */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: auto auto 1fr auto;
+            gap: 20px;
+            min-height: calc(100vh - 48px);
+        }
+
+        /* ========================================
+           顶部标题栏
+           ======================================== */
+        .header-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+        }
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .header-sub {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+
+        /* 综合评级徽章 */
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            color: #fff;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 999px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 16px rgba(234, 88, 12, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+            animation: pulse-glow 2.5s ease-in-out infinite;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 16px rgba(234, 88, 12, 0.35), inset 0 1px 0 rgba(255,255,255,0.2); }
+            50% { box-shadow: 0 6px 28px rgba(234, 88, 12, 0.5), inset 0 1px 0 rgba(255,255,255,0.25); }
+        }
+
+        /* ========================================
+           侧边栏
+           ======================================== */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .panel:hover {
+            border-color: var(--border-glow);
+        }
+        .panel-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 指标卡片 */
+        .metric-item {
+            text-align: center;
+            padding: 16px 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.25s ease;
+        }
+        .metric-item:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+        .metric-item:last-child { margin-bottom: 0; }
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* ========================================
+           主内容区
+           ======================================== */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 数据对比行 */
+        .data-row-flex {
+            display: flex;
+            gap: 20px;
+        }
+        .data-row-flex > .panel {
+            flex: 1;
+        }
+
+        /* 进度条 */
+        .progress-track {
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            position: relative;
+            margin-top: 6px;
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bar-color);
+            width: var(--bar-width, 0%);
+        }
+
+        .pb-time { --bar-width: var(--time-pct-width, 0%); --bar-color: linear-gradient(90deg,#6366f1,#0ea5e9); }
+        .pb-accuracy { --bar-width: var(--accuracy-pct-width, 0%); --bar-color: linear-gradient(90deg,#10b981,#0ea5e9); }
+        .pb-percentile { --bar-width: var(--percentile-width, 0%); --bar-color: linear-gradient(90deg,#8b5cf6,#ec4899); }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        .progress-header .label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .progress-header .value {
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+        .progress-header .ref {
+            color: var(--text-muted);
+        }
+
+        .progress-item {
+            margin-bottom: 14px;
+        }
+        .progress-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 常模来源列表 */
+        .source-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .source-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .source-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+        .source-item strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .source-note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* ========================================
+           金字塔横向卡片
+           ======================================== */
+        .pyramid-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+        }
+
+        .pyramid-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+        .pyramid-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        .pyramid-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.15);
+            z-index: 3;
+        }
+
+        /* 卡片头部 */
+        .pc-header {
+            padding: 16px 12px 12px;
+            text-align: center;
+            position: relative;
+        }
+        .pc-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            margin: 0 auto 8px;
+            border: 2px solid rgba(255,255,255,0.25);
+            color: var(--text-primary);
+        }
+        .pc-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        .pc-sub {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        /* 卡片主体 */
+        .pc-body {
+            flex: 1;
+            padding: 0 12px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .pc-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            background: rgba(0,0,0,0.22);
+            border-radius: 8px;
+            font-size: 0.78rem;
+        }
+        .pc-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .pc-value {
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* 卡片底部 */
+        .pc-footer {
+            padding: 10px 12px 14px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* 状态标签 */
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.18);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+        .tag-pass { background: rgba(52, 211, 153, 0.25); color: #34d399; border-color: rgba(52, 211, 153, 0.5); }
+        .tag-current { background: rgba(251, 191, 36, 0.25); color: #fbbf24; border-color: rgba(251, 191, 36, 0.55); }
+        .tag-fail { background: rgba(248, 113, 113, 0.25); color: #fca5a5; border-color: rgba(248, 113, 113, 0.45); }
+
+        /* 层级渐变（提升标题在渐变背景上的文字对比度） */
+        .level-1 { background: linear-gradient(180deg, #4338ca 0%, #312e81 100%); border-top: 3px solid #6366f1; }
+        .level-2 { background: linear-gradient(180deg, #be185d 0%, #831843 100%); border-top: 3px solid #ec4899; }
+        .level-3 { background: linear-gradient(180deg, #0369a1 0%, #0c4a6e 100%); border-top: 3px solid #0ea5e9; }
+        .level-4 { background: linear-gradient(180deg, #047857 0%, #064e3b 100%); border-top: 3px solid #10b981; }
+        .level-5 { background: linear-gradient(180deg, #b45309 0%, #78350f 100%); border-top: 3px solid #f59e0b; }
+        .level-6 { background: linear-gradient(180deg, #374151 0%, #111827 100%); border-top: 3px solid #9ca3af; }
+
+        /* ========================================
+           能力总结
+           ======================================== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+        .summary-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-glow);
+        }
+        .summary-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--title-color, var(--text-primary));
+        }
+        .summary-body {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* ========================================
+           页脚
+           ======================================== */
+        .page-footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           响应式
+           ======================================== */
+        @media (max-width: 1100px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .sidebar { flex-direction: row; flex-wrap: wrap; }
+            .sidebar .panel { flex: 1; min-width: 200px; }
+            .metric-item { margin-bottom: 0; }
+            .sidebar-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .pyramid-grid { grid-template-columns: repeat(3, 1fr); }
+            .summary-grid { grid-template-columns: 1fr; }
+            .data-row-flex { flex-direction: column; }
+        }
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            .header-bar { flex-direction: column; gap: 12px; text-align: center; }
+            .pyramid-grid { grid-template-columns: repeat(2, 1fr); }
+            .sidebar-metrics { grid-template-columns: 1fr; }
+        }
+        @media print {
+            body { background: #fff; color: #111; padding: 0; }
+            .dashboard { max-width: 100%; gap: 8px; min-height: auto; }
+            .panel, .pyramid-card, .summary-card, .metric-item {
+                background: #fff !important;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+            .pyramid-card::before, .rank-badge, .pyramid-card:hover,
+            .panel:hover, .summary-card:hover, .metric-item:hover {
+                background: #fff !important;
+                box-shadow: none !important;
+                transform: none !important;
+                border-color: #ccc !important;
+            }
+            .level-1, .level-2, .level-3, .level-4, .level-5, .level-6 {
+                background: #fff !important;
+                border-top: 3px solid #666 !important;
+            }
+            .header-title, .header-sub, .panel-title, .summary-title,
+            .metric-value, .metric-label, .pc-title, .pc-sub,
+            .pc-label, .pc-value, .source-item, .status-tag, .page-footer {
+                color: #111 !important;
+            }
+            .progress-track { background: #eee; }
+            .progress-bar { background: #333 !important; }
+            .status-tag { background: #fff !important; color: #111 !important; border-color: #999 !important; text-shadow: none; }
+            .rank-badge { background: #fff !important; color: #111 !important; border: 1px solid #999; text-shadow: none; box-shadow: none; }
+            .pc-row { background: #f5f5f5; }
+            .page-footer { font-size: 0.65rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+
+        <!-- 顶部标题栏 -->
+        <header class="header-bar">
+            <div>
+                <div class="header-title">🏆 Stroop 金字塔能力评估</div>
+                <div class="header-sub">官方常模标准 vs 你的测试数据 对比分析</div>
+            </div>
+            <div style="text-align:right">
+                <div class="rank-badge">
+                    <span>⭐</span>
+                    <span>第 {level} 层级</span>
+                </div>
+                <div style="font-size:0.8rem;color:var(--text-tertiary);margin-top:6px">{level_desc}</div>
+            </div>
+        </header>
+
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <!-- 核心指标 -->
+            <div class="panel">
+                <div class="panel-title">📊 核心指标</div>
+                <div class="sidebar-metrics">
+                    <div class="metric-item">
+                        <div class="metric-value" style="color:var(--accent-blue)">{score}</div>
+                        <div class="metric-label">得分 / {total_questions}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" style="color:var(--accent-green)">{accuracy}%</div>
+                        <div class="metric-label">总正确率</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" style="color:var(--accent-purple)">{avg_time_per_question}s</div>
+                        <div class="metric-label">平均反应</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" style="color:var(--accent-gold)">{history_count}</div>
+                        <div class="metric-label">累计训练</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 常模来源 -->
+            <div class="panel">
+                <div class="panel-title">📚 常模来源</div>
+                <div class="source-list">
+                    <div class="source-item">
+                        <span class="source-dot" style="background:var(--accent-blue)"></span>
+                        <p><strong>Human Benchmark:</strong> 210 万+ 全球数据，平均正确率 72%</p>
+                    </div>
+                    <div class="source-item">
+                        <span class="source-dot" style="background:var(--accent-green)"></span>
+                        <p><strong>学术研究:</strong> 不一致条件反应时 1100-1250ms</p>
+                    </div>
+                    <div class="source-item">
+                        <span class="source-dot" style="background:var(--accent-purple)"></span>
+                        <p><strong>干扰效应:</strong> 标准差值 113-180ms</p>
+                    </div>
+                    <div class="source-item">
+                        <span class="source-dot" style="background:var(--accent-gold)"></span>
+                        <p><strong>错误率常模:</strong> 健康成人 5-6%</p>
+                    </div>
+                </div>
+                <div class="source-note">* 基于 20-40 岁健康成人常模</div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+
+            <!-- 数据对比 -->
+            <div class="data-row-flex">
+                <div class="panel">
+                    <div class="panel-title">📈 总体数据对比</div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="label">平均反应时间</span>
+                            <span><span class="value">{avg_time_per_question}s</span> <span class="ref">/ 标准 1.60s</span></span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar pb-time"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="label">总正确率</span>
+                            <span><span class="value">{accuracy}%</span> <span class="ref">/ 标准 84%</span></span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar pb-accuracy"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span class="label">抗干扰能力</span>
+                            <span><span class="value">{level_tag}</span> <span class="ref">/ 全球平均 72%</span></span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar pb-percentile"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-title">🎯 提升建议</div>
+                    <div class="source-list">
+                        <div class="source-item">
+                            <span class="source-dot" style="background:var(--accent-green)"></span>
+                            <p>每日 10 分钟限时反应训练，建立稳定的认知节奏</p>
+                        </div>
+                        <div class="source-item">
+                            <span class="source-dot" style="background:var(--accent-gold)"></span>
+                            <p>重点练习字色不一致的高干扰题目，强化抑制能力</p>
+                        </div>
+                        <div class="source-item">
+                            <span class="source-dot" style="background:var(--accent-blue)"></span>
+                            <p>目标：正确率 ≥ 90%，平均反应时间 ≤ 1.5s/题</p>
+                        </div>
+                        <div class="source-item">
+                            <span class="source-dot" style="background:var(--accent-purple)"></span>
+                            <p>记录每次训练数据，观察长期进步趋势</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 六层金字塔 -->
+            <div class="panel">
+                <div class="panel-title">📊 6 层级金字塔详细对比</div>
+                <div class="pyramid-grid">
+                    {pyramid_levels}
+                </div>
+            </div>
+
+            <!-- 能力评估总结 -->
+            <div class="panel">
+                <div class="panel-title">📋 能力评估总结</div>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-title" style="--title-color:#34d399">✅ 优势项目</div>
+                        <div class="summary-body">
+                            <p>• 本次得分 {score}/{total_questions}</p>
+                            <p>• 正确率达到 {accuracy}%</p>
+                            <p>• 平均反应 {avg_time_per_question}s/题</p>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title" style="--title-color:#fbbf24">⚡ 当前层级</div>
+                        <div class="summary-body">
+                            <p>• 稳定达到第 {level} 层级</p>
+                            <p>• 累计完成 {history_count} 次训练</p>
+                            <p>• 历史平均正确率 {avg_accuracy}%</p>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title" style="--title-color:#60a5fa">🎯 发展方向</div>
+                        <div class="summary-body">
+                            <p>• 加强高阶干扰抑制训练</p>
+                            <p>• 逐步提升限时压力下的准确率</p>
+                            <p>• 向第 {level_next} 层级发起挑战</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="page-footer">
+            Stroop Trainer · 认知训练报告 · {datetime}
+        </footer>
+
+    </div>
+</body>
+</html>

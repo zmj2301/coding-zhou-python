@@ -1,0 +1,6816 @@
+[
+  {
+    "step": 1,
+    "timestamp": "2026-05-01 21:43:56",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        }
+      ]
+    ],
+    "all_moves_count": 45,
+    "candidate_moves": [
+      {
+        "move": [
+          2,
+          1,
+          9,
+          1
+        ],
+        "score": -1.0,
+        "captured": "馬",
+        "can_check": false,
+        "priority": 40000,
+        "piece_name": "炮"
+      },
+      {
+        "move": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          0,
+          2,
+          0
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          1,
+          2,
+          2
+        ],
+        "score": -0.9999892711639404,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          0,
+          1,
+          2,
+          0
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          0
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          0,
+          3,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          0,
+          4,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          0,
+          5,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      1,
+      2,
+      2
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 165,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 1 步：我决定从 (0,1) 走到 (2,2)，因为 我决定移动我的 馬 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 45 种合法走法",
+        "进攻机会：发现 1 个可以吃子的机会"
+      ],
+      "reasons": [
+        "- 优化 馬 的位置，为后续做准备",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 1 步：我决定从 (0,1) 走到 (2,2)，因为 我决定移动我的 馬 到一个更好的位置。"
+  },
+  {
+    "step": 2,
+    "timestamp": "2026-05-01 21:44:00",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        }
+      ]
+    ],
+    "all_moves_count": 44,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "score": -0.9997102618217468,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "score": -0.9570918679237366,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          0,
+          2,
+          0
+        ],
+        "score": -0.9999850988388062,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          0
+        ],
+        "score": 0.01479386631399393,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          0,
+          3,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          0,
+          4,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          0,
+          5,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          0,
+          6,
+          2,
+          8
+        ],
+        "score": -0.9560417532920837,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          0,
+          6,
+          2,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      2,
+      2,
+      4
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 156,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 2 步：我决定从 (0,2) 走到 (2,4)，因为 我决定移动我的 象 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 44 种合法走法"
+      ],
+      "reasons": [
+        "- 优化 象 的位置，为后续做准备",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 2 步：我决定从 (0,2) 走到 (2,4)，因为 我决定移动我的 象 到一个更好的位置。"
+  },
+  {
+    "step": 3,
+    "timestamp": "2026-05-01 21:44:06",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        null,
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        }
+      ]
+    ],
+    "all_moves_count": 7,
+    "candidate_moves": [
+      {
+        "move": [
+          2,
+          2,
+          3,
+          4
+        ],
+        "score": -1.0,
+        "captured": "炮",
+        "can_check": false,
+        "priority": 55000,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          0,
+          3,
+          1,
+          4
+        ],
+        "score": 0.24751318991184235,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          0,
+          5,
+          1,
+          4
+        ],
+        "score": -0.9793556928634644,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          2,
+          2,
+          1,
+          4
+        ],
+        "score": -0.9973520636558533,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          2,
+          4,
+          4,
+          6
+        ],
+        "score": 0.9769448637962341,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          2,
+          4,
+          4,
+          2
+        ],
+        "score": -0.9761383533477783,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          2,
+          4,
+          0,
+          2
+        ],
+        "score": 0.9998140335083008,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "象"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      2,
+      2,
+      3,
+      4
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 130,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 3 步：我决定从 (2,2) 走到 (3,4)，因为 现在我正在被将军，我选择了这一步来防守。",
+      "steps": [
+        "局面分析：我发现共有 7 种合法走法",
+        "重要警报：我正在被将军！必须防守！",
+        "进攻机会：发现 1 个可以吃子的机会"
+      ],
+      "reasons": [
+        "- 这步能解除将军",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 3 步：我决定从 (2,2) 走到 (3,4)，因为 现在我正在被将军，我选择了这一步来防守。"
+  },
+  {
+    "step": 4,
+    "timestamp": "2026-05-01 21:44:08",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        null,
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        }
+      ]
+    ],
+    "all_moves_count": 47,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          0,
+          0,
+          2
+        ],
+        "score": -0.9999979734420776,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "score": -0.9800435304641724,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          0,
+          2,
+          0
+        ],
+        "score": 0.9263134002685547,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          3,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          0,
+          4,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          0,
+          5,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          0,
+          6,
+          2,
+          8
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          0,
+          7,
+          2,
+          8
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          0,
+          7,
+          2,
+          6
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "馬"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      0,
+      0,
+      2
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 155,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 4 步：我决定从 (0,0) 走到 (0,2)，因为 我决定移动我的 車 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 47 种合法走法"
+      ],
+      "reasons": [
+        "- 优化 車 的位置，为后续做准备",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 4 步：我决定从 (0,0) 走到 (0,2)，因为 我决定移动我的 車 到一个更好的位置。"
+  },
+  {
+    "step": 5,
+    "timestamp": "2026-05-01 21:44:11",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        }
+      ]
+    ],
+    "all_moves_count": 4,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          3,
+          1,
+          4
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          0,
+          5,
+          1,
+          4
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          2,
+          4,
+          4,
+          6
+        ],
+        "score": 0.9999998211860657,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          2,
+          4,
+          4,
+          2
+        ],
+        "score": 0.9989846348762512,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "象"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      2,
+      4,
+      4,
+      2
+    ],
+    "best_score": 0.9989846348762512,
+    "think_time_ms": 65,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 5 步：我决定从 (2,4) 走到 (4,2)，因为 现在我正在被将军，我选择了这一步来防守。",
+      "steps": [
+        "局面分析：我发现共有 4 种合法走法",
+        "重要警报：我正在被将军！必须防守！"
+      ],
+      "reasons": [
+        "- 这步能解除将军",
+        "- 这步后形势对我比较有利",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 5 步：我决定从 (2,4) 走到 (4,2)，因为 现在我正在被将军，我选择了这一步来防守。"
+  },
+  {
+    "step": 6,
+    "timestamp": "2026-05-01 21:44:14",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        }
+      ]
+    ],
+    "all_moves_count": 39,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "score": 0.9999995827674866,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          1,
+          2
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          4,
+          1,
+          4
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          0,
+          6,
+          2,
+          8
+        ],
+        "score": 0.9999821782112122,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          0,
+          7,
+          2,
+          8
+        ],
+        "score": 0.9999785423278809,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          0,
+          7,
+          2,
+          6
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          0,
+          8,
+          1,
+          8
+        ],
+        "score": 0.9999935626983643,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          8,
+          2,
+          8
+        ],
+        "score": 0.9999812841415405,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      8,
+      1,
+      8
+    ],
+    "best_score": 0.9999785423278809,
+    "think_time_ms": 157,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 6 步：我决定从 (0,8) 走到 (1,8)，因为 我决定移动我的 車 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 39 种合法走法"
+      ],
+      "reasons": [
+        "- 优化 車 的位置，为后续做准备",
+        "- 这步后形势对我比较有利",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 6 步：我决定从 (0,8) 走到 (1,8)，因为 我决定移动我的 車 到一个更好的位置。"
+  },
+  {
+    "step": 7,
+    "timestamp": "2026-05-01 21:44:18",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        },
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        }
+      ]
+    ],
+    "all_moves_count": 47,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "score": 0.9999985694885254,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "score": 0.9999859929084778,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          1,
+          2
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          4,
+          1,
+          4
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          0,
+          6,
+          2,
+          8
+        ],
+        "score": 0.9945889115333557,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          0,
+          7,
+          2,
+          8
+        ],
+        "score": 0.9949414730072021,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          0,
+          7,
+          2,
+          6
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "馬"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          7
+        ],
+        "score": 0.9996810555458069,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          6
+        ],
+        "score": 0.9994163513183594,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      7,
+      2,
+      8
+    ],
+    "best_score": 0.9945889115333557,
+    "think_time_ms": 154,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 7 步：我决定从 (0,7) 走到 (2,8)，因为 我决定移动我的 馬 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 47 种合法走法"
+      ],
+      "reasons": [
+        "- 优化 馬 的位置，为后续做准备",
+        "- 这步后形势对我比较有利",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 7 步：我决定从 (0,7) 走到 (2,8)，因为 我决定移动我的 馬 到一个更好的位置。"
+  },
+  {
+    "step": 8,
+    "timestamp": "2026-05-01 21:44:20",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        }
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null
+      ]
+    ],
+    "all_moves_count": 45,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "score": 0.9999794960021973,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "score": 0.9997914433479309,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          1,
+          2
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "score": 0.9999999403953552,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          4,
+          1,
+          4
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          7
+        ],
+        "score": 0.9994784593582153,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          6
+        ],
+        "score": 0.9961506724357605,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          5
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          3
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          2
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      1,
+      8,
+      1,
+      6
+    ],
+    "best_score": 0.9961506724357605,
+    "think_time_ms": 179,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 8 步：我决定从 (1,8) 走到 (1,6)，因为 我决定移动我的 車 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 45 种合法走法"
+      ],
+      "reasons": [
+        "- 优化 車 的位置，为后续做准备",
+        "- 这步后形势对我比较有利",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 8 步：我决定从 (1,8) 走到 (1,6)，因为 我决定移动我的 車 到一个更好的位置。"
+  },
+  {
+    "step": 9,
+    "timestamp": "2026-05-01 21:44:23",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "炮",
+          "color": "black",
+          "img_idx": 10
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        }
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 32,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          1,
+          2
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          4,
+          1,
+          4
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          1,
+          6,
+          1,
+          7
+        ],
+        "score": 0.9999937415122986,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          6,
+          1,
+          8
+        ],
+        "score": 0.9987480044364929,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          6,
+          1,
+          5
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          6,
+          1,
+          3
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          6,
+          1,
+          2
+        ],
+        "score": 0.9999994039535522,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      1,
+      6,
+      1,
+      8
+    ],
+    "best_score": 0.9987480044364929,
+    "think_time_ms": 176,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 9 步：我决定从 (1,6) 走到 (1,8)，因为 我决定移动我的 車 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 32 种合法走法"
+      ],
+      "reasons": [
+        "- 优化 車 的位置，为后续做准备",
+        "- 这步后形势对我比较有利",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 9 步：我决定从 (1,6) 走到 (1,8)，因为 我决定移动我的 車 到一个更好的位置。"
+  },
+  {
+    "step": 10,
+    "timestamp": "2026-05-01 21:44:25",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        }
+      ],
+      [
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        }
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 20,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          1,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          4,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          7
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          6
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          5
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          3
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          8,
+          1,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      1,
+      8,
+      1,
+      3
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 170,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 10 步：我决定从 (1,8) 走到 (1,3)，因为 我决定移动我的 車 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 20 种合法走法"
+      ],
+      "reasons": [
+        "- 优化 車 的位置，为后续做准备",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 10 步：我决定从 (1,8) 走到 (1,3)，因为 我决定移动我的 車 到一个更好的位置。"
+  },
+  {
+    "step": 11,
+    "timestamp": "2026-05-01 21:44:28",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "black",
+          "img_idx": 13
+        }
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 3,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          3,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          0,
+          5,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      5,
+      1,
+      4
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 68,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 11 步：我决定从 (0,5) 走到 (1,4)，因为 现在我正在被将军，我选择了这一步来防守。",
+      "steps": [
+        "局面分析：我发现共有 3 种合法走法",
+        "重要警报：我正在被将军！必须防守！"
+      ],
+      "reasons": [
+        "- 这步能解除将军",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 11 步：我决定从 (0,5) 走到 (1,4)，因为 现在我正在被将军，我选择了这一步来防守。"
+  },
+  {
+    "step": 12,
+    "timestamp": "2026-05-01 21:44:32",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        }
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 6,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          4,
+          0,
+          5
+        ],
+        "score": -0.9999992847442627,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          0,
+          6,
+          2,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          1,
+          4,
+          2,
+          5
+        ],
+        "score": -0.9999998211860657,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          1,
+          4,
+          2,
+          3
+        ],
+        "score": -0.9999998807907104,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          1,
+          4,
+          0,
+          5
+        ],
+        "score": -0.9999984502792358,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          4,
+          2,
+          2,
+          4
+        ],
+        "score": -0.999992847442627,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "象"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      6,
+      2,
+      4
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 111,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 12 步：我决定从 (0,6) 走到 (2,4)，因为 现在我正在被将军，我选择了这一步来防守。",
+      "steps": [
+        "局面分析：我发现共有 6 种合法走法",
+        "重要警报：我正在被将军！必须防守！"
+      ],
+      "reasons": [
+        "- 这步能解除将军",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 12 步：我决定从 (0,6) 走到 (2,4)，因为 现在我正在被将军，我选择了这一步来防守。"
+  },
+  {
+    "step": 13,
+    "timestamp": "2026-05-01 21:44:34",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 21,
+    "candidate_moves": [
+      {
+        "move": [
+          4,
+          2,
+          2,
+          4
+        ],
+        "score": -0.9999987483024597,
+        "captured": "車",
+        "can_check": false,
+        "priority": 90000,
+        "piece_name": "象"
+      },
+      {
+        "move": [
+          1,
+          3,
+          9,
+          3
+        ],
+        "score": -0.9999940395355225,
+        "captured": "仕",
+        "can_check": true,
+        "priority": 20500,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          1,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "score": -0.9000492691993713,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          4,
+          0,
+          5
+        ],
+        "score": -0.9999996423721313,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          0
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      4,
+      2,
+      2,
+      4
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 156,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 13 步：我决定从 (4,2) 走到 (2,4)，因为 我发现可以用 象 吃掉对方的 車。",
+      "steps": [
+        "局面分析：我发现共有 21 种合法走法",
+        "进攻机会：发现 2 个可以吃子的机会",
+        "将军机会：发现 1 个可以将军的机会！"
+      ],
+      "reasons": [
+        "- 能吃到对方的 車，这是个好机会！",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 13 步：我决定从 (4,2) 走到 (2,4)，因为 我发现可以用 象 吃掉对方的 車。"
+  },
+  {
+    "step": 14,
+    "timestamp": "2026-05-01 21:44:38",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 20,
+    "candidate_moves": [
+      {
+        "move": [
+          1,
+          3,
+          9,
+          3
+        ],
+        "score": -0.9999603033065796,
+        "captured": "仕",
+        "can_check": true,
+        "priority": 20500,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          1,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "score": -0.5611295700073242,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          4,
+          0,
+          5
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "score": 0.9980913996696472,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          0
+        ],
+        "score": 0.9990981817245483,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          3,
+          2,
+          3
+        ],
+        "score": -0.9999998807907104,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      4,
+      0,
+      5
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 167,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 14 步：我决定从 (0,4) 走到 (0,5)，因为 我决定移动我的 将 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 20 种合法走法",
+        "进攻机会：发现 1 个可以吃子的机会",
+        "将军机会：发现 1 个可以将军的机会！"
+      ],
+      "reasons": [
+        "- 优化 将 的位置，为后续做准备",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 14 步：我决定从 (0,4) 走到 (0,5)，因为 我决定移动我的 将 到一个更好的位置。"
+  },
+  {
+    "step": 15,
+    "timestamp": "2026-05-01 21:44:40",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 26,
+    "candidate_moves": [
+      {
+        "move": [
+          1,
+          3,
+          9,
+          3
+        ],
+        "score": -1.0,
+        "captured": "仕",
+        "can_check": true,
+        "priority": 20500,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          1
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          0,
+          0
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          1,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          2,
+          2,
+          2
+        ],
+        "score": -0.9999746084213257,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          5,
+          0,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          0,
+          5,
+          1,
+          5
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          2
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "score": 0.9997984170913696,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          3,
+          1,
+          0
+        ],
+        "score": 0.9999918341636658,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      2,
+      1,
+      2
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 169,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 15 步：我决定从 (0,2) 走到 (1,2)，因为 我决定移动我的 車 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 26 种合法走法",
+        "进攻机会：发现 1 个可以吃子的机会",
+        "将军机会：发现 1 个可以将军的机会！"
+      ],
+      "reasons": [
+        "- 优化 車 的位置，为后续做准备",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 15 步：我决定从 (0,2) 走到 (1,2)，因为 我决定移动我的 車 到一个更好的位置。"
+  },
+  {
+    "step": 16,
+    "timestamp": "2026-05-01 21:44:42",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 2,
+    "candidate_moves": [
+      {
+        "move": [
+          0,
+          5,
+          0,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "将"
+      },
+      {
+        "move": [
+          1,
+          4,
+          2,
+          5
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "士"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      1,
+      4,
+      2,
+      5
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 47,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 16 步：我决定从 (1,4) 走到 (2,5)，因为 现在我正在被将军，我选择了这一步来防守。",
+      "steps": [
+        "局面分析：我发现共有 2 种合法走法",
+        "重要警报：我正在被将军！必须防守！"
+      ],
+      "reasons": [
+        "- 这步能解除将军",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 16 步：我决定从 (1,4) 走到 (2,5)，因为 现在我正在被将军，我选择了这一步来防守。"
+  },
+  {
+    "step": 17,
+    "timestamp": "2026-05-01 21:44:45",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "象",
+          "color": "black",
+          "img_idx": 11
+        },
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 1,
+    "candidate_moves": [
+      {
+        "move": [
+          1,
+          3,
+          1,
+          5
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 10000,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      1,
+      3,
+      1,
+      5
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 28,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 17 步：我决定从 (1,3) 走到 (1,5)，因为 现在我正在被将军，我选择了这一步来防守。",
+      "steps": [
+        "局面分析：我发现共有 1 种合法走法",
+        "重要警报：我正在被将军！必须防守！"
+      ],
+      "reasons": [
+        "- 这步能解除将军",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 17 步：我决定从 (1,3) 走到 (1,5)，因为 现在我正在被将军，我选择了这一步来防守。"
+  },
+  {
+    "step": 18,
+    "timestamp": "2026-05-01 21:44:50",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        null,
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        null,
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 24,
+    "candidate_moves": [
+      {
+        "move": [
+          1,
+          5,
+          9,
+          5
+        ],
+        "score": -0.9999997615814209,
+        "captured": "仕",
+        "can_check": true,
+        "priority": 20500,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          0,
+          3,
+          1,
+          4
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "score": -0.9999956488609314,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          1,
+          4
+        ],
+        "score": -0.99991375207901,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "score": -0.19185549020767212,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "score": 0.9999992251396179,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "score": 0.9852569699287415,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          0,
+          2
+        ],
+        "score": -0.9999997615814209,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          5,
+          1,
+          6
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          5,
+          1,
+          7
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      0,
+      3,
+      1,
+      4
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 165,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 18 步：我决定从 (0,3) 走到 (1,4)，因为 我决定移动我的 士 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 24 种合法走法",
+        "进攻机会：发现 1 个可以吃子的机会",
+        "将军机会：发现 1 个可以将军的机会！"
+      ],
+      "reasons": [
+        "- 优化 士 的位置，为后续做准备",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 18 步：我决定从 (0,3) 走到 (1,4)，因为 我决定移动我的 士 到一个更好的位置。"
+  },
+  {
+    "step": 19,
+    "timestamp": "2026-05-01 21:44:55",
+    "difficulty": 2,
+    "depth": 2,
+    "player_color": "black",
+    "used_model": true,
+    "board_before": [
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "将",
+          "color": "black",
+          "img_idx": 9
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        {
+          "name": "士",
+          "color": "black",
+          "img_idx": 8
+        },
+        {
+          "name": "車",
+          "color": "black",
+          "img_idx": 12
+        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "車",
+          "color": "red",
+          "img_idx": 5
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        },
+        null,
+        {
+          "name": "卒",
+          "color": "black",
+          "img_idx": 7
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "炮",
+          "color": "red",
+          "img_idx": 3
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null
+      ],
+      [
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        },
+        null,
+        null,
+        null,
+        {
+          "name": "兵",
+          "color": "red",
+          "img_idx": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        {
+          "name": "馬",
+          "color": "red",
+          "img_idx": 6
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "帥",
+          "color": "red",
+          "img_idx": 2
+        },
+        {
+          "name": "仕",
+          "color": "red",
+          "img_idx": 0
+        },
+        {
+          "name": "相",
+          "color": "red",
+          "img_idx": 4
+        },
+        null,
+        null
+      ]
+    ],
+    "all_moves_count": 23,
+    "candidate_moves": [
+      {
+        "move": [
+          1,
+          5,
+          9,
+          5
+        ],
+        "score": -0.9999995231628418,
+        "captured": "仕",
+        "can_check": true,
+        "priority": 20500,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "score": -0.9999793171882629,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "score": 0.9999992251396179,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "score": 1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "score": 0.9999704360961914,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          2,
+          0,
+          2
+        ],
+        "score": -0.9999999403953552,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      },
+      {
+        "move": [
+          1,
+          4,
+          2,
+          5
+        ],
+        "score": -0.9999998211860657,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          1,
+          4,
+          2,
+          3
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          1,
+          4,
+          0,
+          3
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "士"
+      },
+      {
+        "move": [
+          1,
+          5,
+          1,
+          6
+        ],
+        "score": -1.0,
+        "captured": null,
+        "can_check": false,
+        "priority": 0,
+        "piece_name": "車"
+      }
+    ],
+    "search_tree_depth": 2,
+    "best_move": [
+      1,
+      4,
+      0,
+      3
+    ],
+    "best_score": -1.0,
+    "think_time_ms": 173,
+    "search_analysis": [],
+    "thinking_text": {
+      "summary": "第 19 步：我决定从 (1,4) 走到 (0,3)，因为 我决定移动我的 士 到一个更好的位置。",
+      "steps": [
+        "局面分析：我发现共有 23 种合法走法",
+        "进攻机会：发现 1 个可以吃子的机会",
+        "将军机会：发现 1 个可以将军的机会！"
+      ],
+      "reasons": [
+        "- 优化 士 的位置，为后续做准备",
+        "- 这步是防守策略，先稳住局势",
+        "- 这是经过深度搜索的结果"
+      ]
+    },
+    "summary": "第 19 步：我决定从 (1,4) 走到 (0,3)，因为 我决定移动我的 士 到一个更好的位置。"
+  }
+]

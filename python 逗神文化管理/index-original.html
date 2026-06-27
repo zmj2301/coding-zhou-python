@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>逗神归来 - 视频学习平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #1a1a1a;
+            --color-secondary: #f0f0f0;
+            --color-accent: #ff3d00;
+            --color-bg: #ffffff;
+            --color-surface: #f8f8f8;
+            --color-text: #1a1a1a;
+            --color-text-secondary: #666666;
+            --border-radius: 0px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 64px;
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-primary: #ffffff;
+                --color-secondary: #333333;
+                --color-accent: #ff5722;
+                --color-bg: #121212;
+                --color-surface: #1e1e1e;
+                --color-text: #ffffff;
+                --color-text-secondary: #aaaaaa;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--color-bg);
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .logo-accent {
+            color: var(--color-accent);
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        /* Sidebar */
+        aside {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            background-color: var(--color-surface);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid var(--color-secondary);
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            padding: var(--spacing-xs) 0;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.9rem;
+        }
+
+        .category-item:hover,
+        .category-item.active {
+            color: var(--color-accent);
+            padding-left: var(--spacing-sm);
+        }
+
+        .category-count {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Search */
+        .search-container {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 2px solid var(--color-secondary);
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .search-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--color-primary);
+            color: var(--color-bg);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .search-btn:hover {
+            background: var(--color-accent);
+        }
+
+        /* Content Area */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -3px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        /* Video Card */
+        .video-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-secondary);
+            cursor: pointer;
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 8px 8px 0 var(--color-primary);
+        }
+
+        .video-thumbnail {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-surface) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-thumbnail i {
+            font-size: 3rem;
+            color: var(--color-text-secondary);
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-normal);
+        }
+
+        .video-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-btn {
+            width: 64px;
+            height: 64px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .video-info {
+            padding: var(--spacing-md);
+        }
+
+        .video-category {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-accent);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .video-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Video Player Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-overlay.focus-mode {
+            background: #000;
+            padding: 0;
+        }
+
+        .modal-overlay.focus-mode .modal-content {
+            max-width: 100%;
+        }
+
+        .modal-overlay.focus-mode .modal-info,
+        .modal-overlay.focus-mode .modal-close {
+            display: none;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        .video-player-container {
+            aspect-ratio: 16/9;
+            background: #000;
+            position: relative;
+        }
+
+        .video-player-container.fullscreen {
+            aspect-ratio: auto;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-player.locked-controls::-webkit-media-controls-timeline,
+        .video-player.locked-controls::-webkit-media-controls-current-time-display,
+        .video-player.locked-controls::-webkit-media-controls-time-remaining-display {
+            display: none !important;
+        }
+
+        /* 普通模式下确保所有控件都可见 */
+        .video-player:not(.locked-controls)::-webkit-media-controls-timeline,
+        .video-player:not(.locked-controls)::-webkit-media-controls-current-time-display,
+        .video-player:not(.locked-controls)::-webkit-media-controls-time-remaining-display {
+            display: block !important;
+        }
+
+        .modal-info {
+            background: var(--color-surface);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+        }
+
+        .modal-info-left {
+            flex: 1;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .mode-controls {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .mode-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--color-surface);
+            border: 2px solid var(--color-secondary);
+            color: var(--color-text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--color-primary);
+        }
+
+        .mode-btn.active {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: white;
+        }
+
+        .exit-focus-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            z-index: 1001;
+            display: none;
+        }
+
+        /* File Upload Area */
+        .upload-section {
+            background: var(--color-surface);
+            border: 2px dashed var(--color-secondary);
+            padding: var(--spacing-lg);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-fast);
+        }
+
+        .upload-section:hover {
+            border-color: var(--color-accent);
+        }
+
+        .upload-section.dragover {
+            border-color: var(--color-accent);
+            background: rgba(255, 61, 0, 0.05);
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-primary);
+            color: var(--color-bg);
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+
+        .upload-btn:hover {
+            background: var(--color-accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            aside {
+                position: static;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .video-card {
+            animation: fadeInUp var(--transition-normal) ease backwards;
+        }
+
+        .video-card:nth-child(1) { animation-delay: 0ms; }
+        .video-card:nth-child(2) { animation-delay: 50ms; }
+        .video-card:nth-child(3) { animation-delay: 100ms; }
+        .video-card:nth-child(4) { animation-delay: 150ms; }
+        .video-card:nth-child(5) { animation-delay: 200ms; }
+        .video-card:nth-child(6) { animation-delay: 250ms; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <span>逗神</span><span class="logo-accent">归来</span>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--color-text-secondary);">
+                <i class="fas fa-book-open"></i> 语文学习平台
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <aside>
+            <div class="sidebar-section">
+                <div class="sidebar-title">搜索</div>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="搜索视频...">
+                    <button class="search-btn" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">分类</div>
+                <ul class="category-list" id="categoryList">
+                    <li class="category-item active" data-category="all">
+                        <i class="fas fa-th-large"></i>
+                        全部
+                        <span class="category-count" id="totalCount">0</span>
+                    </li>
+                    <li class="category-item" data-category="文言文">
+                        <i class="fas fa-scroll"></i>
+                        文言文一课通
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="三国演义">
+                        <i class="fas fa-chess"></i>
+                        三国演义
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="水浒传">
+                        <i class="fas fa-users"></i>
+                        水浒传
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="儒林外史">
+                        <i class="fas fa-book"></i>
+                        儒林外史
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="名著">
+                        <i class="fas fa-globe"></i>
+                        世界名著
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="唐代文学">
+                        <i class="fas fa-feather"></i>
+                        唐代文学
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="作文">
+                        <i class="fas fa-pen"></i>
+                        作文技巧
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="两汉">
+                        <i class="fas fa-landmark"></i>
+                        两汉文学
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="魏晋">
+                        <i class="fas fa-pagelines"></i>
+                        魏晋南北朝
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="元曲">
+                        <i class="fas fa-music"></i>
+                        元曲
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="元明清">
+                        <i class="fas fa-yin-yang"></i>
+                        元明清
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="诗词">
+                        <i class="fas fa-leaf"></i>
+                        诗词鉴赏
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="戏剧">
+                        <i class="fas fa-theater-masks"></i>
+                        戏剧
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="散文">
+                        <i class="fas fa-file-alt"></i>
+                        散文
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="小说">
+                        <i class="fas fa-book-open"></i>
+                        小说
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="赠送资料">
+                        <i class="fas fa-gift"></i>
+                        赠送资料
+                        <span class="category-count">--</span>
+                    </li>
+                    <li class="category-item" data-category="其他">
+                        <i class="fas fa-ellipsis-h"></i>
+                        其他
+                        <span class="category-count">--</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <section>
+            <div class="content-header">
+                <div>
+                    <h1 class="page-title">视频课程</h1>
+                    <p class="page-subtitle">模块化学习，循序渐进</p>
+                </div>
+            </div>
+
+            <div class="upload-section" id="uploadSection">
+                <i class="fas fa-folder-open" style="font-size: 3rem; color: var(--color-text-secondary); margin-bottom: var(--spacing-sm); display: block;"></i>
+                <p style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
+                    选择"豆神归来文件资料"文件夹来加载视频
+                </p>
+                <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;">
+                <button class="upload-btn" id="selectFolderBtn">
+                    <i class="fas fa-folder"></i> 选择文件夹
+                </button>
+            </div>
+
+            <div class="loading-status" id="loadingStatus" style="text-align: center; padding: 40px; color: var(--color-text-secondary);">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <p>正在扫描本地视频文件...</p>
+            </div>
+            <div class="video-grid" id="videoGrid" style="display: none;">
+                <!-- 视频卡片将通过JS动态生成 -->
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="videoModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="video-player-container" id="videoPlayerContainer">
+                <video class="video-player" id="videoPlayer" controls>
+                    您的浏览器不支持视频播放
+                </video>
+            </div>
+            <div class="modal-info">
+                <div class="modal-info-left">
+                    <h2 class="modal-title" id="modalTitle">视频标题</h2>
+                    <p style="color: var(--color-text-secondary);" id="modalCategory">分类</p>
+                </div>
+                <div class="mode-controls">
+                    <button class="mode-btn active" id="normalModeBtn">
+                        <i class="fas fa-play-circle"></i> 普通模式
+                    </button>
+                    <button class="mode-btn" id="focusModeBtn">
+                        <i class="fas fa-eye"></i> 专注模式
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="exit-focus-hint" id="exitFocusHint">
+        按 ESC 或双击视频退出专注模式
+    </div>
+
+    <script>
+        // 视频数据
+        let videos = [];
+        let currentCategory = 'all';
+        let searchTerm = '';
+        let isFocusMode = false;
+        let lastTime = 0;
+
+        // DOM元素
+        const videoGrid = document.getElementById('videoGrid');
+        const categoryList = document.getElementById('categoryList');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const videoModal = document.getElementById('videoModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+        const closeModal = document.getElementById('closeModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalCategory = document.getElementById('modalCategory');
+        const folderInput = document.getElementById('folderInput');
+        const selectFolderBtn = document.getElementById('selectFolderBtn');
+        const uploadSection = document.getElementById('uploadSection');
+        const totalCount = document.getElementById('totalCount');
+        const normalModeBtn = document.getElementById('normalModeBtn');
+        const focusModeBtn = document.getElementById('focusModeBtn');
+        const exitFocusHint = document.getElementById('exitFocusHint');
+        const loadingStatus = document.getElementById('loadingStatus');
+
+        // 示例视频数据（用于演示）
+        const sampleVideos = [
+            // 文言文
+            { id: 1, title: '第01讲 小石潭记（柳宗元）', category: '文言文', thumbnail: 'https://picsum.photos/id/24/640/360', duration: '45:30' },
+            { id: 2, title: '第02讲 桃花源记（陶渊明）', category: '文言文', thumbnail: 'https://picsum.photos/id/25/640/360', duration: '52:15' },
+            { id: 3, title: '第03讲 醉翁亭记（欧阳修）', category: '文言文', thumbnail: 'https://picsum.photos/id/26/640/360', duration: '48:20' },
+            { id: 4, title: '第04讲 岳阳楼记（范仲淹）', category: '文言文', thumbnail: 'https://picsum.photos/id/27/640/360', duration: '55:00' },
+            // 三国演义
+            { id: 5, title: '三国演义（1）桃园三结义', category: '三国演义', thumbnail: 'https://picsum.photos/id/28/640/360', duration: '42:30' },
+            { id: 6, title: '三国演义（2）草船借箭', category: '三国演义', thumbnail: 'https://picsum.photos/id/29/640/360', duration: '47:15' },
+            { id: 7, title: '三国演义（3）赤壁之战', category: '三国演义', thumbnail: 'https://picsum.photos/id/88/640/360', duration: '51:00' },
+            // 水浒传
+            { id: 8, title: '水浒传（1）武松打虎', category: '水浒传', thumbnail: 'https://picsum.photos/id/30/640/360', duration: '50:00' },
+            { id: 9, title: '水浒传（2）鲁智深倒拔垂杨柳', category: '水浒传', thumbnail: 'https://picsum.photos/id/31/640/360', duration: '44:45' },
+            { id: 10, title: '水浒传（3）林冲雪夜上梁山', category: '水浒传', thumbnail: 'https://picsum.photos/id/89/640/360', duration: '46:20' },
+            // 儒林外史
+            { id: 11, title: '儒林外史（1）范进中举', category: '儒林外史', thumbnail: 'https://picsum.photos/id/32/640/360', duration: '41:20' },
+            { id: 12, title: '儒林外史（2）', category: '儒林外史', thumbnail: 'https://picsum.photos/id/90/640/360', duration: '39:15' },
+            // 唐代文学
+            { id: 13, title: '唐代文学汇总（上）', category: '唐代文学', thumbnail: 'https://picsum.photos/id/33/640/360', duration: '53:10' },
+            { id: 14, title: '唐代文学汇总（中）', category: '唐代文学', thumbnail: 'https://picsum.photos/id/91/640/360', duration: '48:30' },
+            { id: 15, title: '唐代文学汇总（下）', category: '唐代文学', thumbnail: 'https://picsum.photos/id/92/640/360', duration: '52:45' },
+            // 两汉文学
+            { id: 16, title: '两汉文学汇总（1）', category: '两汉', thumbnail: 'https://picsum.photos/id/36/640/360', duration: '44:00' },
+            { id: 17, title: '两汉文学汇总（2）', category: '两汉', thumbnail: 'https://picsum.photos/id/93/640/360', duration: '41:30' },
+            // 魏晋南北朝
+            { id: 18, title: '魏晋南北朝文学汇总（1）', category: '魏晋', thumbnail: 'https://picsum.photos/id/37/640/360', duration: '46:20' },
+            { id: 19, title: '魏晋南北朝文学汇总（2）', category: '魏晋', thumbnail: 'https://picsum.photos/id/94/640/360', duration: '43:10' },
+            // 元曲
+            { id: 20, title: '元代文学汇总（1）', category: '元曲', thumbnail: 'https://picsum.photos/id/38/640/360', duration: '49:40' },
+            { id: 21, title: '关汉卿和马致远', category: '元曲', thumbnail: 'https://picsum.photos/id/95/640/360', duration: '38:50' },
+            // 元明清
+            { id: 22, title: '元明清文学考点汇总（1）', category: '元明清', thumbnail: 'https://picsum.photos/id/39/640/360', duration: '47:20' },
+            // 诗词鉴赏
+            { id: 23, title: '钱塘湖春行与诗词鉴赏技巧（1）', category: '诗词', thumbnail: 'https://picsum.photos/id/40/640/360', duration: '42:10' },
+            { id: 24, title: '诗词鉴赏技巧（2）', category: '诗词', thumbnail: 'https://picsum.photos/id/96/640/360', duration: '45:30' },
+            // 戏剧
+            { id: 25, title: '钦差大臣与讽刺喜剧（1）', category: '戏剧', thumbnail: 'https://picsum.photos/id/41/640/360', duration: '40:45' },
+            { id: 26, title: '戏剧仿写（1）', category: '戏剧', thumbnail: 'https://picsum.photos/id/97/640/360', duration: '43:20' },
+            // 散文
+            { id: 27, title: '近现代名家散文鉴赏（1）', category: '散文', thumbnail: 'https://picsum.photos/id/42/640/360', duration: '44:15' },
+            { id: 28, title: '近现代名家散文鉴赏（2）', category: '散文', thumbnail: 'https://picsum.photos/id/98/640/360', duration: '41:50' },
+            // 小说
+            { id: 29, title: '近现代小说（上）', category: '小说', thumbnail: 'https://picsum.photos/id/43/640/360', duration: '48:30' },
+            { id: 30, title: '现实主义文学汇总（1）', category: '小说', thumbnail: 'https://picsum.photos/id/99/640/360', duration: '46:00' },
+            // 作文
+            { id: 31, title: '中考小作文（一）', category: '作文', thumbnail: 'https://picsum.photos/id/35/640/360', duration: '38:30' },
+            { id: 32, title: '恰当修辞出美文（1）', category: '作文', thumbnail: 'https://picsum.photos/id/44/640/360', duration: '42:20' },
+            { id: 33, title: '奇遇类习作', category: '作文', thumbnail: 'https://picsum.photos/id/100/640/360', duration: '40:15' },
+            // 名著
+            { id: 34, title: '世界长篇名著（1）', category: '名著', thumbnail: 'https://picsum.photos/id/34/640/360', duration: '46:50' },
+            { id: 35, title: '名人传与传记小说（1）', category: '名著', thumbnail: 'https://picsum.photos/id/45/640/360', duration: '43:40' },
+            { id: 36, title: '中国古代短篇小说（1）', category: '名著', thumbnail: 'https://picsum.photos/id/46/640/360', duration: '45:00' },
+            // 赠送资料
+            { id: 37, title: '语文学习如何抓重点', category: '赠送资料', thumbnail: 'https://picsum.photos/id/47/640/360', duration: '35:20' },
+            { id: 38, title: '语文考试全部题型', category: '赠送资料', thumbnail: 'https://picsum.photos/id/48/640/360', duration: '38:45' },
+            // 其他
+            { id: 39, title: '六国论与说理散文（1）', category: '其他', thumbnail: 'https://picsum.photos/id/49/640/360', duration: '44:30' },
+            { id: 40, title: '轴心时代与文明古国（1）', category: '其他', thumbnail: 'https://picsum.photos/id/50/640/360', duration: '41:15' }
+        ];
+
+        // 从后端加载视频
+        async function loadVideosFromBackend() {
+            try {
+                const response = await fetch('/api/videos');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.data.length > 0) {
+                        videos = data.data;
+                        console.log(`成功加载 ${videos.length} 个本地视频文件`);
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.log('后端未运行，使用演示数据');
+            }
+            return false;
+        }
+
+        // 渲染视频卡片
+        function renderVideos() {
+            let filteredVideos = videos;
+
+            // 更新分类计数
+            updateCategoryCounts();
+
+            // 分类筛选
+            if (currentCategory !== 'all') {
+                filteredVideos = filteredVideos.filter(v => v.category === currentCategory);
+            }
+
+            // 搜索筛选
+            if (searchTerm) {
+                filteredVideos = filteredVideos.filter(v => 
+                    v.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    v.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            totalCount.textContent = filteredVideos.length;
+
+            videoGrid.innerHTML = filteredVideos.map((video, index) => `
+                <div class="video-card" data-id="${video.id}" style="animation-delay: ${index * 50}ms;">
+                    <div class="video-thumbnail">
+                        <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+                        <div class="play-overlay">
+                            <div class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-category">${video.category}</div>
+                        <h3 class="video-title">${video.title}</h3>
+                        <div class="video-meta">
+                            <span><i class="fas fa-clock"></i> ${video.duration}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // 添加点击事件
+            document.querySelectorAll('.video-card').forEach(card => {
+                card.addEventListener('click', () => openVideo(card.dataset.id));
+            });
+        }
+
+        // 更新分类计数
+        function updateCategoryCounts() {
+            // 统计每个分类的数量
+            const counts = {};
+            videos.forEach(v => {
+                counts[v.category] = (counts[v.category] || 0);
+                counts[v.category]++;
+            });
+
+            // 更新UI
+            categoryList.querySelectorAll('.category-item').forEach(item => {
+                const category = item.dataset.category;
+                const countEl = item.querySelector('.category-count');
+                if (countEl && category !== 'all') {
+                    countEl.textContent = counts[category] || 0;
+                }
+            });
+        }
+
+        // 打开视频
+        function openVideo(id) {
+            const video = videos.find(v => v.id === parseInt(id));
+            if (video) {
+                modalTitle.textContent = video.title;
+                modalCategory.textContent = video.category;
+                // 设置视频源
+                if (video.path) {
+                    videoPlayer.src = `/video/${encodeURIComponent(video.path)}`;
+                } else if (video.file) {
+                    videoPlayer.src = URL.createObjectURL(video.file);
+                } else {
+                    // 演示模式使用示例视频
+                    videoPlayer.src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                }
+                // 重置模式
+                setNormalMode();
+                videoModal.classList.add('active');
+                // 自动播放
+                videoPlayer.play().catch(e => console.log('自动播放被阻止'));
+            }
+        }
+
+        // 关闭视频
+        function closeVideoModal() {
+            setNormalMode();
+            videoModal.classList.remove('active');
+            videoPlayer.pause();
+            videoPlayer.src = '';
+        }
+
+        // 普通模式
+        function setNormalMode() {
+            isFocusMode = false;
+            videoModal.classList.remove('focus-mode');
+            videoPlayerContainer.classList.remove('fullscreen');
+            videoPlayer.classList.remove('locked-controls');
+            normalModeBtn.classList.add('active');
+            focusModeBtn.classList.remove('active');
+            exitFocusHint.style.display = 'none';
+            lastTime = 0;
+        }
+
+        // 专注模式
+        function setFocusMode() {
+            isFocusMode = true;
+            videoModal.classList.add('focus-mode');
+            videoPlayerContainer.classList.add('fullscreen');
+            videoPlayer.classList.add('locked-controls');
+            normalModeBtn.classList.remove('active');
+            focusModeBtn.classList.add('active');
+            // 显示退出提示
+            exitFocusHint.style.display = 'block';
+            setTimeout(() => {
+                exitFocusHint.style.display = 'none';
+            }, 3000);
+            lastTime = videoPlayer.currentTime;
+        }
+
+        // 切换模式
+        function toggleFocusMode() {
+            if (isFocusMode) {
+                setNormalMode();
+            } else {
+                setFocusMode();
+            }
+        }
+
+        // 防止进度条拖动 - 专注模式下禁用
+        let isSeeking = false;
+
+        function handleSeeking() {
+            if (isFocusMode) {
+                videoPlayer.currentTime = lastTime;
+            }
+        }
+
+        function handleTimeUpdate() {
+            if (!isFocusMode) {
+                lastTime = videoPlayer.currentTime;
+            }
+        }
+
+        // 设置事件监听
+        function setupEventListeners() {
+            // 分类筛选
+            categoryList.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    categoryList.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    currentCategory = item.dataset.category;
+                    renderVideos();
+                });
+            });
+
+            // 搜索
+            searchBtn.addEventListener('click', () => {
+                searchTerm = searchInput.value;
+                renderVideos();
+            });
+
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchTerm = searchInput.value;
+                    renderVideos();
+                }
+            });
+
+            // 关闭模态框
+            closeModal.addEventListener('click', closeVideoModal);
+            videoModal.addEventListener('click', (e) => {
+                if (e.target === videoModal) {
+                    closeVideoModal();
+                }
+            });
+
+            // ESC键关闭或退出专注模式
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (isFocusMode) {
+                        setNormalMode();
+                    } else if (videoModal.classList.contains('active')) {
+                        closeVideoModal();
+                    }
+                }
+            });
+
+            // 模式切换按钮
+            normalModeBtn.addEventListener('click', setNormalMode);
+            focusModeBtn.addEventListener('click', setFocusMode);
+
+            // 双击视频切换模式
+            videoPlayer.addEventListener('dblclick', toggleFocusMode);
+
+            // 防止专注模式下的进度条拖动
+            videoPlayer.addEventListener('seeking', handleSeeking);
+            videoPlayer.addEventListener('timeupdate', handleTimeUpdate);
+
+            // 文件夹选择
+            selectFolderBtn.addEventListener('click', () => {
+                folderInput.click();
+            });
+
+            folderInput.addEventListener('change', handleFolderSelect);
+
+            // 拖拽上传
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.classList.add('dragover');
+            });
+
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.classList.remove('dragover');
+            });
+
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.classList.remove('dragover');
+                // 处理拖拽文件
+            });
+        }
+
+        // 处理文件夹选择
+        function handleFolderSelect(e) {
+            const files = Array.from(e.target.files);
+            const videoFiles = files.filter(file => 
+                file.name.toLowerCase().endsWith('.mp4') ||
+                file.name.toLowerCase().endsWith('.avi') ||
+                file.name.toLowerCase().endsWith('.mkv') ||
+                file.name.toLowerCase().endsWith('.mov')
+            );
+
+            if (videoFiles.length > 0) {
+                videos = videoFiles.map((file, index) => {
+                    // 从路径中提取分类
+                    let category = '其他';
+                    const path = file.webkitRelativePath || file.name;
+                    if (path.includes('文言文')) category = '文言文';
+                    else if (path.includes('三国演义')) category = '三国演义';
+                    else if (path.includes('水浒传')) category = '水浒传';
+                    else if (path.includes('儒林外史')) category = '儒林外史';
+                    else if (path.includes('唐代文学')) category = '唐代文学';
+                    else if (path.includes('作文')) category = '作文';
+                    else if (path.includes('名著')) category = '名著';
+
+                    return {
+                        id: index + 1,
+                        title: file.name.replace(/\.[^/.]+$/, ''),
+                        category: category,
+                        thumbnail: `https://picsum.photos/id/${(index % 100) + 20}/640/360`,
+                        duration: '--:--',
+                        file: file
+                    };
+                });
+
+                renderVideos();
+                alert(`成功加载 ${videos.length} 个视频文件！`);
+            } else {
+                alert('未找到视频文件，请确认文件夹包含 .mp4, .avi, .mkv 或 .mov 格式的视频。');
+            }
+        }
+
+        // 初始化
+        async function init() {
+            // 显示加载状态
+            loadingStatus.style.display = 'block';
+            videoGrid.style.display = 'none';
+
+            // 尝试从后端加载视频
+            const loaded = await loadVideosFromBackend();
+            if (!loaded) {
+                videos = [...sampleVideos];
+                // 显示上传区域
+                uploadSection.style.display = 'block';
+                // 隐藏加载状态，显示视频网格
+                loadingStatus.style.display = 'none';
+                videoGrid.style.display = 'grid';
+            } else {
+                // 隐藏上传区域，因为已经自动加载了本地视频
+                uploadSection.style.display = 'none';
+                // 隐藏加载状态，显示视频网格
+                loadingStatus.style.display = 'none';
+                videoGrid.style.display = 'grid';
+            }
+
+            renderVideos();
+            setupEventListeners();
+        }
+
+        // 启动应用
+        init();
+    </script>
+</body>
+</html>

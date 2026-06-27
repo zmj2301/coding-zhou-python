@@ -1,0 +1,11 @@
+{
+    "api_key": "",
+    "api_provider": "openai",
+    "engine": "gTTS",
+    "quality": "standard",
+    "speed": 0.9324817518248175,
+    "voice_type": "male",
+    "output_format": "mp3",
+    "output_dir": "e:\\coding-zhou\\Python\\python文字转语音\\output",
+    "first_run": false
+}

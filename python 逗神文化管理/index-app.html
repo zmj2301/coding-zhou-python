@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逗神归来 - 视频学习平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #1a1a1a;
+            --color-secondary: #f0f0f0;
+            --color-accent: #ff3d00;
+            --color-bg: #ffffff;
+            --color-surface: #f8f8f8;
+            --color-text: #1a1a1a;
+            --color-text-secondary: #666666;
+            --border-radius: 0px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 64px;
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-primary: #ffffff;
+                --color-secondary: #333333;
+                --color-accent: #ff5722;
+                --color-bg: #121212;
+                --color-surface: #1e1e1e;
+                --color-text: #ffffff;
+                --color-text-secondary: #aaaaaa;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--color-bg);
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .logo-accent {
+            color: var(--color-accent);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        aside {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            background-color: var(--color-surface);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid var(--color-secondary);
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            padding: var(--spacing-xs) 0;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.9rem;
+        }
+
+        .category-item:hover,
+        .category-item.active {
+            color: var(--color-accent);
+            padding-left: var(--spacing-sm);
+        }
+
+        .category-count {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+
+        .search-container {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 2px solid var(--color-secondary);
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .search-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--color-primary);
+            color: var(--color-bg);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .search-btn:hover {
+            background: var(--color-accent);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -3px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .video-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-secondary);
+            cursor: pointer;
+            transition: var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 8px 8px 0 var(--color-primary);
+        }
+
+        .video-thumbnail {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-surface) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-normal);
+        }
+
+        .video-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-btn {
+            width: 64px;
+            height: 64px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .video-info {
+            padding: var(--spacing-md);
+        }
+
+        .video-category {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-accent);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .video-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        .upload-section {
+            background: var(--color-surface);
+            border: 2px dashed var(--color-secondary);
+            padding: var(--spacing-lg);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-fast);
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-primary);
+            color: var(--color-bg);
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+
+        .upload-btn:hover {
+            background: var(--color-accent);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-player-container {
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-info {
+            background: var(--color-surface);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .video-card {
+            animation: fadeInUp var(--transition-normal) ease backwards;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <span>逗神</span><span class="logo-accent">归来</span>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--color-text-secondary);">
+                <a href="index.html" style="color: var(--color-text-secondary); text-decoration: none; margin-right: 20px;">
+                    <i class="fas fa-home"></i> 返回首页
+                </a>
+                <i class="fas fa-book-open"></i> 语文学习平台
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <aside>
+            <div class="sidebar-section">
+                <div class="sidebar-title">搜索</div>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="搜索视频...">
+                    <button class="search-btn" id="searchBtn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">分类</div>
+                <ul class="category-list" id="categoryList">
+                    <li class="category-item active" data-category="all">
+                        <i class="fas fa-th-large"></i> 全部
+                        <span class="category-count" id="totalCount">0</span>
+                    </li>
+                    <li class="category-item" data-category="文言文">
+                        <i class="fas fa-scroll"></i> 文言文
+                    </li>
+                    <li class="category-item" data-category="三国演义">
+                        <i class="fas fa-chess"></i> 三国演义
+                    </li>
+                    <li class="category-item" data-category="水浒传">
+                        <i class="fas fa-users"></i> 水浒传
+                    </li>
+                    <li class="category-item" data-category="作文">
+                        <i class="fas fa-pen"></i> 作文技巧
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <section>
+            <div class="content-header">
+                <div>
+                    <h1 class="page-title">视频课程</h1>
+                    <p class="page-subtitle">模块化学习，循序渐进</p>
+                </div>
+            </div>
+
+            <div class="upload-section" id="uploadSection">
+                <i class="fas fa-folder-open" style="font-size: 3rem; color: var(--color-text-secondary); margin-bottom: 16px; display: block;"></i>
+                <p style="margin-bottom: 16px; color: var(--color-text-secondary);">
+                    选择文件夹来加载本地视频
+                </p>
+                <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;">
+                <button class="upload-btn" id="selectFolderBtn">
+                    <i class="fas fa-folder"></i> 选择文件夹
+                </button>
+            </div>
+
+            <div class="video-grid" id="videoGrid"></div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="videoModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="video-player-container">
+                <video class="video-player" id="videoPlayer" controls>
+                    您的浏览器不支持视频播放
+                </video>
+            </div>
+            <div class="modal-info">
+                <h2 id="modalTitle" style="font-size: 1.5rem; font-weight: 700;">视频标题</h2>
+                <p id="modalCategory" style="color: var(--color-text-secondary);">分类</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let videos = [];
+        let currentCategory = 'all';
+        let searchTerm = '';
+
+        const sampleVideos = [
+            { id: 1, title: '第01讲 小石潭记（柳宗元）', category: '文言文', thumbnail: 'https://picsum.photos/id/24/640/360', duration: '45:30' },
+            { id: 2, title: '第02讲 桃花源记（陶渊明）', category: '文言文', thumbnail: 'https://picsum.photos/id/25/640/360', duration: '52:15' },
+            { id: 3, title: '三国演义（1）桃园三结义', category: '三国演义', thumbnail: 'https://picsum.photos/id/28/640/360', duration: '42:30' },
+            { id: 4, title: '三国演义（2）草船借箭', category: '三国演义', thumbnail: 'https://picsum.photos/id/29/640/360', duration: '47:15' },
+            { id: 5, title: '水浒传（1）武松打虎', category: '水浒传', thumbnail: 'https://picsum.photos/id/30/640/360', duration: '50:00' },
+            { id: 6, title: '中考小作文（一）', category: '作文', thumbnail: 'https://picsum.photos/id/35/640/360', duration: '38:30' },
+        ];
+
+        function renderVideos() {
+            let filteredVideos = videos;
+
+            if (currentCategory !== 'all') {
+                filteredVideos = filteredVideos.filter(v => v.category === currentCategory);
+            }
+
+            if (searchTerm) {
+                filteredVideos = filteredVideos.filter(v => 
+                    v.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    v.category.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            document.getElementById('totalCount').textContent = filteredVideos.length;
+
+            document.getElementById('videoGrid').innerHTML = filteredVideos.map((video, index) => `
+                <div class="video-card" data-id="${video.id}" style="animation-delay: ${index * 50}ms;">
+                    <div class="video-thumbnail">
+                        <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+                        <div class="play-overlay">
+                            <div class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-category">${video.category}</div>
+                        <h3 class="video-title">${video.title}</h3>
+                        <div class="video-meta">
+                            <span><i class="fas fa-clock"></i> ${video.duration}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.video-card').forEach(card => {
+                card.addEventListener('click', () => openVideo(card.dataset.id));
+            });
+        }
+
+        function openVideo(id) {
+            const video = videos.find(v => v.id === parseInt(id));
+            if (video) {
+                document.getElementById('modalTitle').textContent = video.title;
+                document.getElementById('modalCategory').textContent = video.category;
+                
+                if (video.file) {
+                    document.getElementById('videoPlayer').src = URL.createObjectURL(video.file);
+                } else {
+                    document.getElementById('videoPlayer').src = 'https://www.w3schools.com/html/mov_bbb.mp4';
+                }
+                
+                document.getElementById('videoModal').classList.add('active');
+                document.getElementById('videoPlayer').play().catch(e => {});
+            }
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.remove('active');
+            document.getElementById('videoPlayer').pause();
+            document.getElementById('videoPlayer').src = '';
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    currentCategory = item.dataset.category;
+                    renderVideos();
+                });
+            });
+
+            document.getElementById('searchBtn').addEventListener('click', () => {
+                searchTerm = document.getElementById('searchInput').value;
+                renderVideos();
+            });
+
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchTerm = document.getElementById('searchInput').value;
+                    renderVideos();
+                }
+            });
+
+            document.getElementById('closeModal').addEventListener('click', closeVideoModal);
+            document.getElementById('videoModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('videoModal')) closeVideoModal();
+            });
+
+            document.getElementById('selectFolderBtn').addEventListener('click', () => {
+                document.getElementById('folderInput').click();
+            });
+
+            document.getElementById('folderInput').addEventListener('change', handleFolderSelect);
+        }
+
+        function handleFolderSelect(e) {
+            const files = Array.from(e.target.files);
+            const videoFiles = files.filter(file => 
+                file.name.toLowerCase().endsWith('.mp4') ||
+                file.name.toLowerCase().endsWith('.avi') ||
+                file.name.toLowerCase().endsWith('.mkv')
+            );
+
+            if (videoFiles.length > 0) {
+                videos = videoFiles.map((file, index) => {
+                    let category = '其他';
+                    const path = file.webkitRelativePath || file.name;
+                    if (path.includes('文言文')) category = '文言文';
+                    else if (path.includes('三国')) category = '三国演义';
+                    else if (path.includes('水浒')) category = '水浒传';
+                    else if (path.includes('作文')) category = '作文';
+
+                    return {
+                        id: index + 1,
+                        title: file.name.replace(/\.[^/.]+$/, ''),
+                        category: category,
+                        thumbnail: `https://picsum.photos/id/${(index % 100) + 20}/640/360`,
+                        duration: '--:--',
+                        file: file
+                    };
+                });
+
+                renderVideos();
+                alert(`成功加载 ${videos.length} 个视频文件！`);
+            } else {
+                alert('未找到视频文件，请选择包含 .mp4, .avi, .mkv 格式的视频文件夹。');
+            }
+        }
+
+        function init() {
+            videos = [...sampleVideos];
+            renderVideos();
+            setupEventListeners();
+        }
+
+        init();
+    </script>
+</body>
+</html>

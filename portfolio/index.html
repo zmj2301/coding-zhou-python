@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodingZhou 作品集 - 项目展示中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-elevated: #1c2128;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --border-color: #30363d;
+            --border-light: #21262d;
+            --accent: #238636;
+            --accent-hover: #2ea043;
+            --accent-orange: #f0883e;
+            --accent-orange-hover: #ffa657;
+            --link-color: #58a6ff;
+            --link-hover: #79c0ff;
+            --danger: #f85149;
+            --warning: #d29922;
+            --purple: #a371f7;
+            --pink: #f778ba;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--link-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 12px 6px 32px;
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 240px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--link-color);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 32px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .profile-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--link-color), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 16px;
+            border: 3px solid var(--border-color);
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-handle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .profile-bio {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat .number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .profile-stat .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tech-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tech-tag:hover {
+            border-color: var(--link-color);
+            color: var(--link-color);
+        }
+
+        .tech-tag i {
+            font-size: 10px;
+        }
+
+        .tech-tag.html i { color: #e34c26; }
+        .tech-tag.css i { color: #563d7c; }
+        .tech-tag.js i { color: #f1e05a; }
+        .tech-tag.python i { color: #3572A5; }
+        .tech-tag.canvas i { color: #3fb950; }
+        .tech-tag.game i { color: var(--accent-orange); }
+
+        /* Content Area */
+        .content-area {
+            min-height: 600px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* Project Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            border-color: var(--link-color);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(88, 166, 255, 0.1);
+        }
+
+        .project-cover {
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--g1, #1f6feb), var(--g2, #58a6ff));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .project-cover .cover-icon {
+            font-size: 72px;
+            opacity: 0.3;
+            position: absolute;
+        }
+
+        .project-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-cover .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 2;
+        }
+
+        .project-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-overlay .play-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--bg-primary);
+            transition: transform 0.2s;
+        }
+
+        .play-overlay .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .project-body {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .project-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .project-title:hover {
+            text-decoration: underline;
+        }
+
+        .project-visibility {
+            font-size: 12px;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .project-desc {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+            flex: 1;
+            margin-bottom: 12px;
+        }
+
+        .project-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .project-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .lang-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 6px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            border-color: var(--text-secondary);
+            background: var(--border-color);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .btn-run {
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-run:hover {
+            background: var(--accent-orange-hover);
+            border-color: var(--accent-orange-hover);
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+
+        /* Preview Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 1200px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* Code Viewer Modal */
+        .code-modal .modal-container {
+            max-width: 900px;
+        }
+
+        .code-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+        }
+
+        .code-tab {
+            padding: 10px 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .code-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .code-tab.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--accent-orange);
+            background: var(--bg-secondary);
+        }
+
+        .code-content-area {
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+        }
+
+        .code-content-area pre {
+            margin: 0;
+            padding: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Detail View */
+        .detail-view {
+            display: none;
+        }
+
+        .detail-view.active {
+            display: block;
+        }
+
+        .repo-header {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .repo-path {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .repo-path a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .repo-path a:hover {
+            text-decoration: underline;
+        }
+
+        .repo-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .repo-stats-bar {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .repo-stats-bar span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .repo-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0;
+        }
+
+        .tab-nav {
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-nav:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-nav.active {
+            color: var(--text-primary);
+            border-bottom-color: #f78166;
+        }
+
+        .file-browser {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .file-header {
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .file-list {
+            padding: 0;
+        }
+
+        .file-item {
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .file-item .folder-icon { color: #54aeff; }
+        .file-item .html-icon { color: #e34c26; }
+        .file-item .css-icon { color: #563d7c; }
+        .file-item .js-icon { color: #f1e05a; }
+        .file-item .py-icon { color: #3572A5; }
+        .file-item .md-icon { color: #083fa1; }
+        .file-item .img-icon { color: #3fb950; }
+
+        .file-name {
+            flex: 1;
+            color: var(--link-color);
+            font-size: 14px;
+        }
+
+        .file-size {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .readme-viewer {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .readme-header {
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .readme-content {
+            padding: 24px;
+        }
+
+        .readme-content h1 {
+            font-size: 28px;
+            margin: 0 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .readme-content h2 {
+            font-size: 22px;
+            margin: 24px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .readme-content h3 {
+            font-size: 18px;
+            margin: 20px 0 10px;
+        }
+
+        .readme-content p {
+            margin: 12px 0;
+            color: var(--text-secondary);
+        }
+
+        .readme-content ul, .readme-content ol {
+            padding-left: 24px;
+            margin: 12px 0;
+            color: var(--text-secondary);
+        }
+
+        .readme-content li {
+            margin: 6px 0;
+        }
+
+        .readme-content code {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 13px;
+        }
+
+        .readme-content pre {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .readme-content pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            z-index: 3000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: var(--accent);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 16px;
+            }
+            .profile-card {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 16px;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .search-box input {
+                width: 160px;
+            }
+            .main-container {
+                padding: 16px;
+            }
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-overlay {
+                padding: 8px;
+            }
+            .modal-container {
+                height: 95vh;
+                border-radius: 12px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .project-card {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo" onclick="showHome()">
+                <i class="fas fa-code"></i>
+                <span>CodingZhou</span>
+            </a>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="搜索项目..." id="searchInput" oninput="filterProjects()">
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="active" onclick="showHome()">
+                    <i class="fas fa-th-large"></i> 项目
+                </a>
+                <a href="#" onclick="showAbout()">
+                    <i class="fas fa-user"></i> 关于
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-astronaut"></i>
+                </div>
+                <div class="profile-name">CodingZhou</div>
+                <div class="profile-handle">@codingzhou</div>
+                <div class="profile-bio">
+                    热爱编程与创作，专注于网页游戏开发和交互式应用设计。
+                </div>
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <div class="number" id="projectCount">0</div>
+                        <div class="label">项目</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="number">6+</div>
+                        <div class="label">游戏</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="number">10+</div>
+                        <div class="label">应用</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <i class="fas fa-tags"></i> 技术栈
+                </div>
+                <div>
+                    <span class="tech-tag html"><i class="fab fa-html5"></i> HTML5</span>
+                    <span class="tech-tag css"><i class="fab fa-css3-alt"></i> CSS3</span>
+                    <span class="tech-tag js"><i class="fab fa-js"></i> JavaScript</span>
+                    <span class="tech-tag python"><i class="fab fa-python"></i> Python</span>
+                    <span class="tech-tag canvas"><i class="fas fa-palette"></i> Canvas</span>
+                    <span class="tech-tag game"><i class="fas fa-gamepad"></i> 游戏开发</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">
+                    <i class="fas fa-folder-open"></i> 分类
+                </div>
+                <div>
+                    <span class="tech-tag" onclick="filterByCategory('game')">
+                        <i class="fas fa-gamepad" style="color: var(--accent-orange);"></i> 网页游戏
+                    </span>
+                    <span class="tech-tag" onclick="filterByCategory('app')">
+                        <i class="fas fa-window-maximize" style="color: var(--link-color);"></i> 应用工具
+                    </span>
+                    <span class="tech-tag" onclick="filterByCategory('ai')">
+                        <i class="fas fa-robot" style="color: var(--purple);"></i> AI项目
+                    </span>
+                    <span class="tech-tag" onclick="filterByCategory('all')">
+                        <i class="fas fa-list" style="color: var(--text-secondary);"></i> 全部
+                    </span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Home View -->
+            <div id="homeView">
+                <h1 class="page-title">
+                    <i class="fas fa-rocket"></i>
+                    我的项目
+                </h1>
+                <p class="page-subtitle">所有项目均可在线预览和下载源码</p>
+
+                <div class="projects-grid" id="projectsGrid"></div>
+            </div>
+
+            <!-- Detail View -->
+            <div id="detailView" class="detail-view">
+                <div class="repo-header">
+                    <div class="repo-path">
+                        <i class="fas fa-book" style="color: var(--text-secondary);"></i>
+                        <a href="#" onclick="showHome()">CodingZhou</a>
+                        <span>/</span>
+                        <span id="detailRepoName" style="font-weight: 600;"></span>
+                    </div>
+                    <p class="repo-description" id="detailRepoDesc"></p>
+                    <div class="repo-stats-bar">
+                        <span><i class="fas fa-star" style="color: var(--warning);"></i> <span id="detailStars">0</span></span>
+                        <span><i class="fas fa-code-branch" style="color: var(--link-color);"></i> <span id="detailForks">0</span></span>
+                        <span><i class="fas fa-eye" style="color: var(--purple);"></i> <span id="detailViews">0</span></span>
+                        <span><i class="fas fa-circle" id="detailLangDot" style="color: #e34c26;"></i> <span id="detailLang">HTML</span></span>
+                    </div>
+                    <div class="repo-actions">
+                        <button class="btn btn-run" onclick="runCurrentProject()">
+                            <i class="fas fa-play"></i> 运行项目
+                        </button>
+                        <button class="btn btn-primary" onclick="downloadCurrentProject()">
+                            <i class="fas fa-download"></i> 下载源码
+                        </button>
+                        <button class="btn" onclick="showHome()">
+                            <i class="fas fa-arrow-left"></i> 返回列表
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tabs-nav">
+                    <div class="tab-nav active" onclick="showDetailTab('files')">
+                        <i class="fas fa-folder"></i> 文件
+                    </div>
+                    <div class="tab-nav" onclick="showDetailTab('readme')">
+                        <i class="fas fa-book-open"></i> README
+                    </div>
+                </div>
+
+                <div id="detailFiles" class="file-browser">
+                    <div class="file-header">
+                        <span id="detailFilePath"><i class="fas fa-folder"></i> 项目文件</span>
+                        <span style="color: var(--text-muted);">点击文件查看源码</span>
+                    </div>
+                    <div class="file-list" id="detailFileList"></div>
+                </div>
+
+                <div id="detailReadme" class="readme-viewer" style="display: none;">
+                    <div class="readme-header">
+                        <i class="fas fa-book-open"></i> README.md
+                    </div>
+                    <div class="readme-content" id="detailReadmeContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-play-circle" style="color: var(--accent-orange);"></i>
+                    <span id="previewTitle">项目预览</span>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-sm" onclick="openInNewTab()">
+                        <i class="fas fa-external-link-alt"></i> 新窗口打开
+                    </button>
+                    <button class="btn btn-sm" onclick="closePreview()">
+                        <i class="fas fa-times"></i> 关闭
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <iframe id="previewFrame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Modal -->
+    <div class="modal-overlay code-modal" id="codeModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-code" style="color: var(--link-color);"></i>
+                    <span id="codeTitle">源码查看</span>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-sm" onclick="copyCurrentCode()">
+                        <i class="fas fa-copy"></i> 复制
+                    </button>
+                    <button class="btn btn-sm" onclick="closeCodeModal()">
+                        <i class="fas fa-times"></i> 关闭
+                    </button>
+                </div>
+            </div>
+            <div class="code-tabs" id="codeTabs"></div>
+            <div class="code-content-area">
+                <pre><code id="codeDisplay"></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">操作成功</span>
+    </div>
+
+    <script>
+        // Project Data
+        const projects = [
+            {
+                id: 'web-games',
+                title: '网页游戏中心',
+                description: '一个集合了多个经典网页游戏的平台，包含飞机大战、植物大战僵尸、中国象棋、我的世界、口算战争、成语接龙等游戏。采用 HTML5 Canvas 技术开发，无需安装即可游玩。',
+                category: 'game',
+                path: '../web-games/index.html',
+                basePath: '../web-games',
+                icon: '🎮',
+                cover: '../web-games/images/plane-war-cover.jpeg',
+                badge: '游戏合集',
+                badgeColor: 'action',
+                stars: 256,
+                forks: 48,
+                views: 1205,
+                lang: 'JavaScript',
+                langColor: '#f1e05a',
+                g1: '#1f6feb',
+                g2: '#58a6ff',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' },
+                    { name: 'shared/style.css', type: 'css', icon: 'css-icon' },
+                    { name: 'shared/game.js', type: 'js', icon: 'js-icon' },
+                    { name: 'plane-war/index.html', type: 'html', icon: 'html-icon' },
+                    { name: 'pvz/index.html', type: 'html', icon: 'html-icon' },
+                    { name: 'chinese-chess/index.html', type: 'html', icon: 'html-icon' },
+                    { name: 'math-war/index.html', type: 'html', icon: 'html-icon' },
+                    { name: 'idiom-chain/index.html', type: 'html', icon: 'html-icon' },
+                    { name: 'my-world/index.html', type: 'html', icon: 'html-icon' }
+                ],
+                readme: `# 网页游戏中心
+
+一个集合了多个经典网页游戏的平台，所有游戏均采用 HTML5 Canvas 技术原生开发。
+
+## 包含游戏
+
+- **飞机大战** - 经典射击游戏，驾驶战机击落陨石
+- **植物大战僵尸** - 策略塔防，布置植物抵御僵尸
+- **中国象棋** - 传统棋类，支持人机对战
+- **我的世界** - 2D方块建造游戏
+- **口算战争** - 数学与射击结合的教育游戏
+- **成语接龙** - 中华文字益智游戏
+
+## 技术特点
+
+- HTML5 Canvas 渲染
+- 原生 JavaScript，无外部依赖
+- 响应式设计，支持移动端
+- 即点即玩，无需安装
+
+## 运行方式
+
+直接在浏览器中打开 \`index.html\` 即可运行。`
+            },
+            {
+                id: 'pvz',
+                title: '植物大战僵尸',
+                description: '经典策略塔防游戏网页版。布置各种植物防线，抵御一波波僵尸的入侵。包含多种植物和僵尸类型，精美的动画效果。',
+                category: 'game',
+                path: '../web-games/pvz/index.html',
+                basePath: '../web-games/pvz',
+                icon: '🧟',
+                cover: '../web-games/images/pvz-cover.jpeg',
+                badge: '塔防',
+                badgeColor: 'strategy',
+                stars: 189,
+                forks: 32,
+                views: 892,
+                lang: 'JavaScript',
+                langColor: '#f1e05a',
+                g1: '#238636',
+                g2: '#3fb950',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' },
+                    { name: 'css/style.css', type: 'css', icon: 'css-icon' },
+                    { name: 'css/common.css', type: 'css', icon: 'css-icon' },
+                    { name: 'js/game.js', type: 'js', icon: 'js-icon' },
+                    { name: 'js/main.js', type: 'js', icon: 'js-icon' },
+                    { name: 'js/scene.js', type: 'js', icon: 'js-icon' },
+                    { name: 'js/common.js', type: 'js', icon: 'js-icon' }
+                ],
+                readme: `# 植物大战僵尸 - 网页版
+
+经典策略塔防游戏的 HTML5 重制版。
+
+## 游戏玩法
+
+1. 选择植物卡片放置到草坪上
+2. 收集阳光来种植更多植物
+3. 阻止僵尸到达房子
+
+## 植物类型
+
+- 豌豆射手 - 基础攻击植物
+- 向日葵 - 产生阳光
+- 坚果墙 - 防御型植物
+- 樱桃炸弹 - 范围爆炸
+- 大嘴花 - 吞噬僵尸
+- 加特林豌豆 - 快速射击
+
+## 技术栈
+
+- HTML5 Canvas
+- CSS3 动画
+- JavaScript (ES6+)`
+            },
+            {
+                id: 'plane-war',
+                title: '飞机大战',
+                description: '经典竖版射击游戏。驾驶战机在太空中战斗，击落陨石和敌机，收集道具升级武器，挑战最高分数。',
+                category: 'game',
+                path: '../web-games/plane-war/index.html',
+                basePath: '../web-games/plane-war',
+                icon: '✈️',
+                cover: '../web-games/images/plane-war-cover.jpeg',
+                badge: '射击',
+                badgeColor: 'action',
+                stars: 145,
+                forks: 28,
+                views: 756,
+                lang: 'JavaScript',
+                langColor: '#f1e05a',
+                g1: '#1f6feb',
+                g2: '#58a6ff',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' }
+                ],
+                readme: `# 飞机大战
+
+经典竖版射击游戏网页版。
+
+## 操作说明
+
+- 鼠标/触摸移动 - 控制战机
+- 自动射击
+- 收集道具升级武器
+
+## 游戏特性
+
+- 多种敌机类型
+- 道具系统
+- 分数排行榜
+- 流畅的动画效果`
+            },
+            {
+                id: 'chinese-chess',
+                title: '中国象棋',
+                description: '经典中国象棋对弈游戏，支持双人对战和人机对战模式。精美的棋盘设计，完整的象棋规则实现。',
+                category: 'game',
+                path: '../web-games/chinese-chess/index.html',
+                basePath: '../web-games/chinese-chess',
+                icon: '♟️',
+                cover: '../web-games/images/chinese-chess-cover.jpeg',
+                badge: '棋类',
+                badgeColor: 'puzzle',
+                stars: 167,
+                forks: 35,
+                views: 623,
+                lang: 'JavaScript',
+                langColor: '#f1e05a',
+                g1: '#9e6a03',
+                g2: '#d29922',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' }
+                ],
+                readme: `# 中国象棋
+
+传统中国象棋的网页实现。
+
+## 功能
+
+- 双人对战模式
+- 人机对战模式（AI执黑）
+- 悔棋功能
+- 完整的象棋规则
+
+## 操作
+
+点击棋子选择，再点击目标位置移动。`
+            },
+            {
+                id: 'doushen',
+                title: '逗神文化管理',
+                description: '一个设计精美的本地视频播放网站，采用极简设计风格。支持本地视频加载、分类筛选、搜索等功能。包含 GitHub 风格的项目展示页面。',
+                category: 'app',
+                path: '../python 逗神文化管理/index.html',
+                basePath: '../python 逗神文化管理',
+                icon: '🎬',
+                cover: null,
+                badge: '视频平台',
+                badgeColor: 'edu',
+                stars: 128,
+                forks: 32,
+                views: 456,
+                lang: 'HTML',
+                langColor: '#e34c26',
+                g1: '#8957e5',
+                g2: '#a371f7',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' },
+                    { name: 'index-app.html', type: 'html', icon: 'html-icon' },
+                    { name: 'github-style.html', type: 'html', icon: 'html-icon' },
+                    { name: 'server.py', type: 'py', icon: 'py-icon' },
+                    { name: 'README.md', type: 'md', icon: 'md-icon' }
+                ],
+                readme: `# 逗神文化管理
+
+一个设计精美的本地视频播放网站。
+
+## 功能特点
+
+- 极简设计风格
+- 本地视频文件夹扫描
+- 分类筛选和搜索
+- 响应式布局
+- 内置视频播放器
+
+## 文件说明
+
+- \`index.html\` - 项目首页
+- \`index-app.html\` - 应用主页面
+- \`github-style.html\` - GitHub风格展示页
+- \`server.py\` - Python后端服务器`
+            },
+            {
+                id: 'math-war',
+                title: '口算战争',
+                description: '将数学口算与射击游戏完美结合的教育游戏。通过解答数学题来发射子弹，寓教于乐，提升计算能力。',
+                category: 'game',
+                path: '../web-games/math-war/index.html',
+                basePath: '../web-games/math-war',
+                icon: '🔢',
+                cover: '../web-games/images/math-war-cover.jpeg',
+                badge: '教育',
+                badgeColor: 'edu',
+                stars: 98,
+                forks: 18,
+                views: 534,
+                lang: 'JavaScript',
+                langColor: '#f1e05a',
+                g1: '#8957e5',
+                g2: '#a371f7',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' }
+                ],
+                readme: `# 口算战争
+
+数学口算 + 射击游戏的创新结合。
+
+## 玩法
+
+- 解答数学题获得弹药
+- 射击正确答案消灭敌人
+- 提升口算速度和准确率`
+            },
+            {
+                id: 'idiom-chain',
+                title: '成语接龙',
+                description: '中华传统文字游戏。考验你的成语储备量，支持多种难度模式，适合各年龄段玩家。',
+                category: 'game',
+                path: '../web-games/idiom-chain/index.html',
+                basePath: '../web-games/idiom-chain',
+                icon: '📖',
+                cover: '../web-games/images/idiom-chain-cover.jpeg',
+                badge: '益智',
+                badgeColor: 'edu',
+                stars: 87,
+                forks: 15,
+                views: 423,
+                lang: 'JavaScript',
+                langColor: '#f1e05a',
+                g1: '#db6d28',
+                g2: '#f0883e',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' }
+                ],
+                readme: `# 成语接龙
+
+中华文字游戏经典玩法。
+
+## 规则
+
+- 根据提示成语接龙
+- 支持多种难度
+- 丰富的成语库`
+            },
+            {
+                id: 'my-world',
+                title: '我的世界 2D',
+                description: '2D方块建造游戏。挖掘资源、合成物品、搭建属于你的像素世界。简洁而有趣的沙盒体验。',
+                category: 'game',
+                path: '../web-games/my-world/index.html',
+                basePath: '../web-games/my-world',
+                icon: '🧱',
+                cover: '../web-games/images/my-world-cover.jpeg',
+                badge: '沙盒',
+                badgeColor: 'strategy',
+                stars: 134,
+                forks: 26,
+                views: 678,
+                lang: 'JavaScript',
+                langColor: '#f1e05a',
+                g1: '#7d4e13',
+                g2: '#bf8738',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' }
+                ],
+                readme: `# 我的世界 2D
+
+2D方块建造游戏。
+
+## 玩法
+
+- WASD 移动
+- 点击挖掘/放置方块
+- 合成工具和物品
+- 建造你的世界`
+            },
+            {
+                id: 'fathers-day',
+                title: '父亲节祝福',
+                description: '精美的父亲节祝福页面，包含动态效果和温馨祝福语句。适合作为节日礼物送给父亲。',
+                category: 'app',
+                path: '../fathers-day/index.html',
+                basePath: '../fathers-day',
+                icon: '💝',
+                cover: null,
+                badge: '祝福页面',
+                badgeColor: 'edu',
+                stars: 76,
+                forks: 12,
+                views: 345,
+                lang: 'HTML',
+                langColor: '#e34c26',
+                g1: '#f093fb',
+                g2: '#f5576c',
+                files: [
+                    { name: 'index.html', type: 'html', icon: 'html-icon' }
+                ],
+                readme: `# 父亲节祝福
+
+精美的父亲节祝福页面。
+
+## 特点
+
+- 动态动画效果
+- 温馨祝福语
+- 响应式设计`
+            },
+            {
+                id: 'weather',
+                title: '天气可视化',
+                description: '精美的天气数据可视化页面，展示天气信息的图表和动画效果。',
+                category: 'app',
+                path: '../python 天气可视化/weather.html',
+                basePath: '../python 天气可视化',
+                icon: '🌤️',
+                cover: null,
+                badge: '数据可视化',
+                badgeColor: 'edu',
+                stars: 65,
+                forks: 10,
+                views: 289,
+                lang: 'HTML',
+                langColor: '#e34c26',
+                g1: '#54aeff',
+                g2: '#79c0ff',
+                files: [
+                    { name: 'weather.html', type: 'html', icon: 'html-icon' },
+                    { name: 'html.html', type: 'html', icon: 'html-icon' }
+                ],
+                readme: `# 天气可视化
+
+天气数据可视化展示。
+
+## 功能
+
+- 天气图表展示
+- 动态效果
+- 数据可视化`
+            }
+        ];
+
+        let currentProject = null;
+        let currentCategory = 'all';
+        let currentCode = '';
+        let currentCodeFile = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProjects();
+            document.getElementById('projectCount').textContent = projects.length;
+        });
+
+        // Render Projects
+        function renderProjects(filtered = projects) {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = '';
+
+            filtered.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.style.animationDelay = `${index * 0.05}s`;
+                card.style.setProperty('--g1', project.g1);
+                card.style.setProperty('--g2', project.g2);
+
+                const coverHtml = project.cover
+                    ? `<img src="${project.cover}" alt="${project.title}" onerror="this.style.display='none'">`
+                    : '';
+
+                card.innerHTML = `
+                    <div class="project-cover">
+                        <div class="cover-icon">${project.icon}</div>
+                        ${coverHtml}
+                        <div class="play-overlay">
+                            <div class="play-btn"><i class="fas fa-play"></i></div>
+                        </div>
+                    </div>
+                    <div class="project-body">
+                        <div class="project-header">
+                            <a href="#" class="project-title" onclick="showProjectDetail('${project.id}'); return false;">${project.title}</a>
+                            <span class="project-visibility"><i class="fas fa-lock-open"></i> 公开</span>
+                        </div>
+                        <div class="project-desc">${project.description}</div>
+                        <div class="project-meta">
+                            <span><i class="fas fa-circle" style="color: ${project.langColor};"></i> ${project.lang}</span>
+                            <span><i class="fas fa-star" style="color: var(--warning);"></i> ${project.stars}</span>
+                            <span><i class="fas fa-code-branch" style="color: var(--link-color);"></i> ${project.forks}</span>
+                        </div>
+                        <div class="project-actions">
+                            <button class="btn btn-run btn-sm" onclick="previewProject('${project.id}')">
+                                <i class="fas fa-play"></i> 运行
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="downloadProject('${project.id}')">
+                                <i class="fas fa-download"></i> 下载
+                            </button>
+                            <button class="btn btn-sm" onclick="showProjectDetail('${project.id}')">
+                                <i class="fas fa-code"></i> 源码
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter Projects
+        function filterProjects() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = projects.filter(p => {
+                const matchCategory = currentCategory === 'all' || p.category === currentCategory;
+                const matchSearch = p.title.toLowerCase().includes(query) ||
+                                   p.description.toLowerCase().includes(query);
+                return matchCategory && matchSearch;
+            });
+            renderProjects(filtered);
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            filterProjects();
+        }
+
+        // Show Project Detail
+        function showProjectDetail(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+
+            currentProject = project;
+
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('detailView').classList.add('active');
+
+            document.getElementById('detailRepoName').textContent = project.title;
+            document.getElementById('detailRepoDesc').textContent = project.description;
+            document.getElementById('detailStars').textContent = project.stars;
+            document.getElementById('detailForks').textContent = project.forks;
+            document.getElementById('detailViews').textContent = project.views;
+            document.getElementById('detailLang').textContent = project.lang;
+            document.getElementById('detailLangDot').style.color = project.langColor;
+
+            // Render file list
+            const fileList = document.getElementById('detailFileList');
+            fileList.innerHTML = project.files.map(file => `
+                <div class="file-item" onclick="viewFileCode('${file.name}', '${file.type}')">
+                    <i class="fas fa-file ${file.icon}"></i>
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${file.type.toUpperCase()}</span>
+                </div>
+            `).join('');
+
+            // Render README
+            document.getElementById('detailReadmeContent').innerHTML = renderMarkdown(project.readme);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show Home
+        function showHome() {
+            document.getElementById('homeView').style.display = 'block';
+            document.getElementById('detailView').classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showAbout() {
+            showToast('关于页面功能开发中...', 'info');
+        }
+
+        // Preview Project
+        function previewProject(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+
+            currentProject = project;
+            document.getElementById('previewTitle').textContent = project.title + ' - 预览';
+            document.getElementById('previewFrame').src = project.path;
+            document.getElementById('previewModal').classList.add('active');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('active');
+            document.getElementById('previewFrame').src = '';
+        }
+
+        function openInNewTab() {
+            if (currentProject) {
+                window.open(currentProject.path, '_blank');
+            }
+        }
+
+        function runCurrentProject() {
+            if (currentProject) {
+                previewProject(currentProject.id);
+            }
+        }
+
+        // Download Project
+        async function downloadProject(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+
+            showToast('正在打包源码，请稍候...', 'info');
+
+            try {
+                const zip = new JSZip();
+                const folder = zip.folder(project.id);
+
+                // Add files to zip
+                for (const file of project.files) {
+                    try {
+                        const response = await fetch(project.basePath + '/' + file.name);
+                        if (response.ok) {
+                            const content = await response.text();
+                            folder.file(file.name, content);
+                        }
+                    } catch (e) {
+                        console.warn('Failed to fetch:', file.name);
+                    }
+                }
+
+                // Add README
+                folder.file('README.md', project.readme);
+
+                const blob = await zip.generateAsync({ type: 'blob' });
+                saveAs(blob, `${project.id}-source.zip`);
+                showToast('源码下载成功！', 'success');
+            } catch (error) {
+                showToast('下载失败，请重试', 'error');
+            }
+        }
+
+        function downloadCurrentProject() {
+            if (currentProject) {
+                downloadProject(currentProject.id);
+            }
+        }
+
+        // View File Code
+        async function viewFileCode(filename, type) {
+            if (!currentProject) return;
+
+            const filePath = currentProject.basePath + '/' + filename;
+            document.getElementById('codeTitle').textContent = filename;
+
+            try {
+                const response = await fetch(filePath);
+                if (response.ok) {
+                    currentCode = await response.text();
+                    currentCodeFile = filename;
+
+                    const codeDisplay = document.getElementById('codeDisplay');
+                    codeDisplay.textContent = currentCode;
+                    codeDisplay.className = type === 'html' ? 'language-html' :
+                                           type === 'css' ? 'language-css' :
+                                           type === 'js' ? 'language-javascript' :
+                                           type === 'py' ? 'language-python' : '';
+                    hljs.highlightElement(codeDisplay);
+
+                    document.getElementById('codeModal').classList.add('active');
+                } else {
+                    showToast('无法加载文件内容', 'error');
+                }
+            } catch (e) {
+                showToast('无法加载文件内容', 'error');
+            }
+        }
+
+        function closeCodeModal() {
+            document.getElementById('codeModal').classList.remove('active');
+        }
+
+        function copyCurrentCode() {
+            navigator.clipboard.writeText(currentCode).then(() => {
+                showToast('代码已复制到剪贴板！', 'success');
+            }).catch(() => {
+                showToast('复制失败，请手动复制', 'error');
+            });
+        }
+
+        // Detail Tabs
+        function showDetailTab(tab) {
+            document.querySelectorAll('.tab-nav').forEach(t => t.classList.remove('active'));
+            event.target.closest('.tab-nav').classList.add('active');
+
+            if (tab === 'files') {
+                document.getElementById('detailFiles').style.display = 'block';
+                document.getElementById('detailReadme').style.display = 'none';
+            } else {
+                document.getElementById('detailFiles').style.display = 'none';
+                document.getElementById('detailReadme').style.display = 'block';
+            }
+        }
+
+        // Markdown Renderer (Simple)
+        function renderMarkdown(md) {
+            let html = md
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                .replace(/^- (.*$)/gim, '<li>$1</li>')
+                .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+                .replace(/\n/g, '<br>');
+
+            // Fix lists
+            html = html.replace(/(<li>.*?<\/li>)(?![\s\S]*<\/ul>)/g, '<ul>$1</ul>');
+
+            return html;
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+
+            toastMessage.textContent = message;
+            toast.className = 'toast show ' + type;
+
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+                icon.style.color = 'var(--accent)';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-times-circle';
+                icon.style.color = 'var(--danger)';
+            } else {
+                icon.className = 'fas fa-info-circle';
+                icon.style.color = 'var(--link-color)';
+            }
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modals on overlay click
+        document.getElementById('previewModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closePreview();
+        });
+
+        document.getElementById('codeModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeCodeModal();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePreview();
+                closeCodeModal();
+            }
+        });
+    </script>
+</body>
+</html>

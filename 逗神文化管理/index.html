@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逗神文化 - 项目首页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 24px;
+        }
+
+        .card-icon.app {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .card-icon.github {
+            background: #0d1117;
+            color: white;
+        }
+
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .card-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .card-btn:hover {
+            opacity: 0.9;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .feature-tag {
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 48px;
+            opacity: 0.8;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-rocket"></i> 逗神文化</h1>
+            <p>探索精彩的项目世界</p>
+        </div>
+
+        <div class="cards">
+            <a href="index.html" class="card">
+                <div class="card-icon app">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <h2>运行应用程序</h2>
+                <p>直接打开逗神归来视频学习平台，体验精美设计的视频播放界面。</p>
+                <div class="features">
+                    <span class="feature-tag"><i class="fas fa-video"></i> 视频播放</span>
+                    <span class="feature-tag"><i class="fas fa-search"></i> 智能搜索</span>
+                    <span class="feature-tag"><i class="fas fa-moon"></i> 暗色模式</span>
+                </div>
+                <div class="card-btn" style="margin-top: 20px;">
+                    <i class="fas fa-play"></i> 立即启动
+                </div>
+            </a>
+
+            <a href="github-style.html" class="card">
+                <div class="card-icon github">
+                    <i class="fab fa-github"></i>
+                </div>
+                <h2>查看项目代码</h2>
+                <p>以GitHub风格浏览项目源代码，查看文件结构，支持代码复制和在线预览。</p>
+                <div class="features">
+                    <span class="feature-tag"><i class="fas fa-file-code"></i> 代码浏览</span>
+                    <span class="feature-tag"><i class="fas fa-copy"></i> 一键复制</span>
+                    <span class="feature-tag"><i class="fas fa-download"></i> 源码下载</span>
+                </div>
+                <div class="card-btn" style="margin-top: 20px;">
+                    <i class="fas fa-code"></i> 查看代码
+                </div>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>Made with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by 逗神文化</p>
+            <p>位于: e:\coding-zhou\Python\逗神文化管理</p>
+        </div>
+    </div>
+
+    <script>
+        // Check if Python server is available
+        fetch('index.html')
+            .then(response => {
+                console.log('服务器运行正常！');
+            })
+            .catch(error => {
+                console.log('提示: 如需完整功能，请运行 启动服务器.bat');
+            });
+    </script>
+</body>
+</html>

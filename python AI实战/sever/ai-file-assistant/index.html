@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI File Assistant</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#7e22ce',
+                        accent: '#8b5cf6',
+                        dark: '#0f172a',
+                        light: '#f1f5f9'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .bg-gradient-primary {
+                background: linear-gradient(135deg, theme('colors.primary'), theme('colors.secondary'));
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                background-image: linear-gradient(135deg, theme('colors.primary'), theme('colors.secondary'));
+            }
+            .scrollbar-thin {
+                scrollbar-width: thin;
+            }
+            .scrollbar-thin::-webkit-scrollbar {
+                width: 6px;
+            }
+            .scrollbar-thin::-webkit-scrollbar-track {
+                background: theme('colors.light');
+            }
+            .scrollbar-thin::-webkit-scrollbar-thumb {
+                background: theme('colors.primary');
+                border-radius: 3px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- App Container -->
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Login/Register Modal (Initially Visible) -->
+        <div id="auth-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 transform transition-all">
+                <div class="text-center mb-6">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/2802c726ba9547f2b7f17bfc336ae3e7~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260412111344354AF828170595D6A510&rrcfp=f06b921b&x-expires=1778555660&x-signature=VzS3yQtydvHLkazdw%2FxspVwQLB8%3D" alt="AI File Assistant Logo" class="h-20 mx-auto">
+                    <h2 class="text-2xl font-bold text-gradient mt-2">AI File Assistant</h2>
+                    <p class="text-gray-600 mt-1">智能文件管理与AI助手</p>
+                </div>
+                
+                <!-- Tabs -->
+                <div class="flex mb-6">
+                    <button id="login-tab" class="flex-1 py-2 text-center border-b-2 border-primary text-primary font-medium">登录</button>
+                    <button id="register-tab" class="flex-1 py-2 text-center border-b-2 border-gray-200 text-gray-500 font-medium">注册</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="login-form">
+                    <div class="mb-4">
+                        <label for="login-username" class="block text-gray-700 text-sm font-medium mb-2">用户名</label>
+                        <input type="text" id="login-username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入用户名">
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-gray-700 text-sm font-medium mb-2">密码</label>
+                        <input type="password" id="login-password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入密码">
+                    </div>
+                    <button id="login-button" class="w-full bg-gradient-primary text-white py-2 px-4 rounded-md hover:opacity-90 transition-opacity">登录</button>
+                </div>
+                
+                <!-- Register Form (Initially Hidden) -->
+                <div id="register-form" class="hidden">
+                    <div class="mb-4">
+                        <label for="register-username" class="block text-gray-700 text-sm font-medium mb-2">用户名</label>
+                        <input type="text" id="register-username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入用户名">
+                    </div>
+                    <div class="mb-4">
+                        <label for="register-email" class="block text-gray-700 text-sm font-medium mb-2">邮箱</label>
+                        <input type="email" id="register-email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入邮箱">
+                    </div>
+                    <div class="mb-6">
+                        <label for="register-password" class="block text-gray-700 text-sm font-medium mb-2">密码</label>
+                        <input type="password" id="register-password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入密码">
+                    </div>
+                    <button id="register-button" class="w-full bg-gradient-primary text-white py-2 px-4 rounded-md hover:opacity-90 transition-opacity">注册</button>
+                </div>
+                
+                <div class="mt-4 text-center text-sm text-gray-600">
+                    <p id="auth-message"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Application (Initially Hidden) -->
+        <div id="main-app" class="hidden flex-1 flex">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white shadow-md z-10">
+                <!-- Logo and Title -->
+                <div class="p-4 border-b border-gray-200 flex items-center">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/2802c726ba9547f2b7f17bfc336ae3e7~tplv-a9rns2rl98-image.image?lk3s=8e244e95&rcl=20260412111344354AF828170595D6A510&rrcfp=f06b921b&x-expires=1778555660&x-signature=VzS3yQtydvHLkazdw%2FxspVwQLB8%3D" alt="AI File Assistant Logo" class="h-8 w-8">
+                    <h1 class="ml-2 text-lg font-bold text-primary">AI File Assistant</h1>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="mt-4">
+                    <ul>
+                        <li>
+                            <button id="nav-dashboard" class="w-full flex items-center px-4 py-3 text-gray-700 bg-gray-100 border-l-4 border-primary">
+                                <i class="fa fa-home w-6 text-center"></i>
+                                <span>控制台</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-files" class="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 border-l-4 border-transparent">
+                                <i class="fa fa-folder w-6 text-center"></i>
+                                <span>文件管理</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-ai-chat" class="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 border-l-4 border-transparent">
+                                <i class="fa fa-comments w-6 text-center"></i>
+                                <span>AI 对话</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-settings" class="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 border-l-4 border-transparent">
+                                <i class="fa fa-cog w-6 text-center"></i>
+                                <span>设置</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <!-- User Info -->
+                <div class="absolute bottom-0 w-64 p-4 border-t border-gray-200">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white font-medium">
+                            <span id="user-initial">U</span>
+                        </div>
+                        <div class="ml-3">
+                            <p id="user-name" class="text-sm font-medium text-gray-700">用户名</p>
+                            <p id="user-email" class="text-xs text-gray-500">user@example.com</p>
+                        </div>
+                        <button id="logout-button" class="ml-auto text-gray-400 hover:text-gray-600">
+                            <i class="fa fa-sign-out"></i>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="flex-1 overflow-auto">
+                <!-- Top Bar -->
+                <header class="bg-white shadow-sm">
+                    <div class="flex items-center justify-between px-6 py-3">
+                        <div class="flex items-center">
+                            <button id="toggle-sidebar" class="text-gray-500 focus:outline-none lg:hidden">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <h2 id="page-title" class="ml-3 text-lg font-medium text-gray-700">控制台</h2>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex items-center text-sm">
+                                <span id="connection-status" class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                                <span id="connection-text" class="text-gray-600">已连接</span>
+                            </div>
+                            <div class="ml-4 relative">
+                                <button id="notification-button" class="text-gray-500 focus:outline-none">
+                                    <i class="fa fa-bell"></i>
+                                    <span class="absolute top-0 right-0 w-2 h-2 rounded-full bg-red-500"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                
+                <!-- Page Content -->
+                <div class="p-6">
+                    <!-- Dashboard Page -->
+                    <div id="dashboard-page" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <!-- Stat Cards -->
+                            <div class="bg-white rounded-lg shadow p-6">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                        <i class="fa fa-file-text-o"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">文件总数</p>
+                                        <p class="text-xl font-semibold text-gray-700">128</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg shadow p-6">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                        <i class="fa fa-folder-o"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">文件夹</p>
+                                        <p class="text-xl font-semibold text-gray-700">16</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg shadow p-6">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                        <i class="fa fa-comments-o"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">AI 对话</p>
+                                        <p class="text-xl font-semibold text-gray-700">24</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg shadow p-6">
+                                <div class="flex items-center">
+                                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                        <i class="fa fa-clock-o"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-medium text-gray-500">最近活动</p>
+                                        <p class="text-xl font-semibold text-gray-700">2小时前</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Recent Files -->
+                            <div class="lg:col-span-2 bg-white rounded-lg shadow">
+                                <div class="px-6 py-4 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-700">最近文件</h3>
+                                </div>
+                                <div class="divide-y divide-gray-200">
+                                    <div class="px-6 py-4 flex items-center">
+                                        <div class="text-blue-500">
+                                            <i class="fa fa-file-text-o text-xl"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-medium text-gray-700">项目计划书.docx</p>
+                                            <p class="text-xs text-gray-500">修改于 3小时前</p>
+                                        </div>
+                                        <div class="ml-auto flex">
+                                            <button class="text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-download"></i>
+                                            </button>
+                                            <button class="ml-4 text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="ml-4 text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="px-6 py-4 flex items-center">
+                                        <div class="text-green-500">
+                                            <i class="fa fa-file-excel-o text-xl"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-medium text-gray-700">销售数据.xlsx</p>
+                                            <p class="text-xs text-gray-500">修改于 昨天</p>
+                                        </div>
+                                        <div class="ml-auto flex">
+                                            <button class="text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-download"></i>
+                                            </button>
+                                            <button class="ml-4 text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="ml-4 text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="px-6 py-4 flex items-center">
+                                        <div class="text-red-500">
+                                            <i class="fa fa-file-pdf-o text-xl"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-medium text-gray-700">合同文件.pdf</p>
+                                            <p class="text-xs text-gray-500">修改于 2天前</p>
+                                        </div>
+                                        <div class="ml-auto flex">
+                                            <button class="text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-download"></i>
+                                            </button>
+                                            <button class="ml-4 text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="ml-4 text-gray-400 hover:text-gray-500">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Assistant Quick Access -->
+                            <div class="bg-white rounded-lg shadow">
+                                <div class="px-6 py-4 border-b border-gray-200">
+                                    <h3 class="text-lg font-medium text-gray-700">AI 助手</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex items-center justify-center mb-6">
+                                        <div class="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center">
+                                            <i class="fa fa-robot text-white text-2xl"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-center text-sm text-gray-600 mb-6">需要帮助处理文件或回答问题？</p>
+                                    <button id="quick-ai-chat" class="w-full bg-gradient-primary text-white py-2 px-4 rounded-md hover:opacity-90 transition-opacity">
+                                        开始对话
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Files Page -->
+                    <div id="files-page" class="hidden space-y-6">
+                        <div class="bg-white rounded-lg shadow">
+                            <!-- Files Header -->
+                            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                                <h3 class="text-lg font-medium text-gray-700">文件管理</h3>
+                                <div class="flex">
+                                    <button id="upload-button" class="flex items-center text-sm text-white bg-primary px-4 py-2 rounded-md hover:bg-primary-dark">
+                                        <i class="fa fa-upload mr-2"></i>
+                                        上传文件
+                                    </button>
+                                    <button id="new-folder-button" class="ml-3 flex items-center text-sm text-white bg-secondary px-4 py-2 rounded-md hover:bg-secondary-dark">
+                                        <i class="fa fa-folder mr-2"></i>
+                                        新建文件夹
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Files Toolbar -->
+                            <div class="px-6 py-3 border-b border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <button id="view-grid" class="p-2 text-primary bg-blue-50 rounded">
+                                        <i class="fa fa-th"></i>
+                                    </button>
+                                    <button id="view-list" class="ml-2 p-2 text-gray-500 hover:bg-gray-100 rounded">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                </div>
+                                <div class="relative">
+                                    <input type="text" placeholder="搜索文件..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fa fa-search text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Files Content -->
+                            <div class="p-6">
+                                <!-- Current Path -->
+                                <div class="flex items-center text-sm mb-6">
+                                    <button class="text-primary hover:underline">
+                                        <i class="fa fa-home"></i>
+                                    </button>
+                                    <span class="mx-2 text-gray-400">/</span>
+                                    <button class="text-primary hover:underline">文档</button>
+                                    <span class="mx-2 text-gray-400">/</span>
+                                    <span class="text-gray-700">项目</span>
+                                </div>
+                                
+                                <!-- Folders -->
+                                <h4 class="text-sm font-medium text-gray-500 mb-3">文件夹</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+                                    <div class="folder-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md cursor-pointer">
+                                        <div class="flex items-center">
+                                            <div class="text-yellow-500">
+                                                <i class="fa fa-folder text-2xl"></i>
+                                            </div>
+                                            <div class="ml-3 truncate">
+                                                <p class="text-sm font-medium text-gray-700 truncate">项目计划</p>
+                                                <p class="text-xs text-gray-500">5个文件</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="folder-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md cursor-pointer">
+                                        <div class="flex items-center">
+                                            <div class="text-yellow-500">
+                                                <i class="fa fa-folder text-2xl"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-gray-700 truncate">财务报表</p>
+                                                <p class="text-xs text-gray-500">3个文件</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="folder-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md cursor-pointer">
+                                        <div class="flex items-center">
+                                            <div class="text-yellow-500">
+                                                <i class="fa fa-folder text-2xl"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-gray-700 truncate">会议记录</p>
+                                                <p class="text-xs text-gray-500">8个文件</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Files -->
+                                <h4 class="text-sm font-medium text-gray-500 mb-3">文件</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    <div class="file-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md cursor-pointer">
+                                        <div class="flex items-center">
+                                            <div class="text-blue-500">
+                                                <i class="fa fa-file-word-o text-2xl"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-gray-700 truncate">项目计划书.docx</p>
+                                                <p class="text-xs text-gray-500">2MB</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="file-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md cursor-pointer">
+                                        <div class="flex items-center">
+                                            <div class="text-green-500">
+                                                <i class="fa fa-file-excel-o text-2xl"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-gray-700 truncate">销售数据.xlsx</p>
+                                                <p class="text-xs text-gray-500">1.5MB</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="file-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md cursor-pointer">
+                                        <div class="flex items-center">
+                                            <div class="text-red-500">
+                                                <i class="fa fa-file-pdf-o text-2xl"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-gray-700 truncate">合同文件.pdf</p>
+                                                <p class="text-xs text-gray-500">3.2MB</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="file-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md cursor-pointer">
+                                        <div class="flex items-center">
+                                            <div class="text-purple-500">
+                                                <i class="fa fa-file-powerpoint-o text-2xl"></i>
+                                            </div>
+                                            <div class="ml-3">
+                                                <p class="text-sm font-medium text-gray-700 truncate">演示文稿.pptx</p>
+                                                <p class="text-xs text-gray-500">5.8MB</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Chat Page -->
+                    <div id="ai-chat-page" class="hidden">
+                        <div class="bg-white rounded-lg shadow h-[calc(100vh-14rem)] flex flex-col">
+                            <!-- Chat Header -->
+                            <div class="px-6 py-4 border-b border-gray-200 flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white">
+                                    <i class="fa fa-robot"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-lg font-medium text-gray-700">AI 助手</h3>
+                                    <p class="text-xs text-gray-500">在线</p>
+                                </div>
+                                <div class="ml-auto flex">
+                                    <button class="text-gray-400 hover:text-gray-500">
+                                        <i class="fa fa-history"></i>
+                                    </button>
+                                    <button class="ml-4 text-gray-400 hover:text-gray-500">
+                                        <i class="fa fa-cog"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Chat Messages -->
+                            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
+                                <!-- AI Message -->
+                                <div class="flex">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-primary flex-shrink-0 flex items-center justify-center text-white">
+                                        <i class="fa fa-robot"></i>
+                                    </div>
+                                    <div class="ml-3 bg-gray-100 rounded-lg p-4 max-w-3xl">
+                                        <p class="text-gray-700">你好！我是你的AI文件助手。我可以帮助你管理文件、分析内容，或者回答你的问题。请问有什么我可以帮你的吗？</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- User Message -->
+                                <div class="flex justify-end">
+                                    <div class="mr-3 bg-primary rounded-lg p-4 max-w-3xl">
+                                        <p class="text-white">我需要分析一个Excel文件中的数据，你能帮我吗？</p>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0 flex items-center justify-center text-white">
+                                        <span id="chat-user-initial">U</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- AI Message with File -->
+                                <div class="flex">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-primary flex-shrink-0 flex items-center justify-center text-white">
+                                        <i class="fa fa-robot"></i>
+                                    </div>
+                                    <div class="ml-3 bg-gray-100 rounded-lg p-4 max-w-3xl">
+                                        <p class="text-gray-700 mb-3">当然可以！请上传你的Excel文件，我会帮你分析数据。</p>
+                                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                            <i class="fa fa-cloud-upload text-gray-400 text-3xl"></i>
+                                            <p class="mt-2 text-sm text-gray-500">拖拽文件到这里，或点击上传</p>
+                                            <input type="file" class="hidden" id="file-upload">
+                                            <button id="upload-file-button" class="mt-4 text-sm text-primary hover:underline">选择文件</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Chat Input -->
+                            <div class="p-6 border-t border-gray-200">
+                                <div class="flex items-center">
+                                    <button class="text-gray-400 hover:text-gray-500">
+                                        <i class="fa fa-paperclip"></i>
+                                    </button>
+                                    <div class="ml-4 flex-1 relative">
+                                        <input type="text" id="chat-input" placeholder="输入消息..." class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <button id="send-message" class="absolute inset-y-0 right-0 pr-3 flex items-center text-primary">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Page -->
+                    <div id="settings-page" class="hidden">
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-medium text-gray-700">设置</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="max-w-3xl">
+                                    <!-- User Profile -->
+                                    <div class="mb-8">
+                                        <h4 class="text-md font-medium text-gray-700 mb-4">个人资料</h4>
+                                        <div class="flex items-center mb-6">
+                                            <div class="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center text-white text-2xl font-medium">
+                                                <span id="settings-user-initial">U</span>
+                                            </div>
+                                            <div class="ml-6">
+                                                <button class="text-sm text-primary hover:underline">更换头像</button>
+                                                <p class="text-xs text-gray-500 mt-1">支持 JPG, PNG 格式，最大 2MB</p>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label for="settings-username" class="block text-sm font-medium text-gray-700 mb-2">用户名</label>
+                                                <input type="text" id="settings-username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="用户名">
+                                            </div>
+                                            <div>
+                                                <label for="settings-email" class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
+                                                <input type="email" id="settings-email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="user@example.com">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- File Permissions -->
+                                    <div class="mb-8">
+                                        <h4 class="text-md font-medium text-gray-700 mb-4">文件权限</h4>
+                                        <div class="bg-gray-50 rounded-lg p-6">
+                                            <div class="flex items-center justify-between mb-4">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-700">允许AI读取本地文件</p>
+                                                    <p class="text-xs text-gray-500">AI可以查看你的文件内容以提供分析</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" class="sr-only peer" checked>
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center justify-between mb-4">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-700">允许AI修改本地文件</p>
+                                                    <p class="text-xs text-gray-500">AI可以编辑你的文件内容</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" class="sr-only peer">
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-700">允许AI删除本地文件</p>
+                                                    <p class="text-xs text-gray-500">AI可以删除你的文件（危险操作）</p>
+                                                </div>
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" class="sr-only peer">
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- File Paths -->
+                                    <div>
+                                        <h4 class="text-md font-medium text-gray-700 mb-4">文件路径</h4>
+                                        <div class="mb-4">
+                                            <label for="default-save-path" class="block text-sm font-medium text-gray-700 mb-2">默认保存路径</label>
+                                            <div class="flex">
+                                                <input type="text" id="default-save-path" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="C:\Users\Username\Documents\AI Files">
+                                                <button class="px-4 py-2 bg-gray-200 text-gray-700 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-300">浏览</button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label for="allowed-paths" class="block text-sm font-medium text-gray-700 mb-2">允许访问的路径</label>
+                                            <div class="flex">
+                                                <input type="text" id="allowed-paths" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="C:\Users\Username\Documents">
+                                                <button class="px-4 py-2 bg-gray-200 text-gray-700 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-300">添加</button>
+                                            </div>
+                                            <div class="mt-2 bg-gray-50 rounded-md p-3">
+                                                <div class="flex items-center justify-between text-sm">
+                                                    <span>C:\Users\Username\Documents</span>
+                                                    <button class="text-red-500 hover:text-red-600">
+                                                        <i class="fa fa-trash-o"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-8">
+                                        <button id="save-settings" class="px-6 py-2 bg-gradient-primary text-white rounded-md hover:opacity-90 transition-opacity">保存设置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <!-- Permission Modal (Hidden by default) -->
+        <div id="permission-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mx-auto">
+                        <i class="fa fa-exclamation-triangle text-yellow-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mt-4">权限请求</h3>
+                    <p id="permission-message" class="text-gray-600 mt-2">AI助手需要访问您的文件系统权限。</p>
+                </div>
+                <div class="flex space-x-3">
+                    <button id="permission-deny" class="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">拒绝</button>
+                    <button id="permission-allow" class="flex-1 py-2 px-4 bg-primary text-white rounded-md hover:bg-primary-dark">允许</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notification Toast (Hidden by default) -->
+        <div id="notification-toast" class="hidden fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm transform transition-all duration-300 translate-y-10 opacity-0">
+            <div class="flex items-start">
+                <div id="notification-icon" class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                    <i id="notification-icon-i" class="fa fa-check text-green-500"></i>
+                </div>
+                <div class="ml-3 flex-1">
+                    <h4 id="notification-title" class="text-sm font-medium text-gray-800">操作成功</h4>
+                    <p id="notification-text" class="text-sm text-gray-600 mt-1">您的操作已成功完成。</p>
+                </div>
+                <button id="close-notification" class="text-gray-400 hover:text-gray-500">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const app = document.getElementById('app');
+        const authModal = document.getElementById('auth-modal');
+        const mainApp = document.getElementById('main-app');
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const loginButton = document.getElementById('login-button');
+        const registerButton = document.getElementById('register-button');
+        const authMessage = document.getElementById('auth-message');
+        const userInitial = document.getElementById('user-initial');
+        const userName = document.getElementById('user-name');
+        const userEmail = document.getElementById('user-email');
+        const chatUserInitial = document.getElementById('chat-user-initial');
+        const settingsUserInitial = document.getElementById('settings-user-initial');
+        const logoutButton = document.getElementById('logout-button');
+        const navDashboard = document.getElementById('nav-dashboard');
+        const navFiles = document.getElementById('nav-files');
+        const navAiChat = document.getElementById('nav-ai-chat');
+        const navSettings = document.getElementById('nav-settings');
+        const pageTitle = document.getElementById('page-title');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const filesPage = document.getElementById('files-page');
+        const aiChatPage = document.getElementById('ai-chat-page');
+        const settingsPage = document.getElementById('settings-page');
+        const quickAiChat = document.getElementById('quick-ai-chat');
+        const chatInput = document.getElementById('chat-input');
+        const sendMessage = document.getElementById('send-message');
+        const chatMessages = document.getElementById('chat-messages');
+        const uploadFileButton = document.getElementById('upload-file-button');
+        const fileUpload = document.getElementById('file-upload');
+        const permissionModal = document.getElementById('permission-modal');
+        const permissionMessage = document.getElementById('permission-message');
+        const permissionDeny = document.getElementById('permission-deny');
+        const permissionAllow = document.getElementById('permission-allow');
+        const notificationToast = document.getElementById('notification-toast');
+        const notificationTitle = document.getElementById('notification-title');
+        const notificationText = document.getElementById('notification-text');
+        const notificationIcon = document.getElementById('notification-icon');
+        const notificationIconI = document.getElementById('notification-icon-i');
+        const closeNotification = document.getElementById('close-notification');
+        const settingsUsername = document.getElementById('settings-username');
+        const settingsEmail = document.getElementById('settings-email');
+        const saveSettings = document.getElementById('save-settings');
+        const uploadButton = document.getElementById('upload-button');
+        const newFolderButton = document.getElementById('new-folder-button');
+
+        // Auth Tab Switching
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('border-primary', 'text-primary');
+            loginTab.classList.remove('border-gray-200', 'text-gray-500');
+            registerTab.classList.add('border-gray-200', 'text-gray-500');
+            registerTab.classList.remove('border-primary', 'text-primary');
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            authMessage.textContent = '';
+        });
+
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('border-primary', 'text-primary');
+            registerTab.classList.remove('border-gray-200', 'text-gray-500');
+            loginTab.classList.add('border-gray-200', 'text-gray-500');
+            loginTab.classList.remove('border-primary', 'text-primary');
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            authMessage.textContent = '';
+        });
+
+        // Auth Functions
+        function showNotification(title, text, type = 'success') {
+            notificationTitle.textContent = title;
+            notificationText.textContent = text;
+            
+            if (type === 'success') {
+                notificationIcon.className = 'flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center';
+                notificationIconI.className = 'fa fa-check text-green-500';
+            } else if (type === 'error') {
+                notificationIcon.className = 'flex-shrink-0 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center';
+                notificationIconI.className = 'fa fa-times text-red-500';
+            } else if (type === 'warning') {
+                notificationIcon.className = 'flex-shrink-0 w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center';
+                notificationIconI.className = 'fa fa-exclamation text-yellow-500';
+            } else if (type === 'info') {
+                notificationIcon.className = 'flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center';
+                notificationIconI.className = 'fa fa-info text-blue-500';
+            }
+            
+            notificationToast.classList.remove('hidden');
+            setTimeout(() => {
+                notificationToast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                notificationToast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    notificationToast.classList.add('hidden');
+                }, 300);
+            }, 3000);
+        }
+
+        function showPermissionModal(message, callback) {
+            permissionMessage.textContent = message;
+            permissionModal.classList.remove('hidden');
+            
+            permissionDeny.onclick = () => {
+                permissionModal.classList.add('hidden');
+                callback(false);
+            };
+            
+            permissionAllow.onclick = () => {
+                permissionModal.classList.add('hidden');
+                callback(true);
+            };
+        }
+
+        function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                authMessage.textContent = '请输入用户名和密码';
+                authMessage.className = 'text-red-500';
+                return;
+            }
+            
+            // Simulate login
+            setTimeout(() => {
+                authModal.classList.add('hidden');
+                mainApp.classList.remove('hidden');
+                
+                // Set user info
+                userName.textContent = username;
+                userEmail.textContent = `${username}@example.com`;
+                userInitial.textContent = username.charAt(0).toUpperCase();
+                chatUserInitial.textContent = username.charAt(0).toUpperCase();
+                settingsUserInitial.textContent = username.charAt(0).toUpperCase();
+                settingsUsername.value = username;
+                settingsEmail.value = `${username}@example.com`;
+                
+                showNotification('登录成功', `欢迎回来，${username}！`);
+            }, 1000);
+        }
+
+        function register() {
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            if (!username || !email || !password) {
+                authMessage.textContent = '请填写所有字段';
+                authMessage.className = 'text-red-500';
+                return;
+            }
+            
+            // Simulate registration
+            setTimeout(() => {
+                authModal.classList.add('hidden');
+                mainApp.classList.remove('hidden');
+                
+                // Set user info
+                userName.textContent = username;
+                userEmail.textContent = email;
+                userInitial.textContent = username.charAt(0).toUpperCase();
+                chatUserInitial.textContent = username.charAt(0).toUpperCase();
+                settingsUserInitial.textContent = username.charAt(0).toUpperCase();
+                settingsUsername.value = username;
+                settingsEmail.value = email;
+                
+                showNotification('注册成功', `欢迎，${username}！`);
+            }, 1000);
+        }
+
+        function logout() {
+            authModal.classList.remove('hidden');
+            mainApp.classList.add('hidden');
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('register-username').value = '';
+            document.getElementById('register-email').value = '';
+            document.getElementById('register-password').value = '';
+            authMessage.textContent = '';
+        }
+
+        // Navigation
+        function navigateTo(page) {
+            // Hide all pages
+            dashboardPage.classList.add('hidden');
+            filesPage.classList.add('hidden');
+            aiChatPage.classList.add('hidden');
+            settingsPage.classList.add('hidden');
+            
+            // Reset nav styles
+            navDashboard.classList.remove('bg-gray-100', 'border-primary');
+            navFiles.classList.remove('bg-gray-100', 'border-primary');
+            navAiChat.classList.remove('bg-gray-100', 'border-primary');
+            navSettings.classList.remove('bg-gray-100', 'border-primary');
+            
+            navDashboard.classList.add('border-transparent');
+            navFiles.classList.add('border-transparent');
+            navAiChat.classList.add('border-transparent');
+            navSettings.classList.add('border-transparent');
+            
+            // Show selected page and update nav styles
+            if (page === 'dashboard') {
+                dashboardPage.classList.remove('hidden');
+                navDashboard.classList.add('bg-gray-100', 'border-primary');
+                navDashboard.classList.remove('border-transparent');
+                pageTitle.textContent = '控制台';
+            } else if (page === 'files') {
+                filesPage.classList.remove('hidden');
+                navFiles.classList.add('bg-gray-100', 'border-primary');
+                navFiles.classList.remove('border-transparent');
+                pageTitle.textContent = '文件管理';
+            } else if (page === 'ai-chat') {
+                aiChatPage.classList.remove('hidden');
+                navAiChat.classList.add('bg-gray-100', 'border-primary');
+                navAiChat.classList.remove('border-transparent');
+                pageTitle.textContent = 'AI 对话';
+            } else if (page === 'settings') {
+                settingsPage.classList.remove('hidden');
+                navSettings.classList.add('bg-gray-100', 'border-primary');
+                navSettings.classList.remove('border-transparent');
+                pageTitle.textContent = '设置';
+            }
+        }
+
+        // Chat Functions
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            const userMessageHTML = `
+                <div class="flex justify-end">
+                    <div class="mr-3 bg-primary rounded-lg p-4 max-w-3xl">
+                        <p class="text-white">${message}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0 flex items-center justify-center text-white">
+                        <span>${userInitial.textContent}</span>
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', userMessageHTML);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Simulate AI thinking
+            setTimeout(() => {
+                // Add AI message
+                const aiMessageHTML = `
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-gradient-primary flex-shrink-0 flex items-center justify-center text-white">
+                            <i class="fa fa-robot"></i>
+                        </div>
+                        <div class="ml-3 bg-gray-100 rounded-lg p-4 max-w-3xl">
+                            <p class="text-gray-700">我理解了你的问题。让我为你提供一些相关信息和建议...</p>
+                        </div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', aiMessageHTML);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+
+        // Event Listeners
+        loginButton.addEventListener('click', login);
+        registerButton.addEventListener('click', register);
+        logoutButton.addEventListener('click', logout);
+        
+        navDashboard.addEventListener('click', () => navigateTo('dashboard'));
+        navFiles.addEventListener('click', () => navigateTo('files'));
+        navAiChat.addEventListener('click', () => navigateTo('ai-chat'));
+        navSettings.addEventListener('click', () => navigateTo('settings'));
+        
+        quickAiChat.addEventListener('click', () => navigateTo('ai-chat'));
+        
+        sendMessage.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+        
+        uploadFileButton.addEventListener('click', () => {
+            showPermissionModal('AI助手需要访问您选择的文件内容。这将允许AI分析文件并提供相关见解。', (allowed) => {
+                if (allowed) {
+                    fileUpload.click();
+                }
+            });
+        });
+        
+        fileUpload.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const fileName = e.target.files[0].name;
+                
+                // Add file upload message
+                const fileMessageHTML = `
+                    <div class="flex justify-end">
+                        <div class="mr-3 bg-primary rounded-lg p-4 max-w-3xl">
+                            <div class="flex items-center">
+                                <i class="fa fa-file-o text-white mr-2"></i>
+                                <p class="text-white">${fileName}</p>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0 flex items-center justify-center text-white">
+                            <span>${userInitial.textContent}</span>
+                        </div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', fileMessageHTML);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Simulate AI analyzing file
+                setTimeout(() => {
+                    const aiAnalysisHTML = `
+                        <div class="flex">
+                            <div class="w-8 h-8 rounded-full bg-gradient-primary flex-shrink-0 flex items-center justify-center text-white">
+                                <i class="fa fa-robot"></i>
+                            </div>
+                            <div class="ml-3 bg-gray-100 rounded-lg p-4 max-w-3xl">
+                                <p class="text-gray-700 mb-3">我已分析了您的文件 <strong>${fileName}</strong>，以下是我的发现：</p>
+                                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                                    <li>文件包含100行数据，分为5个主要类别</li>
+                                    <li>数据显示最近一个季度的增长趋势为15%</li>
+                                    <li>发现了3个潜在的数据异常点</li>
+                                    <li>建议关注"销售"和"市场"类别的相关性</li>
+                                </ul>
+                                <p class="mt-3 text-gray-700">您需要我对特定部分进行更详细的分析吗？</p>
+                            </div>
+                        </div>
+                    `;
+                    chatMessages.insertAdjacentHTML('beforeend', aiAnalysisHTML);
+                    
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 2000);
+            }
+        });
+        
+        closeNotification.addEventListener('click', () => {
+            notificationToast.classList.add('translate-y-10', 'opacity-0');
+            setTimeout(() => {
+                notificationToast.classList.add('hidden');
+            }, 300);
+        });
+        
+        saveSettings.addEventListener('click', () => {
+            const username = settingsUsername.value;
+            const email = settingsEmail.value;
+            
+            if (!username || !email) {
+                showNotification('保存失败', '请填写所有必填字段', 'error');
+                return;
+            }
+            
+            // Update user info
+            userName.textContent = username;
+            userEmail.textContent = email;
+            userInitial.textContent = username.charAt(0).toUpperCase();
+            chatUserInitial.textContent = username.charAt(0).toUpperCase();
+            settingsUserInitial.textContent = username.charAt(0).toUpperCase();
+            
+            showNotification('保存成功', '您的设置已更新');
+        });
+        
+        uploadButton.addEventListener('click', () => {
+            showPermissionModal('AI助手需要访问您选择的文件以上传到系统。这将允许AI处理和分析您的文件。', (allowed) => {
+                if (allowed) {
+                    showNotification('上传准备', '请选择要上传的文件', 'info');
+                    // Here you would typically trigger a file input
+                }
+            });
+        });
+        
+        newFolderButton.addEventListener('click', () => {
+            const folderName = prompt('请输入新文件夹名称：');
+            if (folderName) {
+                showNotification('创建成功', `文件夹 "${folderName}" 已创建`);
+            }
+        });
+    </script>
+</body>
+</html>

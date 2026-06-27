@@ -1,0 +1,4 @@
+1. Starting...
+2. torch OK, version=2.5.1+cpu
+3. diffusers OK, version=0.38.0
+All OK!

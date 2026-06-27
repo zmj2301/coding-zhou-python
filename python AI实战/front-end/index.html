@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>ZCLAW - 智能AI助手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --secondary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --error-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --shadow-glow: 0 0 40px rgba(102, 126, 234, 0.3);
+            --command-bg: rgba(0, 0, 0, 0.4);
+            --command-border: rgba(79, 172, 254, 0.5);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --border-radius-sm: 8px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 24px;
+            --border-radius-full: 50%;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 背景网格效果 */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                linear-gradient(rgba(102, 126, 234, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* 背景粒子效果 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float-particle 20s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* 背景曲线效果 */
+        .curves-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.1;
+        }
+
+        .curve {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            animation: curve-move 20s ease-in-out infinite;
+        }
+
+        .curve:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            top: -100px;
+            left: -100px;
+            background: linear-gradient(135deg, #667eea, transparent);
+            animation-delay: 0s;
+        }
+
+        .curve:nth-child(2) {
+            width: 800px;
+            height: 800px;
+            bottom: -200px;
+            right: -200px;
+            background: linear-gradient(135deg, #f093fb, transparent);
+            animation-delay: 5s;
+        }
+
+        .curve:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            top: 50%;
+            right: 10%;
+            background: linear-gradient(135deg, #4facfe, transparent);
+            animation-delay: 10s;
+        }
+
+        @keyframes curve-move {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, 20px) scale(1.05); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+            animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: var(--spacing-lg);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* 导航栏 */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: var(--spacing-xl);
+            grid-column: 1 / -1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            color: #a8b2ff;
+        }
+
+        /* 左侧主内容区 */
+        .main-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        /* ZCLAW Logo 样式 */
+        .logo-container {
+            text-align: center;
+            animation: logoReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        @keyframes logoReveal {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .zclaw-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-md);
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 0%, #a8b2ff 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px rgba(102, 126, 234, 0.5);
+            position: relative;
+        }
+
+        .zclaw-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+            animation: underlineGrow 1s ease 1s both;
+        }
+
+        @keyframes underlineGrow {
+            from { width: 0; }
+            to { width: 60%; }
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(102, 126, 234, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .logo-icon:hover::before {
+            left: 100%;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(102, 126, 234, 0.6); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(102, 126, 234, 0.8); }
+        }
+
+        .logo-icon i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: var(--spacing-sm);
+            font-weight: 400;
+            letter-spacing: 2px;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-glow), 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 聊天区域 */
+        #chat-container {
+            height: 50vh;
+            min-height: 350px;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            scroll-behavior: smooth;
+        }
+
+        #chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chat-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        #chat-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            transition: background var(--transition-fast);
+        }
+
+        #chat-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 消息样式 */
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            animation: messageSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 90%;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+            margin-left: auto;
+        }
+
+        .message.user .message-content {
+            background: var(--secondary-gradient);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--border-radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-avatar::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--border-radius-full);
+            background: var(--primary-gradient);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .message:hover .message-avatar::before {
+            opacity: 0.5;
+        }
+
+        .message-avatar.user {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .message-avatar.ai {
+            background: var(--primary-gradient);
+        }
+
+        .message-avatar.system {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .message-avatar i {
+            font-size: 20px;
+            color: white;
+        }
+
+        .message-content {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            line-height: 1.6;
+            word-wrap: break-word;
+            transition: all var(--transition-normal);
+            border-bottom-left-radius: 4px;
+            backdrop-filter: blur(10px);
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .message-content:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-content:hover::before {
+            opacity: 1;
+        }
+
+        .message-content.system {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        /* 命令执行状态样式 */
+        .command-status {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            animation: slideIn 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .command-status::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: currentColor;
+            opacity: 0.3;
+        }
+
+        .command-status.executing {
+            background: rgba(79, 172, 254, 0.15);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            color: #4facfe;
+        }
+
+        .command-status.success {
+            background: rgba(17, 153, 142, 0.15);
+            border: 1px solid rgba(17, 153, 142, 0.3);
+            color: #38ef7d;
+        }
+
+        .command-status.error {
+            background: rgba(235, 51, 73, 0.15);
+            border: 1px solid rgba(235, 51, 73, 0.3);
+            color: #f45c43;
+        }
+
+        .command-status-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .command-status-text {
+            flex: 1;
+        }
+
+        .command-text {
+            font-weight: 500;
+            word-break: break-all;
+            margin-top: var(--spacing-xs);
+        }
+
+        /* 命令结果样式 */
+        .command-result {
+            margin-top: var(--spacing-sm);
+            background: var(--command-bg);
+            border: 1px solid var(--command-border);
+            border-radius: var(--border-radius-sm);
+            padding: var(--spacing-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #a8b2ff;
+            max-height: 200px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .command-result::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .command-result::-webkit-scrollbar-thumb {
+            background: rgba(79, 172, 254, 0.3);
+            border-radius: 2px;
+        }
+
+        .command-result-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(168, 178, 255, 0.6);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        /* 输入区域 */
+        .input-area {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: var(--spacing-lg);
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .input-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+        }
+
+        #chat-form {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .call-button {
+            position: absolute;
+            right: var(--spacing-md);
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border: 2px solid rgba(139, 92, 246, 0.4);
+            border-radius: 50%;
+            width: 22px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 4px 20px rgba(139, 92, 246, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .call-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+
+        .call-button:hover::before {
+            left: 100%;
+        }
+
+        .call-button:hover {
+            transform: scale(1.15);
+            box-shadow: 
+                0 8px 30px rgba(139, 92, 246, 0.6),
+                0 0 0 12px rgba(139, 92, 246, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            border-color: rgba(139, 92, 246, 0.8);
+        }
+
+        .call-button:active {
+            transform: scale(1.05);
+            box-shadow: 
+                0 4px 15px rgba(139, 92, 246, 0.4),
+                inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .call-button i {
+            font-size: 1.3rem;
+            color: white;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .call-button:hover i {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+        .call-button.listening {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            border-color: rgba(248, 113, 113, 0.6);
+            box-shadow: 
+                0 4px 20px rgba(248, 113, 113, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            animation: pulse-glow 1.5s ease-in-out infinite;
+        }
+
+        .call-button.listening i {
+            animation: microphone-pulse 0.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 
+                    0 4px 20px rgba(248, 113, 113, 0.5),
+                    0 0 0 0 rgba(248, 113, 113, 0.7),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+            50% {
+                box-shadow: 
+                    0 8px 30px rgba(248, 113, 113, 0.7),
+                    0 0 0 18px rgba(248, 113, 113, 0),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        @keyframes microphone-pulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                transform: scale(1.15);
+                filter: brightness(1.3);
+            }
+        }
+
+        #user-input {
+            width: 100%;
+            padding: var(--spacing-md) calc(var(--spacing-lg) + 50px) var(--spacing-md) var(--spacing-lg);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-md);
+            outline: none;
+            transition: all var(--transition-normal);
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-family: inherit;
+            position: relative;
+            z-index: 1;
+        }
+
+        #user-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        #user-input:focus {
+            border-color: rgba(102, 126, 234, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+
+        button {
+            background: var(--primary-gradient);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            font-weight: 500;
+            font-size: 0.95rem;
+            font-family: inherit;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+            min-width: 100px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        button i {
+            font-size: 18px;
+        }
+
+        /* 右侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        /* 命令历史面板 */
+        .command-history-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-glow), 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+            flex: 1;
+            max-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .command-history-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary-gradient);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+        }
+
+        .panel-icon i {
+            font-size: 20px;
+            color: white;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .panel-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .command-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .command-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .command-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+
+        .command-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-md);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .command-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-gradient);
+            transform: scaleY(0);
+            transition: transform var(--transition-fast);
+        }
+
+        .command-item:hover {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(79, 172, 254, 0.3);
+            transform: translateX(4px);
+        }
+
+        .command-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .command-item-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .command-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .command-status-dot.success {
+            background: #38ef7d;
+            box-shadow: 0 0 8px #38ef7d;
+        }
+
+        .command-status-dot.error {
+            background: #f45c43;
+            box-shadow: 0 0 8px #f45c43;
+        }
+
+        .command-status-dot.pending {
+            background: #4facfe;
+            box-shadow: 0 0 8px #4facfe;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .command-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .command-text-small {
+            color: var(--text-secondary);
+            word-break: break-all;
+            line-height: 1.4;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+            opacity: 0.2;
+        }
+
+        /* 统计面板 */
+        .stats-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-item:hover::before {
+            opacity: 1;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: var(--spacing-xs);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 底部信息 */
+        footer {
+            margin-top: var(--spacing-lg);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            animation: fadeIn 1s ease 0.8s both;
+            grid-column: 1 / -1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        footer a:hover {
+            color: #a8b2ff;
+        }
+
+        .api-doc-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-md);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .api-doc-btn:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.5) 100%);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            color: var(--text-primary);
+        }
+
+        .api-doc-btn i {
+            font-size: 16px;
+        }
+
+        .studio-credit {
+            margin-top: var(--spacing-sm);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .studio-credit span {
+            background: linear-gradient(135deg, #a8b2ff 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        /* 加载动画 */
+        .loading-dots {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+        }
+
+        .loading-dots span {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* 反馈消息 */
+        #feedback-message {
+            margin-top: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            font-size: 0.85rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        #feedback-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        #feedback-message.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        #feedback-message.info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+                max-width: 700px;
+                padding: var(--spacing-md);
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .zclaw-logo {
+                font-size: 2.5rem;
+            }
+
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .logo-icon i {
+                font-size: 20px;
+            }
+
+            #chat-container {
+                height: 45vh;
+                min-height: 300px;
+                padding: var(--spacing-md);
+            }
+
+            .message {
+                max-width: 95%;
+            }
+
+            button span {
+                display: none;
+            }
+
+            button {
+                padding: var(--spacing-md);
+                min-width: 50px;
+            }
+
+            .input-area {
+                padding: var(--spacing-md);
+            }
+        }
+
+        /* 打字机效果 */
+        .typing-effect {
+            overflow: hidden;
+            border-right: 2px solid rgba(255, 255, 255, 0.6);
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: rgba(255, 255, 255, 0.6); }
+        }
+
+        /* 折叠/展开动画 */
+        .collapsible {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible.expanded {
+            max-height: 500px;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-sm);
+            box-shadow: none;
+        }
+
+        .toggle-btn:hover {
+            color: var(--text-primary);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .toggle-btn i {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn.expanded i {
+            transform: rotate(180deg);
+        }
+
+        /* 无障碍支持 */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* 焦点样式 */
+        *:focus-visible {
+            outline: 2px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景网格 -->
+    <div class="grid-bg"></div>
+    
+    <!-- 背景粒子 -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- 背景曲线 -->
+    <div class="curves-bg">
+        <div class="curve"></div>
+        <div class="curve"></div>
+        <div class="curve"></div>
+    </div>
+
+    <div class="container">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                ZCLAW
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">首页</a>
+                <a href="videos.html" class="nav-link">视频库</a>
+                <a href="index.html" class="nav-link">AI助手</a>
+            </div>
+        </nav>
+
+        <!-- 左侧主内容区 -->
+        <div class="main-section">
+            <!-- ZCLAW Logo -->
+            <div class="logo-container">
+                <div class="zclaw-logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    ZCLAW
+                </div>
+                <p class="tagline">智能AI助手 · 赋能无限可能</p>
+            </div>
+
+            <!-- 主内容 -->
+            <div class="main-content">
+                <!-- 聊天区域 -->
+                <div id="chat-container">
+                    <!-- 系统欢迎消息 -->
+                    <div class="message">
+                        <div class="message-avatar ai">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            您好！我是 ZCLAW 智能助手，很高兴为您服务。我可以帮您执行命令、获取信息、解答问题。请告诉我您需要什么帮助？
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="input-area">
+                    <form id="chat-form">
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="user-input" 
+                                placeholder="输入您的问题，按 Enter 发送..."
+                                autocomplete="off"
+                            >
+                            <button type="button" id="call-button" class="call-button">
+                <i class="fas fa-microphone"></i>
+            </button>
+                        </div>
+                        <button type="submit" id="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>发送</span>
+                        </button>
+                    </form>
+                    <div id="feedback-message" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧边栏 -->
+        <div class="sidebar">
+            <!-- 命令历史面板 -->
+            <div class="command-history-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div>
+                        <div class="panel-title">命令历史</div>
+                        <div class="panel-subtitle">AI 执行的命令记录</div>
+                    </div>
+                </div>
+                <div class="command-list" id="command-list">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <div>暂无命令记录</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计面板 -->
+            <div class="stats-panel">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-commands">0</div>
+                        <div class="stat-label">执行命令</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-success">0</div>
+                        <div class="stat-label">成功</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-messages">0</div>
+                        <div class="stat-label">消息数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-time">0s</div>
+                        <div class="stat-label">运行时间</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部信息 -->
+        <footer>
+            <p>ZCLAW AI Assistant &copy; 2026 | 智能 · 高效 · 安全</p>
+            <a href="https://www.doubao.com/share/doc/cf4c414133443111" target="_blank" class="api-doc-btn">
+                <i class="fas fa-book"></i>
+                API接入文档
+            </a>
+            <p class="studio-credit">由 <span>余辉工作室</span> 精心制作</p>
+        </footer>
+    </div>
+
+    <script>
+        // 创建背景粒子
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // DOM 元素
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const callButton = document.getElementById('call-button');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const commandList = document.getElementById('command-list');
+
+        // 语音识别状态
+        let isListening = false;
+        let recognition = null;
+        let stats = {
+            commands: 0,
+            success: 0,
+            messages: 1,  // 包含欢迎消息
+            startTime: Date.now()
+        };
+
+        // 更新统计显示
+        function updateStats() {
+            document.getElementById('stat-commands').textContent = stats.commands;
+            document.getElementById('stat-success').textContent = stats.success;
+            document.getElementById('stat-messages').textContent = stats.messages;
+            const elapsed = Math.floor((Date.now() - stats.startTime) / 1000);
+            document.getElementById('stat-time').textContent = elapsed + 's';
+        }
+
+        // 每秒更新时间
+        setInterval(updateStats, 1000);
+
+        // 添加命令到历史记录
+        function addCommandToHistory(command, status, result) {
+            // 移除空状态
+            const emptyState = commandList.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const commandItem = document.createElement('div');
+            commandItem.className = 'command-item';
+            
+            const time = new Date().toLocaleTimeString('zh-CN', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+
+            let statusDotClass = 'pending';
+            if (status === 'success') statusDotClass = 'success';
+            if (status === 'error') statusDotClass = 'error';
+
+            commandItem.innerHTML = `
+                <div class="command-item-header">
+                    <div class="command-status-dot ${statusDotClass}"></div>
+                    <span class="command-time">${time}</span>
+                </div>
+                <div class="command-text-small">${escapeHtml(command)}</div>
+            `;
+
+            // 点击展开查看结果
+            commandItem.addEventListener('click', () => {
+                if (result) {
+                    alert(`命令: ${command}\n\n结果:\n${result}`);
+                }
+            });
+
+            commandList.insertBefore(commandItem, commandList.firstChild);
+
+            // 限制历史记录数量
+            while (commandList.children.length > 20) {
+                commandList.removeChild(commandList.lastChild);
+            }
+        }
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 添加消息到聊天界面
+        function addMessage(content, isUser = false, isSystem = false, commandInfo = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : ''}`;
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = `message-avatar ${isUser ? 'user' : isSystem ? 'system' : 'ai'}`;
+            
+            if (isUser) {
+                avatarDiv.innerHTML = '<i class="fas fa-user"></i>';
+            } else if (isSystem) {
+                avatarDiv.innerHTML = '<i class="fas fa-info-circle"></i>';
+            } else {
+                avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
+            }
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = isSystem ? 'message-content system' : 'message-content';
+            messageContent.innerHTML = content;
+            
+            // 添加命令执行状态
+            if (commandInfo) {
+                const statusDiv = document.createElement('div');
+                statusDiv.className = `command-status ${commandInfo.status}`;
+                
+                let iconHtml = '';
+                let statusText = '';
+                
+                if (commandInfo.status === 'executing') {
+                    iconHtml = '<i class="fas fa-spinner fa-spin"></i>';
+                    statusText = '正在执行';
+                } else if (commandInfo.status === 'success') {
+                    iconHtml = '<i class="fas fa-check"></i>';
+                    statusText = '执行成功';
+                } else if (commandInfo.status === 'error') {
+                    iconHtml = '<i class="fas fa-times"></i>';
+                    statusText = '执行失败';
+                }
+                
+                statusDiv.innerHTML = `
+                    <div class="command-status-icon">
+                        ${iconHtml}
+                    </div>
+                    <div class="command-status-text">
+                        <div>${statusText}</div>
+                        <div class="command-text">${escapeHtml(commandInfo.command)}</div>
+                    </div>
+                `;
+                
+                messageContent.appendChild(statusDiv);
+                
+                // 添加命令结果
+                if (commandInfo.result) {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'command-result';
+                    resultDiv.innerHTML = `
+                        <div class="command-result-label">
+                            <i class="fas fa-terminal"></i>
+                            执行结果
+                        </div>
+                        ${escapeHtml(commandInfo.result)}
+                    `;
+                    messageContent.appendChild(resultDiv);
+                }
+            }
+            
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(messageContent);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            stats.messages++;
+            updateStats();
+            
+            return messageDiv;
+        }
+
+        // 显示加载动画
+        function showLoading() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message';
+            loadingDiv.id = 'loading-message';
+            loadingDiv.innerHTML = `
+                <div class="message-avatar ai">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(loadingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // 移除加载动画
+        function hideLoading() {
+            const loadingMsg = document.getElementById('loading-message');
+            if (loadingMsg) {
+                loadingMsg.remove();
+            }
+        }
+
+        // 显示反馈消息
+        function showFeedback(message, type = 'error') {
+            feedbackMessage.textContent = message;
+            feedbackMessage.className = type;
+            feedbackMessage.style.display = 'block';
+            
+            if (type !== 'info') {
+                setTimeout(() => {
+                    feedbackMessage.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // 处理表单提交
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = userInput.value.trim();
+            if (!input) {
+                showFeedback('请输入您的问题');
+                return;
+            }
+
+            // 停止语音识别（如果正在进行）
+            if (isListening) {
+                await stopListening();
+            }
+            stopPolling();
+
+            // 禁用发送按钮
+            sendButton.disabled = true;
+            sendButton.innerHTML = `
+                <div class="loading-dots" style="padding: 0;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+
+            // 添加用户消息
+            addMessage(input, true);
+            userInput.value = '';
+
+            // 显示加载状态
+            showLoading();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        message: input,
+                        session_id: 'web-session'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('服务器响应错误');
+                }
+
+                const data = await response.json();
+                
+                // 移除加载消息
+                hideLoading();
+                
+                // 处理不同类型的响应
+                if (data.type === 'command_executed') {
+                    // 命令已执行
+                    stats.commands++;
+                    stats.success++;
+                    
+                    addMessage(data.final_reply || '命令执行完成', false, false, {
+                        status: 'success',
+                        command: data.command,
+                        result: data.result
+                    });
+                    
+                    addCommandToHistory(data.command, 'success', data.result);
+                    showFeedback('命令执行成功', 'success');
+                    
+                } else if (data.type === 'authorization_required') {
+                    // 需要授权的危险命令
+                    addMessage(data.ai_reply || '检测到需要授权的命令', false, false, {
+                        status: 'executing',
+                        command: data.command
+                    });
+                    
+                    // 这里可以添加授权对话框逻辑
+                    showFeedback('该命令需要授权才能执行');
+                    
+                } else if (data.type === 'thinking') {
+                    // AI思考中，不需要执行命令
+                    addMessage(data.ai_reply || data.content, false, false);
+                    showFeedback('处理完成', 'success');
+                    
+                } else {
+                    // 普通完成响应
+                    addMessage(data.content || data.response || data.ai_reply || '处理完成', false, false);
+                    showFeedback('处理完成', 'success');
+                }
+                
+            } catch (error) {
+                // 移除加载消息
+                hideLoading();
+                
+                // 显示错误消息
+                addMessage(`抱歉，发生了错误：${error.message}。请稍后重试。`, false, true);
+                showFeedback(`发送失败: ${error.message}`);
+            } finally {
+                // 启用发送按钮
+                sendButton.disabled = false;
+                sendButton.innerHTML = `
+                    <i class="fas fa-paper-plane"></i>
+                    <span>发送</span>
+                `;
+            }
+        });
+
+        // 按Enter键发送消息
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // 输入框获取焦点时隐藏反馈消息
+        userInput.addEventListener('focus', () => {
+            feedbackMessage.style.display = 'none';
+        });
+
+        // 语音输入按钮点击事件
+        callButton.addEventListener('click', async () => {
+            console.log('麦克风按钮被点击，当前状态:', isListening);
+            if (!isListening) {
+                await startListening();
+            } else {
+                await stopListening();
+            }
+        });
+
+        // 开始语音识别
+        async function startListening() {
+            try {
+                const response = await fetch('/api/speech/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    isListening = true;
+                    callButton.classList.add('listening');
+                    callButton.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+                    showFeedback('正在听...请说话', 'info');
+                    
+                    // 定期获取识别结果
+                    console.log('开始轮询语音识别结果');
+                    startPolling();
+                } else {
+                    showFeedback(data.message || '无法启动语音识别');
+                }
+            } catch (error) {
+                console.error('启动语音识别失败:', error);
+                showFeedback('无法连接到语音识别服务');
+            }
+        }
+
+        // 停止语音识别
+        async function stopListening() {
+            try {
+                // 先停止轮询
+                console.log('停止轮询');
+                stopPolling();
+                
+                const response = await fetch('/api/speech/stop', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.text && data.text.trim()) {
+                    // 只设置一次识别结果
+                    userInput.value = data.text;
+                }
+                
+                isListening = false;
+                callButton.classList.remove('listening');
+                callButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                feedbackMessage.style.display = 'none';
+                console.log('语音识别已停止');
+            } catch (error) {
+                console.error('停止语音识别失败:', error);
+            }
+        }
+
+        // 定期获取识别结果
+        let pollingInterval = null;
+        
+        function startPolling() {
+            stopPolling(); // 确保之前的轮询已停止
+            
+            pollingInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/speech/status');
+                    const data = await response.json();
+                    
+                    // 更新输入框（实时显示）
+                    if (data.text && data.text.trim()) {
+                        userInput.value = data.text;
+                    }
+                    
+                    // 如果服务器已停止录音，自动停止轮询
+                    if (!data.is_recording) {
+                        console.log('服务器已停止录音，自动停止轮询');
+                        stopPolling();
+                        // 更新UI状态
+                        if (isListening) {
+                            isListening = false;
+                            callButton.classList.remove('listening');
+                            callButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                            feedbackMessage.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('获取语音识别状态失败:', error);
+                }
+            }, 300);
+        }
+        
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+                console.log('轮询已停止');
+            }
+        }
+
+        // 页面加载完成后聚焦输入框
+        window.addEventListener('load', () => {
+            userInput.focus();
+            updateStats();
+        });
+    </script>
+</body>
+</html>

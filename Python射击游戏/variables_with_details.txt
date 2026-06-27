@@ -1,0 +1,105 @@
+# 游戏变量详细列表
+
+以下是游戏中所有使用过的变量，包括变量名称、存储格式和功能描述：
+
+## 1. 全局变量
+
+| 变量名称 | 存储格式 | 功能描述 |
+|---------|---------|---------|
+| log_file | 字符串 | 日志文件路径 |
+| logger | logging.Logger对象 | 日志记录器实例 |
+| HEIGHT | 整数 | 游戏窗口高度 |
+| WIDTH | 整数 | 游戏窗口宽度 |
+| GREEN_BG | 元组 | 绿色背景颜色值 |
+| enemy_pos | 列表 | 敌人位置列表 |
+| enemy_way | 列表 | 敌人移动方向列表 |
+| enemy_animation | 列表 | 敌人动画帧列表 |
+| enemy_hp | 列表 | 敌人血量列表 |
+| enemy_type | 列表 | 敌人类型列表 |
+| bullets | 列表 | 子弹列表 |
+| arrows | 列表 | 箭列表 |
+| enemy_speed | 列表 | 敌人速度列表 |
+| plane_pos | 列表 | 飞机位置列表 |
+| bomb | 列表 | 炸弹列表 |
+| lasers | 列表 | 激光列表 |
+| medical_pos | 列表 | 医疗包位置列表 |
+| m_h_show_time | 列表 | 医疗包显示时间列表 |
+| inventory | 列表 | 玩家库存列表 |
+| fps | 整数 | 帧率计数器 |
+| player_x | 整数 | 玩家X坐标 |
+| player_y | 整数 | 玩家Y坐标 |
+| speed_y | 整数 | 玩家垂直速度 |
+| player_hp | 整数 | 玩家血量 |
+| floor_number | 整数 | 地板编号 |
+| current_weapons | 字符串 | 当前武器 |
+| is_attacking | 布尔值 | 是否正在攻击 |
+| stop | 布尔值 | 是否停止游戏 |
+| attack_frame | 整数 | 攻击动画帧 |
+| attack_cooldown | 整数 | 攻击冷却时间 |
+| attack_duration | 整数 | 攻击动画持续帧数 |
+| attack_cooldown_time | 整数 | 攻击冷却时间帧数 |
+| show_hitbox | 布尔值 | 是否显示碰撞盒 |
+| pictures | 字典 | 存储所有图片资源 |
+| screen | pygame.Surface对象 | 游戏窗口表面 |
+| icon | pygame.Surface对象 | 游戏图标 |
+| clock | pygame.time.Clock对象 | 游戏时钟 |
+| running | 布尔值 | 游戏是否运行 |
+| frame_count | 整数 | 游戏帧计数 |
+
+## 2. 局部变量
+
+| 变量名称 | 存储格式 | 功能描述 |
+|---------|---------|---------|
+| f | 文件对象 | 文件句柄 |
+| file_handler | logging.FileHandler对象 | 日志文件处理器 |
+| formatter | logging.Formatter对象 | 日志格式化器 |
+| mouse_x | 整数 | 鼠标X坐标 |
+| mouse_y | 整数 | 鼠标Y坐标 |
+| gun_center_x | 整数 | 枪的中心X坐标 |
+| gun_center_y | 整数 | 枪的中心Y坐标 |
+| event | pygame.event.Event对象 |  pygame事件 |
+| bullet_x | 整数 | 子弹X坐标 |
+| bullet_y | 整数 | 子弹Y坐标 |
+| bullet_speed | 整数 | 子弹速度 |
+| angle | 浮点数 | 子弹发射角度 |
+| bullet_dx | 浮点数 | 子弹X方向速度分量 |
+| bullet_dy | 浮点数 | 子弹Y方向速度分量 |
+| d | 整数 | 循环变量 |
+| attack_progress | 浮点数 | 攻击进度 |
+| attack_rotation | 整数 | 攻击旋转角度 |
+| attack_offset | 整数 | 攻击偏移量 |
+| attack_hitbox | pygame.Rect对象 | 攻击碰撞盒 |
+| sword_center_x | 整数 | 剑的中心X坐标 |
+| sword_center_y | 整数 | 剑的中心Y坐标 |
+| sword_rect | pygame.Rect对象 | 剑的矩形区域 |
+| flipped_sword | pygame.Surface对象 | 翻转后的剑图片 |
+| rotated_sword | pygame.Surface对象 | 旋转后的剑图片 |
+| rotated_rect | pygame.Rect对象 | 旋转后的矩形区域 |
+| enemy_rect | pygame.Rect对象 | 敌人的矩形区域 |
+| player_hp_percent | 浮点数 | 玩家血量百分比 |
+| bar_width | 整数 | 血条宽度 |
+| bar_height | 整数 | 血条高度 |
+| current_bar_width | 整数 | 当前血条宽度 |
+| rotated_gun | pygame.Surface对象 | 旋转后的枪图片 |
+| bullet_hit | 布尔值 | 子弹是否命中 |
+| j | 整数 | 循环变量 |
+| enemy_width | 整数 | 敌人宽度 |
+| enemy_height | 整数 | 敌人高度 |
+| bar_x | 整数 | 血条X坐标 |
+| bar_y | 整数 | 血条Y坐标 |
+| enemy_hp_percent | 浮点数 | 敌人血量百分比 |
+| target_x | 整数 | 目标X坐标 |
+| target_y | 整数 | 目标Y坐标 |
+| arrow_start_x | 整数 | 箭的起始X坐标 |
+| arrow_start_y | 整数 | 箭的起始Y坐标 |
+| dx | 整数 | X方向距离 |
+| arrow_speed | 整数 | 箭的速度 |
+| arrow_dx | 整数 | 箭的X方向速度分量 |
+| arrow_dy | 整数 | 箭的Y方向速度分量 |
+| arrow_angle | 浮点数 | 箭的角度 |
+| jiguang | pygame.Rect对象 | 激光的矩形区域 |
+| gravity | 浮点数 | 重力加速度 |
+| rotated_arrow | pygame.Surface对象 | 旋转后的箭图片 |
+| arrow_rect | pygame.Rect对象 | 箭的矩形区域 |
+| player_rect | pygame.Rect对象 | 玩家的矩形区域 |
+| medical_rect | pygame.Rect对象 | 医疗包的矩形区域 |

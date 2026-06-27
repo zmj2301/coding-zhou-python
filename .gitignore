@@ -1,0 +1,79 @@
+# Python缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 虚拟环境
+.venv
+venv/
+env/
+
+# IDE配置
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 构建产物
+dist/
+build/
+*.spec
+*.exe
+
+# 压缩包
+*.rar
+*.zip
+*.7z
+*.tar.gz
+
+# 日志
+*.log
+server.log
+server.err
+
+# 音频文件
+*.wav
+*.mp3
+*.ogg
+
+# 系统文件
+Thumbs.db
+.DS_Store
+
+# 环境变量和密钥文件（防止意外提交敏感信息）
+.env
+.env.*
+!.env.example
+
+# 图片文件
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.webp
+*.bmp
+
+# 视频文件
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# 字体文件
+*.ttf
+*.ttc
+
+# Scratch项目文件
+*.sb3
+
+# 植物大战僵尸游戏资源
+garden/
+
+# 其他
+node_modules/
+.vite/
+
+output/

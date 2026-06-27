@@ -1,0 +1,5 @@
+Step 1: before torch import
+Step 2: torch imported, version=2.5.1+cpu
+Step 3: before diffusers import
+Step 4: diffusers imported
+All imports OK!
