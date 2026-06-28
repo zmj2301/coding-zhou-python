@@ -4206,14 +4206,18 @@ renderCodePanel = function(data) {
     authed = false;
   }
 
-  if (authed) {
-    userMenuBtn.classList.remove('hidden');
-    init();
-  } else if (hasInitialData) {
-    userMenuBtn.classList.remove('hidden');
-    init();
-  } else {
-    showLoginPage(false);
+  try {
+    if (authed || hasInitialData) {
+      if (userMenuBtn) userMenuBtn.classList.remove('hidden');
+      init();
+    } else {
+      showLoginPage(false);
+    }
+  } catch(e) {
+    console.error('启动失败:', e);
+    if (hasInitialData) {
+      try { init(); } catch(_) {}
+    }
   }
 })();
 </script>
