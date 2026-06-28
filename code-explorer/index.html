@@ -397,6 +397,7 @@ body::before {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
   padding: 0 24px 48px;
+  content-visibility: auto;
 }
 .cards-grid.list-view {
   grid-template-columns: 1fr;
@@ -2813,8 +2814,9 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
                           p.type === 'popup-preview' ? '点击查看 →' :
                           (p.mainFile ? esc(p.mainFile) : '无主文件');
     const coverHtml = p.cover ? 
-      `<div class="card-cover"><img src="${esc(p.cover)}" alt="${esc(p.name)}"></div>` : 
+      `<div class="card-cover"><img src="${esc(p.cover)}" alt="${esc(p.name)}" loading="lazy"></div>` : 
       `<div class="card-cover"><div class="card-icon-wrap" style="background:${esc(p.themeColor).replace(')', ', 0.10)')};color:${esc(p.themeColor)};width:64px;height:64px;font-size:28px">${p.icon}</div></div>`;
+    const pathId = esc(p.path.replace(/[/\\]/g, '-'));
     return `
     <div class="project-card ${p.cardClass}" data-project="${esc(p.path)}" style="--theme:${esc(p.themeColor)}">
       <div class="card-accent-bar" style="background:${esc(p.themeColor)}"></div>
@@ -2838,27 +2840,44 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
             <span>${mainFileLabel}</span>
           </div>
         </div>
-        <button class="bookmark-btn ${isBookmarked(p.path) ? 'bookmarked' : ''}" data-path="${esc(p.path)}" onclick="event.stopPropagation();toggleBookmarkByPath('${esc(p.path)}')" title="收藏 (Ctrl+B)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-        </button>
-        <button class="like-btn" onclick="event.stopPropagation();likeProject('${esc(p.path)}')" title="点赞">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-          <span class="like-count" id="lk-${esc(p.path.replace(/[/\\]/g,'-'))}">0</span>
-        </button>
-        <button class="comment-btn" onclick="event.stopPropagation();openCommentModal('${esc(p.path)}','${esc(p.name)}')" title="留言">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span class="comment-count" id="cc-${esc(p.path.replace(/[/\\]/g,'-'))}">0</span>
-        </button>
-        <div class="card-arrow">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <div class="card-actions" data-path="${esc(p.path)}">
+          <button class="bookmark-btn ${isBookmarked(p.path) ? 'bookmarked' : ''}" data-action="bookmark" title="收藏 (Ctrl+B)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </button>
+          <button class="like-btn" data-action="like" title="点赞">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span class="like-count" id="lk-${pathId}">${p.likes || 0}</span>
+          </button>
+          <button class="comment-btn" data-action="comment" title="留言">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="comment-count" id="cc-${pathId}">${p.comments || 0}</span>
+          </button>
+          <div class="card-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
         </div>
       </div>
     </div>
   `}).join('');
 
-  grid.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', () => openProject(card.dataset.project));
-  });
+  grid.onclick = function(e) {
+    const actionBtn = e.target.closest('[data-action]');
+    if (actionBtn) {
+      e.stopPropagation();
+      const path = actionBtn.closest('.card-actions')?.dataset.path;
+      const action = actionBtn.dataset.action;
+      if (!path) return;
+      if (action === 'like') likeProject(path);
+      else if (action === 'comment') {
+        const project = state.projects.find(p => p.path === path);
+        openCommentModal(path, project?.name || '');
+      }
+      else if (action === 'bookmark') toggleBookmarkByPath(path);
+      return;
+    }
+    const card = e.target.closest('.project-card');
+    if (card) openProject(card.dataset.project);
+  };
 }
 
 function updateStats(projects) {
@@ -3467,6 +3486,7 @@ async function init() {
       showSkeleton();
       projects = await fetchProjectList();
     }
+
     state.projects = projects.map(p => ({
       ...p,
       icon: getProjectIcon(p.name),
@@ -3474,29 +3494,31 @@ async function init() {
       lastModified: formatDate(p.lastModified),
       cover: getProjectCover(p.name),
     }));
+
     updateStats(state.projects);
     renderCards(state.projects);
-    projects.forEach(p => {
-      const likeEl = document.getElementById('lk-' + p.path.replace(/[/\\]/g, '-'));
-      if (likeEl) likeEl.textContent = p.likes || 0;
-      const commentEl = document.getElementById('cc-' + p.path.replace(/[/\\]/g, '-'));
-      if (commentEl) commentEl.textContent = p.comments || 0;
+
+    requestAnimationFrame(() => {
+      renderRecentProjects();
+      renderBookmarks();
     });
-    renderRecentProjects();
-    renderBookmarks();
-    var pollTimer = setInterval(() => {
-      refreshProjectMeta();
-    }, 15000);
-    document.addEventListener('visibilitychange', function() {
-      if (document.hidden) {
-        clearInterval(pollTimer);
-      } else {
+
+    setTimeout(() => {
+      var pollTimer: any = null;
+      pollTimer = setInterval(() => {
         refreshProjectMeta();
-        pollTimer = setInterval(() => {
+      }, 15000);
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          clearInterval(pollTimer);
+        } else {
           refreshProjectMeta();
-        }, 15000);
-      }
-    });
+          pollTimer = setInterval(() => {
+            refreshProjectMeta();
+          }, 15000);
+        }
+      });
+    }, 1000);
   } catch(err) {
     $('#cardsGrid').innerHTML = `<div class="home-loading" style="grid-column:1/-1;padding:60px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
   }
@@ -4054,8 +4076,8 @@ function renderBookmarks() {
 
 function updateBookmarkButtons() {
   document.querySelectorAll('.bookmark-btn').forEach(btn => {
-    const path = btn.dataset.path;
-    if (isBookmarked(path)) {
+    const path = btn.closest('.card-actions')?.dataset.path;
+    if (path && isBookmarked(path)) {
       btn.classList.add('bookmarked');
     } else {
       btn.classList.remove('bookmarked');
