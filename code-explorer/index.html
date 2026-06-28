@@ -1954,6 +1954,104 @@ body::before {
   [data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
   .theme-toggle-btn .moon-icon { display: none; }
 
+  /* ===== 更新日志按钮 ===== */
+  .changelog-btn {
+    position: fixed; top: 12px; right: 100px;
+    z-index: 99997;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+  .changelog-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--accent-blue);
+  }
+  .changelog-btn svg { width: 18px; height: 18px; }
+
+  /* ===== 更新日志弹窗 ===== */
+  .changelog-modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100001;
+    backdrop-filter: blur(4px);
+  }
+  .changelog-modal-overlay.active { display: flex; }
+  .changelog-modal {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    width: 560px; max-width: 92vw;
+    max-height: 80vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .changelog-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .changelog-modal-header h3 { font-size: 16px; font-weight: 600; margin: 0; }
+  .changelog-modal-close {
+    background: none; border: none;
+    font-size: 24px; cursor: pointer;
+    color: var(--text-secondary);
+    line-height: 1;
+  }
+  .changelog-modal-close:hover { color: var(--text-primary); }
+  .changelog-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .changelog-modal-body::-webkit-scrollbar { width: 6px; }
+  .changelog-modal-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+  .changelog-item { margin-bottom: 24px; }
+  .changelog-item:last-child { margin-bottom: 0; }
+  .changelog-item-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .changelog-version {
+    font-size: 14px; font-weight: 600;
+    color: var(--accent-blue);
+  }
+  .changelog-date {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .changelog-title {
+    font-size: 15px; font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .changelog-changes {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .changelog-changes li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 4px 0 4px 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .changelog-changes li::before {
+    content: "•";
+    position: absolute; left: 0;
+    color: var(--accent-blue);
+  }
+  .changelog-loading {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 40px 0;
+  }
+
   /* ===== 最近访问 & 收藏区域 ===== */
   .recent-section {
     padding: 0 24px 16px;
@@ -2183,6 +2281,9 @@ body::before {
   <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
   <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
 </button>
+<button class="changelog-btn" id="changelogBtn" title="更新日志">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+</button>
 <button class="user-menu-btn hidden" id="userMenuBtn">U</button>
 <div class="user-dropdown" id="userDropdown">
   <button class="user-dropdown-item" id="openAdminFromMenu">
@@ -2391,6 +2492,20 @@ body::before {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<!-- ========== 更新日志弹窗 ========== -->
+<div class="changelog-modal-overlay" id="changelogModalOverlay" onclick="if(event.target===this)closeChangelogModal()">
+  <div class="changelog-modal">
+    <div class="changelog-modal-header">
+      <h3>更新日志</h3>
+      <button class="changelog-modal-close" onclick="closeChangelogModal()">&times;</button>
+    </div>
+    <div class="changelog-modal-body" id="changelogModalBody">
+      <div class="changelog-loading">加载中...</div>
+    </div>
+  </div>
+</div>
+
 <div class="comment-modal-overlay" id="commentModalOverlay" onclick="if(event.target===this)closeCommentModal()">
   <div class="comment-modal">
     <div class="comment-modal-header">
@@ -3272,6 +3387,46 @@ $('#treeFilter').addEventListener('input', () => {
   }
 });
 
+// ==================== CHANGELOG FUNCTIONS ====================
+let _changelogLoaded = false;
+
+async function openChangelogModal() {
+  $('#changelogModalOverlay').classList.add('active');
+  if (_changelogLoaded) return;
+  try {
+    const res = await fetch('/changelog.json');
+    const data = await res.json();
+    renderChangelog(data);
+    _changelogLoaded = true;
+  } catch (e) {
+    $('#changelogModalBody').innerHTML = '<div class="changelog-loading">加载失败</div>';
+  }
+}
+
+function closeChangelogModal() {
+  $('#changelogModalOverlay').classList.remove('active');
+}
+
+function renderChangelog(data) {
+  const body = $('#changelogModalBody');
+  if (!data || !data.length) {
+    body.innerHTML = '<div class="changelog-loading">暂无更新记录</div>';
+    return;
+  }
+  body.innerHTML = data.map(item => `
+    <div class="changelog-item">
+      <div class="changelog-item-header">
+        <span class="changelog-version">v${item.version}</span>
+        <span class="changelog-date">${item.date}</span>
+      </div>
+      <div class="changelog-title">${item.title || '更新'}</div>
+      <ul class="changelog-changes">
+        ${(item.changes || []).map(c => `<li>${c}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
 // ==================== COMMENT FUNCTIONS ====================
 let _currentCommentProject = '';
 let _commentPollTimer = null;
@@ -3971,6 +4126,8 @@ function toggleTheme() {
 }
 
 themeToggleBtn.addEventListener('click', toggleTheme);
+const changelogBtn = document.getElementById('changelogBtn');
+if (changelogBtn) changelogBtn.addEventListener('click', openChangelogModal);
 // 初始化主题
 setTheme(getTheme());
 

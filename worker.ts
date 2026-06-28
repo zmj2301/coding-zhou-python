@@ -401,6 +401,16 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     }
   }
 
+  if (path === '/api/admin/clear-cache' && request.method === 'POST') {
+    const isAdmin = await checkAdmin(request, env);
+    if (!isAdmin) return errorResponse('需要管理员权限', 401);
+    try {
+      await env.CODE_EXPLORER_KV.delete('cache:project-meta');
+      await env.CODE_EXPLORER_KV.delete('cache:home-page');
+    } catch {}
+    return jsonResponse({ success: true, message: '缓存已清除' });
+  }
+
   // ---- 需要认证的 API ----
   const needAuth = path.startsWith('/api/files/') ||
     path.startsWith('/api/comments') ||
