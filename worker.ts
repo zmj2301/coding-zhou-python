@@ -405,7 +405,6 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   const needAuth = path.startsWith('/api/files/') ||
     path.startsWith('/api/comments') ||
     path === '/api/likes' ||
-    path.startsWith('/api/projects/') ||
     path === '/api/admin/dashboard';
 
   if (needAuth) {

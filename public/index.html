@@ -2403,12 +2403,18 @@ async function api(url, opts = {}) {
   const res = await fetch(url, opts);
   if (res.status === 401) {
     delCookie('wg_token');
-    userMenuBtn.classList.add('hidden');
-    userDropdown.classList.remove('show');
+    if (userMenuBtn) userMenuBtn.classList.add('hidden');
+    if (userDropdown) userDropdown.classList.remove('show');
     hideAdminDashboard();
-    showLoginPage(false);
-    document.getElementById('cardsGrid').innerHTML = '';
-    throw new Error('登录已过期，请重新登录');
+    const hasProjects = state.projects && state.projects.length > 0;
+    if (!hasProjects) {
+      showLoginPage(false);
+      const grid = document.getElementById('cardsGrid');
+      if (grid) grid.innerHTML = '';
+    } else {
+      toast('请先登录后再操作');
+    }
+    throw new Error('请先登录');
   }
   if (!res.ok) throw new Error((await res.json().catch(()=>({error:`HTTP ${res.status}`}))).error);
   return res;
