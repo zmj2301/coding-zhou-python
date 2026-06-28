@@ -4195,12 +4195,25 @@ renderCodePanel = function(data) {
 
 // ==================== 启动 ====================
 (async function() {
-  const authed = await checkAuth();
-  if (!authed) {
-    showLoginPage(false);
-  } else {
+  const hasInitialData = (window as any).__INITIAL_PROJECTS__ &&
+    Array.isArray((window as any).__INITIAL_PROJECTS__) &&
+    (window as any).__INITIAL_PROJECTS__.length > 0;
+
+  let authed = false;
+  try {
+    authed = await checkAuth();
+  } catch(e) {
+    authed = false;
+  }
+
+  if (authed) {
     userMenuBtn.classList.remove('hidden');
     init();
+  } else if (hasInitialData) {
+    userMenuBtn.classList.remove('hidden');
+    init();
+  } else {
+    showLoginPage(false);
   }
 })();
 </script>
