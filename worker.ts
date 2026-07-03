@@ -867,9 +867,10 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
   try {
     const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'text' });
     if (cached) {
+      // P1-1: 缓存策略优化 - stale-while-revalidate 允许 5 分钟软过期
       return new Response(cached, {
         status: 200,
-        headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60' }
+        headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' }
       });
     }
   } catch {}
@@ -944,7 +945,7 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
 
   return new Response(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60' }
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' }
   });
 }
 

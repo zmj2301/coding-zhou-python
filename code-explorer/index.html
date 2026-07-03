@@ -4356,31 +4356,68 @@ renderCodePanel = function(data) {
   }, 0);
 };
 
-// ==================== 启动 ====================
+// ==================== 启动流程优化 ====================
+// P0-1: 有内联数据立即渲染，不等待 auth 检查
+// P0-2: 无内联数据时加超时降级提示
 (async function() {
   const hasInitialData = (window as any).__INITIAL_PROJECTS__ &&
     Array.isArray((window as any).__INITIAL_PROJECTS__) &&
     (window as any).__INITIAL_PROJECTS__.length > 0;
 
-  let authed = false;
-  try {
-    authed = await checkAuth();
-  } catch(e) {
-    authed = false;
+  // 如果有内联数据，立即渲染（不等待 auth）
+  if (hasInitialData) {
+    try {
+      init();
+    } catch(e) {
+      console.error('渲染失败:', e);
+    }
+    // 后台检查 auth 状态（不阻塞渲染）
+    checkAuth().then(authed => {
+      if (authed && userMenuBtn) userMenuBtn.classList.remove('hidden');
+      state.isAuthenticated = authed;
+    }).catch(() => {});
+    return;
   }
 
+  // 无内联数据：显示骨架屏 + 超时降级保护
+  showSkeleton();
+
+  // P0-2: 8秒超时降级提示
+  const LOADING_TIMEOUT = 8000;
+  let timeoutTimer = setTimeout(() => {
+    $('#cardsGrid').innerHTML = `
+      <div class="home-loading" style="grid-column:1/-1;padding:60px;text-align:center">
+        <div style="color:var(--accent-red);font-size:16px;margin-bottom:12px">加载耗时较长</div>
+        <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px">请尝试刷新页面或登录后访问</div>
+        <button onclick="location.reload()" style="padding:10px 20px;background:var(--accent-blue);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-right:10px">刷新页面</button>
+        <button onclick="showLoginPage(false)" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
+      </div>
+    `;
+  }, LOADING_TIMEOUT);
+
   try {
-    if (authed || hasInitialData) {
+    // 检查 auth 状态
+    let authed = false;
+    try {
+      authed = await checkAuth();
+    } catch(e) {
+      authed = false;
+    }
+    state.isAuthenticated = authed;
+
+    // 清除超时定时器
+    clearTimeout(timeoutTimer);
+
+    if (authed) {
       if (userMenuBtn) userMenuBtn.classList.remove('hidden');
       init();
     } else {
       showLoginPage(false);
     }
   } catch(e) {
+    clearTimeout(timeoutTimer);
     console.error('启动失败:', e);
-    if (hasInitialData) {
-      try { init(); } catch(_) {}
-    }
+    showLoginPage(false);
   }
 })();
 </script>
