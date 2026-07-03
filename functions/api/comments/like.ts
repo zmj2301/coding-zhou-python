@@ -1,5 +1,5 @@
 // POST /api/comments/like
-import { checkAuth, jsonResponse, errorResponse } from '../../_utils';
+import { checkAuth, jsonResponse, errorResponse, corsOptionsResponse } from '../../_utils';
 
 function safeProjectName(project: string): string {
   return project
@@ -61,12 +61,5 @@ export async function onRequestPost(context: any): Promise<Response> {
 }
 
 export async function onRequestOptions(): Promise<Response> {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
-  });
+  return corsOptionsResponse();
 }

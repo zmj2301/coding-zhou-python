@@ -1,5 +1,5 @@
 // POST /api/admin/login
-import { signJwt, jsonResponse, errorResponse, setCookieResponse } from '../../_utils';
+import { signJwt, jsonResponse, errorResponse, setCookieResponse, corsOptionsResponse } from '../../_utils';
 
 export async function onRequestPost(context: any): Promise<Response> {
   const { request, env } = context;
@@ -30,12 +30,5 @@ export async function onRequestPost(context: any): Promise<Response> {
 }
 
 export async function onRequestOptions(): Promise<Response> {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
-  });
+  return corsOptionsResponse();
 }

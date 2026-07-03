@@ -1,5 +1,5 @@
 // GET /api/admin/dashboard
-import { checkAdmin, jsonResponse, errorResponse } from '../../_utils';
+import { checkAdmin, jsonResponse, errorResponse, corsOptionsResponse } from '../../_utils';
 
 export async function onRequestGet(context: any): Promise<Response> {
   const { request, env } = context;
@@ -66,12 +66,5 @@ export async function onRequestGet(context: any): Promise<Response> {
 }
 
 export async function onRequestOptions(): Promise<Response> {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
-  });
+  return corsOptionsResponse();
 }

@@ -169,3 +169,36 @@ export function redirectResponse(url: string, status: number = 302): Response {
     headers: { Location: url }
   });
 }
+
+// CORS 工具函数
+export function corsOptionsResponse(): Response {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
+  });
+}
+
+export function createCorsResponse(options: {
+  origin?: string;
+  methods?: string;
+  headers?: string;
+} = {}): Response {
+  const {
+    origin = '*',
+    methods = 'GET, POST, OPTIONS',
+    headers = 'Content-Type'
+  } = options;
+
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': methods,
+      'Access-Control-Allow-Headers': headers
+    }
+  });
+}

@@ -1,5 +1,5 @@
 // GET /api/files/search
-import { checkAuth, jsonResponse, errorResponse } from '../../_utils';
+import { checkAuth, jsonResponse, errorResponse, corsOptionsResponse } from '../../_utils';
 
 function searchInTree(tree: any[], query: string, basePath: string = ''): any[] {
   const results: any[] = [];
@@ -50,12 +50,5 @@ export async function onRequestGet(context: any): Promise<Response> {
 }
 
 export async function onRequestOptions(): Promise<Response> {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
-  });
+  return corsOptionsResponse();
 }

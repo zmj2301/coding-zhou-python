@@ -1,5 +1,5 @@
 // GET /api/files/preview
-import { checkAuth, errorResponse } from '../../_utils';
+import { checkAuth, errorResponse, corsOptionsResponse } from '../../_utils';
 
 const CONTENT_TYPE_MAP: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -119,12 +119,5 @@ export async function onRequestGet(context: any): Promise<Response> {
 }
 
 export async function onRequestOptions(): Promise<Response> {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    }
-  });
+  return corsOptionsResponse();
 }
