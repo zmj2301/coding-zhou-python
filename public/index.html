@@ -4477,9 +4477,9 @@ renderCodePanel = function(data) {
 // P0-1: 有内联数据立即渲染，不等待 auth 检查
 // P0-2: 无内联数据时加超时降级提示
 (async function() {
-  const hasInitialData = (window as any).__INITIAL_PROJECTS__ &&
-    Array.isArray((window as any).__INITIAL_PROJECTS__) &&
-    (window as any).__INITIAL_PROJECTS__.length > 0;
+  const hasInitialData = window.__INITIAL_PROJECTS__ &&
+    Array.isArray(window.__INITIAL_PROJECTS__) &&
+    window.__INITIAL_PROJECTS__.length > 0;
 
   // 如果有内联数据，立即渲染（不等待 auth）
   if (hasInitialData) {
