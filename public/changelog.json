@@ -1,5 +1,15 @@
 [
   {
+    "version": "1.1.1",
+    "date": "2026-07-03",
+    "title": "紧急修复：页面加载卡死问题",
+    "changes": [
+      "修复 renderCodePanel 未定义导致的 ReferenceError 致命错误",
+      "删除残留的死代码，确保 init() 函数正常执行",
+      "彻底清除所有 TypeScript 语法残留（0 处残留）"
+    ]
+  },
+  {
     "version": "1.1.0",
     "date": "2026-07-03",
     "title": "加载体验优化与 Bug 修复",
