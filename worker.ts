@@ -404,14 +404,18 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   if (path === '/api/admin/clear-cache' && request.method === 'POST') {
     const isAdmin = await checkAdmin(request, env);
     if (!isAdmin) return errorResponse('需要管理员权限', 401);
+    let deletedCount = 0;
     try {
-      await env.CODE_EXPLORER_KV.delete('cache:project-meta');
-      await env.CODE_EXPLORER_KV.delete('cache:home-page');
-      await env.CODE_EXPLORER_KV.delete('cache:likes');
-      await env.CODE_EXPLORER_KV.delete('cache:comment-counts');
-      await env.CODE_EXPLORER_KV.delete('cache:static:/changelog.json');
+      let cursor: string | undefined = undefined;
+      do {
+        const list = await env.CODE_EXPLORER_KV.list({ prefix: 'cache:', cursor });
+        const deletePromises = list.keys.map(k => env.CODE_EXPLORER_KV.delete(k.name));
+        await Promise.all(deletePromises);
+        deletedCount += list.keys.length;
+        cursor = list.cursor as string | undefined;
+      } while (cursor);
     } catch {}
-    return jsonResponse({ success: true, message: '缓存已清除' });
+    return jsonResponse({ success: true, message: `缓存已清除，共删除 ${deletedCount} 个缓存项` });
   }
 
   // ---- 需要认证的 API ----
