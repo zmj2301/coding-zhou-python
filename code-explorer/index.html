@@ -3757,7 +3757,7 @@ async function likeProject(projectPath) {
 async function init() {
   try {
     let projects;
-    const initialProjects = (window as any).__INITIAL_PROJECTS__;
+    const initialProjects = (window).__INITIAL_PROJECTS__;
     if (initialProjects && Array.isArray(initialProjects) && initialProjects.length > 0) {
       projects = initialProjects;
     } else {
