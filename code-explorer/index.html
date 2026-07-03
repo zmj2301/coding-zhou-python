@@ -4451,28 +4451,6 @@ function copyCode(btn) {
   });
 }
 
-// 重写原有的 renderCodePanel 函数以使用行号
-const originalRenderCodePanel = renderCodePanel;
-renderCodePanel = function(data) {
-  const panel = document.getElementById('codePanel');
-  const header = document.getElementById('codePanelHeader');
-
-  if (data.language && data.language !== 'plaintext') {
-    header.innerHTML = `<span class="code-lang-badge">${data.language}</span>${esc(data.name)}`;
-  } else {
-    header.innerHTML = esc(data.name);
-  }
-
-  panel.innerHTML = renderCodeWithLineNumbers(data.content, data.language || 'plaintext');
-
-  // 应用代码高亮
-  setTimeout(() => {
-    panel.querySelectorAll('pre code').forEach(block => {
-      hljs.highlightElement(block);
-    });
-  }, 0);
-};
-
 // ==================== 启动流程优化 ====================
 // P0-1: 有内联数据立即渲染，不等待 auth 检查
 // P0-2: 无内联数据时加超时降级提示
