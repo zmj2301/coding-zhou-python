@@ -407,6 +407,9 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       await env.CODE_EXPLORER_KV.delete('cache:project-meta');
       await env.CODE_EXPLORER_KV.delete('cache:home-page');
+      await env.CODE_EXPLORER_KV.delete('cache:likes');
+      await env.CODE_EXPLORER_KV.delete('cache:comment-counts');
+      await env.CODE_EXPLORER_KV.delete('cache:static:/changelog.json');
     } catch {}
     return jsonResponse({ success: true, message: '缓存已清除' });
   }
@@ -978,9 +981,10 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
   const ext = getExt(path);
   const isStatic = isStaticAsset(ext);
   const isHtml = ext === '.html' || ext === '.htm';
+  const isChangelog = path === '/changelog.json';
 
-  // 静态资源尝试 KV 缓存
-  if (isStatic && !isHtml) {
+  // 静态资源尝试 KV 缓存（changelog.json 除外，动态内容不缓存）
+  if (isStatic && !isHtml && !isChangelog) {
     const cacheKey = `cache:static:${path}`;
     try {
       const cached = await env.CODE_EXPLORER_KV.get(cacheKey, { type: 'arrayBuffer' });
@@ -1009,6 +1013,8 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     const headers = new Headers({ 'Content-Type': ctype });
     if (isHtml) {
       headers.set('Cache-Control', 'no-cache');
+    } else if (isChangelog) {
+      headers.set('Cache-Control', 'no-cache, must-revalidate');
     } else if (isStatic) {
       headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
       try {
@@ -1033,6 +1039,8 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     const headers = new Headers({ 'Content-Type': ctype });
     if (isHtml) {
       headers.set('Cache-Control', 'no-cache');
+    } else if (isChangelog) {
+      headers.set('Cache-Control', 'no-cache, must-revalidate');
     } else if (isStatic) {
       headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
       try {
