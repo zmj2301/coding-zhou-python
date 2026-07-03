@@ -400,7 +400,7 @@ class CodeExplorerHandler(http.server.BaseHTTPRequestHandler):
         print(f"[DEBUG] GET path='{path}'")
         
         # Vite 开发服务器路径兼容处理（浏览器缓存/扩展可能请求这些路径）
-        if path.startswith('/@vite') or path.startswith('/@id/') or path.startswith('/@fs/') or path == '/node_modules':
+        if path.startswith('/@vite') or path.startswith('/@id/') or path.startswith('/@fs/') or path.startswith('/node_modules'):
             self.send_response(204)
             self.send_header('Content-Type', 'application/javascript')
             self.send_cors_headers()
