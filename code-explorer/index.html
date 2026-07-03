@@ -3139,6 +3139,9 @@ async function openProject(projectPath) {
   $('#homePage').style.display = 'none';
   $('#editorPage').style.display = 'flex';
   state.view = 'editor';
+  $('#themeToggleBtn').style.display = 'none';
+  $('#changelogBtn').style.display = 'none';
+  $('#userMenuBtn').style.display = 'none';
 
   state.openTabs = [];
   state.activeTabIdx = -1;
@@ -3173,6 +3176,12 @@ function goHome() {
   state.openTabs = [];
   state.activeTabIdx = -1;
   state.view = 'home';
+  $('#themeToggleBtn').style.display = '';
+  $('#changelogBtn').style.display = '';
+  if (state.isAuthenticated) {
+    $('#userMenuBtn').style.display = '';
+    $('#userMenuBtn').classList.remove('hidden');
+  }
 }
 
 // ==================== POPUP PREVIEW ====================
