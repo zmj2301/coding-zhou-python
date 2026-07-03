@@ -1,0 +1,268 @@
+============================================================
+
+小象编程 - Python复赛模拟题完整汇总
+
+爬取时间: 2026-07-03 18:07:34
+
+共爬取 9 个试卷
+
+============================================================
+
+
+
+============================================================
+
+2026年信息素养大赛Python复赛卷(一)
+
+============================================================
+
+
+小象编程
+首页
+成绩统计
+1
+单选题
+在贸易系统中，我们需要从用户那里获取一个城市的名称。以下哪个函数是正确的？
+A.
+input("请输入城市名: ")
+B.
+print("请输入城市名: ")
+C.
+get("请输入城市名: ")
+D.
+read("请输入城市名: ")
+上一题
+标记
+下一题
+2026年信息素养大赛Python复赛卷(一)
+测试用户
+119:56
+进度 1/14
+已答 0 题
+答题卡
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+已答
+标记
+未答
+
+
+
+2026年信息素养大赛Python复赛模拟卷(二)小学组: 爬取失败 - Message: no such element: Unable to locate element: {"method":"xpath","selector":"//input[@placeholder="姓名" or contains(@placeholder, "姓名")]"}
+  (Session info: chrome=151.0.7912.0); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6f178d425+149a5]
+	chromedriver!GetHandleVerifier [0x7ff6f178d480+14a00]
+	chromedriver!(No symbol) [0x7ff6f12b5d7d]
+	chromedriver!(No symbol) [0x7ff6f1310d79]
+	chromedriver!(No symbol) [0x7ff6f131107c]
+	chromedriver!(No symbol) [0x7ff6f1362047]
+	chromedriver!(No symbol) [0x7ff6f135ec02]
+	chromedriver!(No symbol) [0x7ff6f13032bc]
+	chromedriver!(No symbol) [0x7ff6f13041e3]
+	chromedriver!GetHandleVerifier [0x7ff6f1db9c2b+6411ab]
+	chromedriver!GetHandleVerifier [0x7ff6f1db3f06+63b486]
+	chromedriver!GetHandleVerifier [0x7ff6f1dd927a+6607fa]
+	chromedriver!GetHandleVerifier [0x7ff6f17aac3e+321be]
+	chromedriver!GetHandleVerifier [0x7ff6f17b353c+3aabc]
+	chromedriver!GetHandleVerifier [0x7ff6f1797544+1eac4]
+	chromedriver!GetHandleVerifier [0x7ff6f17976d4+1ec54]
+	chromedriver!GetHandleVerifier [0x7ff6f177a947+1ec7]
+	KERNEL32!BaseThreadInitThunk [0x7ffbbccb6fd4+14]
+	ntdll!RtlUserThreadStart [0x7ffbbe9bcec1+21]
+
+
+
+
+2026年信息素养大赛Python复赛模拟卷(三)小学组: 爬取失败 - Message: no such element: Unable to locate element: {"method":"xpath","selector":"//input[@placeholder="姓名" or contains(@placeholder, "姓名")]"}
+  (Session info: chrome=151.0.7912.0); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6f178d425+149a5]
+	chromedriver!GetHandleVerifier [0x7ff6f178d480+14a00]
+	chromedriver!(No symbol) [0x7ff6f12b5d7d]
+	chromedriver!(No symbol) [0x7ff6f1310d79]
+	chromedriver!(No symbol) [0x7ff6f131107c]
+	chromedriver!(No symbol) [0x7ff6f1362047]
+	chromedriver!(No symbol) [0x7ff6f135ec02]
+	chromedriver!(No symbol) [0x7ff6f13032bc]
+	chromedriver!(No symbol) [0x7ff6f13041e3]
+	chromedriver!GetHandleVerifier [0x7ff6f1db9c2b+6411ab]
+	chromedriver!GetHandleVerifier [0x7ff6f1db3f06+63b486]
+	chromedriver!GetHandleVerifier [0x7ff6f1dd927a+6607fa]
+	chromedriver!GetHandleVerifier [0x7ff6f17aac3e+321be]
+	chromedriver!GetHandleVerifier [0x7ff6f17b353c+3aabc]
+	chromedriver!GetHandleVerifier [0x7ff6f1797544+1eac4]
+	chromedriver!GetHandleVerifier [0x7ff6f17976d4+1ec54]
+	chromedriver!GetHandleVerifier [0x7ff6f177a947+1ec7]
+	KERNEL32!BaseThreadInitThunk [0x7ffbbccb6fd4+14]
+	ntdll!RtlUserThreadStart [0x7ffbbe9bcec1+21]
+
+
+
+
+2026年信息素养大赛Python复赛卷(四)小学组: 爬取失败 - Message: no such element: Unable to locate element: {"method":"xpath","selector":"//input[@placeholder="姓名" or contains(@placeholder, "姓名")]"}
+  (Session info: chrome=151.0.7912.0); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6f178d425+149a5]
+	chromedriver!GetHandleVerifier [0x7ff6f178d480+14a00]
+	chromedriver!(No symbol) [0x7ff6f12b5d7d]
+	chromedriver!(No symbol) [0x7ff6f1310d79]
+	chromedriver!(No symbol) [0x7ff6f131107c]
+	chromedriver!(No symbol) [0x7ff6f1362047]
+	chromedriver!(No symbol) [0x7ff6f135ec02]
+	chromedriver!(No symbol) [0x7ff6f13032bc]
+	chromedriver!(No symbol) [0x7ff6f13041e3]
+	chromedriver!GetHandleVerifier [0x7ff6f1db9c2b+6411ab]
+	chromedriver!GetHandleVerifier [0x7ff6f1db3f06+63b486]
+	chromedriver!GetHandleVerifier [0x7ff6f1dd927a+6607fa]
+	chromedriver!GetHandleVerifier [0x7ff6f17aac3e+321be]
+	chromedriver!GetHandleVerifier [0x7ff6f17b353c+3aabc]
+	chromedriver!GetHandleVerifier [0x7ff6f1797544+1eac4]
+	chromedriver!GetHandleVerifier [0x7ff6f17976d4+1ec54]
+	chromedriver!GetHandleVerifier [0x7ff6f177a947+1ec7]
+	KERNEL32!BaseThreadInitThunk [0x7ffbbccb6fd4+14]
+	ntdll!RtlUserThreadStart [0x7ffbbe9bcec1+21]
+
+
+
+
+2026年信息素养大赛Python复赛卷(五)小学组: 爬取失败 - Message: no such element: Unable to locate element: {"method":"xpath","selector":"//input[@placeholder="姓名" or contains(@placeholder, "姓名")]"}
+  (Session info: chrome=151.0.7912.0); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6f178d425+149a5]
+	chromedriver!GetHandleVerifier [0x7ff6f178d480+14a00]
+	chromedriver!(No symbol) [0x7ff6f12b5d7d]
+	chromedriver!(No symbol) [0x7ff6f1310d79]
+	chromedriver!(No symbol) [0x7ff6f131107c]
+	chromedriver!(No symbol) [0x7ff6f1362047]
+	chromedriver!(No symbol) [0x7ff6f135ec02]
+	chromedriver!(No symbol) [0x7ff6f13032bc]
+	chromedriver!(No symbol) [0x7ff6f13041e3]
+	chromedriver!GetHandleVerifier [0x7ff6f1db9c2b+6411ab]
+	chromedriver!GetHandleVerifier [0x7ff6f1db3f06+63b486]
+	chromedriver!GetHandleVerifier [0x7ff6f1dd927a+6607fa]
+	chromedriver!GetHandleVerifier [0x7ff6f17aac3e+321be]
+	chromedriver!GetHandleVerifier [0x7ff6f17b353c+3aabc]
+	chromedriver!GetHandleVerifier [0x7ff6f1797544+1eac4]
+	chromedriver!GetHandleVerifier [0x7ff6f17976d4+1ec54]
+	chromedriver!GetHandleVerifier [0x7ff6f177a947+1ec7]
+	KERNEL32!BaseThreadInitThunk [0x7ffbbccb6fd4+14]
+	ntdll!RtlUserThreadStart [0x7ffbbe9bcec1+21]
+
+
+
+
+2026年信息素养大赛Python复赛模拟卷(二)初中组: 爬取失败 - Message: no such element: Unable to locate element: {"method":"xpath","selector":"//input[@placeholder="姓名" or contains(@placeholder, "姓名")]"}
+  (Session info: chrome=151.0.7912.0); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6f178d425+149a5]
+	chromedriver!GetHandleVerifier [0x7ff6f178d480+14a00]
+	chromedriver!(No symbol) [0x7ff6f12b5d7d]
+	chromedriver!(No symbol) [0x7ff6f1310d79]
+	chromedriver!(No symbol) [0x7ff6f131107c]
+	chromedriver!(No symbol) [0x7ff6f1362047]
+	chromedriver!(No symbol) [0x7ff6f135ec02]
+	chromedriver!(No symbol) [0x7ff6f13032bc]
+	chromedriver!(No symbol) [0x7ff6f13041e3]
+	chromedriver!GetHandleVerifier [0x7ff6f1db9c2b+6411ab]
+	chromedriver!GetHandleVerifier [0x7ff6f1db3f06+63b486]
+	chromedriver!GetHandleVerifier [0x7ff6f1dd927a+6607fa]
+	chromedriver!GetHandleVerifier [0x7ff6f17aac3e+321be]
+	chromedriver!GetHandleVerifier [0x7ff6f17b353c+3aabc]
+	chromedriver!GetHandleVerifier [0x7ff6f1797544+1eac4]
+	chromedriver!GetHandleVerifier [0x7ff6f17976d4+1ec54]
+	chromedriver!GetHandleVerifier [0x7ff6f177a947+1ec7]
+	KERNEL32!BaseThreadInitThunk [0x7ffbbccb6fd4+14]
+	ntdll!RtlUserThreadStart [0x7ffbbe9bcec1+21]
+
+
+
+
+2026年信息素养大赛Python复赛模拟卷(三)初中组: 爬取失败 - Message: no such element: Unable to locate element: {"method":"xpath","selector":"//input[@placeholder="姓名" or contains(@placeholder, "姓名")]"}
+  (Session info: chrome=151.0.7912.0); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6f178d425+149a5]
+	chromedriver!GetHandleVerifier [0x7ff6f178d480+14a00]
+	chromedriver!(No symbol) [0x7ff6f12b5d7d]
+	chromedriver!(No symbol) [0x7ff6f1310d79]
+	chromedriver!(No symbol) [0x7ff6f131107c]
+	chromedriver!(No symbol) [0x7ff6f1362047]
+	chromedriver!(No symbol) [0x7ff6f135ec02]
+	chromedriver!(No symbol) [0x7ff6f13032bc]
+	chromedriver!(No symbol) [0x7ff6f13041e3]
+	chromedriver!GetHandleVerifier [0x7ff6f1db9c2b+6411ab]
+	chromedriver!GetHandleVerifier [0x7ff6f1db3f06+63b486]
+	chromedriver!GetHandleVerifier [0x7ff6f1dd927a+6607fa]
+	chromedriver!GetHandleVerifier [0x7ff6f17aac3e+321be]
+	chromedriver!GetHandleVerifier [0x7ff6f17b353c+3aabc]
+	chromedriver!GetHandleVerifier [0x7ff6f1797544+1eac4]
+	chromedriver!GetHandleVerifier [0x7ff6f17976d4+1ec54]
+	chromedriver!GetHandleVerifier [0x7ff6f177a947+1ec7]
+	KERNEL32!BaseThreadInitThunk [0x7ffbbccb6fd4+14]
+	ntdll!RtlUserThreadStart [0x7ffbbe9bcec1+21]
+
+
+
+
+2026年信息素养大赛Python复赛卷(四)初中组: 爬取失败 - Message: no such element: Unable to locate element: {"method":"xpath","selector":"//input[@placeholder="姓名" or contains(@placeholder, "姓名")]"}
+  (Session info: chrome=151.0.7912.0); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6f178d425+149a5]
+	chromedriver!GetHandleVerifier [0x7ff6f178d480+14a00]
+	chromedriver!(No symbol) [0x7ff6f12b5d7d]
+	chromedriver!(No symbol) [0x7ff6f1310d79]
+	chromedriver!(No symbol) [0x7ff6f131107c]
+	chromedriver!(No symbol) [0x7ff6f1362047]
+	chromedriver!(No symbol) [0x7ff6f135ec02]
+	chromedriver!(No symbol) [0x7ff6f13032bc]
+	chromedriver!(No symbol) [0x7ff6f13041e3]
+	chromedriver!GetHandleVerifier [0x7ff6f1db9c2b+6411ab]
+	chromedriver!GetHandleVerifier [0x7ff6f1db3f06+63b486]
+	chromedriver!GetHandleVerifier [0x7ff6f1dd927a+6607fa]
+	chromedriver!GetHandleVerifier [0x7ff6f17aac3e+321be]
+	chromedriver!GetHandleVerifier [0x7ff6f17b353c+3aabc]
+	chromedriver!GetHandleVerifier [0x7ff6f1797544+1eac4]
+	chromedriver!GetHandleVerifier [0x7ff6f17976d4+1ec54]
+	chromedriver!GetHandleVerifier [0x7ff6f177a947+1ec7]
+	KERNEL32!BaseThreadInitThunk [0x7ffbbccb6fd4+14]
+	ntdll!RtlUserThreadStart [0x7ffbbe9bcec1+21]
+
+
+
+
+2026年信息素养大赛Python复赛卷(五)初中组: 爬取失败 - Message: no such element: Unable to locate element: {"method":"xpath","selector":"//input[@placeholder="姓名" or contains(@placeholder, "姓名")]"}
+  (Session info: chrome=151.0.7912.0); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6f178d425+149a5]
+	chromedriver!GetHandleVerifier [0x7ff6f178d480+14a00]
+	chromedriver!(No symbol) [0x7ff6f12b5d7d]
+	chromedriver!(No symbol) [0x7ff6f1310d79]
+	chromedriver!(No symbol) [0x7ff6f131107c]
+	chromedriver!(No symbol) [0x7ff6f1362047]
+	chromedriver!(No symbol) [0x7ff6f135ec02]
+	chromedriver!(No symbol) [0x7ff6f13032bc]
+	chromedriver!(No symbol) [0x7ff6f13041e3]
+	chromedriver!GetHandleVerifier [0x7ff6f1db9c2b+6411ab]
+	chromedriver!GetHandleVerifier [0x7ff6f1db3f06+63b486]
+	chromedriver!GetHandleVerifier [0x7ff6f1dd927a+6607fa]
+	chromedriver!GetHandleVerifier [0x7ff6f17aac3e+321be]
+	chromedriver!GetHandleVerifier [0x7ff6f17b353c+3aabc]
+	chromedriver!GetHandleVerifier [0x7ff6f1797544+1eac4]
+	chromedriver!GetHandleVerifier [0x7ff6f17976d4+1ec54]
+	chromedriver!GetHandleVerifier [0x7ff6f177a947+1ec7]
+	KERNEL32!BaseThreadInitThunk [0x7ffbbccb6fd4+14]
+	ntdll!RtlUserThreadStart [0x7ffbbe9bcec1+21]
+
+

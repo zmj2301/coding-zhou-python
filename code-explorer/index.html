@@ -3523,7 +3523,7 @@ function renderChangelog(data) {
 // ==================== AUTH PROMPT FUNCTIONS ====================
 let _pendingProjectPath = '';
 
-function showAuthPromptModal(projectName: string) {
+function showAuthPromptModal(projectName) {
   _pendingProjectPath = projectName;
   const titleEl = document.getElementById('authPromptTitle');
   const descEl = document.getElementById('authPromptDesc');
@@ -3782,7 +3782,7 @@ async function init() {
     });
 
     setTimeout(() => {
-      var pollTimer: any = null;
+      var pollTimer = null;
       pollTimer = setInterval(() => {
         refreshProjectMeta();
       }, 15000);
