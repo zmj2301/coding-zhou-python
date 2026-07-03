@@ -1725,6 +1725,14 @@ body::before {
     background: var(--bg-primary);
   }
   .admin-page.active { display: flex; }
+  .admin-page.active ~ .user-menu-btn,
+  .admin-page.active ~ .theme-toggle-btn,
+  .admin-page.active ~ .changelog-btn {
+    display: none;
+  }
+  .admin-page.active ~ .user-dropdown {
+    display: none;
+  }
   .admin-header {
     height: 56px; padding: 0 24px;
     background: var(--bg-secondary);
