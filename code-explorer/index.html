@@ -2052,6 +2052,76 @@ body::before {
     padding: 40px 0;
   }
 
+  /* ===== 登录提示弹窗 ===== */
+  .auth-prompt-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100002;
+    backdrop-filter: blur(6px);
+  }
+  .auth-prompt-overlay.active { display: flex; }
+  .auth-prompt-modal {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    width: 380px; max-width: 90vw;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .auth-prompt-icon {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, var(--accent-blue), #6366f1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .auth-prompt-icon svg {
+    width: 32px; height: 32px;
+    color: #fff;
+  }
+  .auth-prompt-title {
+    font-size: 18px; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .auth-prompt-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .auth-prompt-actions {
+    display: flex; gap: 12px;
+    justify-content: center;
+  }
+  .auth-prompt-btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 15px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .auth-prompt-btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), #6366f1);
+    color: #fff;
+    border: none;
+  }
+  .auth-prompt-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99,102,241,0.3);
+  }
+  .auth-prompt-btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+  }
+  .auth-prompt-btn-secondary:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
   /* ===== 最近访问 & 收藏区域 ===== */
   .recent-section {
     padding: 0 24px 16px;
@@ -2502,6 +2572,21 @@ body::before {
     </div>
     <div class="changelog-modal-body" id="changelogModalBody">
       <div class="changelog-loading">加载中...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 登录提示弹窗 ========== -->
+<div class="auth-prompt-overlay" id="authPromptOverlay" onclick="if(event.target===this)closeAuthPromptModal()">
+  <div class="auth-prompt-modal">
+    <div class="auth-prompt-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="auth-prompt-title" id="authPromptTitle">登录后查看详情</div>
+    <div class="auth-prompt-desc" id="authPromptDesc">您需要登录后才能查看项目的完整代码和文件结构。</div>
+    <div class="auth-prompt-actions">
+      <button class="auth-prompt-btn-primary" onclick="goToLoginFromPrompt()">立即登录</button>
+      <button class="auth-prompt-btn-secondary" onclick="closeAuthPromptModal()">稍后再说</button>
     </div>
   </div>
 </div>
@@ -3015,6 +3100,14 @@ async function openProject(projectPath) {
   const project = state.projects.find(p => p.path === projectPath);
   if (!project) return;
 
+  // P2: 登录引导优化 - 点击查看项目详情时检查登录
+  // 网页游戏和弹出预览不需要登录检查（它们是公开的）
+  const needsAuth = project.type !== 'web-game' && project.type !== 'popup-preview';
+  if (needsAuth && !state.isAuthenticated) {
+    showAuthPromptModal(project.name);
+    return;
+  }
+
   addRecentProject(project);
 
   if (project.type === 'web-game' && project.webGameUrl) {
@@ -3425,6 +3518,30 @@ function renderChangelog(data) {
       </ul>
     </div>
   `).join('');
+}
+
+// ==================== AUTH PROMPT FUNCTIONS ====================
+let _pendingProjectPath = '';
+
+function showAuthPromptModal(projectName: string) {
+  _pendingProjectPath = projectName;
+  const titleEl = document.getElementById('authPromptTitle');
+  const descEl = document.getElementById('authPromptDesc');
+  if (titleEl) titleEl.textContent = `查看「${projectName}」详情`;
+  if (descEl) descEl.textContent = '登录后即可查看完整代码、文件结构和运行项目。';
+  const overlay = document.getElementById('authPromptOverlay');
+  if (overlay) overlay.classList.add('active');
+}
+
+function closeAuthPromptModal() {
+  const overlay = document.getElementById('authPromptOverlay');
+  if (overlay) overlay.classList.remove('active');
+  _pendingProjectPath = '';
+}
+
+function goToLoginFromPrompt() {
+  closeAuthPromptModal();
+  showLoginPage(false);
 }
 
 // ==================== COMMENT FUNCTIONS ====================
