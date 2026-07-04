@@ -3767,7 +3767,7 @@ async function openFile(filePath) {
   } catch (err) { toast(`加载失败: ${err.message}`); }
 }
 
-function switchTab(idx) { state.activeTabIdx = idx; renderTabs(); renderCode(); updateExec(); }
+function switchTab(idx) { state.activeTabIdx = idx; renderTabs(); renderCode(); }
 
 function closeTab(idx, e) {
   e.stopPropagation();
