@@ -460,24 +460,55 @@ body::before {
 }
 
 /* ===== About Section ===== */
-.about-section {
-  margin-top: 8px;
-  padding: 14px 16px;
+.about-entry {
   border-top: 1px solid var(--border-color);
+  margin-top: 4px;
+  padding-top: 12px;
 }
-.about-section h4 {
-  font-size: 12px;
-  font-weight: 600;
+.about-entry:hover {
+  background: var(--bg-tertiary);
   color: var(--text-primary);
-  margin: 0 0 8px 0;
-  letter-spacing: 0.5px;
 }
-.about-section p {
-  font-size: 12px;
+
+/* ===== About Modal ===== */
+.about-modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100003;
+  backdrop-filter: blur(4px);
+}
+.about-modal-overlay.active { display: flex; }
+.about-modal {
+  position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+}
+.about-modal h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: var(--text-primary);
+}
+.about-modal p {
+  font-size: 14px;
   color: var(--text-secondary);
-  line-height: 1.7;
-  margin: 0;
+  line-height: 1.8;
+  margin: 0 0 12px 0;
 }
+.about-modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: none; border: none;
+  font-size: 24px; color: var(--text-tertiary);
+  cursor: pointer;
+}
+.about-modal-close:hover { color: var(--text-primary); }
 
 .cards-grid {
   display: grid;
@@ -2567,9 +2598,9 @@ body::before {
   <div class="project-list-layout">
     <div class="category-sidebar">
       <div class="category-index" id="categoryIndex"></div>
-      <div class="about-section">
-        <h4>关于</h4>
-        <p>Code Explorer 是一个在线 Python 项目浏览与运行平台。在这里你可以浏览、编辑并运行各种 Python 项目，包括游戏、AI 应用、实用工具等。部分网页游戏无需安装即可直接在浏览器中体验。</p>
+      <div class="category-index-item about-entry" id="aboutEntry">
+        <span class="category-index-icon">️</span>
+        <span class="category-index-label">关于</span>
       </div>
     </div>
     <div class="cards-grid" id="cardsGrid">
@@ -2709,6 +2740,16 @@ body::before {
     <div class="changelog-modal-body" id="changelogModalBody">
       <div class="changelog-loading">加载中...</div>
     </div>
+  </div>
+</div>
+
+<!-- ========== 关于弹窗 ========== -->
+<div class="about-modal-overlay" id="aboutModalOverlay" onclick="if(event.target===this)closeAboutModal()">
+  <div class="about-modal">
+    <button class="about-modal-close" onclick="closeAboutModal()">&times;</button>
+    <h3>关于 Code Explorer</h3>
+    <p>Code Explorer 是一个在线 Python 项目浏览与运行平台。在这里你可以浏览、编辑并运行各种 Python 项目，包括游戏、AI 应用、实用工具等。部分网页游戏无需安装即可直接在浏览器中体验。</p>
+    <p>支持代码高亮、文件搜索、在线执行、留言交流等功能，让学习和分享代码变得更加便捷。</p>
   </div>
 </div>
 
@@ -3719,6 +3760,14 @@ function closeChangelogModal() {
   $('#changelogModalOverlay').classList.remove('active');
 }
 
+function openAboutModal() {
+  $('#aboutModalOverlay').classList.add('active');
+}
+
+function closeAboutModal() {
+  $('#aboutModalOverlay').classList.remove('active');
+}
+
 function renderChangelog(data) {
   const body = $('#changelogModalBody');
   if (!data || !data.length) {
@@ -4492,6 +4541,8 @@ function toggleTheme() {
 themeToggleBtn.addEventListener('click', toggleTheme);
 const changelogBtn = document.getElementById('changelogBtn');
 if (changelogBtn) changelogBtn.addEventListener('click', openChangelogModal);
+const aboutEntry = document.getElementById('aboutEntry');
+if (aboutEntry) aboutEntry.addEventListener('click', openAboutModal);
 // 初始化主题
 setTheme(getTheme());
 
