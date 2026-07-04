@@ -3747,7 +3747,7 @@ async function openChangelogModal() {
   $('#changelogModalOverlay').classList.add('active');
   if (_changelogLoaded) return;
   try {
-    const res = await fetch('/changelog.json');
+    const res = await fetch('/changelog.json?t=' + Date.now());
     const data = await res.json();
     renderChangelog(data);
     _changelogLoaded = true;
@@ -4095,7 +4095,9 @@ async function refreshProjectMeta() {
       const commentEl = document.getElementById('cc-' + p.path.replace(/[/\\]/g, '-'));
       if (commentEl) commentEl.textContent = p.comments || 0;
     });
-  } catch(_) {}
+  } catch(e) {
+    if (e.name !== 'AbortError') console.error('刷新项目数据失败:', e);
+  }
 }
 
 function getProjectCardClass(type) {
