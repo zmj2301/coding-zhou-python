@@ -397,7 +397,6 @@ body::before {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
   padding: 0 24px 48px;
-  content-visibility: auto;
 }
 .cards-grid.list-view {
   grid-template-columns: 1fr;
@@ -4086,6 +4085,9 @@ function showAdminDashboard() {
 
 function hideAdminDashboard() {
   adminPage.classList.remove('active');
+  if (state.projects && state.projects.length > 0) {
+    renderCards(state.projects, state.currentFilter || 'all', $('#heroSearchInput').value);
+  }
 }
 
 async function doLogout() {
