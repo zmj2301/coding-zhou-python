@@ -51,16 +51,20 @@ export async function onRequestGet(context: any): Promise<Response> {
       total_files: 0
     },
     auth: {
-      active_sessions: -1,
-      admin_sessions: -1,
+      active_sessions: '无状态',
+      admin_sessions: '无状态',
       password_set: Boolean(env.USER_PASSWORD),
       admin_password_set: Boolean(env.ADMIN_PASSWORD)
     },
     data: {
       likes_count: likeProjects,
       total_likes: totalLikes,
+      likes_label: '个项目有点赞',
       comment_files: commentProjects,
-      total_comments: totalComments
+      total_comments: totalComments,
+      comments_label: '个项目有评论',
+      uploaded_files_count: 0,
+      uploads_label: '暂未启用上传功能'
     }
   });
 }

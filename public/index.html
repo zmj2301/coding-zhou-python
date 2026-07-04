@@ -1797,6 +1797,30 @@ body::before {
     background: rgba(248,81,73,0.08);
     border-color: var(--accent-red);
   }
+  .admin-clear-cache-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #a371f7, #8957e5);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .admin-clear-cache-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(163,113,247,0.4);
+  }
+  .admin-clear-cache-btn:active {
+    transform: translateY(0);
+  }
+  .admin-clear-cache-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
   .admin-body {
     flex: 1; overflow-y: auto;
     padding: 32px;
@@ -4107,7 +4131,7 @@ function renderDashboard(data) {
             <div class="admin-card-title">服务端口</div>
           </div>
           <div class="admin-card-value">${data.server.port}</div>
-          <div class="admin-card-desc">http://localhost:${data.server.port}</div>
+          <div class="admin-card-desc">HTTPS / 443</div>
         </div>
       </div>
     </div>
@@ -4122,8 +4146,8 @@ function renderDashboard(data) {
             </div>
             <div class="admin-card-title">活跃会话</div>
           </div>
-          <div class="admin-card-value">${data.auth.active_sessions}</div>
-          <div class="admin-card-desc">当前登录用户数</div>
+          <div class="admin-card-value">${escape(String(data.auth.active_sessions))}</div>
+          <div class="admin-card-desc">Worker 无状态，不保留会话</div>
         </div>
         <div class="admin-card">
           <div class="admin-card-header">
@@ -4132,8 +4156,8 @@ function renderDashboard(data) {
             </div>
             <div class="admin-card-title">管理员会话</div>
           </div>
-          <div class="admin-card-value">${data.auth.admin_sessions}</div>
-          <div class="admin-card-desc">管理员登录数</div>
+          <div class="admin-card-value">${escape(String(data.auth.admin_sessions))}</div>
+          <div class="admin-card-desc">基于 JWT Token 认证</div>
         </div>
         <div class="admin-card">
           <div class="admin-card-header">
@@ -4159,37 +4183,40 @@ function renderDashboard(data) {
     </div>
 
     <div class="admin-section">
-      <div class="admin-section-title">数据文件</div>
+      <div class="admin-section-title">数据统计</div>
       <div class="admin-cards">
         <div class="admin-card">
           <div class="admin-card-header">
             <div class="admin-card-icon blue">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
             </div>
-            <div class="admin-card-title">点赞数据</div>
+            <div class="admin-card-title">点赞总数</div>
           </div>
-          <div class="admin-card-value">${data.data.likes_count}</div>
-          <div class="admin-card-desc">${escape(data.data.likes_file)}</div>
+          <div class="admin-card-value">${data.data.total_likes || 0}</div>
+          <div class="admin-card-desc">${data.data.likes_count || 0} ${escape(data.data.likes_label || '个项目')}</div>
         </div>
         <div class="admin-card">
           <div class="admin-card-header">
             <div class="admin-card-icon green">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             </div>
-            <div class="admin-card-title">评论文件</div>
+            <div class="admin-card-title">评论总数</div>
           </div>
-          <div class="admin-card-value">${data.data.comment_files.length}</div>
-          <div class="admin-card-desc">${escape(data.data.comments_dir)}</div>
+          <div class="admin-card-value">${data.data.total_comments || 0}</div>
+          <div class="admin-card-desc">${data.data.comment_files || 0} ${escape(data.data.comments_label || '个项目')}</div>
         </div>
         <div class="admin-card">
           <div class="admin-card-header">
             <div class="admin-card-icon yellow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
             </div>
-            <div class="admin-card-title">上传文件</div>
+            <div class="admin-card-title">缓存管理</div>
           </div>
-          <div class="admin-card-value">${data.data.uploaded_files_count}</div>
-          <div class="admin-card-desc">${escape(data.data.uploads_dir)}</div>
+          <button class="admin-clear-cache-btn" onclick="clearCache()" style="margin-top:8px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            清除 KV 缓存
+          </button>
+          <div class="admin-card-desc" style="margin-top:8px">${escape(data.data.uploads_label || '更新后清除缓存')}</div>
         </div>
       </div>
     </div>
@@ -4237,6 +4264,30 @@ logoutFromMenu.addEventListener('click', doLogout);
 adminBackBtn.addEventListener('click', hideAdminDashboard);
 adminRefreshBtn.addEventListener('click', loadDashboard);
 adminLogoutBtn.addEventListener('click', doLogout);
+
+async function clearCache() {
+  const btn = document.querySelector('.admin-clear-cache-btn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '清除中...';
+  }
+  try {
+    const res = await fetch('/api/admin/clear-cache', { method: 'POST' });
+    const data = await res.json();
+    if (res.ok) {
+      alert('✅ ' + (data.message || '缓存清除成功'));
+      loadDashboard();
+    } else {
+      alert('❌ ' + (data.error || '清除失败'));
+    }
+  } catch(e) {
+    alert('❌ 清除失败: ' + e.message);
+  }
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> 清除 KV 缓存';
+  }
+}
 
 // ==================== 新增功能 ====================
 

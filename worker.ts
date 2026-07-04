@@ -856,8 +856,17 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
     return jsonResponse({
       server: { uptime: 'Cloudflare Worker (无状态)', uptime_seconds: 0, base_dir: 'GitHub Repository', port: 443, total_files: 0 },
-      auth: { active_sessions: -1, admin_sessions: -1, password_set: Boolean(env.USER_PASSWORD), admin_password_set: Boolean(env.ADMIN_PASSWORD) },
-      data: { likes_count: likeProjects, total_likes: totalLikes, comment_files: commentProjects, total_comments: totalComments }
+      auth: { active_sessions: '无状态', admin_sessions: '无状态', password_set: Boolean(env.USER_PASSWORD), admin_password_set: Boolean(env.ADMIN_PASSWORD) },
+      data: {
+        likes_count: likeProjects,
+        total_likes: totalLikes,
+        likes_label: '个项目有点赞',
+        comment_files: commentProjects,
+        total_comments: totalComments,
+        comments_label: '个项目有评论',
+        uploaded_files_count: 0,
+        uploads_label: '暂未启用上传功能'
+      }
     });
   }
 
