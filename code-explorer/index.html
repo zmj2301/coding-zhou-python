@@ -3834,7 +3834,7 @@ async function loadComments(projectPath, isInitialLoad) {
     const comments = data.comments || [];
     
     // 更新评论数徽章
-    const countEl = $('#cc-' + projectPath.replace(/[/\\]/g, '-'));
+    const countEl = document.getElementById('cc-' + projectPath.replace(/[/\\]/g, '-'));
     if (countEl) countEl.textContent = comments.length;
     
     // 计算内容 hash
@@ -3938,7 +3938,7 @@ async function loadAllCommentCounts() {
     if (!res.ok) return;
     const counts = await res.json();
     for (const [projectPath, count] of Object.entries(counts)) {
-      const el = $('#cc-' + projectPath.replace(/[/\\]/g, '-'));
+      const el = document.getElementById('cc-' + projectPath.replace(/[/\\]/g, '-'));
       if (el) el.textContent = count;
     }
   } catch(_) {}
@@ -3951,7 +3951,7 @@ async function loadAllLikeCounts() {
     if (!res.ok) return;
     const likes = await res.json();
     for (const [projectPath, count] of Object.entries(likes)) {
-      const el = $('#lk-' + projectPath.replace(/[/\\]/g, '-'));
+      const el = document.getElementById('lk-' + projectPath.replace(/[/\\]/g, '-'));
       if (el) el.textContent = count;
     }
   } catch(_) {}
@@ -3966,7 +3966,7 @@ async function likeProject(projectPath) {
     });
     if (!res.ok) throw new Error('点赞失败');
     const data = await res.json();
-    const el = $('#lk-' + projectPath.replace(/[/\\]/g, '-'));
+    const el = document.getElementById('lk-' + projectPath.replace(/[/\\]/g, '-'));
     if (el) el.textContent = data.likes;
   } catch(err) {
     toast('点赞失败: ' + err.message);
