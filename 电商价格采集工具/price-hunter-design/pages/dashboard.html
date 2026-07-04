@@ -1,0 +1,863 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商价格采集工具</title>
+    <style id="theme-vars">
+/* ========================================
+   Price Hunter - Brand CSS
+   Tech Dark Theme
+   ======================================== */
+
+:root {
+  /* === Color System === */
+  --color-bg-primary: #0f1117;
+  --color-bg-secondary: #161822;
+  --color-bg-tertiary: #1e2030;
+  --color-bg-card: #1a1d2e;
+  --color-bg-elevated: #232740;
+  --color-bg-input: #1e2030;
+  --color-bg-hover: #252a3e;
+
+  --color-brand-primary: #6366f1;
+  --color-brand-primary-hover: #818cf8;
+  --color-brand-primary-muted: rgba(99, 102, 241, 0.15);
+  --color-brand-secondary: #8b5cf6;
+  --color-brand-gradient-from: #6366f1;
+  --color-brand-gradient-to: #a855f7;
+
+  --color-text-primary: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-text-tertiary: #64748b;
+  --color-text-inverse: #0f1117;
+
+  --color-border-default: #2a2e42;
+  --color-border-subtle: #1e2130;
+  --color-border-focus: #6366f1;
+
+  --color-state-success: #10b981;
+  --color-state-success-muted: rgba(16, 185, 129, 0.15);
+  --color-state-warning: #f59e0b;
+  --color-state-warning-muted: rgba(245, 158, 11, 0.15);
+  --color-state-error: #ef4444;
+  --color-state-error-muted: rgba(239, 68, 68, 0.15);
+  --color-state-info: #3b82f6;
+  --color-state-info-muted: rgba(59, 130, 246, 0.15);
+
+  /* Platform brand colors */
+  --color-platform-jd: #e74c3c;
+  --color-platform-tb: #ff6a00;
+  --color-platform-pdd: #e91e63;
+
+  /* Rank badge colors */
+  --color-rank-gold: #FFD700;
+  --color-rank-silver: #C0C0C0;
+  --color-rank-bronze: #CD7F32;
+
+  /* === Typography === */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.3125rem;
+  --text-2xl: 1.625rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* === Spacing === */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* === Radius === */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* === Shadows === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.03);
+  --shadow-elevated: 0 20px 25px rgba(0, 0, 0, 0.05);
+
+  /* === Transitions === */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* === Surface depth model === */
+  --surface-card: var(--color-bg-card);
+  --surface-elevated: var(--color-bg-elevated);
+  --surface-input: var(--color-bg-input);
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-bg-primary);
+    --color-foreground: var(--color-text-primary);
+    --color-primary: var(--color-brand-primary);
+    --color-primary-foreground: var(--color-text-inverse);
+    --color-secondary: var(--color-brand-secondary);
+    --color-secondary-foreground: var(--color-text-inverse);
+    --color-muted: var(--color-bg-hover);
+    --color-muted-foreground: var(--color-text-secondary);
+    --color-accent: var(--color-bg-elevated);
+    --color-accent-foreground: var(--color-text-primary);
+    --color-card: var(--color-bg-card);
+    --color-card-foreground: var(--color-text-primary);
+    --color-border: var(--color-border-default);
+    --color-input: var(--color-bg-input);
+    --color-ring: var(--color-border-focus);
+    --color-destructive: var(--color-state-error);
+    --color-destructive-foreground: var(--color-text-inverse);
+    --color-sidebar: var(--color-bg-secondary);
+    --color-sidebar-foreground: var(--color-text-primary);
+    --color-chart-1: var(--color-brand-primary);
+    --color-chart-2: var(--color-brand-secondary);
+    --color-chart-3: var(--color-state-success);
+    --color-chart-4: var(--color-state-warning);
+    --color-chart-5: var(--color-state-error);
+    --color-popover: var(--color-bg-elevated);
+    --color-popover-foreground: var(--color-text-primary);
+  }
+
+  @layer base {
+    body { background: var(--color-bg-primary); color: var(--color-text-primary); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main>
+      <!-- ====== Sticky Top Nav ====== -->
+      <nav class="sticky top-0 z-50 border-b border-[var(--color-border-default)]" style="background: var(--color-bg-primary);">
+        <div class="mx-auto flex items-center justify-between" style="max-width: 1280px; padding: 12px 32px;">
+          <div class="flex items-center gap-3">
+            <span class="text-xl font-bold tracking-tight" style="background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">PriceHunter</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <button class="flex items-center justify-center w-9 h-9 rounded-lg transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="color: var(--color-text-secondary);" aria-label="切换主题">
+              <i data-lucide="sun" class="w-[18px] h-[18px]"></i>
+            </button>
+            <div class="flex items-center gap-2 text-sm" style="color: var(--color-text-secondary);">
+              <span class="inline-block w-2 h-2 rounded-full" style="background: var(--color-state-success);"></span>
+              System Online
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ====== Main Content Wrapper ====== -->
+      <div class="mx-auto" style="max-width: 1280px; padding: 32px 32px 48px;">
+
+        <!-- ====== Hero Search Area ====== -->
+        <section class="flex flex-col items-center text-center" style="padding-top: 40px; padding-bottom: 48px;">
+          <div class="w-full" style="max-width: 640px;">
+            <input type="text" placeholder="输入商品关键词搜索..." class="w-full h-12 px-5 rounded-lg text-base outline-none transition-colors duration-150" style="background: var(--color-bg-input); border: 1px solid var(--color-border-default); color: var(--color-text-primary);" onfocus="this.style.borderColor='var(--color-border-focus)'" onblur="this.style.borderColor='var(--color-border-default)'" />
+            <div class="flex items-center justify-center gap-3 mt-5">
+              <span class="pill-jd active inline-flex items-center justify-center px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150 border border-transparent" onclick="this.classList.toggle('active')">京东</span>
+              <span class="pill-tb active inline-flex items-center justify-center px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150 border border-transparent" onclick="this.classList.toggle('active')">淘宝</span>
+              <span class="pill-pdd active inline-flex items-center justify-center px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150 border border-transparent" onclick="this.classList.toggle('active')">拼多多</span>
+            </div>
+            <div class="mt-5 flex justify-center">
+              <button class="btn-primary inline-flex items-center justify-center h-11 px-7 rounded-lg text-sm font-semibold whitespace-nowrap transition-transform duration-150 hover:translate-y-[-1px] active:translate-y-0">开始采集</button>
+            </div>
+            <p class="mt-3 text-sm" style="color: var(--color-text-tertiary);">支持按关键词搜索，自动对比京东、淘宝、拼多多商品价格</p>
+          </div>
+        </section>
+
+        <!-- ====== Statistics KPI Cards Row ====== -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="rounded-lg border-l-[3px] p-5 transition-colors duration-150" style="background: var(--color-bg-card); border-color: var(--color-brand-primary); border-top: 1px solid var(--color-border-default); border-right: 1px solid var(--color-border-default); border-bottom: 1px solid var(--color-border-default);">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="package" class="w-4 h-4" style="color: var(--color-text-tertiary);"></i>
+              <span class="text-sm" style="color: var(--color-text-secondary);">采集商品</span>
+            </div>
+            <div class="text-3xl font-bold tracking-tight" style="font-variant-numeric: tabular-nums;">56</div>
+          </div>
+          <div class="rounded-lg border-l-[3px] p-5 transition-colors duration-150" style="background: var(--color-bg-card); border-color: var(--color-brand-primary); border-top: 1px solid var(--color-border-default); border-right: 1px solid var(--color-border-default); border-bottom: 1px solid var(--color-border-default);">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="tag" class="w-4 h-4" style="color: var(--color-text-tertiary);"></i>
+              <span class="text-sm" style="color: var(--color-text-secondary);">最低价格</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-3xl font-bold tracking-tight" style="font-variant-numeric: tabular-nums;">¥632</span>
+              <i data-lucide="trending-down" class="w-4 h-4" style="color: var(--color-state-success);"></i>
+            </div>
+          </div>
+          <div class="rounded-lg border-l-[3px] p-5 transition-colors duration-150" style="background: var(--color-bg-card); border-color: var(--color-brand-primary); border-top: 1px solid var(--color-border-default); border-right: 1px solid var(--color-border-default); border-bottom: 1px solid var(--color-border-default);">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="bar-chart-3" class="w-4 h-4" style="color: var(--color-text-tertiary);"></i>
+              <span class="text-sm" style="color: var(--color-text-secondary);">平均价格</span>
+            </div>
+            <div class="text-3xl font-bold tracking-tight" style="font-variant-numeric: tabular-nums;">¥2,707</div>
+          </div>
+          <div class="rounded-lg border-l-[3px] p-5 transition-colors duration-150" style="background: var(--color-bg-card); border-color: var(--color-brand-primary); border-top: 1px solid var(--color-border-default); border-right: 1px solid var(--color-border-default); border-bottom: 1px solid var(--color-border-default);">
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="clock" class="w-4 h-4" style="color: var(--color-text-tertiary);"></i>
+              <span class="text-sm" style="color: var(--color-text-secondary);">采集耗时</span>
+            </div>
+            <div class="text-3xl font-bold tracking-tight" style="font-variant-numeric: tabular-nums;">3.2s</div>
+          </div>
+        </section>
+
+        <!-- ====== Platform Overview Cards ====== -->
+        <section class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- JD -->
+          <div class="rounded-lg border-l-[3px] p-5" style="background: var(--color-bg-card); border-color: var(--color-platform-jd); border-top: 1px solid var(--color-border-default); border-right: 1px solid var(--color-border-default); border-bottom: 1px solid var(--color-border-default);">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="pill-jd inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap">京东</span>
+              <span class="text-sm" style="color: var(--color-text-secondary);">22件商品</span>
+            </div>
+            <div class="flex justify-between text-sm mb-1" style="color: var(--color-text-secondary);">
+              <span>均价</span><span class="font-medium" style="color: var(--color-text-primary);">¥3,047</span>
+            </div>
+            <div class="flex justify-between text-sm" style="color: var(--color-text-secondary);">
+              <span>最低</span><span class="font-medium" style="color: var(--color-state-success);">¥1,315</span>
+            </div>
+            <div class="mt-3 flex items-end gap-[2px] h-8">
+              <div class="rounded-sm" style="width:12px; height:40%; background:var(--color-platform-jd); opacity:0.5;"></div>
+              <div class="rounded-sm" style="width:12px; height:70%; background:var(--color-platform-jd); opacity:0.6;"></div>
+              <div class="rounded-sm" style="width:12px; height:55%; background:var(--color-platform-jd); opacity:0.65;"></div>
+              <div class="rounded-sm" style="width:12px; height:90%; background:var(--color-platform-jd); opacity:0.7;"></div>
+              <div class="rounded-sm" style="width:12px; height:65%; background:var(--color-platform-jd); opacity:0.75;"></div>
+              <div class="rounded-sm" style="width:12px; height:80%; background:var(--color-platform-jd); opacity:0.8;"></div>
+              <div class="rounded-sm" style="width:12px; height:50%; background:var(--color-platform-jd); opacity:0.85;"></div>
+            </div>
+          </div>
+          <!-- Taobao -->
+          <div class="rounded-lg border-l-[3px] p-5" style="background: var(--color-bg-card); border-color: var(--color-platform-tb); border-top: 1px solid var(--color-border-default); border-right: 1px solid var(--color-border-default); border-bottom: 1px solid var(--color-border-default);">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap" class="pill-tb">淘宝</span>
+              <span class="text-sm" style="color: var(--color-text-secondary);">17件商品</span>
+            </div>
+            <div class="flex justify-between text-sm mb-1" style="color: var(--color-text-secondary);">
+              <span>均价</span><span class="font-medium" style="color: var(--color-text-primary);">¥2,347</span>
+            </div>
+            <div class="flex justify-between text-sm" style="color: var(--color-text-secondary);">
+              <span>最低</span><span class="font-medium" style="color: var(--color-state-success);">¥946</span>
+            </div>
+            <div class="mt-3 flex items-end gap-[2px] h-8">
+              <div class="rounded-sm" style="width:12px; height:60%; background:var(--color-platform-tb); opacity:0.5;"></div>
+              <div class="rounded-sm" style="width:12px; height:85%; background:var(--color-platform-tb); opacity:0.6;"></div>
+              <div class="rounded-sm" style="width:12px; height:45%; background:var(--color-platform-tb); opacity:0.65;"></div>
+              <div class="rounded-sm" style="width:12px; height:70%; background:var(--color-platform-tb); opacity:0.7;"></div>
+              <div class="rounded-sm" style="width:12px; height:50%; background:var(--color-platform-tb); opacity:0.75;"></div>
+              <div class="rounded-sm" style="width:12px; height:75%; background:var(--color-platform-tb); opacity:0.8;"></div>
+              <div class="rounded-sm" style="width:12px; height:35%; background:var(--color-platform-tb); opacity:0.85;"></div>
+            </div>
+          </div>
+          <!-- PDD -->
+          <div class="rounded-lg border-l-[3px] p-5" style="background: var(--color-bg-card); border-color: var(--color-platform-pdd); border-top: 1px solid var(--color-border-default); border-right: 1px solid var(--color-border-default); border-bottom: 1px solid var(--color-border-default);">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap" class="pill-pdd">拼多多</span>
+              <span class="text-sm" style="color: var(--color-text-secondary);">19件商品</span>
+            </div>
+            <div class="flex justify-between text-sm mb-1" style="color: var(--color-text-secondary);">
+              <span>均价</span><span class="font-medium" style="color: var(--color-text-primary);">¥1,893</span>
+            </div>
+            <div class="flex justify-between text-sm" style="color: var(--color-text-secondary);">
+              <span>最低</span><span class="font-medium" style="color: var(--color-state-success);">¥633</span>
+            </div>
+            <div class="mt-3 flex items-end gap-[2px] h-8">
+              <div class="rounded-sm" style="width:12px; height:80%; background:var(--color-platform-pdd); opacity:0.5;"></div>
+              <div class="rounded-sm" style="width:12px; height:55%; background:var(--color-platform-pdd); opacity:0.6;"></div>
+              <div class="rounded-sm" style="width:12px; height:95%; background:var(--color-platform-pdd); opacity:0.65;"></div>
+              <div class="rounded-sm" style="width:12px; height:60%; background:var(--color-platform-pdd); opacity:0.7;"></div>
+              <div class="rounded-sm" style="width:12px; height:70%; background:var(--color-platform-pdd); opacity:0.75;"></div>
+              <div class="rounded-sm" style="width:12px; height:40%; background:var(--color-platform-pdd); opacity:0.8;"></div>
+              <div class="rounded-sm" style="width:12px; height:90%; background:var(--color-platform-pdd); opacity:0.85;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====== Price Distribution Chart ====== -->
+        <section class="mt-8 rounded-lg p-6" style="background: var(--color-bg-card); border: 1px solid var(--color-border-default);">
+          <h2 class="text-lg font-semibold mb-4" style="text-wrap: balance; word-break: keep-all;">价格分布</h2>
+          <div style="position: relative; height: 280px;">
+            <canvas id="priceDistributionChart"></canvas>
+          </div>
+        </section>
+
+        <!-- ====== Platform Price Comparison Chart ====== -->
+        <section class="mt-8 rounded-lg p-6" style="background: var(--color-bg-card); border: 1px solid var(--color-border-default);">
+          <h2 class="text-lg font-semibold mb-4" style="text-wrap: balance; word-break: keep-all;">平台价格对比</h2>
+          <div style="position: relative; height: 280px;">
+            <canvas id="platformComparisonChart"></canvas>
+          </div>
+        </section>
+
+        <!-- ====== TOP 5 Recommendation Cards ====== -->
+        <section class="mt-8">
+          <div class="mb-5">
+            <h2 class="text-lg font-semibold" style="text-wrap: balance; word-break: keep-all;">性价比推荐 TOP 5</h2>
+            <p class="text-sm mt-1" style="color: var(--color-text-tertiary);">综合评分 = 40% 价格优势 + 30% 销量热度 + 20% 店铺评分 + 10% 折扣力度</p>
+          </div>
+          <div class="flex flex-col gap-3">
+            <!-- Card 1 -->
+            <div class="rounded-lg p-4 flex items-center gap-4 transition-colors duration-150" style="background: var(--color-bg-card); border: 1px solid var(--color-border-default);">
+              <span class="rank-1 shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-bold">#1</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="truncate text-sm font-medium" style="color: var(--color-text-primary);">手机 华为 8+256G Plus</span>
+                  <span class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-tb">淘宝</span>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-base font-bold" style="color: var(--color-state-error);">¥945.84</span>
+                  <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-12%</span>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">价格优势</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:85%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">销量热度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:72%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">店铺评分</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:68%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">折扣力度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:60%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 text-2xl font-bold" style="font-variant-numeric: tabular-nums; color: var(--color-brand-primary);">0.747</div>
+            </div>
+            <!-- Card 2 -->
+            <div class="rounded-lg p-4 flex items-center gap-4 transition-colors duration-150" style="background: var(--color-bg-card); border: 1px solid var(--color-border-default);">
+              <span class="rank-2 shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-bold">#2</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="truncate text-sm font-medium" style="color: var(--color-text-primary);">手机 戴尔 512GB</span>
+                  <span class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-jd">京东</span>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-base font-bold" style="color: var(--color-state-error);">¥1,407.27</span>
+                  <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-8%</span>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">价格优势</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:70%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">销量热度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:78%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">店铺评分</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:65%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">折扣力度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:55%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 text-2xl font-bold" style="font-variant-numeric: tabular-nums; color: var(--color-brand-primary);">0.707</div>
+            </div>
+            <!-- Card 3 -->
+            <div class="rounded-lg p-4 flex items-center gap-4 transition-colors duration-150" style="background: var(--color-bg-card); border: 1px solid var(--color-border-default);">
+              <span class="rank-3 shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-bold">#3</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="truncate text-sm font-medium" style="color: var(--color-text-primary);">手机 小米 12+512GB</span>
+                  <span class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-pdd">拼多多</span>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-base font-bold" style="color: var(--color-state-error);">¥1,189.00</span>
+                  <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-15%</span>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">价格优势</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:90%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">销量热度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:60%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">店铺评分</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:58%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">折扣力度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:75%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 text-2xl font-bold" style="font-variant-numeric: tabular-nums; color: var(--color-brand-primary);">0.695</div>
+            </div>
+            <!-- Card 4 -->
+            <div class="rounded-lg p-4 flex items-center gap-4 transition-colors duration-150" style="background: var(--color-bg-card); border: 1px solid var(--color-border-default);">
+              <span class="rank-other shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-bold">#4</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="truncate text-sm font-medium" style="color: var(--color-text-primary);">手机 OPPO 8+128G</span>
+                  <span class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-tb">淘宝</span>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-base font-bold" style="color: var(--color-state-error);">¥1,562.50</span>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">价格优势</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:62%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">销量热度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:80%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">店铺评分</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:72%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">折扣力度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:45%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 text-2xl font-bold" style="font-variant-numeric: tabular-nums; color: var(--color-brand-primary);">0.658</div>
+            </div>
+            <!-- Card 5 -->
+            <div class="rounded-lg p-4 flex items-center gap-4 transition-colors duration-150" style="background: var(--color-bg-card); border: 1px solid var(--color-border-default);">
+              <span class="rank-other shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-bold">#5</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="truncate text-sm font-medium" style="color: var(--color-text-primary);">手机 荣耀 12+256GB</span>
+                  <span class="shrink-0 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-jd">京东</span>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-base font-bold" style="color: var(--color-state-error);">¥2,135.90</span>
+                  <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-6%</span>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">价格优势</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:55%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">销量热度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:85%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">店铺评分</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:78%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs mb-1" style="color: var(--color-text-tertiary);">折扣力度</div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--color-bg-tertiary);">
+                      <div class="h-full rounded-full" style="width:40%; background:var(--color-brand-primary);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 text-2xl font-bold" style="font-variant-numeric: tabular-nums; color: var(--color-brand-primary);">0.634</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====== Product Comparison Table ====== -->
+        <section class="mt-8 rounded-lg" style="background: var(--color-bg-card); border: 1px solid var(--color-border-default);">
+          <div class="p-6 pb-0">
+            <h2 class="text-lg font-semibold" style="text-wrap: balance; word-break: keep-all;">全部商品对比</h2>
+            <p class="text-sm mt-1" style="color: var(--color-text-tertiary);">价格从低到高</p>
+          </div>
+          <div class="overflow-x-auto mt-4" style="max-height: 520px; overflow-y: auto;">
+            <table class="w-full text-sm" style="min-width: 780px;">
+              <thead class="sticky top-0 z-10">
+                <tr style="background: var(--color-bg-elevated);">
+                  <th class="text-left px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">#</th>
+                  <th class="text-left px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">商品名称</th>
+                  <th class="text-right px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">价格</th>
+                  <th class="text-right px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">原价</th>
+                  <th class="text-left px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">平台</th>
+                  <th class="text-left px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">店铺</th>
+                  <th class="text-left px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">评分</th>
+                  <th class="text-right px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">月销量</th>
+                  <th class="text-left px-4 py-3 font-medium whitespace-nowrap" style="color: var(--color-text-secondary);">标签</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">1</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 华为 8+256G Plus</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥945.84</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-tertiary); text-decoration: line-through;">¥1,074.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-tb">淘宝</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">华为官方旗舰店</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.9</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">12,800</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-12%</span> <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap ml-1" style="background: var(--color-brand-primary-muted); color: var(--color-brand-primary);">自营</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">2</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 荣耀 8+128G</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥998.00</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-tertiary); text-decoration: line-through;">¥1,099.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-pdd">拼多多</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">荣耀专卖店</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.7</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">8,500</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-9%</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">3</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 小米 12+512GB</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥1,189.00</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-tertiary); text-decoration: line-through;">¥1,399.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-pdd">拼多多</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">小米官方店</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.8</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">15,200</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-15%</span> <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap ml-1" style="background: var(--color-state-info-muted); color: var(--color-state-info);">爆款</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">4</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 OPPO 8+128G</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥1,562.50</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">¥1,562.50</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-tb">淘宝</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">OPPO旗舰店</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.6</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">6,300</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap" style="background: var(--color-brand-primary-muted); color: var(--color-brand-primary);">自营</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">5</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 戴尔 512GB</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥1,799.00</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-tertiary); text-decoration: line-through;">¥1,999.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-jd">京东</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">戴尔官方自营</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.9</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">3,100</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-10%</span> <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap ml-1" style="background: var(--color-brand-primary-muted); color: var(--color-brand-primary);">自营</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">6</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 联想 16+512G</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥2,189.00</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-tertiary); text-decoration: line-through;">¥2,399.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-jd">京东</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">联想数码专营</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.5</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">2,800</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-9%</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">7</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 华硕 8+256G</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥2,450.00</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">¥2,450.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-pdd">拼多多</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">华硕授权店</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.4</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">1,600</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap" style="background: var(--color-state-warning-muted); color: var(--color-state-warning);">热销</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">8</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 三星 12+256GB</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥2,890.00</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-tertiary); text-decoration: line-through;">¥3,299.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-jd">京东</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">三星官方自营</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.8</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">5,400</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-12%</span> <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap ml-1" style="background: var(--color-brand-primary-muted); color: var(--color-brand-primary);">自营</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">9</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 Vivo 12+256G</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥3,350.00</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">¥3,350.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-tb">淘宝</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">Vivo旗舰体验店</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">4.7</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">4,200</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap" style="background: var(--color-state-info-muted); color: var(--color-state-info);">爆款</span></td>
+                </tr>
+                <tr class="transition-colors duration-150 hover:bg-[var(--color-bg-hover)]" style="border-top: 1px solid var(--color-border-subtle);">
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-tertiary);">10</td>
+                  <td class="px-4 py-3 truncate" style="color: var(--color-text-primary); max-width: 180px;">手机 苹果 15 256GB</td>
+                  <td class="px-4 py-3 text-right font-medium whitespace-nowrap" style="color: var(--color-state-error);">¥4,299.00</td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-tertiary); text-decoration: line-through;">¥4,999.00</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" class="pill-jd">京东</span></td>
+                  <td class="px-4 py-3 whitespace-nowrap" style="color: var(--color-text-secondary);">Apple自营旗舰店</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><div class="flex items-center gap-1"><i data-lucide="star" class="w-3 h-3" style="color: var(--color-state-warning);"></i><span style="color: var(--color-text-secondary);">5.0</span></div></td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap" style="color: var(--color-text-secondary);">28,600</td>
+                  <td class="px-4 py-3 whitespace-nowrap"><span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style="background: var(--color-state-error-muted); color: var(--color-state-error);">-14%</span> <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap ml-1" style="background: var(--color-state-warning-muted); color: var(--color-state-warning);">热销</span> <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-xs whitespace-nowrap ml-1" style="background: var(--color-brand-primary-muted); color: var(--color-brand-primary);">自营</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ====== Footer ====== -->
+        <footer class="mt-12 pb-8 text-center text-sm" style="color: var(--color-text-tertiary);">
+          Price Hunter v1.0 — 数据为模拟演示，架构支持接入真实数据源
+        </footer>
+
+      </div>
+    </main>
+
+    <script>
+    // Chart color helper — reads from CSS custom properties
+    function cv(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    function cvHex(name) { return cv(name); }
+    function cvAlpha(name, a) {
+      var hex = cv(name);
+      var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+    }
+
+    // Price Distribution Chart
+    (function() {
+      var ctx = document.getElementById('priceDistributionChart');
+      if (!ctx) return;
+      var bp = cvHex('--color-brand-primary');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['500-1000', '1000-1500', '1500-2000', '2000-2500', '2500-3000', '3000-3500', '3500-4000', '4000-4500', '4500-5000', '5000+'],
+          datasets: [{
+            label: '商品数量',
+            data: [8, 12, 9, 7, 6, 5, 3, 3, 2, 1],
+            backgroundColor: cvAlpha('--color-brand-primary', 0.7),
+            borderColor: cvAlpha('--color-brand-primary', 1),
+            borderWidth: 1,
+            borderRadius: 4,
+            maxBarThickness: 48
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: cvHex('--color-bg-card'),
+              titleColor: cvHex('--color-text-primary'),
+              bodyColor: cvHex('--color-text-secondary'),
+              borderColor: cvHex('--color-border-default'),
+              borderWidth: 1,
+              cornerRadius: 8,
+              padding: 10
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: cvAlpha('--color-bg-tertiary', 0.8) },
+              ticks: { color: cvHex('--color-text-tertiary'), font: { size: 11 } }
+            },
+            y: {
+              grid: { color: cvAlpha('--color-bg-tertiary', 0.8) },
+              ticks: { color: cvHex('--color-text-tertiary'), font: { size: 11 }, stepSize: 3 },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    })();
+
+    // Platform Comparison Chart - grouped by metric (avg/min) per platform
+    (function() {
+      var ctx = document.getElementById('platformComparisonChart');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['京东', '淘宝', '拼多多'],
+          datasets: [
+            {
+              label: '平均价格',
+              data: [3047, 2347, 1893],
+              backgroundColor: [
+                cvAlpha('--color-platform-jd', 0.7),
+                cvAlpha('--color-platform-tb', 0.7),
+                cvAlpha('--color-platform-pdd', 0.7)
+              ],
+              borderWidth: 0,
+              borderRadius: 4,
+              maxBarThickness: 48
+            },
+            {
+              label: '最低价格',
+              data: [1315, 946, 633],
+              backgroundColor: [
+                cvAlpha('--color-platform-jd', 0.35),
+                cvAlpha('--color-platform-tb', 0.35),
+                cvAlpha('--color-platform-pdd', 0.35)
+              ],
+              borderWidth: 0,
+              borderRadius: 4,
+              maxBarThickness: 48
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: cvHex('--color-text-secondary'), usePointStyle: true, pointStyle: 'rectRounded', padding: 16, font: { size: 12 } }
+            },
+            tooltip: {
+              backgroundColor: cvHex('--color-bg-card'),
+              titleColor: cvHex('--color-text-primary'),
+              bodyColor: cvHex('--color-text-secondary'),
+              borderColor: cvHex('--color-border-default'),
+              borderWidth: 1,
+              cornerRadius: 8,
+              padding: 10,
+              callbacks: {
+                label: function(ctx) {
+                  return ctx.dataset.label + ': ¥' + ctx.raw.toLocaleString();
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: cvAlpha('--color-bg-tertiary', 0.8) },
+              ticks: { color: cvHex('--color-text-tertiary'), font: { size: 12 } }
+            },
+            y: {
+              grid: { color: cvAlpha('--color-bg-tertiary', 0.8) },
+              ticks: { color: cvHex('--color-text-tertiary'), font: { size: 11 }, callback: function(v) { return '¥' + v; } },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    })();
+    </script>
+    <script>lucide.createIcons();</script>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+      .pill-jd { background: color-mix(in srgb, var(--color-platform-jd) 15%, transparent); color: var(--color-platform-jd); }
+      .pill-tb { background: color-mix(in srgb, var(--color-platform-tb) 15%, transparent); color: var(--color-platform-tb); }
+      .pill-pdd { background: color-mix(in srgb, var(--color-platform-pdd) 15%, transparent); color: var(--color-platform-pdd); }
+      .pill-jd.active, .pill-tb.active, .pill-pdd.active { border-color: currentColor !important; }
+      .rank-1 { background: color-mix(in srgb, var(--color-rank-gold) 15%, transparent); color: var(--color-rank-gold); }
+      .rank-2 { background: color-mix(in srgb, var(--color-rank-silver) 15%, transparent); color: var(--color-rank-silver); }
+      .rank-3 { background: color-mix(in srgb, var(--color-rank-bronze) 15%, transparent); color: var(--color-rank-bronze); }
+      .rank-other { background: color-mix(in srgb, var(--color-brand-secondary) 15%, transparent); color: var(--color-brand-secondary); }
+      .btn-primary { background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-secondary)); color: var(--color-text-inverse); }
+      .discount-tag { background: var(--color-state-error); color: var(--color-text-inverse); }
+      .price-text { color: var(--color-state-error); }
+      .price-original { color: var(--color-text-tertiary); text-decoration: line-through; }
+      .score-track { background: var(--color-bg-hover); }
+      .score-fill-success { background: var(--color-state-success); }
+      .score-fill-info { background: var(--color-state-info); }
+      .score-fill-warning { background: var(--color-state-warning); }
+      .score-fill-brand { background: var(--color-brand-primary); }
+      .score-total { color: var(--color-brand-primary); }
+    </style>
+</body>
+</html>

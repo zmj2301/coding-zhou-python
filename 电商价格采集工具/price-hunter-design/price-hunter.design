@@ -1,0 +1,45 @@
+{
+  "data": [
+    {
+      "id": "page-dashboard",
+      "title": "价格采集仪表盘",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1751590200000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/dashboard.html",
+        "interactions": []
+      }
+    },
+    {
+      "id": "page-dashboard-v2",
+      "title": "价格采集仪表盘 - 一键跳转版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1751590600000,
+      "canvasData": {
+        "x": 433,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/dashboard-v2.html",
+        "interactions": []
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "freeSize",
+    "projectName": "电商价格采集工具",
+    "windowSize": {
+      "width": 800,
+      "height": 600
+    }
+  }
+}

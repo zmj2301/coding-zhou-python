@@ -10,6 +10,9 @@ export interface Env {
   JWT_SECRET: string;
   GITHUB_REPO: string;
   GITHUB_BRANCH: string;
+  ASSETS: {
+    fetch: (request: Request) => Promise<Response>;
+  };
 }
 
 // ------------------------------------------------------------
@@ -183,6 +186,17 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
   return fetch(url);
 }
 
+async function fetchAsset(path: string, env: Env): Promise<Response> {
+  try {
+    if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
+      const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+      const resp = await env.ASSETS.fetch(new Request('/' + cleanPath));
+      if (resp.ok) return resp;
+    }
+  } catch {}
+  return fetchFromGitHub('public' + path, env);
+}
+
 // ------------------------------------------------------------
 // 语言检测
 // ------------------------------------------------------------
@@ -328,7 +342,7 @@ async function getFileTree(env: Env): Promise<any[]> {
     }
   } catch {}
   try {
-    const resp = await fetchFromGitHub('public/file-tree.json', env);
+    const resp = await fetchAsset('/file-tree.json', env);
     if (resp.ok) {
       const tree = await resp.json();
       fileTreeCache = tree;
@@ -450,7 +464,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       }
     } catch {}
 
-    const listResp = await fetchFromGitHub('public/project-list.json', env);
+    const listResp = await fetchAsset('/project-list.json', env);
     if (!listResp.ok) return errorResponse('项目列表不存在', 404);
     const projects = await listResp.json();
 
@@ -520,8 +534,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     if (!projPath) return errorResponse('缺少 path 参数');
     if (projPath.includes('..') || projPath.startsWith('/')) return errorResponse('访问被拒绝', 403);
     const safeName = projPath.replace(/\//g, '__').replace(/\\/g, '__');
-    const treeGhPath = `public/project-trees/${safeName}.json`;
-    const treeResp = await fetchFromGitHub(treeGhPath, env);
+    const treeResp = await fetchAsset(`/project-trees/${safeName}.json`, env);
     if (!treeResp.ok) return errorResponse('项目文件树不存在', 404);
     const treeData = await treeResp.json();
     const resp = jsonResponse(treeData);
@@ -883,7 +896,6 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
   try {
     const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'text' });
     if (cached) {
-      // P1-1: 缓存策略优化 - stale-while-revalidate 允许 5 分钟软过期
       return new Response(cached, {
         status: 200,
         headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' }
@@ -892,8 +904,8 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
   } catch {}
 
   const [htmlResp, listResp] = await Promise.all([
-    fetchFromGitHub('code-explorer/index.html', env),
-    fetchFromGitHub('public/project-list.json', env)
+    fetchAsset('/index.html', env),
+    fetchAsset('/project-list.json', env),
   ]);
 
   if (!htmlResp.ok) return new Response('首页加载失败', { status: 500 });
@@ -1014,15 +1026,13 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     } catch {}
   }
 
-  // 从 GitHub 代理静态文件
-  // 优先从 public/ 目录找，否则从根目录找
-  let ghPath = 'public' + path;
-  let ghResp = await fetchFromGitHub(ghPath, env);
-  if (ghResp.ok) {
-    const ctype = CONTENT_TYPE_MAP[ext] || ghResp.headers.get('Content-Type') || 'application/octet-stream';
+  // 优先从 Worker Assets 获取静态文件
+  let assetResp = await fetchAsset(path, env);
+  if (assetResp.ok) {
+    const ctype = CONTENT_TYPE_MAP[ext] || assetResp.headers.get('Content-Type') || 'application/octet-stream';
     const body = ctype.startsWith('text/') || ctype.startsWith('application/')
-      ? await ghResp.text()
-      : await ghResp.arrayBuffer();
+      ? await assetResp.text()
+      : await assetResp.arrayBuffer();
     const headers = new Headers({ 'Content-Type': ctype });
     if (isHtml) {
       headers.set('Cache-Control', 'no-cache');
@@ -1041,14 +1051,14 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     return new Response(body, { status: 200, headers });
   }
 
-  // 试试直接从根路径（web-games/fathers-day 等）
-  ghPath = path.substring(1);
-  ghResp = await fetchFromGitHub(ghPath, env);
-  if (ghResp.ok) {
-    const ctype = CONTENT_TYPE_MAP[ext] || ghResp.headers.get('Content-Type') || 'application/octet-stream';
+  // Fallback: 从 GitHub 代理静态文件（直接从根路径，web-games/fathers-day 等）
+  const rootGhPath = path.substring(1);
+  const rootGhResp = await fetchFromGitHub(rootGhPath, env);
+  if (rootGhResp.ok) {
+    const ctype = CONTENT_TYPE_MAP[ext] || rootGhResp.headers.get('Content-Type') || 'application/octet-stream';
     const body = ctype.startsWith('text/') || ctype.startsWith('application/')
-      ? await ghResp.text()
-      : await ghResp.arrayBuffer();
+      ? await rootGhResp.text()
+      : await rootGhResp.arrayBuffer();
     const headers = new Headers({ 'Content-Type': ctype });
     if (isHtml) {
       headers.set('Cache-Control', 'no-cache');

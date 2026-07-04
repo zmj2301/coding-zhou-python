@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.1.8",
+    "date": "2026-07-04",
+    "title": "修复图片占位符 + Worker Assets 模式 + 日志不更新问题",
+    "changes": [
+      "修复封面图显示占位符问题：恢复 CDN 图片 URL，确保所有项目封面正常显示",
+      "实现 fetchAsset 函数，修复 serveHomePage 中函数未定义导致的 ReferenceError",
+      "改造 handleStatic 优先从 Worker Assets 获取静态文件，GitHub 作为 fallback",
+      "changelog.json 设置 no-cache, must-revalidate，确保更新日志及时生效",
+      "修复从管理员后台返回后图片显示异常的问题"
+    ]
+  },
+  {
     "version": "1.1.7",
     "date": "2026-07-04",
     "title": "所有项目封面图本地化存储 + 永久有效",

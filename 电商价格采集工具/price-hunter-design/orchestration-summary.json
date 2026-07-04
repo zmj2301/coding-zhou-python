@@ -1,0 +1,60 @@
+{
+  "project": {
+    "name": "电商价格采集工具",
+    "operation": "edit",
+    "operatingMode": "free-explore",
+    "deviceType": "desktop",
+    "designRead": "dashboard / developer-analyst / tech-dark / information-dense / avoid neon glow and rainbow gradients",
+    "designDials": {
+      "layoutVariance": 3,
+      "motionIntensity": 2,
+      "visualDensity": 4
+    },
+    "styleDefinitionBrief": "Tech dark analytics dashboard, indigo brand primary (#6366f1), dark navy backgrounds (#0f1117), Inter font family, border-led surface depth, data-focused information hierarchy",
+    "styleContinuityAnchors": {
+      "colorSystem": "indigo primary with dark navy backgrounds",
+      "shapeSystem": "rounded-lg (8px) cards, rounded-full badges",
+      "typographySystem": "Inter sans-serif, tight tracking for headings",
+      "spacingSystem": "consistent 4px/8px/12px/16px/24px/32px scale",
+      "componentLanguage": "card-based sections, pill badges, progress bars",
+      "surfaceAndDepth": "border-only cards, alpha<=0.05 shadows",
+      "imageryAndIconography": "Chart.js inline charts, no decorative images",
+      "interactionTone": "subtle hover transitions, focus border changes"
+    },
+    "sharedProjectShellContract": {
+      "surfaceModel": "bg-primary -> bg-card -> bg-elevated, borders not shadows",
+      "radiusScale": "4px/8px/12px/16px/full",
+      "typographyStack": "var(--font-sans)",
+      "brandPrimary": "var(--color-brand-primary)",
+      "ctaStyle": "gradient button with translateY hover"
+    }
+  },
+  "designSource": {
+    "type": "free-explore",
+    "styleConstraints": {
+      "radiusMax": 16,
+      "staticShadowAlphaMax": 0.05
+    }
+  },
+  "pages": [
+    {
+      "nodeId": "page-dashboard",
+      "title": "价格采集仪表盘",
+      "htmlSrc": "pages/dashboard.html",
+      "pageIndex": 1,
+      "chartsRequired": true,
+      "visualNorthStar": "Dark analytics dashboard with indigo brand primary; data-focused hierarchy with KPI cards, platform comparisons, and recommendation rankings",
+      "compositionPattern": "Large/medium/small stacked rhythm"
+    },
+    {
+      "nodeId": "page-dashboard-v2",
+      "title": "价格采集仪表盘 - 一键跳转版",
+      "htmlSrc": "pages/dashboard-v2.html",
+      "pageIndex": 2,
+      "chartsRequired": true,
+      "visualNorthStar": "Same dark analytics dashboard with added one-click store visit buttons and realistic product data",
+      "compositionPattern": "Large/medium/small stacked rhythm",
+      "derivedFrom": "page-dashboard"
+    }
+  ]
+}

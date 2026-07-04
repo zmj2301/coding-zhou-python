@@ -61,15 +61,10 @@ def main():
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
 
     print()
-    print('步骤 1: 生成文件树 JSON...')
+    print('步骤 1: 生成文件树和项目列表 JSON...')
     sys.path.insert(0, str(CODE_EXPLORER_DIR))
-    from generate_filetree import get_file_tree, BASE_DIR as SCAN_DIR, OUTPUT_FILE
-    tree = get_file_tree(str(BASE_DIR))
-    PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
-    output_file = PUBLIC_DIR / 'file-tree.json'
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(tree, f, ensure_ascii=False, indent=2)
-    print(f'  文件树已生成: {output_file.relative_to(BASE_DIR)} ({len(tree)} 个顶层项目)')
+    import generate_filetree
+    generate_filetree.main()
 
     print()
     print('步骤 2: 复制首页 index.html...')
