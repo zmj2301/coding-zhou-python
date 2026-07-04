@@ -76,6 +76,14 @@ def main():
     copy_file(CODE_EXPLORER_DIR / 'index.html', PUBLIC_DIR / 'index.html')
 
     print()
+    print('步骤 2.5: 复制 changelog.json...')
+    changelog_src = BASE_DIR / 'changelog.json'
+    if changelog_src.exists():
+        copy_file(changelog_src, PUBLIC_DIR / 'changelog.json')
+    else:
+        print('  跳过: changelog.json 不存在')
+
+    print()
     print('步骤 3: 复制 web-games 目录...')
     if WEB_GAMES_DIR.exists():
         copy_dir(WEB_GAMES_DIR, PUBLIC_DIR / 'web-games')
