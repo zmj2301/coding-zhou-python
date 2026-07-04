@@ -48,14 +48,14 @@
         "type": "file",
         "path": "code-explorer/generate_filetree.py",
         "ext": ".py",
-        "lastModified": 1782564370886
+        "lastModified": 1783122092787
       },
       {
         "name": "index.html",
         "type": "file",
         "path": "code-explorer/index.html",
         "ext": ".html",
-        "lastModified": 1782564911628
+        "lastModified": 1783126741270
       },
       {
         "name": "likes.json",
@@ -76,21 +76,21 @@
         "type": "file",
         "path": "code-explorer/server.py",
         "ext": ".py",
-        "lastModified": 1782527306405
+        "lastModified": 1783122075696
       },
       {
         "name": "start_server.bat",
         "type": "file",
         "path": "code-explorer/start_server.bat",
         "ext": ".bat",
-        "lastModified": 1782550761681
+        "lastModified": 1783122092814
       },
       {
         "name": "test_server.py",
         "type": "file",
         "path": "code-explorer/test_server.py",
         "ext": ".py",
-        "lastModified": 1782551165191
+        "lastModified": 1783122092854
       }
     ]
   },
@@ -558,7 +558,7 @@
             "type": "file",
             "path": "codinghou/AI扑克牌/card_game.py",
             "ext": ".py",
-            "lastModified": 1782529852789
+            "lastModified": 1783122092959
           },
           {
             "name": "card_game_mindmap_with_lines.txt",
@@ -1902,7 +1902,7 @@
             "type": "file",
             "path": "python AI实战/back-end/app.py",
             "ext": ".py",
-            "lastModified": 1782529923896
+            "lastModified": 1783122094062
           }
         ]
       },
@@ -1980,14 +1980,14 @@
         "type": "file",
         "path": "python AI实战/Agent_zp.py",
         "ext": ".py",
-        "lastModified": 1782529923336
+        "lastModified": 1783122094037
       },
       {
         "name": "deepseek.py",
         "type": "file",
         "path": "python AI实战/deepseek.py",
         "ext": ".py",
-        "lastModified": 1782529878381
+        "lastModified": 1783122094085
       },
       {
         "name": "install_dependencies.py",
@@ -2001,7 +2001,7 @@
         "type": "file",
         "path": "python AI实战/LLM.py",
         "ext": ".py",
-        "lastModified": 1782529922696
+        "lastModified": 1783122094100
       },
       {
         "name": "Microphone.py",
@@ -2071,7 +2071,7 @@
         "type": "file",
         "path": "python AI实战/ZCLAW.py",
         "ext": ".py",
-        "lastModified": 1782529922047
+        "lastModified": 1783122094132
       },
       {
         "name": "【25集全】初中地理：七年级地理下册2026最新版名师课程（附习题和课后作业） (P1. 1.第一节 自然环境（第1课时）).cmt.xml",
@@ -3114,7 +3114,7 @@
         "type": "file",
         "path": "Python AI象棋对战 - 副本/Chinese_chess.py",
         "ext": ".py",
-        "lastModified": 1782529878203
+        "lastModified": 1783122094154
       },
       {
         "name": "download_git.py",
@@ -3158,7 +3158,7 @@
         "type": "file",
         "path": "Python github项目查询/chat_ai.py",
         "ext": ".py",
-        "lastModified": 1782529877667
+        "lastModified": 1783122094180
       },
       {
         "name": "github_api_example.py",
@@ -3172,7 +3172,7 @@
         "type": "file",
         "path": "Python github项目查询/github_gui.py",
         "ext": ".py",
-        "lastModified": 1782529877730
+        "lastModified": 1783122094213
       },
       {
         "name": "github_mcp_server.py",
@@ -4251,7 +4251,7 @@
         "type": "file",
         "path": "Python 微信自动回复AI/main.py",
         "ext": ".py",
-        "lastModified": 1782529852474
+        "lastModified": 1783122094231
       },
       {
         "name": "text.py",
@@ -4615,7 +4615,7 @@
         "type": "file",
         "path": "python 日程表/ai.py",
         "ext": ".py",
-        "lastModified": 1782529917424
+        "lastModified": 1783122094251
       },
       {
         "name": "ai_awswers.json",
@@ -4650,7 +4650,7 @@
         "type": "file",
         "path": "python 日程表/show_yourwindows.py",
         "ext": ".py",
-        "lastModified": 1782529916671
+        "lastModified": 1783122094290
       },
       {
         "name": "show_yourwindows.spec",
@@ -4840,7 +4840,7 @@
         "type": "file",
         "path": "python-stroop训练/stroop_trainer.py",
         "ext": ".py",
-        "lastModified": 1782529919186
+        "lastModified": 1783122094318
       },
       {
         "name": "Stroop_第7条_2026-06-09 21_52_07_得分10_100.0%.txt",
@@ -4861,7 +4861,7 @@
         "type": "file",
         "path": "python-stroop训练/zhipu_demo.py",
         "ext": ".py",
-        "lastModified": 1782529918413
+        "lastModified": 1783122094340
       },
       {
         "name": "冒泡排序.cpp",
@@ -5088,7 +5088,7 @@
             "type": "file",
             "path": "python-学习资料/wxauto/deepseek.py",
             "ext": ".py",
-            "lastModified": 1782529877961
+            "lastModified": 1783122094356
           },
           {
             "name": "run_wx.py",
@@ -5125,7 +5125,7 @@
             "type": "file",
             "path": "python-学习资料/实用技巧/ai_chatbot_gui.py",
             "ext": ".py",
-            "lastModified": 1782529852511
+            "lastModified": 1783122094416
           },
           {
             "name": "deepseek_ri.py",
@@ -5146,7 +5146,7 @@
             "type": "file",
             "path": "python-学习资料/实用技巧/qingyunke_chat.py",
             "ext": ".py",
-            "lastModified": 1782529852474
+            "lastModified": 1783122094447
           },
           {
             "name": "test_ollama.py",
@@ -5468,7 +5468,7 @@
         "type": "file",
         "path": "Python图像识别/image.py",
         "ext": ".py",
-        "lastModified": 1782529921040
+        "lastModified": 1783122094457
       },
       {
         "name": "test.py",
@@ -5489,7 +5489,7 @@
         "type": "file",
         "path": "Python图像识别/video_file.py",
         "ext": ".py",
-        "lastModified": 1782529919799
+        "lastModified": 1783122094482
       }
     ]
   },
@@ -6595,8 +6595,8 @@
     "name": "Python水果忍者",
     "type": "directory",
     "path": "Python水果忍者",
-    "themeColor": "hsl(254, 43%, 66%)",
-    "lastModified": 1781853961874,
+    "themeColor": "hsl(189, 43%, 66%)",
+    "lastModified": 1783067021901,
     "children": [
       {
         "name": "image",
@@ -6815,7 +6815,21 @@
         "type": "file",
         "path": "Python水果忍者/main.py",
         "ext": ".py",
-        "lastModified": 1782529284841
+        "lastModified": 1783086927695
+      },
+      {
+        "name": "插入排序.cpp",
+        "type": "file",
+        "path": "Python水果忍者/插入排序.cpp",
+        "ext": ".cpp",
+        "lastModified": 1782614264872
+      },
+      {
+        "name": "目标.md",
+        "type": "file",
+        "path": "Python水果忍者/目标.md",
+        "ext": ".md",
+        "lastModified": 1783067063057
       }
     ]
   },
@@ -6936,14 +6950,14 @@
         "type": "file",
         "path": "python海龟汤/Turtle_Soup copy.py",
         "ext": ".py",
-        "lastModified": 1782529920612
+        "lastModified": 1783122094546
       },
       {
         "name": "Turtle_Soup.py",
         "type": "file",
         "path": "python海龟汤/Turtle_Soup.py",
         "ext": ".py",
-        "lastModified": 1782529878390
+        "lastModified": 1783122094561
       },
       {
         "name": "users.json",
@@ -18883,7 +18897,394 @@
         "type": "file",
         "path": "web-games/index.html",
         "ext": ".html",
-        "lastModified": 1782564966615
+        "lastModified": 1783122091938
+      }
+    ]
+  },
+  {
+    "name": "workbody",
+    "type": "directory",
+    "path": "workbody",
+    "themeColor": "hsl(236, 35%, 63%)",
+    "lastModified": 1783073867503,
+    "children": [
+      {
+        "name": "2026年信息素养大赛Python复赛卷(一)_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛卷(一)_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073467866
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛卷(一)_完整题目.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛卷(一)_完整题目.txt",
+        "ext": ".txt",
+        "lastModified": 1783073203633
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛卷(一)_部分内容.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛卷(一)_部分内容.txt",
+        "ext": ".txt",
+        "lastModified": 1783073726999
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛卷(五)初中组_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛卷(五)初中组_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073901956
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛卷(五)小学组_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛卷(五)小学组_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073685804
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛卷(四)初中组_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛卷(四)初中组_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073847848
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛卷(四)小学组_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛卷(四)小学组_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073630786
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛模拟卷(三)初中组_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛模拟卷(三)初中组_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073793588
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛模拟卷(三)小学组_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛模拟卷(三)小学组_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073575202
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛模拟卷(二)初中组_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛模拟卷(二)初中组_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073739542
+      },
+      {
+        "name": "2026年信息素养大赛Python复赛模拟卷(二)小学组_完整.txt",
+        "type": "file",
+        "path": "workbody/2026年信息素养大赛Python复赛模拟卷(二)小学组_完整.txt",
+        "ext": ".txt",
+        "lastModified": 1783073521547
+      },
+      {
+        "name": "auto_scraper.py",
+        "type": "file",
+        "path": "workbody/auto_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783072893057
+      },
+      {
+        "name": "comprehensive_scraper.py",
+        "type": "file",
+        "path": "workbody/comprehensive_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783073174713
+      },
+      {
+        "name": "debug_试卷1_1783072253.html",
+        "type": "file",
+        "path": "workbody/debug_试卷1_1783072253.html",
+        "ext": ".html",
+        "lastModified": 1783072253052
+      },
+      {
+        "name": "debug_试卷2_1783072271.html",
+        "type": "file",
+        "path": "workbody/debug_试卷2_1783072271.html",
+        "ext": ".html",
+        "lastModified": 1783072271158
+      },
+      {
+        "name": "debug_试卷3_1783072289.html",
+        "type": "file",
+        "path": "workbody/debug_试卷3_1783072289.html",
+        "ext": ".html",
+        "lastModified": 1783072289390
+      },
+      {
+        "name": "debug_试卷4_1783072308.html",
+        "type": "file",
+        "path": "workbody/debug_试卷4_1783072308.html",
+        "ext": ".html",
+        "lastModified": 1783072308181
+      },
+      {
+        "name": "debug_试卷5_1783072326.html",
+        "type": "file",
+        "path": "workbody/debug_试卷5_1783072326.html",
+        "ext": ".html",
+        "lastModified": 1783072326462
+      },
+      {
+        "name": "debug_试卷6_1783072344.html",
+        "type": "file",
+        "path": "workbody/debug_试卷6_1783072344.html",
+        "ext": ".html",
+        "lastModified": 1783072344971
+      },
+      {
+        "name": "debug_试卷7_1783072363.html",
+        "type": "file",
+        "path": "workbody/debug_试卷7_1783072363.html",
+        "ext": ".html",
+        "lastModified": 1783072363443
+      },
+      {
+        "name": "debug_试卷8_1783072381.html",
+        "type": "file",
+        "path": "workbody/debug_试卷8_1783072381.html",
+        "ext": ".html",
+        "lastModified": 1783072381703
+      },
+      {
+        "name": "debug_试卷9_1783072399.html",
+        "type": "file",
+        "path": "workbody/debug_试卷9_1783072399.html",
+        "ext": ".html",
+        "lastModified": 1783072399816
+      },
+      {
+        "name": "exam_271_page.html",
+        "type": "file",
+        "path": "workbody/exam_271_page.html",
+        "ext": ".html",
+        "lastModified": 1783072310770
+      },
+      {
+        "name": "exam_271_screenshot.png",
+        "type": "file",
+        "path": "workbody/exam_271_screenshot.png",
+        "ext": ".png",
+        "lastModified": 1783072310831
+      },
+      {
+        "name": "exam_271_text.txt",
+        "type": "file",
+        "path": "workbody/exam_271_text.txt",
+        "ext": ".txt",
+        "lastModified": 1783072310866
+      },
+      {
+        "name": "exam_list_page.html",
+        "type": "file",
+        "path": "workbody/exam_list_page.html",
+        "ext": ".html",
+        "lastModified": 1783072305744
+      },
+      {
+        "name": "exam_questions.txt",
+        "type": "file",
+        "path": "workbody/exam_questions.txt",
+        "ext": ".txt",
+        "lastModified": 1783072401818
+      },
+      {
+        "name": "exam_scraper.py",
+        "type": "file",
+        "path": "workbody/exam_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783072205593
+      },
+      {
+        "name": "fill_name_scraper.py",
+        "type": "file",
+        "path": "workbody/fill_name_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783073091767
+      },
+      {
+        "name": "final_scraper.py",
+        "type": "file",
+        "path": "workbody/final_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783073379285
+      },
+      {
+        "name": "improved_scraper.py",
+        "type": "file",
+        "path": "workbody/improved_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783073692168
+      },
+      {
+        "name": "interactive_scraper.py",
+        "type": "file",
+        "path": "workbody/interactive_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783072369947
+      },
+      {
+        "name": "Python复赛模拟题_初步汇总.txt",
+        "type": "file",
+        "path": "workbody/Python复赛模拟题_初步汇总.txt",
+        "ext": ".txt",
+        "lastModified": 1783073258309
+      },
+      {
+        "name": "Python复赛模拟题_完整汇总.txt",
+        "type": "file",
+        "path": "workbody/Python复赛模拟题_完整汇总.txt",
+        "ext": ".txt",
+        "lastModified": 1783073254820
+      },
+      {
+        "name": "Python复赛模拟题_最终报告.txt",
+        "type": "file",
+        "path": "workbody/Python复赛模拟题_最终报告.txt",
+        "ext": ".txt",
+        "lastModified": 1783073771657
+      },
+      {
+        "name": "simple_auto_scraper.py",
+        "type": "file",
+        "path": "workbody/simple_auto_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783072951564
+      },
+      {
+        "name": "simple_scraper.py",
+        "type": "file",
+        "path": "workbody/simple_scraper.py",
+        "ext": ".py",
+        "lastModified": 1783072277673
+      },
+      {
+        "name": "test_all_questions.txt",
+        "type": "file",
+        "path": "workbody/test_all_questions.txt",
+        "ext": ".txt",
+        "lastModified": 1783073540868
+      },
+      {
+        "name": "test_page_source.html",
+        "type": "file",
+        "path": "workbody/test_page_source.html",
+        "ext": ".html",
+        "lastModified": 1783073540810
+      },
+      {
+        "name": "test_page_text.txt",
+        "type": "file",
+        "path": "workbody/test_page_text.txt",
+        "ext": ".txt",
+        "lastModified": 1783073540860
+      },
+      {
+        "name": "test_screenshot.png",
+        "type": "file",
+        "path": "workbody/test_screenshot.png",
+        "ext": ".png",
+        "lastModified": 1783073540894
+      },
+      {
+        "name": "test_single_exam.py",
+        "type": "file",
+        "path": "workbody/test_single_exam.py",
+        "ext": ".py",
+        "lastModified": 1783073517260
+      },
+      {
+        "name": "所有试卷题目_完整版.txt",
+        "type": "file",
+        "path": "workbody/所有试卷题目_完整版.txt",
+        "ext": ".txt",
+        "lastModified": 1783073161880
+      },
+      {
+        "name": "所有试卷题目汇总.txt",
+        "type": "file",
+        "path": "workbody/所有试卷题目汇总.txt",
+        "ext": ".txt",
+        "lastModified": 1783073904978
+      },
+      {
+        "name": "试卷1_271.txt",
+        "type": "file",
+        "path": "workbody/试卷1_271.txt",
+        "ext": ".txt",
+        "lastModified": 1783072969955
+      },
+      {
+        "name": "试卷2_263.txt",
+        "type": "file",
+        "path": "workbody/试卷2_263.txt",
+        "ext": ".txt",
+        "lastModified": 1783072979046
+      },
+      {
+        "name": "试卷3_266.txt",
+        "type": "file",
+        "path": "workbody/试卷3_266.txt",
+        "ext": ".txt",
+        "lastModified": 1783072988123
+      },
+      {
+        "name": "试卷4_272.txt",
+        "type": "file",
+        "path": "workbody/试卷4_272.txt",
+        "ext": ".txt",
+        "lastModified": 1783072997211
+      },
+      {
+        "name": "试卷5_270.txt",
+        "type": "file",
+        "path": "workbody/试卷5_270.txt",
+        "ext": ".txt",
+        "lastModified": 1783073006510
+      },
+      {
+        "name": "试卷6_262.txt",
+        "type": "file",
+        "path": "workbody/试卷6_262.txt",
+        "ext": ".txt",
+        "lastModified": 1783073015605
+      },
+      {
+        "name": "试卷7_265.txt",
+        "type": "file",
+        "path": "workbody/试卷7_265.txt",
+        "ext": ".txt",
+        "lastModified": 1783073024703
+      },
+      {
+        "name": "试卷8_267.txt",
+        "type": "file",
+        "path": "workbody/试卷8_267.txt",
+        "ext": ".txt",
+        "lastModified": 1783073033789
+      },
+      {
+        "name": "试卷9_269.txt",
+        "type": "file",
+        "path": "workbody/试卷9_269.txt",
+        "ext": ".txt",
+        "lastModified": 1783073042881
+      },
+      {
+        "name": "试卷_带姓名.txt",
+        "type": "file",
+        "path": "workbody/试卷_带姓名.txt",
+        "ext": ".txt",
+        "lastModified": 1783073116660
       }
     ]
   },
@@ -20728,7 +21129,35 @@
     "type": "file",
     "path": "build.py",
     "ext": ".py",
-    "lastModified": 1782556618567
+    "lastModified": 1783125045735
+  },
+  {
+    "name": "changelog.json",
+    "type": "file",
+    "path": "changelog.json",
+    "ext": ".json",
+    "lastModified": 1783126772909
+  },
+  {
+    "name": "clear-cache.ps1",
+    "type": "file",
+    "path": "clear-cache.ps1",
+    "ext": ".ps1",
+    "lastModified": 1783124945171
+  },
+  {
+    "name": "deploy.ps1",
+    "type": "file",
+    "path": "deploy.ps1",
+    "ext": ".ps1",
+    "lastModified": 1783122093161
+  },
+  {
+    "name": "download_covers.py",
+    "type": "file",
+    "path": "download_covers.py",
+    "ext": ".py",
+    "lastModified": 1783126488797
   },
   {
     "name": "package-lock.json",
@@ -20742,7 +21171,7 @@
     "type": "file",
     "path": "package.json",
     "ext": ".json",
-    "lastModified": 1782556618575
+    "lastModified": 1783122093978
   },
   {
     "name": "push_err2.txt",
@@ -20770,14 +21199,21 @@
     "type": "file",
     "path": "worker.ts",
     "ext": ".ts",
-    "lastModified": 1782565087087
+    "lastModified": 1783122948691
   },
   {
     "name": "wrangler.toml",
     "type": "file",
     "path": "wrangler.toml",
     "ext": ".toml",
-    "lastModified": 1782563275899
+    "lastModified": 1783122094708
+  },
+  {
+    "name": "七年级下册暑假规划方案.png",
+    "type": "file",
+    "path": "七年级下册暑假规划方案.png",
+    "ext": ".png",
+    "lastModified": 1783071214573
   },
   {
     "name": "提示词.md",
