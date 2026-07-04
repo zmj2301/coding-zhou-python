@@ -479,101 +479,188 @@ body::before {
 /* ===== Mindmap Modal ===== */
 .mindmap-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.75);
   display: none; align-items: center; justify-content: center;
   z-index: 100004;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
 }
 .mindmap-overlay.active { display: flex; }
 .mindmap-container {
   position: relative;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
-  width: 92vw; max-width: 1200px;
-  height: 80vh; max-height: 720px;
+  border-radius: 20px;
+  width: 94vw; max-width: 1280px;
+  height: 85vh; max-height: 760px;
   display: flex; flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
   overflow: hidden;
 }
 .mindmap-header {
-  padding: 14px 24px;
+  padding: 20px 28px 16px;
   border-bottom: 1px solid var(--border-color);
   display: flex; align-items: center; justify-content: space-between;
   flex-shrink: 0;
+  gap: 20px;
 }
-.mindmap-header h3 { font-size: 16px; font-weight: 600; margin: 0; }
-.mindmap-close {
-  background: none; border: none;
-  font-size: 24px; cursor: pointer;
-  color: var(--text-secondary);
-  line-height: 1;
+.mindmap-header h3 {
+  font-size: 20px; font-weight: 700; margin: 0;
+  background: linear-gradient(135deg, var(--accent-blue), #8b5cf6);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-.mindmap-close:hover { color: var(--text-primary); }
-.mindmap-body {
-  flex: 1; overflow: auto; padding: 24px 32px;
+.mindmap-search {
+  flex: 1; max-width: 360px;
+  position: relative;
 }
-.mindmap-body::-webkit-scrollbar { width: 6px; }
-.mindmap-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-
-/* Tree structure */
-.mm-tree { list-style: none; padding: 0; margin: 0; }
-.mm-tree ul { list-style: none; padding-left: 28px; margin: 0; position: relative; }
-.mm-tree ul::before {
-  content: '';
-  position: absolute; left: 12px; top: 0; bottom: 12px;
-  border-left: 2px solid var(--border-color);
-}
-.mm-tree > li { position: relative; }
-.mm-tree > li > ul::before { left: 12px; }
-.mm-tree li { position: relative; }
-.mm-tree li::before {
-  content: '';
-  position: absolute; left: -16px; top: 16px;
-  width: 16px; height: 0;
-  border-top: 2px solid var(--border-color);
-}
-.mm-tree > li::before { display: none; }
-
-.mm-node {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  margin: 4px 0;
-  white-space: nowrap;
-}
-.mm-node:hover { background: var(--bg-tertiary); }
-.mm-node-root {
-  font-size: 18px; font-weight: 700;
-  color: var(--accent-blue);
-  padding: 10px 20px;
-  cursor: default;
-}
-.mm-node-root:hover { background: none; }
-.mm-node-cat {
-  font-weight: 600;
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
-  cursor: default;
-}
-.mm-node-cat:hover { background: var(--bg-tertiary); }
-.mm-node-project {
-  color: var(--text-secondary);
-  font-size: 13px;
-}
-.mm-node-project:hover {
-  color: var(--accent-blue);
-  background: var(--bg-tertiary);
-}
-.mm-node-tag {
-  font-size: 11px;
-  padding: 2px 8px;
+.mindmap-search input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
-  font-weight: 500;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.15s ease;
 }
+.mindmap-search input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+.mindmap-search svg {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%);
+  width: 16px; height: 16px;
+  color: var(--text-muted);
+}
+.mindmap-stats {
+  display: flex; gap: 16px;
+  font-size: 12px; color: var(--text-muted);
+}
+.mindmap-stats strong { color: var(--text-primary); font-weight: 600; }
+.mindmap-close {
+  background: var(--bg-tertiary); border: none;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  font-size: 20px; cursor: pointer;
+  color: var(--text-secondary);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.mindmap-close:hover { background: var(--accent-red); color: #fff; }
+.mindmap-body {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 24px 28px;
+}
+.mindmap-body::-webkit-scrollbar { width: 8px; }
+.mindmap-body::-webkit-scrollbar-thumb {
+  background: var(--border-color); border-radius: 4px;
+}
+.mindmap-body::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Category section */
+.mm-category {
+  margin-bottom: 32px;
+}
+.mm-category:last-child { margin-bottom: 0; }
+.mm-category-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+}
+.mm-category-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  background: var(--bg-tertiary);
+}
+.mm-category-title {
+  font-size: 16px; font-weight: 700;
+  color: var(--text-primary);
+}
+.mm-category-count {
+  font-size: 12px; font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+/* Project grid */
+.mm-project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.mm-project-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.mm-project-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--theme, var(--accent-blue));
+  opacity: 0.8;
+}
+.mm-project-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--theme, var(--accent-blue));
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.mm-project-icon {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  background: var(--theme, var(--accent-blue));
+  color: #fff;
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+.mm-project-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mm-project-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 36px;
+}
+.mm-project-tag {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #fff;
+  margin-top: 8px;
+}
+
+.mm-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.mm-empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
 
 /* ===== About Modal ===== */
 .about-modal-overlay {
@@ -2879,7 +2966,12 @@ body::before {
 <div class="mindmap-overlay" id="mindmapOverlay" onclick="if(event.target===this)closeMindmapModal()">
   <div class="mindmap-container">
     <div class="mindmap-header">
-      <h3>项目思维导图</h3>
+      <h3>🧭 项目全景图</h3>
+      <div class="mindmap-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="mindmapSearch" placeholder="搜索项目名称、描述..." autocomplete="off">
+      </div>
+      <div class="mindmap-stats" id="mindmapStats"></div>
       <button class="mindmap-close" onclick="closeMindmapModal()">&times;</button>
     </div>
     <div class="mindmap-body" id="mindmapBody">
@@ -3917,65 +4009,125 @@ function openMindmapModal() {
   const overlay = $('#mindmapOverlay');
   if (overlay) overlay.classList.add('active');
   renderMindmap();
+  setTimeout(() => {
+    const input = $('#mindmapSearch');
+    if (input) input.focus();
+  }, 100);
 }
 
 function closeMindmapModal() {
   const overlay = $('#mindmapOverlay');
   if (overlay) overlay.classList.remove('active');
+  const input = $('#mindmapSearch');
+  if (input) input.value = '';
 }
+
+let _mindmapSearchHandler = null;
 
 function renderMindmap() {
   const body = $('#mindmapBody');
+  const statsEl = $('#mindmapStats');
+  const searchEl = $('#mindmapSearch');
   if (!body) return;
   const projects = state.projects || [];
   if (!projects.length) {
-    body.innerHTML = '<div class="changelog-loading">暂无项目</div>';
+    body.innerHTML = '<div class="mm-empty"><div class="mm-empty-icon">📭</div>暂无项目</div>';
     return;
   }
   const catMap = {};
-  CATEGORY_CONFIG.forEach(c => { catMap[c.filter] = { label: c.label, icon: c.icon, projects: [] }; });
+  const catOrder = [];
+  CATEGORY_CONFIG.forEach(c => {
+    if (c.filter === 'all') return;
+    catMap[c.filter] = { label: c.label, icon: c.icon, projects: [] };
+    catOrder.push(c.filter);
+  });
   projects.forEach(p => {
     let type = p.type || 'other';
     if (type === 'popup-preview') type = 'other';
     if (!catMap[type]) type = 'other';
     catMap[type].projects.push(p);
   });
-  let html = '<ul class="mm-tree">';
-  html += '<li><span class="mm-node mm-node-root">Code Explorer</span>';
-  html += '<ul>';
-  CATEGORY_CONFIG.forEach(c => {
-    const cat = catMap[c.filter];
-    if (!cat || !cat.projects.length) return;
-    html += '<li><span class="mm-node mm-node-cat">' + c.icon + ' ' + cat.label + ' (' + cat.projects.length + ')</span>';
-    html += '<ul>';
-    cat.projects.forEach(p => {
-      const tagColor = getTagColor(p.type);
-      html += '<li><span class="mm-node mm-node-project" data-path="' + escapeHtml(p.path) + '">'
-        + '<span class="mm-node-tag" style="background:' + tagColor + '">' + getTypeLabel(p.type) + '</span>'
-        + escapeHtml(p.name) + '</span></li>';
+  const total = projects.length;
+  const catCount = catOrder.filter(k => catMap[k].projects.length > 0).length;
+  if (statsEl) {
+    statsEl.innerHTML = `<span><strong>${total}</strong> 个项目</span><span><strong>${catCount}</strong> 个分类</span>`;
+  }
+
+  function render(query) {
+    const q = (query || '').toLowerCase().trim();
+    let html = '';
+    let visibleCount = 0;
+    catOrder.forEach(key => {
+      const cat = catMap[key];
+      if (!cat || !cat.projects.length) return;
+      const filtered = q
+        ? cat.projects.filter(p =>
+            p.name.toLowerCase().includes(q) ||
+            p.desc.toLowerCase().includes(q) ||
+            (p.label && p.label.toLowerCase().includes(q))
+          )
+        : cat.projects;
+      if (!filtered.length) return;
+      visibleCount += filtered.length;
+      html += `<div class="mm-category">
+        <div class="mm-category-header">
+          <div class="mm-category-icon">${cat.icon}</div>
+          <div class="mm-category-title">${cat.label}</div>
+          <div class="mm-category-count">${filtered.length}${q ? ' / ' + cat.projects.length : ''}</div>
+        </div>
+        <div class="mm-project-grid">
+          ${filtered.map(p => {
+            const theme = p.themeColor || '#6366f1';
+            const typeLabel = getTypeLabel(p.type);
+            const tagColor = getTagColor(p.type);
+            return `<div class="mm-project-card" data-path="${escAttr(p.path)}" style="--theme:${theme}">
+              <div class="mm-project-icon">${p.icon || '📁'}</div>
+              <div class="mm-project-name">${esc(p.name)}</div>
+              <div class="mm-project-desc">${esc(p.desc || '暂无描述')}</div>
+              <span class="mm-project-tag" style="background:${tagColor}">${typeLabel}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
     });
-    html += '</ul></li>';
-  });
-  html += '</ul></li></ul>';
-  body.innerHTML = html;
-  body.querySelectorAll('.mm-node-project').forEach(node => {
-    node.addEventListener('click', function() {
-      const path = this.dataset.path;
-      closeMindmapModal();
-      if (state.isAuthenticated) {
-        openProject(path);
-      } else {
-        const project = projects.find(p => p.path === path);
-        if (project) showAuthPromptModal(project.name);
-      }
+    if (!html) {
+      body.innerHTML = `<div class="mm-empty"><div class="mm-empty-icon">🔍</div>没有找到匹配的项目<br><span style="font-size:12px">试试其他关键词</span></div>`;
+    } else {
+      body.innerHTML = html;
+    }
+    body.querySelectorAll('.mm-project-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const path = this.dataset.path;
+        closeMindmapModal();
+        if (state.isAuthenticated) {
+          openProject(path);
+        } else {
+          const project = projects.find(p => p.path === path);
+          if (project) showAuthPromptModal(project.name);
+        }
+      });
     });
-  });
+  }
+
+  render('');
+
+  if (_mindmapSearchHandler) {
+    searchEl.removeEventListener('input', _mindmapSearchHandler);
+  }
+  _mindmapSearchHandler = function() {
+    render(searchEl.value);
+  };
+  if (searchEl) {
+    searchEl.addEventListener('input', _mindmapSearchHandler);
+  }
 }
 
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+function escAttr(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function esc(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function getTagColor(type) {
