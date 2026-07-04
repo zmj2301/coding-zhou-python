@@ -3615,7 +3615,7 @@ async function openProject(projectPath) {
   showEmptyState();
   renderTabs();
 
-  $('#sidebarTree').innerHTML = '<div class="home-loading" style="padding:20px"><div class="spinner"></div> 加载中...</div>';
+  $('#fileTree').innerHTML = '<div class="home-loading" style="padding:20px"><div class="spinner"></div> 加载中...</div>';
 
   try {
     const treeData = await fetchProjectTree(projectPath);
@@ -3631,7 +3631,7 @@ async function openProject(projectPath) {
     state.flatFiles = flattenTree([projectTreeNode]);
     renderProjectFileTree([projectTreeNode]);
   } catch(err) {
-    $('#sidebarTree').innerHTML = `<div class="home-loading" style="padding:20px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
+    $('#fileTree').innerHTML = `<div class="home-loading" style="padding:20px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
   }
 }
 
