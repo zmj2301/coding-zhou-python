@@ -2145,15 +2145,17 @@ body::before {
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    width: 560px; max-width: 92vw;
-    max-height: 80vh;
+    width: 900px; max-width: 94vw;
+    height: 75vh; max-height: 680px;
     display: flex; flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    overflow: hidden;
   }
   .changelog-modal-header {
-    padding: 16px 20px;
+    padding: 16px 24px;
     border-bottom: 1px solid var(--border-color);
     display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
   }
   .changelog-modal-header h3 { font-size: 16px; font-weight: 600; margin: 0; }
   .changelog-modal-close {
@@ -2163,46 +2165,64 @@ body::before {
     line-height: 1;
   }
   .changelog-modal-close:hover { color: var(--text-primary); }
-  .changelog-modal-body {
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
+  .changelog-body {
+    display: flex; flex: 1; overflow: hidden;
   }
-  .changelog-modal-body::-webkit-scrollbar { width: 6px; }
-  .changelog-modal-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-  .changelog-item { margin-bottom: 24px; }
-  .changelog-item:last-child { margin-bottom: 0; }
-  .changelog-item-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 10px;
+  .changelog-sidebar {
+    width: 160px; flex-shrink: 0;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto; padding: 12px 0;
   }
-  .changelog-version {
-    font-size: 14px; font-weight: 600;
-    color: var(--accent-blue);
+  .changelog-sidebar::-webkit-scrollbar { width: 4px; }
+  .changelog-sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+  .changelog-version-item {
+    padding: 10px 20px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
   }
-  .changelog-date {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-  .changelog-title {
-    font-size: 15px; font-weight: 600;
-    margin-bottom: 8px;
+  .changelog-version-item:hover {
+    background: var(--bg-tertiary);
     color: var(--text-primary);
   }
-  .changelog-changes {
+  .changelog-version-item.active {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-left-color: var(--accent-blue);
+    font-weight: 600;
+  }
+  .changelog-content {
+    flex: 1; overflow-y: auto; padding: 28px 32px;
+  }
+  .changelog-content::-webkit-scrollbar { width: 6px; }
+  .changelog-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+  .changelog-content-title {
+    font-size: 20px; font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 6px 0;
+  }
+  .changelog-content-date {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 24px 0;
+  }
+  .changelog-content-list {
     list-style: none; padding: 0; margin: 0;
   }
-  .changelog-changes li {
-    font-size: 13px;
+  .changelog-content-list li {
+    font-size: 14px;
     color: var(--text-secondary);
-    padding: 4px 0 4px 16px;
+    padding: 6px 0 6px 20px;
     position: relative;
-    line-height: 1.5;
+    line-height: 1.7;
   }
-  .changelog-changes li::before {
+  .changelog-content-list li::before {
     content: "•";
     position: absolute; left: 0;
     color: var(--accent-blue);
+    font-weight: 700;
   }
   .changelog-loading {
     text-align: center;
@@ -2737,8 +2757,11 @@ body::before {
       <h3>更新日志</h3>
       <button class="changelog-modal-close" onclick="closeChangelogModal()">&times;</button>
     </div>
-    <div class="changelog-modal-body" id="changelogModalBody">
-      <div class="changelog-loading">加载中...</div>
+    <div class="changelog-body">
+      <div class="changelog-sidebar" id="changelogSidebar"></div>
+      <div class="changelog-content" id="changelogContent">
+        <div class="changelog-loading">加载中...</div>
+      </div>
     </div>
   </div>
 </div>
@@ -3768,24 +3791,40 @@ function closeAboutModal() {
   $('#aboutModalOverlay').classList.remove('active');
 }
 
+let _changelogData = [];
+
 function renderChangelog(data) {
-  const body = $('#changelogModalBody');
-  if (!data || !data.length) {
-    body.innerHTML = '<div class="changelog-loading">暂无更新记录</div>';
+  _changelogData = data || [];
+  const sidebar = $('#changelogSidebar');
+  const content = $('#changelogContent');
+  if (!_changelogData.length) {
+    sidebar.innerHTML = '';
+    content.innerHTML = '<div class="changelog-loading">暂无更新记录</div>';
     return;
   }
-  body.innerHTML = data.map(item => `
-    <div class="changelog-item">
-      <div class="changelog-item-header">
-        <span class="changelog-version">v${item.version}</span>
-        <span class="changelog-date">${item.date}</span>
-      </div>
-      <div class="changelog-title">${item.title || '更新'}</div>
-      <ul class="changelog-changes">
-        ${(item.changes || []).map(c => `<li>${c}</li>`).join('')}
-      </ul>
-    </div>
-  `).join('');
+  sidebar.innerHTML = _changelogData.map((item, i) =>
+    `<div class="changelog-version-item${i === 0 ? ' active' : ''}" data-idx="${i}">v${item.version}</div>`
+  ).join('');
+  renderChangelogContent(0);
+  sidebar.addEventListener('click', function(e) {
+    const el = e.target.closest('.changelog-version-item');
+    if (!el) return;
+    sidebar.querySelectorAll('.changelog-version-item').forEach(v => v.classList.remove('active'));
+    el.classList.add('active');
+    renderChangelogContent(parseInt(el.dataset.idx));
+  });
+}
+
+function renderChangelogContent(idx) {
+  const item = _changelogData[idx];
+  if (!item) return;
+  const content = $('#changelogContent');
+  const changesHtml = (item.changes || []).map(c => `<li>${c}</li>`).join('');
+  content.innerHTML = `
+    <h4 class="changelog-content-title">${item.title || '版本更新'}</h4>
+    <p class="changelog-content-date">${item.date}</p>
+    <ul class="changelog-content-list">${changesHtml}</ul>
+  `;
 }
 
 // ==================== AUTH PROMPT FUNCTIONS ====================
