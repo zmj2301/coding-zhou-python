@@ -1,5 +1,15 @@
 [
   {
+    "version": "1.1.4",
+    "date": "2026-07-04",
+    "title": "新增10个项目封面图 + 替换3个占位封面",
+    "changes": [
+      "新增 chinese-chess、idiom-chain、math-war、my-world、plane-war、pvz_tmp、portfolio 共7个网页游戏/项目的封面图",
+      "替换 codinghou/学习资料、codinghou/点亮家乡、每日励志语句 的占位符封面为正式封面图",
+      "所有项目现在都有专属封面，提升视觉体验"
+    ]
+  },
+  {
     "version": "1.1.3",
     "date": "2026-07-04",
     "title": "修复管理员后台显示异常 + 新增清除缓存按钮",

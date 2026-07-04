@@ -83,6 +83,9 @@ class Game:
         self.trail_max = 10
         self.prev_mouse = None
         self.is_slicing = False
+        self.number_failures = 0
+        self.Missing_times = []
+        self.cut_numbers = []
     
     def loading_image(self):
         # filename: file-pygame
@@ -179,6 +182,9 @@ class Game:
             if self.cd >= self.cd_goal:
                 self.cd = 0
                 self.cd_goal = random.randint(50, 100)
+                # 0：未被切中，1：已被切中
+                self.Missing_times.append(False)
+                self.cut_numbers.append(False)
                 x = random.randint(0, self.WIDTH - 100)
                 direction = "右" if x < self.WIDTH / 2 else "左"
                 speed_x = random.randint(1, 3)
