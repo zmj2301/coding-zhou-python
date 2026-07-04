@@ -470,6 +470,111 @@ body::before {
   color: var(--text-primary);
 }
 
+.mindmap-entry { cursor: pointer; }
+.mindmap-entry:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ===== Mindmap Modal ===== */
+.mindmap-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100004;
+  backdrop-filter: blur(4px);
+}
+.mindmap-overlay.active { display: flex; }
+.mindmap-container {
+  position: relative;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  width: 92vw; max-width: 1200px;
+  height: 80vh; max-height: 720px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+.mindmap-header {
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.mindmap-header h3 { font-size: 16px; font-weight: 600; margin: 0; }
+.mindmap-close {
+  background: none; border: none;
+  font-size: 24px; cursor: pointer;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+.mindmap-close:hover { color: var(--text-primary); }
+.mindmap-body {
+  flex: 1; overflow: auto; padding: 24px 32px;
+}
+.mindmap-body::-webkit-scrollbar { width: 6px; }
+.mindmap-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+/* Tree structure */
+.mm-tree { list-style: none; padding: 0; margin: 0; }
+.mm-tree ul { list-style: none; padding-left: 28px; margin: 0; position: relative; }
+.mm-tree ul::before {
+  content: '';
+  position: absolute; left: 12px; top: 0; bottom: 12px;
+  border-left: 2px solid var(--border-color);
+}
+.mm-tree > li { position: relative; }
+.mm-tree > li > ul::before { left: 12px; }
+.mm-tree li { position: relative; }
+.mm-tree li::before {
+  content: '';
+  position: absolute; left: -16px; top: 16px;
+  width: 16px; height: 0;
+  border-top: 2px solid var(--border-color);
+}
+.mm-tree > li::before { display: none; }
+
+.mm-node {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin: 4px 0;
+  white-space: nowrap;
+}
+.mm-node:hover { background: var(--bg-tertiary); }
+.mm-node-root {
+  font-size: 18px; font-weight: 700;
+  color: var(--accent-blue);
+  padding: 10px 20px;
+  cursor: default;
+}
+.mm-node-root:hover { background: none; }
+.mm-node-cat {
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  cursor: default;
+}
+.mm-node-cat:hover { background: var(--bg-tertiary); }
+.mm-node-project {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.mm-node-project:hover {
+  color: var(--accent-blue);
+  background: var(--bg-tertiary);
+}
+.mm-node-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
 /* ===== About Modal ===== */
 .about-modal-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -2622,6 +2727,10 @@ body::before {
         <span class="category-index-icon">️</span>
         <span class="category-index-label">关于</span>
       </div>
+      <div class="category-index-item mindmap-entry" id="mindmapEntry">
+        <span class="category-index-icon"></span>
+        <span class="category-index-label">思维导图</span>
+      </div>
     </div>
     <div class="cards-grid" id="cardsGrid">
       <div class="home-loading" style="grid-column:1/-1;padding:60px">
@@ -2762,6 +2871,19 @@ body::before {
       <div class="changelog-content" id="changelogContent">
         <div class="changelog-loading">加载中...</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 思维导图弹窗 ========== -->
+<div class="mindmap-overlay" id="mindmapOverlay" onclick="if(event.target===this)closeMindmapModal()">
+  <div class="mindmap-container">
+    <div class="mindmap-header">
+      <h3>项目思维导图</h3>
+      <button class="mindmap-close" onclick="closeMindmapModal()">&times;</button>
+    </div>
+    <div class="mindmap-body" id="mindmapBody">
+      <div class="changelog-loading">加载中...</div>
     </div>
   </div>
 </div>
@@ -3791,6 +3913,89 @@ function closeAboutModal() {
   $('#aboutModalOverlay').classList.remove('active');
 }
 
+function openMindmapModal() {
+  const overlay = $('#mindmapOverlay');
+  if (overlay) overlay.classList.add('active');
+  renderMindmap();
+}
+
+function closeMindmapModal() {
+  const overlay = $('#mindmapOverlay');
+  if (overlay) overlay.classList.remove('active');
+}
+
+function renderMindmap() {
+  const body = $('#mindmapBody');
+  if (!body) return;
+  const projects = state.projects || [];
+  if (!projects.length) {
+    body.innerHTML = '<div class="changelog-loading">暂无项目</div>';
+    return;
+  }
+  const catMap = {};
+  CATEGORY_CONFIG.forEach(c => { catMap[c.filter] = { label: c.label, icon: c.icon, projects: [] }; });
+  projects.forEach(p => {
+    let type = p.type || 'other';
+    if (type === 'popup-preview') type = 'other';
+    if (!catMap[type]) type = 'other';
+    catMap[type].projects.push(p);
+  });
+  let html = '<ul class="mm-tree">';
+  html += '<li><span class="mm-node mm-node-root">Code Explorer</span>';
+  html += '<ul>';
+  CATEGORY_CONFIG.forEach(c => {
+    const cat = catMap[c.filter];
+    if (!cat || !cat.projects.length) return;
+    html += '<li><span class="mm-node mm-node-cat">' + c.icon + ' ' + cat.label + ' (' + cat.projects.length + ')</span>';
+    html += '<ul>';
+    cat.projects.forEach(p => {
+      const tagColor = getTagColor(p.type);
+      html += '<li><span class="mm-node mm-node-project" data-path="' + escapeHtml(p.path) + '">'
+        + '<span class="mm-node-tag" style="background:' + tagColor + '">' + getTypeLabel(p.type) + '</span>'
+        + escapeHtml(p.name) + '</span></li>';
+    });
+    html += '</ul></li>';
+  });
+  html += '</ul></li></ul>';
+  body.innerHTML = html;
+  body.querySelectorAll('.mm-node-project').forEach(node => {
+    node.addEventListener('click', function() {
+      const path = this.dataset.path;
+      closeMindmapModal();
+      if (state.isAuthenticated) {
+        openProject(path);
+      } else {
+        const project = projects.find(p => p.path === path);
+        if (project) showAuthPromptModal(project.name);
+      }
+    });
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function getTagColor(type) {
+  const colors = {
+    'web-game': '#e74c3c', 'game': '#e67e22',
+    'ai': '#9b59b6', 'tool': '#27ae60',
+    'other': '#7f8c8d', 'popup-preview': '#7f8c8d'
+  };
+  return colors[type] || '#7f8c8d';
+}
+
+function getTypeLabel(type) {
+  const labels = {
+    'web-game': '网页游戏', 'game': '游戏',
+    'ai': 'AI', 'tool': '工具',
+    'other': '其他', 'popup-preview': '弹出预览'
+  };
+  return labels[type] || '其他';
+}
+
 let _changelogData = [];
 
 function renderChangelog(data) {
@@ -4584,6 +4789,8 @@ const changelogBtn = document.getElementById('changelogBtn');
 if (changelogBtn) changelogBtn.addEventListener('click', openChangelogModal);
 const aboutEntry = document.getElementById('aboutEntry');
 if (aboutEntry) aboutEntry.addEventListener('click', openAboutModal);
+const mindmapEntry = document.getElementById('mindmapEntry');
+if (mindmapEntry) mindmapEntry.addEventListener('click', openMindmapModal);
 // 初始化主题
 setTheme(getTheme());
 
