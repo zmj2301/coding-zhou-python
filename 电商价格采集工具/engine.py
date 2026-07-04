@@ -128,7 +128,15 @@ class CollectorEngine:
         }
     
     @staticmethod
-    def run(keyword: str, platforms: Optional[List[str]] = None) -> Dict[str, Any]:
-        """快速运行采集的静态方法"""
-        engine = CollectorEngine(platforms=platforms)
+    def run(keyword: str, platforms: Optional[List[str]] = None, mode: str = "requests") -> Dict[str, Any]:
+        """快速运行采集的静态方法
+        
+        Args:
+            keyword: 搜索关键词
+            platforms: 平台列表，默认 ["京东", "淘宝", "拼多多"]
+            mode: 采集模式
+                - "requests": requests 爬虫（快速但可能被反爬）
+                - "selenium": Selenium 爬虫（无需认证，获取真实数据）
+        """
+        engine = CollectorEngine(platforms=platforms, mode=mode)
         return engine.collect(keyword)

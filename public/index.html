@@ -392,11 +392,81 @@ body::before {
 .view-btn svg { width: 14px; height: 14px; }
 
 /* Cards Grid */
+/* ===== Category Index Sidebar ===== */
+.project-list-layout {
+  display: flex;
+  gap: 16px;
+  padding: 0 24px 48px;
+}
+.category-index {
+  flex-shrink: 0;
+  width: 120px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 8px 0;
+  position: sticky;
+  top: 16px;
+  align-self: flex-start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+.category-index-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  border-left: 3px solid transparent;
+  font-size: 13px;
+  color: var(--text-secondary);
+  user-select: none;
+}
+.category-index-item:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.category-index-item.active {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-left-color: var(--accent-blue);
+  font-weight: 600;
+}
+.category-index-icon {
+  font-size: 16px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.category-index-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.category-index-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  padding: 1px 7px;
+  min-width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.category-index-item.active .category-index-count {
+  background: var(--accent-blue);
+  color: #fff;
+}
+
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
-  padding: 0 24px 48px;
+  flex: 1;
+  min-width: 0;
 }
 .cards-grid.list-view {
   grid-template-columns: 1fr;
@@ -1468,6 +1538,8 @@ body::before {
   .sidebar { width: 100% !important; max-width: 100% !important; max-height: 180px; border-right: none; border-bottom: 1px solid var(--border-color); }
   .resizer, .resizer-horizontal { display: none; }
   .code-panel { min-height: 280px; }
+  .category-index { display: none; }
+  .project-list-layout { padding: 0 16px 48px; }
 }
 @media (max-width: 640px) {
   .cards-grid { grid-template-columns: 1fr; padding: 0 16px 32px; }
@@ -2474,10 +2546,13 @@ body::before {
       </div>
     </div>
   </div>
-  <div class="cards-grid" id="cardsGrid">
-    <div class="home-loading" style="grid-column:1/-1;padding:60px">
-      <div class="spinner"></div>
-      <span>加载项目中...</span>
+  <div class="project-list-layout">
+    <div class="category-index" id="categoryIndex"></div>
+    <div class="cards-grid" id="cardsGrid">
+      <div class="home-loading" style="grid-column:1/-1;padding:60px">
+        <div class="spinner"></div>
+        <span>加载项目中...</span>
+      </div>
     </div>
   </div>
 </div>
@@ -3029,6 +3104,65 @@ function formatDate(timestamp) {
   return `${date.getMonth() + 1}/${date.getDate()}`;
 }
 
+const CATEGORY_CONFIG = [
+  { filter: 'all', icon: '', label: '全部' },
+  { filter: 'web-game', icon: '', label: '网页游戏' },
+  { filter: 'game', icon: '🕹️', label: '游戏' },
+  { filter: 'ai', icon: '🤖', label: 'AI' },
+  { filter: 'tool', icon: '🔧', label: '工具' },
+  { filter: 'other', icon: '📁', label: '其他' },
+];
+
+function renderCategoryIndex(projects) {
+  const container = $('#categoryIndex');
+  if (!container) return;
+
+  const counts = {};
+  CATEGORY_CONFIG.forEach(c => { counts[c.filter] = 0; });
+
+  projects.forEach(p => {
+    if (p.type === 'popup-preview') {
+      counts['other'] = (counts['other'] || 0) + 1;
+    } else if (counts[p.type] !== undefined) {
+      counts[p.type]++;
+    } else {
+      counts['other'] = (counts['other'] || 0) + 1;
+    }
+  });
+
+  const currentFilter = state.currentFilter || 'all';
+
+  container.innerHTML = CATEGORY_CONFIG.map(c => {
+    const isActive = c.filter === currentFilter;
+    return `
+      <div class="category-index-item ${isActive ? 'active' : ''}" data-filter="${c.filter}">
+        <span class="category-index-icon">${c.icon}</span>
+        <span class="category-index-label">${c.label}</span>
+        <span class="category-index-count">${counts[c.filter]}</span>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.category-index-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const filter = item.dataset.filter;
+      state.currentFilter = filter;
+
+      container.querySelectorAll('.category-index-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      const tabs = $('#filterTabs');
+      if (tabs) {
+        tabs.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        const tab = tabs.querySelector(`[data-filter="${filter}"]`);
+        if (tab) tab.classList.add('active');
+      }
+
+      renderCards(state.projects, filter, $('#heroSearchInput').value);
+    });
+  });
+}
+
 function renderCards(projects, filter = 'all', searchQuery = '') {
   let filtered = projects;
   if (filter !== 'all') {
@@ -3505,6 +3639,14 @@ $('#filterTabs').addEventListener('click', e => {
   $('#filterTabs').querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   e.target.classList.add('active');
   state.currentFilter = e.target.dataset.filter;
+
+  const idx = $('#categoryIndex');
+  if (idx) {
+    idx.querySelectorAll('.category-index-item').forEach(i => i.classList.remove('active'));
+    const item = idx.querySelector(`[data-filter="${state.currentFilter}"]`);
+    if (item) item.classList.add('active');
+  }
+
   renderCards(state.projects, state.currentFilter, $('#heroSearchInput').value);
 });
 
@@ -3827,6 +3969,7 @@ async function init() {
     }));
 
     updateStats(state.projects);
+    renderCategoryIndex(state.projects);
     renderCards(state.projects);
 
     requestAnimationFrame(() => {

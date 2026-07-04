@@ -14,8 +14,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 def print_banner():
     banner = """
 ╔══════════════════════════════════════════════════════╗
-║       电商商品价格自动化采集与对比工具 v1.0           ║
+║       电商商品价格自动化采集与对比工具 v1.1           ║
 ║   支持京东 / 淘宝 / 拼多多 多平台商品价格采集对比       ║
+║   新增: Selenium模式获取真实数据（无需实名认证）        ║
 ╚══════════════════════════════════════════════════════╝
     """
     print(banner)
@@ -106,17 +107,31 @@ def main():
     parser.add_argument("-n", "--num", type=int, default=30, help="显示条数 (默认30)")
     parser.add_argument("-o", "--output", type=str, help="输出JSON文件路径")
     parser.add_argument("--json", action="store_true", help="仅输出JSON格式")
+    parser.add_argument("--selenium", action="store_true", 
+                        help="使用Selenium爬虫获取真实数据（无需实名认证）")
     
     args = parser.parse_args()
     
     print_banner()
+    
+    # 检查 Selenium 是否可用
+    mode = "selenium" if args.selenium else "requests"
+    if args.selenium:
+        try:
+            from scraper.selenium_scraper import SeleniumJDScraper
+            print(f"> 使用 Selenium 爬虫获取真实数据（无需认证）")
+        except ImportError:
+            print("> 警告: Selenium 未安装，将使用 requests 爬虫")
+            print("> 安装命令: pip install selenium webdriver-manager")
+            mode = "requests"
+    
     print(f"\n> 正在搜索: {args.keyword}")
     print(f"> 采集平台: {', '.join(args.platforms)}")
     print(f"> 请稍候...\n")
     
     # 执行采集
     from engine import CollectorEngine
-    engine = CollectorEngine(platforms=args.platforms)
+    engine = CollectorEngine(platforms=args.platforms, mode=mode)
     result = engine.collect(args.keyword)
     
     if args.json:
