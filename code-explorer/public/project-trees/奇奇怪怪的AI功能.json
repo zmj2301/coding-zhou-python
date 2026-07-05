@@ -1,0 +1,3033 @@
+[
+  {
+    "name": "手写文字图片识别并转为PDF",
+    "type": "directory",
+    "path": "手写文字图片识别并转为PDF",
+    "children": [
+      {
+        "name": "node_modules",
+        "type": "directory",
+        "path": "手写文字图片识别并转为PDF/node_modules",
+        "children": [
+          {
+            "name": "@types",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/@types",
+            "children": [
+              {
+                "name": "node",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/@types/node",
+                "children": [
+                  {
+                    "name": "assert",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/assert",
+                    "children": [
+                      {
+                        "name": "strict.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/assert/strict.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842088
+                      }
+                    ]
+                  },
+                  {
+                    "name": "compatibility",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/compatibility",
+                    "children": [
+                      {
+                        "name": "disposable.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/compatibility/disposable.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842088
+                      },
+                      {
+                        "name": "index.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/compatibility/index.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842088
+                      },
+                      {
+                        "name": "indexable.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/compatibility/indexable.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842089
+                      },
+                      {
+                        "name": "iterators.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/compatibility/iterators.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842090
+                      }
+                    ]
+                  },
+                  {
+                    "name": "dns",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/dns",
+                    "children": [
+                      {
+                        "name": "promises.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/dns/promises.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842092
+                      }
+                    ]
+                  },
+                  {
+                    "name": "fs",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/fs",
+                    "children": [
+                      {
+                        "name": "promises.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/fs/promises.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842093
+                      }
+                    ]
+                  },
+                  {
+                    "name": "readline",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/readline",
+                    "children": [
+                      {
+                        "name": "promises.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/readline/promises.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842094
+                      }
+                    ]
+                  },
+                  {
+                    "name": "stream",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/stream",
+                    "children": [
+                      {
+                        "name": "consumers.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/stream/consumers.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842095
+                      },
+                      {
+                        "name": "promises.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/stream/promises.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842095
+                      },
+                      {
+                        "name": "web.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/stream/web.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842144
+                      }
+                    ]
+                  },
+                  {
+                    "name": "timers",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/timers",
+                    "children": [
+                      {
+                        "name": "promises.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/timers/promises.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842145
+                      }
+                    ]
+                  },
+                  {
+                    "name": "ts5.6",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/ts5.6",
+                    "children": [
+                      {
+                        "name": "buffer.buffer.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/ts5.6/buffer.buffer.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842147
+                      },
+                      {
+                        "name": "globals.typedarray.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/ts5.6/globals.typedarray.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842148
+                      },
+                      {
+                        "name": "index.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/ts5.6/index.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842148
+                      }
+                    ]
+                  },
+                  {
+                    "name": "web-globals",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/web-globals",
+                    "children": [
+                      {
+                        "name": "abortcontroller.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/web-globals/abortcontroller.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842149
+                      },
+                      {
+                        "name": "domexception.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/web-globals/domexception.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842150
+                      },
+                      {
+                        "name": "events.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/web-globals/events.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842151
+                      },
+                      {
+                        "name": "fetch.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/web-globals/fetch.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842151
+                      },
+                      {
+                        "name": "navigator.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/web-globals/navigator.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842152
+                      },
+                      {
+                        "name": "storage.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/web-globals/storage.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842153
+                      },
+                      {
+                        "name": "streams.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/@types/node/web-globals/streams.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953842154
+                      }
+                    ]
+                  },
+                  {
+                    "name": "assert.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/assert.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840078
+                  },
+                  {
+                    "name": "async_hooks.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/async_hooks.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840086
+                  },
+                  {
+                    "name": "buffer.buffer.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/buffer.buffer.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840612
+                  },
+                  {
+                    "name": "buffer.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/buffer.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840614
+                  },
+                  {
+                    "name": "child_process.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/child_process.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840617
+                  },
+                  {
+                    "name": "cluster.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/cluster.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840619
+                  },
+                  {
+                    "name": "console.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/console.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840620
+                  },
+                  {
+                    "name": "constants.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/constants.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840620
+                  },
+                  {
+                    "name": "crypto.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/crypto.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840678
+                  },
+                  {
+                    "name": "dgram.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/dgram.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840680
+                  },
+                  {
+                    "name": "diagnostics_channel.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/diagnostics_channel.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840681
+                  },
+                  {
+                    "name": "dns.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/dns.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840682
+                  },
+                  {
+                    "name": "domain.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/domain.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840683
+                  },
+                  {
+                    "name": "events.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/events.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953840685
+                  },
+                  {
+                    "name": "fs.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/fs.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841317
+                  },
+                  {
+                    "name": "globals.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/globals.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841318
+                  },
+                  {
+                    "name": "globals.typedarray.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/globals.typedarray.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841318
+                  },
+                  {
+                    "name": "http.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/http.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841321
+                  },
+                  {
+                    "name": "http2.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/http2.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841325
+                  },
+                  {
+                    "name": "https.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/https.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841326
+                  },
+                  {
+                    "name": "index.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/index.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841327
+                  },
+                  {
+                    "name": "inspector.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/inspector.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841327
+                  },
+                  {
+                    "name": "inspector.generated.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/inspector.generated.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841331
+                  },
+                  {
+                    "name": "LICENSE",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/LICENSE",
+                    "ext": "",
+                    "lastModified": 1781953839826
+                  },
+                  {
+                    "name": "module.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/module.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841333
+                  },
+                  {
+                    "name": "net.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/net.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841334
+                  },
+                  {
+                    "name": "os.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/os.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841335
+                  },
+                  {
+                    "name": "package.json",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/package.json",
+                    "ext": ".json",
+                    "lastModified": 1781953841335
+                  },
+                  {
+                    "name": "path.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/path.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841335
+                  },
+                  {
+                    "name": "perf_hooks.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/perf_hooks.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841337
+                  },
+                  {
+                    "name": "process.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/process.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841339
+                  },
+                  {
+                    "name": "punycode.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/punycode.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841340
+                  },
+                  {
+                    "name": "querystring.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/querystring.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841341
+                  },
+                  {
+                    "name": "readline.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/readline.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841342
+                  },
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/README.md",
+                    "ext": ".md",
+                    "lastModified": 1781953839827
+                  },
+                  {
+                    "name": "repl.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/repl.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841343
+                  },
+                  {
+                    "name": "sea.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/sea.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841343
+                  },
+                  {
+                    "name": "sqlite.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/sqlite.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841345
+                  },
+                  {
+                    "name": "stream.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/stream.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841347
+                  },
+                  {
+                    "name": "string_decoder.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/string_decoder.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841348
+                  },
+                  {
+                    "name": "test.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/test.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841350
+                  },
+                  {
+                    "name": "timers.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/timers.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841351
+                  },
+                  {
+                    "name": "tls.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/tls.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841352
+                  },
+                  {
+                    "name": "trace_events.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/trace_events.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841353
+                  },
+                  {
+                    "name": "tty.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/tty.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841353
+                  },
+                  {
+                    "name": "url.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/url.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841417
+                  },
+                  {
+                    "name": "util.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/util.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841964
+                  },
+                  {
+                    "name": "v8.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/v8.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841965
+                  },
+                  {
+                    "name": "vm.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/vm.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841967
+                  },
+                  {
+                    "name": "wasi.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/wasi.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953841967
+                  },
+                  {
+                    "name": "worker_threads.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/worker_threads.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953842085
+                  },
+                  {
+                    "name": "zlib.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/@types/node/zlib.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953842086
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "core-util-is",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/core-util-is",
+            "children": [
+              {
+                "name": "lib",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/core-util-is/lib",
+                "children": [
+                  {
+                    "name": "util.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/core-util-is/lib/util.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839626
+                  }
+                ]
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/core-util-is/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839623
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/core-util-is/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839628
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/core-util-is/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839630
+              }
+            ]
+          },
+          {
+            "name": "https",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/https",
+            "children": [
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/https/package.json",
+                "ext": ".json",
+                "lastModified": 1781953840477
+              }
+            ]
+          },
+          {
+            "name": "image-size",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/image-size",
+            "children": [
+              {
+                "name": "bin",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/image-size/bin",
+                "children": [
+                  {
+                    "name": "image-size.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/image-size/bin/image-size.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839639
+                  }
+                ]
+              },
+              {
+                "name": "dist",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist",
+                "children": [
+                  {
+                    "name": "types",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types",
+                    "children": [
+                      {
+                        "name": "bmp.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/bmp.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839655
+                      },
+                      {
+                        "name": "bmp.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/bmp.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839630
+                      },
+                      {
+                        "name": "cur.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/cur.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839655
+                      },
+                      {
+                        "name": "cur.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/cur.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839632
+                      },
+                      {
+                        "name": "dds.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/dds.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839655
+                      },
+                      {
+                        "name": "dds.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/dds.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839633
+                      },
+                      {
+                        "name": "gif.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/gif.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839656
+                      },
+                      {
+                        "name": "gif.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/gif.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839636
+                      },
+                      {
+                        "name": "heif.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/heif.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839657
+                      },
+                      {
+                        "name": "heif.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/heif.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839637
+                      },
+                      {
+                        "name": "icns.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/icns.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839658
+                      },
+                      {
+                        "name": "icns.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/icns.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839638
+                      },
+                      {
+                        "name": "ico.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/ico.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839658
+                      },
+                      {
+                        "name": "ico.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/ico.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839639
+                      },
+                      {
+                        "name": "index.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/index.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839659
+                      },
+                      {
+                        "name": "index.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/index.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839641
+                      },
+                      {
+                        "name": "interface.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/interface.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839660
+                      },
+                      {
+                        "name": "interface.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/interface.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839642
+                      },
+                      {
+                        "name": "j2c.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/j2c.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839660
+                      },
+                      {
+                        "name": "j2c.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/j2c.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839642
+                      },
+                      {
+                        "name": "jp2.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/jp2.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839662
+                      },
+                      {
+                        "name": "jp2.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/jp2.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839643
+                      },
+                      {
+                        "name": "jpg.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/jpg.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839662
+                      },
+                      {
+                        "name": "jpg.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/jpg.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839644
+                      },
+                      {
+                        "name": "jxl-stream.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/jxl-stream.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839663
+                      },
+                      {
+                        "name": "jxl-stream.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/jxl-stream.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839644
+                      },
+                      {
+                        "name": "jxl.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/jxl.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839663
+                      },
+                      {
+                        "name": "jxl.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/jxl.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839645
+                      },
+                      {
+                        "name": "ktx.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/ktx.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839664
+                      },
+                      {
+                        "name": "ktx.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/ktx.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839646
+                      },
+                      {
+                        "name": "png.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/png.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839664
+                      },
+                      {
+                        "name": "png.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/png.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839646
+                      },
+                      {
+                        "name": "pnm.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/pnm.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839664
+                      },
+                      {
+                        "name": "pnm.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/pnm.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839648
+                      },
+                      {
+                        "name": "psd.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/psd.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839665
+                      },
+                      {
+                        "name": "psd.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/psd.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839648
+                      },
+                      {
+                        "name": "svg.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/svg.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839665
+                      },
+                      {
+                        "name": "svg.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/svg.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839648
+                      },
+                      {
+                        "name": "tga.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/tga.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839666
+                      },
+                      {
+                        "name": "tga.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/tga.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839649
+                      },
+                      {
+                        "name": "tiff.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/tiff.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839667
+                      },
+                      {
+                        "name": "tiff.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/tiff.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839650
+                      },
+                      {
+                        "name": "utils.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/utils.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839668
+                      },
+                      {
+                        "name": "utils.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/utils.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839651
+                      },
+                      {
+                        "name": "webp.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/webp.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839668
+                      },
+                      {
+                        "name": "webp.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/types/webp.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839652
+                      }
+                    ]
+                  },
+                  {
+                    "name": "utils",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/utils",
+                    "children": [
+                      {
+                        "name": "bit-reader.d.ts",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/utils/bit-reader.d.ts",
+                        "ext": ".ts",
+                        "lastModified": 1781953839654
+                      },
+                      {
+                        "name": "bit-reader.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/utils/bit-reader.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839626
+                      }
+                    ]
+                  },
+                  {
+                    "name": "detector.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/detector.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953839656
+                  },
+                  {
+                    "name": "detector.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/detector.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839634
+                  },
+                  {
+                    "name": "index.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/index.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953839659
+                  },
+                  {
+                    "name": "index.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/image-size/dist/index.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839640
+                  }
+                ]
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/image-size/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839624
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/image-size/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839653
+              },
+              {
+                "name": "Readme.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/image-size/Readme.md",
+                "ext": ".md",
+                "lastModified": 1781953839653
+              }
+            ]
+          },
+          {
+            "name": "immediate",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/immediate",
+            "children": [
+              {
+                "name": "dist",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/immediate/dist",
+                "children": [
+                  {
+                    "name": "immediate.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/immediate/dist/immediate.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839630
+                  },
+                  {
+                    "name": "immediate.min.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/immediate/dist/immediate.min.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839632
+                  }
+                ]
+              },
+              {
+                "name": "lib",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/immediate/lib",
+                "children": [
+                  {
+                    "name": "browser.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/immediate/lib/browser.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839633
+                  },
+                  {
+                    "name": "index.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/immediate/lib/index.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839635
+                  }
+                ]
+              },
+              {
+                "name": "LICENSE.txt",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/immediate/LICENSE.txt",
+                "ext": ".txt",
+                "lastModified": 1781953839626
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/immediate/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839622
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/immediate/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839624
+              }
+            ]
+          },
+          {
+            "name": "inherits",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/inherits",
+            "children": [
+              {
+                "name": "inherits.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/inherits/inherits.js",
+                "ext": ".js",
+                "lastModified": 1781953839626
+              },
+              {
+                "name": "inherits_browser.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/inherits/inherits_browser.js",
+                "ext": ".js",
+                "lastModified": 1781953839625
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/inherits/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839629
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/inherits/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839623
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/inherits/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839630
+              }
+            ]
+          },
+          {
+            "name": "isarray",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/isarray",
+            "children": [
+              {
+                "name": "component.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/isarray/component.json",
+                "ext": ".json",
+                "lastModified": 1781953839634
+              },
+              {
+                "name": "index.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/isarray/index.js",
+                "ext": ".js",
+                "lastModified": 1781953839627
+              },
+              {
+                "name": "Makefile",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/isarray/Makefile",
+                "ext": "",
+                "lastModified": 1781953839633
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/isarray/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839622
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/isarray/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839625
+              },
+              {
+                "name": "test.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/isarray/test.js",
+                "ext": ".js",
+                "lastModified": 1781953839630
+              }
+            ]
+          },
+          {
+            "name": "jszip",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/jszip",
+            "children": [
+              {
+                "name": "dist",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/dist",
+                "children": [
+                  {
+                    "name": "jszip.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/dist/jszip.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839656
+                  },
+                  {
+                    "name": "jszip.min.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/dist/jszip.min.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839658
+                  }
+                ]
+              },
+              {
+                "name": "lib",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib",
+                "children": [
+                  {
+                    "name": "generate",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/generate",
+                    "children": [
+                      {
+                        "name": "index.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/generate/index.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839647
+                      },
+                      {
+                        "name": "ZipFileWorker.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/generate/ZipFileWorker.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839672
+                      }
+                    ]
+                  },
+                  {
+                    "name": "nodejs",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/nodejs",
+                    "children": [
+                      {
+                        "name": "NodejsStreamInputAdapter.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/nodejs/NodejsStreamInputAdapter.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839661
+                      },
+                      {
+                        "name": "NodejsStreamOutputAdapter.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/nodejs/NodejsStreamOutputAdapter.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839662
+                      }
+                    ]
+                  },
+                  {
+                    "name": "reader",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/reader",
+                    "children": [
+                      {
+                        "name": "ArrayReader.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/reader/ArrayReader.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839631
+                      },
+                      {
+                        "name": "DataReader.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/reader/DataReader.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839640
+                      },
+                      {
+                        "name": "NodeBufferReader.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/reader/NodeBufferReader.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839660
+                      },
+                      {
+                        "name": "readerFor.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/reader/readerFor.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839664
+                      },
+                      {
+                        "name": "StringReader.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/reader/StringReader.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839667
+                      },
+                      {
+                        "name": "Uint8ArrayReader.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/reader/Uint8ArrayReader.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839668
+                      }
+                    ]
+                  },
+                  {
+                    "name": "stream",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/stream",
+                    "children": [
+                      {
+                        "name": "ConvertWorker.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/stream/ConvertWorker.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839638
+                      },
+                      {
+                        "name": "Crc32Probe.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/stream/Crc32Probe.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839638
+                      },
+                      {
+                        "name": "DataLengthProbe.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/stream/DataLengthProbe.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839639
+                      },
+                      {
+                        "name": "DataWorker.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/stream/DataWorker.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839642
+                      },
+                      {
+                        "name": "GenericWorker.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/stream/GenericWorker.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839646
+                      },
+                      {
+                        "name": "StreamHelper.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/stream/StreamHelper.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839666
+                      }
+                    ]
+                  },
+                  {
+                    "name": "base64.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/base64.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839633
+                  },
+                  {
+                    "name": "compressedObject.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/compressedObject.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839635
+                  },
+                  {
+                    "name": "compressions.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/compressions.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839637
+                  },
+                  {
+                    "name": "crc32.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/crc32.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839638
+                  },
+                  {
+                    "name": "defaults.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/defaults.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839642
+                  },
+                  {
+                    "name": "external.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/external.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839643
+                  },
+                  {
+                    "name": "flate.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/flate.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839645
+                  },
+                  {
+                    "name": "index.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/index.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839648
+                  },
+                  {
+                    "name": "license_header.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/license_header.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839659
+                  },
+                  {
+                    "name": "load.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/load.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839659
+                  },
+                  {
+                    "name": "nodejsUtils.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/nodejsUtils.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839663
+                  },
+                  {
+                    "name": "object.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/object.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839664
+                  },
+                  {
+                    "name": "readable-stream-browser.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/readable-stream-browser.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839664
+                  },
+                  {
+                    "name": "signature.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/signature.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839665
+                  },
+                  {
+                    "name": "support.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/support.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839668
+                  },
+                  {
+                    "name": "utf8.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/utf8.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839669
+                  },
+                  {
+                    "name": "utils.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/utils.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839670
+                  },
+                  {
+                    "name": "zipEntries.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/zipEntries.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839671
+                  },
+                  {
+                    "name": "zipEntry.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/zipEntry.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839671
+                  },
+                  {
+                    "name": "zipObject.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/lib/zipObject.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839672
+                  }
+                ]
+              },
+              {
+                "name": "vendor",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/vendor",
+                "children": [
+                  {
+                    "name": "FileSaver.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/jszip/vendor/FileSaver.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839644
+                  }
+                ]
+              },
+              {
+                "name": "CHANGES.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/CHANGES.md",
+                "ext": ".md",
+                "lastModified": 1781953839676
+              },
+              {
+                "name": "deps.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/deps.js",
+                "ext": ".js",
+                "lastModified": 1781953839642
+              },
+              {
+                "name": "graph.svg",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/graph.svg",
+                "ext": ".svg",
+                "lastModified": 1781953839677
+              },
+              {
+                "name": "index.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/index.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839678
+              },
+              {
+                "name": "LICENSE.markdown",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/LICENSE.markdown",
+                "ext": ".markdown",
+                "lastModified": 1781953839675
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839673
+              },
+              {
+                "name": "README.markdown",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/README.markdown",
+                "ext": ".markdown",
+                "lastModified": 1781953839675
+              },
+              {
+                "name": "sponsors.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/sponsors.md",
+                "ext": ".md",
+                "lastModified": 1781953839676
+              },
+              {
+                "name": "tsconfig.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/jszip/tsconfig.json",
+                "ext": ".json",
+                "lastModified": 1781953839674
+              }
+            ]
+          },
+          {
+            "name": "lie",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/lie",
+            "children": [
+              {
+                "name": "dist",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/lie/dist",
+                "children": [
+                  {
+                    "name": "lie.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/lie/dist/lie.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839633
+                  },
+                  {
+                    "name": "lie.min.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/lie/dist/lie.min.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839635
+                  },
+                  {
+                    "name": "lie.polyfill.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/lie/dist/lie.polyfill.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839637
+                  },
+                  {
+                    "name": "lie.polyfill.min.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/lie/dist/lie.polyfill.min.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839638
+                  }
+                ]
+              },
+              {
+                "name": "lib",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/lie/lib",
+                "children": [
+                  {
+                    "name": "browser.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/lie/lib/browser.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839638
+                  },
+                  {
+                    "name": "index.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/lie/lib/index.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839639
+                  }
+                ]
+              },
+              {
+                "name": "license.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/lie/license.md",
+                "ext": ".md",
+                "lastModified": 1781953839625
+              },
+              {
+                "name": "lie.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/lie/lie.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839628
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/lie/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839624
+              },
+              {
+                "name": "polyfill.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/lie/polyfill.js",
+                "ext": ".js",
+                "lastModified": 1781953839630
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/lie/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839632
+              }
+            ]
+          },
+          {
+            "name": "pako",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/pako",
+            "children": [
+              {
+                "name": "dist",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/pako/dist",
+                "children": [
+                  {
+                    "name": "pako.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/dist/pako.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839658
+                  },
+                  {
+                    "name": "pako.min.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/dist/pako.min.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839659
+                  },
+                  {
+                    "name": "pako_deflate.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/dist/pako_deflate.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839648
+                  },
+                  {
+                    "name": "pako_deflate.min.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/dist/pako_deflate.min.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839650
+                  },
+                  {
+                    "name": "pako_inflate.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/dist/pako_inflate.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839653
+                  },
+                  {
+                    "name": "pako_inflate.min.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/dist/pako_inflate.min.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839654
+                  }
+                ]
+              },
+              {
+                "name": "lib",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/pako/lib",
+                "children": [
+                  {
+                    "name": "utils",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/utils",
+                    "children": [
+                      {
+                        "name": "common.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/utils/common.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839632
+                      },
+                      {
+                        "name": "strings.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/utils/strings.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839660
+                      }
+                    ]
+                  },
+                  {
+                    "name": "zlib",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib",
+                    "children": [
+                      {
+                        "name": "adler32.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/adler32.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839628
+                      },
+                      {
+                        "name": "constants.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/constants.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839633
+                      },
+                      {
+                        "name": "crc32.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/crc32.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839634
+                      },
+                      {
+                        "name": "deflate.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/deflate.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839638
+                      },
+                      {
+                        "name": "gzheader.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/gzheader.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839639
+                      },
+                      {
+                        "name": "inffast.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/inffast.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839641
+                      },
+                      {
+                        "name": "inflate.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/inflate.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839643
+                      },
+                      {
+                        "name": "inftrees.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/inftrees.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839644
+                      },
+                      {
+                        "name": "messages.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/messages.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839645
+                      },
+                      {
+                        "name": "README",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/README",
+                        "ext": "",
+                        "lastModified": 1781953839626
+                      },
+                      {
+                        "name": "trees.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/trees.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839662
+                      },
+                      {
+                        "name": "zstream.js",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/zlib/zstream.js",
+                        "ext": ".js",
+                        "lastModified": 1781953839663
+                      }
+                    ]
+                  },
+                  {
+                    "name": "deflate.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/deflate.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839636
+                  },
+                  {
+                    "name": "inflate.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pako/lib/inflate.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839642
+                  }
+                ]
+              },
+              {
+                "name": "CHANGELOG.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/pako/CHANGELOG.md",
+                "ext": ".md",
+                "lastModified": 1781953839664
+              },
+              {
+                "name": "index.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/pako/index.js",
+                "ext": ".js",
+                "lastModified": 1781953839640
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/pako/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839623
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/pako/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839663
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/pako/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839664
+              }
+            ]
+          },
+          {
+            "name": "pptxgenjs",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs",
+            "children": [
+              {
+                "name": "dist",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/dist",
+                "children": [
+                  {
+                    "name": "pptxgen.bundle.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/dist/pptxgen.bundle.js",
+                    "ext": ".js",
+                    "lastModified": 1781953842293
+                  },
+                  {
+                    "name": "pptxgen.bundle.js.map",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/dist/pptxgen.bundle.js.map",
+                    "ext": ".map",
+                    "lastModified": 1781953844878
+                  },
+                  {
+                    "name": "pptxgen.cjs.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/dist/pptxgen.cjs.js",
+                    "ext": ".js",
+                    "lastModified": 1781953842869
+                  },
+                  {
+                    "name": "pptxgen.es.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/dist/pptxgen.es.js",
+                    "ext": ".js",
+                    "lastModified": 1781953843072
+                  },
+                  {
+                    "name": "pptxgen.min.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/dist/pptxgen.min.js",
+                    "ext": ".js",
+                    "lastModified": 1781953844162
+                  },
+                  {
+                    "name": "pptxgen.min.js.map",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/dist/pptxgen.min.js.map",
+                    "ext": ".map",
+                    "lastModified": 1781953844885
+                  }
+                ]
+              },
+              {
+                "name": "types",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/types",
+                "children": [
+                  {
+                    "name": "index.d.ts",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/types/index.d.ts",
+                    "ext": ".ts",
+                    "lastModified": 1781953845334
+                  }
+                ]
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/LICENSE",
+                "ext": "",
+                "lastModified": 1781953841377
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/package.json",
+                "ext": ".json",
+                "lastModified": 1781953844163
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/pptxgenjs/README.md",
+                "ext": ".md",
+                "lastModified": 1781953844886
+              }
+            ]
+          },
+          {
+            "name": "process-nextick-args",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/process-nextick-args",
+            "children": [
+              {
+                "name": "index.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/process-nextick-args/index.js",
+                "ext": ".js",
+                "lastModified": 1781953839625
+              },
+              {
+                "name": "license.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/process-nextick-args/license.md",
+                "ext": ".md",
+                "lastModified": 1781953839627
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/process-nextick-args/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839622
+              },
+              {
+                "name": "readme.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/process-nextick-args/readme.md",
+                "ext": ".md",
+                "lastModified": 1781953839630
+              }
+            ]
+          },
+          {
+            "name": "queue",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/queue",
+            "children": [
+              {
+                "name": "index.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/queue/index.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839632
+              },
+              {
+                "name": "index.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/queue/index.js",
+                "ext": ".js",
+                "lastModified": 1781953839625
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/queue/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839624
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/queue/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839627
+              },
+              {
+                "name": "readme.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/queue/readme.md",
+                "ext": ".md",
+                "lastModified": 1781953839630
+              }
+            ]
+          },
+          {
+            "name": "readable-stream",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/readable-stream",
+            "children": [
+              {
+                "name": "doc",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/doc",
+                "children": [
+                  {
+                    "name": "wg-meetings",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/doc/wg-meetings",
+                    "children": [
+                      {
+                        "name": "2015-01-30.md",
+                        "type": "file",
+                        "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/doc/wg-meetings/2015-01-30.md",
+                        "ext": ".md",
+                        "lastModified": 1781953839646
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "lib",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib",
+                "children": [
+                  {
+                    "name": "internal",
+                    "type": "directory",
+                    "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/internal",
+                    "children": [
+                      {
+                        "name": "streams",
+                        "type": "directory",
+                        "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/internal/streams",
+                        "children": [
+                          {
+                            "name": "BufferList.js",
+                            "type": "file",
+                            "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/internal/streams/BufferList.js",
+                            "ext": ".js",
+                            "lastModified": 1781953839637
+                          },
+                          {
+                            "name": "destroy.js",
+                            "type": "file",
+                            "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/internal/streams/destroy.js",
+                            "ext": ".js",
+                            "lastModified": 1781953839638
+                          },
+                          {
+                            "name": "stream-browser.js",
+                            "type": "file",
+                            "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/internal/streams/stream-browser.js",
+                            "ext": ".js",
+                            "lastModified": 1781953839642
+                          },
+                          {
+                            "name": "stream.js",
+                            "type": "file",
+                            "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/internal/streams/stream.js",
+                            "ext": ".js",
+                            "lastModified": 1781953839642
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "_stream_duplex.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/_stream_duplex.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839626
+                  },
+                  {
+                    "name": "_stream_passthrough.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/_stream_passthrough.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839628
+                  },
+                  {
+                    "name": "_stream_readable.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/_stream_readable.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839631
+                  },
+                  {
+                    "name": "_stream_transform.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/_stream_transform.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839633
+                  },
+                  {
+                    "name": "_stream_writable.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/lib/_stream_writable.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839635
+                  }
+                ]
+              },
+              {
+                "name": "CONTRIBUTING.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/CONTRIBUTING.md",
+                "ext": ".md",
+                "lastModified": 1781953839647
+              },
+              {
+                "name": "duplex-browser.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/duplex-browser.js",
+                "ext": ".js",
+                "lastModified": 1781953839638
+              },
+              {
+                "name": "duplex.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/duplex.js",
+                "ext": ".js",
+                "lastModified": 1781953839639
+              },
+              {
+                "name": "GOVERNANCE.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/GOVERNANCE.md",
+                "ext": ".md",
+                "lastModified": 1781953839648
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839623
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839645
+              },
+              {
+                "name": "passthrough.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/passthrough.js",
+                "ext": ".js",
+                "lastModified": 1781953839640
+              },
+              {
+                "name": "readable-browser.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/readable-browser.js",
+                "ext": ".js",
+                "lastModified": 1781953839640
+              },
+              {
+                "name": "readable.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/readable.js",
+                "ext": ".js",
+                "lastModified": 1781953839641
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839648
+              },
+              {
+                "name": "transform.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/transform.js",
+                "ext": ".js",
+                "lastModified": 1781953839643
+              },
+              {
+                "name": "writable-browser.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/writable-browser.js",
+                "ext": ".js",
+                "lastModified": 1781953839643
+              },
+              {
+                "name": "writable.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/readable-stream/writable.js",
+                "ext": ".js",
+                "lastModified": 1781953839644
+              }
+            ]
+          },
+          {
+            "name": "safe-buffer",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/safe-buffer",
+            "children": [
+              {
+                "name": "index.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/safe-buffer/index.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839625
+              },
+              {
+                "name": "index.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/safe-buffer/index.js",
+                "ext": ".js",
+                "lastModified": 1781953839627
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/safe-buffer/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839630
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/safe-buffer/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839622
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/safe-buffer/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839632
+              }
+            ]
+          },
+          {
+            "name": "setimmediate",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/setimmediate",
+            "children": [
+              {
+                "name": "LICENSE.txt",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/setimmediate/LICENSE.txt",
+                "ext": ".txt",
+                "lastModified": 1781953839626
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/setimmediate/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839623
+              },
+              {
+                "name": "setImmediate.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/setimmediate/setImmediate.js",
+                "ext": ".js",
+                "lastModified": 1781953839624
+              }
+            ]
+          },
+          {
+            "name": "string_decoder",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/string_decoder",
+            "children": [
+              {
+                "name": "lib",
+                "type": "directory",
+                "path": "手写文字图片识别并转为PDF/node_modules/string_decoder/lib",
+                "children": [
+                  {
+                    "name": "string_decoder.js",
+                    "type": "file",
+                    "path": "手写文字图片识别并转为PDF/node_modules/string_decoder/lib/string_decoder.js",
+                    "ext": ".js",
+                    "lastModified": 1781953839632
+                  }
+                ]
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/string_decoder/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839626
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/string_decoder/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839623
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/string_decoder/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839629
+              }
+            ]
+          },
+          {
+            "name": "undici-types",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/undici-types",
+            "children": [
+              {
+                "name": "agent.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/agent.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839630
+              },
+              {
+                "name": "api.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/api.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839632
+              },
+              {
+                "name": "balanced-pool.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/balanced-pool.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839633
+              },
+              {
+                "name": "cache.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/cache.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839634
+              },
+              {
+                "name": "client.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/client.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839636
+              },
+              {
+                "name": "connector.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/connector.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839637
+              },
+              {
+                "name": "content-type.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/content-type.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839638
+              },
+              {
+                "name": "cookies.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/cookies.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839638
+              },
+              {
+                "name": "diagnostics-channel.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/diagnostics-channel.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839639
+              },
+              {
+                "name": "dispatcher.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/dispatcher.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839640
+              },
+              {
+                "name": "env-http-proxy-agent.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/env-http-proxy-agent.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839641
+              },
+              {
+                "name": "errors.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/errors.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839642
+              },
+              {
+                "name": "eventsource.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/eventsource.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839642
+              },
+              {
+                "name": "fetch.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/fetch.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839643
+              },
+              {
+                "name": "file.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/file.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839644
+              },
+              {
+                "name": "filereader.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/filereader.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839645
+              },
+              {
+                "name": "formdata.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/formdata.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839646
+              },
+              {
+                "name": "global-dispatcher.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/global-dispatcher.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839647
+              },
+              {
+                "name": "global-origin.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/global-origin.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839647
+              },
+              {
+                "name": "handlers.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/handlers.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839648
+              },
+              {
+                "name": "header.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/header.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839648
+              },
+              {
+                "name": "index.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/index.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839649
+              },
+              {
+                "name": "interceptors.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/interceptors.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839650
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839624
+              },
+              {
+                "name": "mock-agent.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/mock-agent.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839651
+              },
+              {
+                "name": "mock-client.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/mock-client.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839652
+              },
+              {
+                "name": "mock-errors.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/mock-errors.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839653
+              },
+              {
+                "name": "mock-interceptor.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/mock-interceptor.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839653
+              },
+              {
+                "name": "mock-pool.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/mock-pool.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839654
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839625
+              },
+              {
+                "name": "patch.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/patch.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839655
+              },
+              {
+                "name": "pool-stats.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/pool-stats.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839655
+              },
+              {
+                "name": "pool.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/pool.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839655
+              },
+              {
+                "name": "proxy-agent.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/proxy-agent.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839656
+              },
+              {
+                "name": "readable.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/readable.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839657
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839627
+              },
+              {
+                "name": "retry-agent.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/retry-agent.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839657
+              },
+              {
+                "name": "retry-handler.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/retry-handler.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839658
+              },
+              {
+                "name": "util.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/util.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839659
+              },
+              {
+                "name": "webidl.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/webidl.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839659
+              },
+              {
+                "name": "websocket.d.ts",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/undici-types/websocket.d.ts",
+                "ext": ".ts",
+                "lastModified": 1781953839660
+              }
+            ]
+          },
+          {
+            "name": "util-deprecate",
+            "type": "directory",
+            "path": "手写文字图片识别并转为PDF/node_modules/util-deprecate",
+            "children": [
+              {
+                "name": "browser.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/util-deprecate/browser.js",
+                "ext": ".js",
+                "lastModified": 1781953839629
+              },
+              {
+                "name": "History.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/util-deprecate/History.md",
+                "ext": ".md",
+                "lastModified": 1781953839632
+              },
+              {
+                "name": "LICENSE",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/util-deprecate/LICENSE",
+                "ext": "",
+                "lastModified": 1781953839626
+              },
+              {
+                "name": "node.js",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/util-deprecate/node.js",
+                "ext": ".js",
+                "lastModified": 1781953839630
+              },
+              {
+                "name": "package.json",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/util-deprecate/package.json",
+                "ext": ".json",
+                "lastModified": 1781953839622
+              },
+              {
+                "name": "README.md",
+                "type": "file",
+                "path": "手写文字图片识别并转为PDF/node_modules/util-deprecate/README.md",
+                "ext": ".md",
+                "lastModified": 1781953839625
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "chart_content_1500x900.png",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/chart_content_1500x900.png",
+        "ext": ".png",
+        "lastModified": 1781953903626
+      },
+      {
+        "name": "chart_gmv_1500x900.png",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/chart_gmv_1500x900.png",
+        "ext": ".png",
+        "lastModified": 1781953903827
+      },
+      {
+        "name": "chart_radar_1200x1200.png",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/chart_radar_1200x1200.png",
+        "ext": ".png",
+        "lastModified": 1781953904008
+      },
+      {
+        "name": "chart_trends_1500x900.png",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/chart_trends_1500x900.png",
+        "ext": ".png",
+        "lastModified": 1781953904167
+      },
+      {
+        "name": "chart_users_1500x900.png",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/chart_users_1500x900.png",
+        "ext": ".png",
+        "lastModified": 1781953903520
+      },
+      {
+        "name": "index.html",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/index.html",
+        "ext": ".html",
+        "lastModified": 1778376630919
+      },
+      {
+        "name": "package-lock.json",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/package-lock.json",
+        "ext": ".json",
+        "lastModified": 1781953845359
+      },
+      {
+        "name": "package.json",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/package.json",
+        "ext": ".json",
+        "lastModified": 1781953845354
+      },
+      {
+        "name": "ReAct_论文综述.docx",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/ReAct_论文综述.docx",
+        "ext": ".docx",
+        "lastModified": 1781953971961
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/README.md",
+        "ext": ".md",
+        "lastModified": 1778376656544
+      },
+      {
+        "name": "主流短视频平台差异化优势与发展路径调研.pptx",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/主流短视频平台差异化优势与发展路径调研.pptx",
+        "ext": ".pptx",
+        "lastModified": 1781954159524
+      },
+      {
+        "name": "短视频平台竞争格局分析.pptx",
+        "type": "file",
+        "path": "手写文字图片识别并转为PDF/短视频平台竞争格局分析.pptx",
+        "ext": ".pptx",
+        "lastModified": 1781954231958
+      }
+    ]
+  },
+  {
+    "name": "config.py",
+    "type": "file",
+    "path": "config.py",
+    "ext": ".py",
+    "lastModified": 1780982866435
+  },
+  {
+    "name": "convert_to_pdf.py",
+    "type": "file",
+    "path": "convert_to_pdf.py",
+    "ext": ".py",
+    "lastModified": 1780982866510
+  },
+  {
+    "name": "example_usage.py",
+    "type": "file",
+    "path": "example_usage.py",
+    "ext": ".py",
+    "lastModified": 1780982866564
+  },
+  {
+    "name": "handwriting_to_pdf.py",
+    "type": "file",
+    "path": "handwriting_to_pdf.py",
+    "ext": ".py",
+    "lastModified": 1778325150785
+  },
+  {
+    "name": "image_processor.py",
+    "type": "file",
+    "path": "image_processor.py",
+    "ext": ".py",
+    "lastModified": 1780982866599
+  },
+  {
+    "name": "ocr_recognizer.py",
+    "type": "file",
+    "path": "ocr_recognizer.py",
+    "ext": ".py",
+    "lastModified": 1780982866684
+  },
+  {
+    "name": "OCR转换工具.py",
+    "type": "file",
+    "path": "OCR转换工具.py",
+    "ext": ".py",
+    "lastModified": 1778327837675
+  },
+  {
+    "name": "pdf_generator.py",
+    "type": "file",
+    "path": "pdf_generator.py",
+    "ext": ".py",
+    "lastModified": 1780982866743
+  },
+  {
+    "name": "process.bat",
+    "type": "file",
+    "path": "process.bat",
+    "ext": ".bat",
+    "lastModified": 1780982866811
+  },
+  {
+    "name": "process_p19_29.py",
+    "type": "file",
+    "path": "process_p19_29.py",
+    "ext": ".py",
+    "lastModified": 1780982866827
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1780982866860
+  },
+  {
+    "name": "requirements.txt",
+    "type": "file",
+    "path": "requirements.txt",
+    "ext": ".txt",
+    "lastModified": 1780982866938
+  },
+  {
+    "name": "run_conversion.py",
+    "type": "file",
+    "path": "run_conversion.py",
+    "ext": ".py",
+    "lastModified": 1780982866969
+  },
+  {
+    "name": "run_ocr.bat",
+    "type": "file",
+    "path": "run_ocr.bat",
+    "ext": ".bat",
+    "lastModified": 1780982867009
+  },
+  {
+    "name": "simple_converter.py",
+    "type": "file",
+    "path": "simple_converter.py",
+    "ext": ".py",
+    "lastModified": 1780982867185
+  },
+  {
+    "name": "simple_ocr.py",
+    "type": "file",
+    "path": "simple_ocr.py",
+    "ext": ".py",
+    "lastModified": 1780982867378
+  },
+  {
+    "name": "一键处理P19-29.bat",
+    "type": "file",
+    "path": "一键处理P19-29.bat",
+    "ext": ".bat",
+    "lastModified": 1780982867409
+  },
+  {
+    "name": "一键安装.bat",
+    "type": "file",
+    "path": "一键安装.bat",
+    "ext": ".bat",
+    "lastModified": 1780982867431
+  },
+  {
+    "name": "使用说明.md",
+    "type": "file",
+    "path": "使用说明.md",
+    "ext": ".md",
+    "lastModified": 1780982867442
+  },
+  {
+    "name": "启动OCR工具.bat",
+    "type": "file",
+    "path": "启动OCR工具.bat",
+    "ext": ".bat",
+    "lastModified": 1780982867454
+  },
+  {
+    "name": "处理P19-29.bat",
+    "type": "file",
+    "path": "处理P19-29.bat",
+    "ext": ".bat",
+    "lastModified": 1780982867467
+  },
+  {
+    "name": "快速处理P19-29.py",
+    "type": "file",
+    "path": "快速处理P19-29.py",
+    "ext": ".py",
+    "lastModified": 1780982867486
+  }
+]

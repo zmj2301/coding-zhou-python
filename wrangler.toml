@@ -1,6 +1,6 @@
 name = "coding-zhou-python"
 compatibility_date = "2024-01-01"
-main = "worker.ts"
+main = "code-explorer/worker.ts"
 
 [vars]
 GITHUB_REPO = "zmj2301/coding-zhou-python"
@@ -15,4 +15,4 @@ preview_id = "70cb2749fafd40fdb5b8e3140d65a414"
 
 [assets]
 binding = "ASSETS"
-directory = "public"
+directory = "code-explorer/public"

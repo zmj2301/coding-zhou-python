@@ -1,0 +1,772 @@
+[
+  {
+    "name": "deskpet",
+    "type": "directory",
+    "path": "deskpet",
+    "children": [
+      {
+        "name": "__pycache__",
+        "type": "directory",
+        "path": "deskpet/__pycache__",
+        "children": [
+          {
+            "name": "__init__.cpython-312.pyc",
+            "type": "file",
+            "path": "deskpet/__pycache__/__init__.cpython-312.pyc",
+            "ext": ".pyc",
+            "lastModified": 1781835375920
+          },
+          {
+            "name": "auto_start.cpython-312.pyc",
+            "type": "file",
+            "path": "deskpet/__pycache__/auto_start.cpython-312.pyc",
+            "ext": ".pyc",
+            "lastModified": 1781835376323
+          },
+          {
+            "name": "config.cpython-312.pyc",
+            "type": "file",
+            "path": "deskpet/__pycache__/config.cpython-312.pyc",
+            "ext": ".pyc",
+            "lastModified": 1781835376251
+          },
+          {
+            "name": "pet_window.cpython-312.pyc",
+            "type": "file",
+            "path": "deskpet/__pycache__/pet_window.cpython-312.pyc",
+            "ext": ".pyc",
+            "lastModified": 1781835376263
+          },
+          {
+            "name": "size_settings_dialog.cpython-312.pyc",
+            "type": "file",
+            "path": "deskpet/__pycache__/size_settings_dialog.cpython-312.pyc",
+            "ext": ".pyc",
+            "lastModified": 1781835376336
+          },
+          {
+            "name": "sync_manager.cpython-312.pyc",
+            "type": "file",
+            "path": "deskpet/__pycache__/sync_manager.cpython-312.pyc",
+            "ext": ".pyc",
+            "lastModified": 1781835376343
+          }
+        ]
+      },
+      {
+        "name": "__init__.py",
+        "type": "file",
+        "path": "deskpet/__init__.py",
+        "ext": ".py",
+        "lastModified": 1780187629790
+      },
+      {
+        "name": "auto_start.py",
+        "type": "file",
+        "path": "deskpet/auto_start.py",
+        "ext": ".py",
+        "lastModified": 1780187629800
+      },
+      {
+        "name": "config.py",
+        "type": "file",
+        "path": "deskpet/config.py",
+        "ext": ".py",
+        "lastModified": 1780187629848
+      },
+      {
+        "name": "pet_window.py",
+        "type": "file",
+        "path": "deskpet/pet_window.py",
+        "ext": ".py",
+        "lastModified": 1780192521549
+      },
+      {
+        "name": "size_settings_dialog.py",
+        "type": "file",
+        "path": "deskpet/size_settings_dialog.py",
+        "ext": ".py",
+        "lastModified": 1780192431783
+      },
+      {
+        "name": "sync_manager.py",
+        "type": "file",
+        "path": "deskpet/sync_manager.py",
+        "ext": ".py",
+        "lastModified": 1780187629947
+      }
+    ]
+  },
+  {
+    "name": "relax_exe",
+    "type": "directory",
+    "path": "relax_exe",
+    "children": [
+      {
+        "name": "__pycache__",
+        "type": "directory",
+        "path": "relax_exe/__pycache__",
+        "children": [
+          {
+            "name": "app.cpython-312.pyc",
+            "type": "file",
+            "path": "relax_exe/__pycache__/app.cpython-312.pyc",
+            "ext": ".pyc",
+            "lastModified": 1781835376348
+          }
+        ]
+      },
+      {
+        "name": "core",
+        "type": "directory",
+        "path": "relax_exe/core",
+        "children": [
+          {
+            "name": "__pycache__",
+            "type": "directory",
+            "path": "relax_exe/core/__pycache__",
+            "children": [
+              {
+                "name": "__init__.cpython-312.pyc",
+                "type": "file",
+                "path": "relax_exe/core/__pycache__/__init__.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1781835376350
+              },
+              {
+                "name": "logger.cpython-312.pyc",
+                "type": "file",
+                "path": "relax_exe/core/__pycache__/logger.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1781835376352
+              },
+              {
+                "name": "timer_manager.cpython-312.pyc",
+                "type": "file",
+                "path": "relax_exe/core/__pycache__/timer_manager.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1781835376358
+              }
+            ]
+          },
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "relax_exe/core/__init__.py",
+            "ext": ".py",
+            "lastModified": 1778896320656
+          },
+          {
+            "name": "logger.py",
+            "type": "file",
+            "path": "relax_exe/core/logger.py",
+            "ext": ".py",
+            "lastModified": 1779582849612
+          },
+          {
+            "name": "timer_manager.py",
+            "type": "file",
+            "path": "relax_exe/core/timer_manager.py",
+            "ext": ".py",
+            "lastModified": 1780187629973
+          }
+        ]
+      },
+      {
+        "name": "logs",
+        "type": "directory",
+        "path": "relax_exe/logs",
+        "children": [
+          {
+            "name": "app_20260516_103948.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_103948.log",
+            "ext": ".log",
+            "lastModified": 1778899188678
+          },
+          {
+            "name": "app_20260516_104031.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_104031.log",
+            "ext": ".log",
+            "lastModified": 1778899231700
+          },
+          {
+            "name": "app_20260516_112137.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_112137.log",
+            "ext": ".log",
+            "lastModified": 1778901697775
+          },
+          {
+            "name": "app_20260516_112824.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_112824.log",
+            "ext": ".log",
+            "lastModified": 1778902104200
+          },
+          {
+            "name": "app_20260516_112853.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_112853.log",
+            "ext": ".log",
+            "lastModified": 1778902133139
+          },
+          {
+            "name": "app_20260516_112907.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_112907.log",
+            "ext": ".log",
+            "lastModified": 1778902375304
+          },
+          {
+            "name": "app_20260516_113351.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_113351.log",
+            "ext": ".log",
+            "lastModified": 1778902431804
+          },
+          {
+            "name": "app_20260516_113410.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_113410.log",
+            "ext": ".log",
+            "lastModified": 1778905785333
+          },
+          {
+            "name": "app_20260516_205245.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_205245.log",
+            "ext": ".log",
+            "lastModified": 1778935980110
+          },
+          {
+            "name": "app_20260516_205322.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_205322.log",
+            "ext": ".log",
+            "lastModified": 1778936376124
+          },
+          {
+            "name": "app_20260516_210222.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_210222.log",
+            "ext": ".log",
+            "lastModified": 1778936579564
+          },
+          {
+            "name": "app_20260516_210450.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_210450.log",
+            "ext": ".log",
+            "lastModified": 1778936695911
+          },
+          {
+            "name": "app_20260516_210506.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260516_210506.log",
+            "ext": ".log",
+            "lastModified": 1778936708282
+          },
+          {
+            "name": "app_20260517_091908.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260517_091908.log",
+            "ext": ".log",
+            "lastModified": 1778980775263
+          },
+          {
+            "name": "app_20260530_081404.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_081404.log",
+            "ext": ".log",
+            "lastModified": 1780100051800
+          },
+          {
+            "name": "app_20260530_082945.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_082945.log",
+            "ext": ".log",
+            "lastModified": 1780104303282
+          },
+          {
+            "name": "app_20260530_083110.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_083110.log",
+            "ext": ".log",
+            "lastModified": 1780104303282
+          },
+          {
+            "name": "app_20260530_084029.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_084029.log",
+            "ext": ".log",
+            "lastModified": 1780101629953
+          },
+          {
+            "name": "app_20260530_084103.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_084103.log",
+            "ext": ".log",
+            "lastModified": 1780101672481
+          },
+          {
+            "name": "app_20260530_084201.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_084201.log",
+            "ext": ".log",
+            "lastModified": 1780101723230
+          },
+          {
+            "name": "app_20260530_084212.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_084212.log",
+            "ext": ".log",
+            "lastModified": 1780101734038
+          },
+          {
+            "name": "app_20260530_084651.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_084651.log",
+            "ext": ".log",
+            "lastModified": 1780102170582
+          },
+          {
+            "name": "app_20260530_084733.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_084733.log",
+            "ext": ".log",
+            "lastModified": 1780102176662
+          },
+          {
+            "name": "app_20260530_093310.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_093310.log",
+            "ext": ".log",
+            "lastModified": 1780104791656
+          },
+          {
+            "name": "app_20260530_094106.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_094106.log",
+            "ext": ".log",
+            "lastModified": 1780148641037
+          },
+          {
+            "name": "app_20260530_094330.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_094330.log",
+            "ext": ".log",
+            "lastModified": 1780105411678
+          },
+          {
+            "name": "app_20260530_094358.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_094358.log",
+            "ext": ".log",
+            "lastModified": 1780105472195
+          },
+          {
+            "name": "app_20260530_094704.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_094704.log",
+            "ext": ".log",
+            "lastModified": 1780105626628
+          },
+          {
+            "name": "app_20260530_095321.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_095321.log",
+            "ext": ".log",
+            "lastModified": 1780106003066
+          },
+          {
+            "name": "app_20260530_095941.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_095941.log",
+            "ext": ".log",
+            "lastModified": 1780106382480
+          },
+          {
+            "name": "app_20260530_100108.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_100108.log",
+            "ext": ".log",
+            "lastModified": 1780106469906
+          },
+          {
+            "name": "app_20260530_100816.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_100816.log",
+            "ext": ".log",
+            "lastModified": 1780106899240
+          },
+          {
+            "name": "app_20260530_101213.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_101213.log",
+            "ext": ".log",
+            "lastModified": 1780111568916
+          },
+          {
+            "name": "app_20260530_114200.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_114200.log",
+            "ext": ".log",
+            "lastModified": 1780112520719
+          },
+          {
+            "name": "app_20260530_122412.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260530_122412.log",
+            "ext": ".log",
+            "lastModified": 1780148941013
+          },
+          {
+            "name": "app_20260531_082939.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260531_082939.log",
+            "ext": ".log",
+            "lastModified": 1780187379994
+          },
+          {
+            "name": "app_20260531_083404.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260531_083404.log",
+            "ext": ".log",
+            "lastModified": 1780189150177
+          },
+          {
+            "name": "app_20260531_095206.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260531_095206.log",
+            "ext": ".log",
+            "lastModified": 1780192328601
+          },
+          {
+            "name": "app_20260604_163330.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260604_163330.log",
+            "ext": ".log",
+            "lastModified": 1780577794383
+          },
+          {
+            "name": "app_20260605_075902.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260605_075902.log",
+            "ext": ".log",
+            "lastModified": 1780619965650
+          },
+          {
+            "name": "app_20260606_081634.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260606_081634.log",
+            "ext": ".log",
+            "lastModified": 1780718829563
+          },
+          {
+            "name": "app_20260606_200933.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260606_200933.log",
+            "ext": ".log",
+            "lastModified": 1780747793998
+          },
+          {
+            "name": "app_20260606_212518.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260606_212518.log",
+            "ext": ".log",
+            "lastModified": 1780798156753
+          },
+          {
+            "name": "app_20260608_075839.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260608_075839.log",
+            "ext": ".log",
+            "lastModified": 1780878227588
+          },
+          {
+            "name": "app_20260608_123606.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260608_123606.log",
+            "ext": ".log",
+            "lastModified": 1780894872426
+          },
+          {
+            "name": "app_20260609_083720.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260609_083720.log",
+            "ext": ".log",
+            "lastModified": 1780974718496
+          },
+          {
+            "name": "app_20260613_215333.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260613_215333.log",
+            "ext": ".log",
+            "lastModified": 1781361610102
+          },
+          {
+            "name": "app_20260614_073925.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260614_073925.log",
+            "ext": ".log",
+            "lastModified": 1781398487110
+          },
+          {
+            "name": "app_20260616_163726.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260616_163726.log",
+            "ext": ".log",
+            "lastModified": 1781601756840
+          },
+          {
+            "name": "app_20260617_064745.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260617_064745.log",
+            "ext": ".log",
+            "lastModified": 1781651656812
+          },
+          {
+            "name": "app_20260618_091855.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260618_091855.log",
+            "ext": ".log",
+            "lastModified": 1781745535382
+          },
+          {
+            "name": "app_20260619_080205.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260619_080205.log",
+            "ext": ".log",
+            "lastModified": 1781830626994
+          },
+          {
+            "name": "app_20260619_090901.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260619_090901.log",
+            "ext": ".log",
+            "lastModified": 1781831343615
+          },
+          {
+            "name": "app_20260619_101616.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260619_101616.log",
+            "ext": ".log",
+            "lastModified": 1781835376475
+          },
+          {
+            "name": "app_20260619_104759.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260619_104759.log",
+            "ext": ".log",
+            "lastModified": 1781837279620
+          },
+          {
+            "name": "app_20260619_185845.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260619_185845.log",
+            "ext": ".log",
+            "lastModified": 1781866725126
+          },
+          {
+            "name": "app_20260620_083617.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260620_083617.log",
+            "ext": ".log",
+            "lastModified": 1781915777295
+          },
+          {
+            "name": "app_20260620_215544.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260620_215544.log",
+            "ext": ".log",
+            "lastModified": 1782008736526
+          },
+          {
+            "name": "app_20260626_164528.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260626_164528.log",
+            "ext": ".log",
+            "lastModified": 1782465495046
+          },
+          {
+            "name": "app_20260627_095957.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260627_095957.log",
+            "ext": ".log",
+            "lastModified": 1782527684153
+          },
+          {
+            "name": "app_20260628_084744.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260628_084744.log",
+            "ext": ".log",
+            "lastModified": 1782609309285
+          },
+          {
+            "name": "app_20260703_144652.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260703_144652.log",
+            "ext": ".log",
+            "lastModified": 1783079405861
+          },
+          {
+            "name": "app_20260704_073231.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260704_073231.log",
+            "ext": ".log",
+            "lastModified": 1783123514834
+          },
+          {
+            "name": "app_20260705_070759.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260705_070759.log",
+            "ext": ".log",
+            "lastModified": 1783206549227
+          }
+        ]
+      },
+      {
+        "name": "ui",
+        "type": "directory",
+        "path": "relax_exe/ui",
+        "children": [
+          {
+            "name": "__pycache__",
+            "type": "directory",
+            "path": "relax_exe/ui/__pycache__",
+            "children": [
+              {
+                "name": "__init__.cpython-312.pyc",
+                "type": "file",
+                "path": "relax_exe/ui/__pycache__/__init__.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1781835376361
+              },
+              {
+                "name": "agreement_dialog.cpython-312.pyc",
+                "type": "file",
+                "path": "relax_exe/ui/__pycache__/agreement_dialog.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1781835376371
+              },
+              {
+                "name": "countdown_widget.cpython-312.pyc",
+                "type": "file",
+                "path": "relax_exe/ui/__pycache__/countdown_widget.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1781835376364
+              },
+              {
+                "name": "settings_dialog.cpython-312.pyc",
+                "type": "file",
+                "path": "relax_exe/ui/__pycache__/settings_dialog.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1781835376368
+              }
+            ]
+          },
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "relax_exe/ui/__init__.py",
+            "ext": ".py",
+            "lastModified": 1778896321258
+          },
+          {
+            "name": "agreement_dialog.py",
+            "type": "file",
+            "path": "relax_exe/ui/agreement_dialog.py",
+            "ext": ".py",
+            "lastModified": 1779582849859
+          },
+          {
+            "name": "countdown_widget.py",
+            "type": "file",
+            "path": "relax_exe/ui/countdown_widget.py",
+            "ext": ".py",
+            "lastModified": 1780192248725
+          },
+          {
+            "name": "settings_dialog.py",
+            "type": "file",
+            "path": "relax_exe/ui/settings_dialog.py",
+            "ext": ".py",
+            "lastModified": 1779582850419
+          }
+        ]
+      },
+      {
+        "name": "app.py",
+        "type": "file",
+        "path": "relax_exe/app.py",
+        "ext": ".py",
+        "lastModified": 1780187629963
+      },
+      {
+        "name": "main.py",
+        "type": "file",
+        "path": "relax_exe/main.py",
+        "ext": ".py",
+        "lastModified": 1778899090203
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "relax_exe/README.md",
+        "ext": ".md",
+        "lastModified": 1779582849729
+      },
+      {
+        "name": "requirements.txt",
+        "type": "file",
+        "path": "relax_exe/requirements.txt",
+        "ext": ".txt",
+        "lastModified": 1778901527196
+      },
+      {
+        "name": "启动定时休息.bat",
+        "type": "file",
+        "path": "relax_exe/启动定时休息.bat",
+        "ext": ".bat",
+        "lastModified": 1779453028331
+      }
+    ]
+  },
+  {
+    "name": "config.json",
+    "type": "file",
+    "path": "config.json",
+    "ext": ".json",
+    "lastModified": 1780748838987
+  },
+  {
+    "name": "icon.png",
+    "type": "file",
+    "path": "icon.png",
+    "ext": ".png",
+    "lastModified": 1774608565742
+  },
+  {
+    "name": "main.py",
+    "type": "file",
+    "path": "main.py",
+    "ext": ".py",
+    "lastModified": 1780101955258
+  },
+  {
+    "name": "main_log.log",
+    "type": "file",
+    "path": "main_log.log",
+    "ext": ".log",
+    "lastModified": 1780192328870
+  },
+  {
+    "name": "test_auto_start.py",
+    "type": "file",
+    "path": "test_auto_start.py",
+    "ext": ".py",
+    "lastModified": 1780187630854
+  }
+]

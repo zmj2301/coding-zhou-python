@@ -1,0 +1,198 @@
+[
+  {
+    "name": "build",
+    "type": "directory",
+    "path": "build",
+    "children": [
+      {
+        "name": "迷宫管理器",
+        "type": "directory",
+        "path": "build/迷宫管理器",
+        "children": [
+          {
+            "name": "Analysis-00.toc",
+            "type": "file",
+            "path": "build/迷宫管理器/Analysis-00.toc",
+            "ext": ".toc",
+            "lastModified": 1774152498984
+          },
+          {
+            "name": "base_library.zip",
+            "type": "file",
+            "path": "build/迷宫管理器/base_library.zip",
+            "ext": ".zip",
+            "lastModified": 1774152480027
+          },
+          {
+            "name": "EXE-00.toc",
+            "type": "file",
+            "path": "build/迷宫管理器/EXE-00.toc",
+            "ext": ".toc",
+            "lastModified": 1774152502715
+          },
+          {
+            "name": "PKG-00.toc",
+            "type": "file",
+            "path": "build/迷宫管理器/PKG-00.toc",
+            "ext": ".toc",
+            "lastModified": 1774152502549
+          },
+          {
+            "name": "PYZ-00.pyz",
+            "type": "file",
+            "path": "build/迷宫管理器/PYZ-00.pyz",
+            "ext": ".pyz",
+            "lastModified": 1774152499394
+          },
+          {
+            "name": "PYZ-00.toc",
+            "type": "file",
+            "path": "build/迷宫管理器/PYZ-00.toc",
+            "ext": ".toc",
+            "lastModified": 1774152499396
+          },
+          {
+            "name": "warn-迷宫管理器.txt",
+            "type": "file",
+            "path": "build/迷宫管理器/warn-迷宫管理器.txt",
+            "ext": ".txt",
+            "lastModified": 1774152498946
+          },
+          {
+            "name": "xref-迷宫管理器.html",
+            "type": "file",
+            "path": "build/迷宫管理器/xref-迷宫管理器.html",
+            "ext": ".html",
+            "lastModified": 1774152498966
+          },
+          {
+            "name": "迷宫管理器.pkg",
+            "type": "file",
+            "path": "build/迷宫管理器/迷宫管理器.pkg",
+            "ext": ".pkg",
+            "lastModified": 1774152502533
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dist",
+    "type": "directory",
+    "path": "dist",
+    "children": [
+      {
+        "name": "maze_data.csv",
+        "type": "file",
+        "path": "dist/maze_data.csv",
+        "ext": ".csv",
+        "lastModified": 1774155455100
+      },
+      {
+        "name": "迷宫管理器.exe",
+        "type": "file",
+        "path": "dist/迷宫管理器.exe",
+        "ext": ".exe",
+        "lastModified": 1774152502698
+      }
+    ]
+  },
+  {
+    "name": "release",
+    "type": "directory",
+    "path": "release",
+    "children": [
+      {
+        "name": "maze_data.csv",
+        "type": "file",
+        "path": "release/maze_data.csv",
+        "ext": ".csv",
+        "lastModified": 1774152564303
+      },
+      {
+        "name": "迷宫管理器.exe",
+        "type": "file",
+        "path": "release/迷宫管理器.exe",
+        "ext": ".exe",
+        "lastModified": 1774152502698
+      }
+    ]
+  },
+  {
+    "name": "3D_shoot.py",
+    "type": "file",
+    "path": "3D_shoot.py",
+    "ext": ".py",
+    "lastModified": 1773999247609
+  },
+  {
+    "name": "generate_maze.py",
+    "type": "file",
+    "path": "generate_maze.py",
+    "ext": ".py",
+    "lastModified": 1774156001644
+  },
+  {
+    "name": "go_maze.py",
+    "type": "file",
+    "path": "go_maze.py",
+    "ext": ".py",
+    "lastModified": 1774149651557
+  },
+  {
+    "name": "maze_data.csv",
+    "type": "file",
+    "path": "maze_data.csv",
+    "ext": ".csv",
+    "lastModified": 1781615070629
+  },
+  {
+    "name": "maze_image.png",
+    "type": "file",
+    "path": "maze_image.png",
+    "ext": ".png",
+    "lastModified": 1774137244403
+  },
+  {
+    "name": "maze_manager.py",
+    "type": "file",
+    "path": "maze_manager.py",
+    "ext": ".py",
+    "lastModified": 1774153167501
+  },
+  {
+    "name": "requirements.txt",
+    "type": "file",
+    "path": "requirements.txt",
+    "ext": ".txt",
+    "lastModified": 1774152411511
+  },
+  {
+    "name": "text.py",
+    "type": "file",
+    "path": "text.py",
+    "ext": ".py",
+    "lastModified": 1774137374003
+  },
+  {
+    "name": "穿墙问题分析与解决方案.md",
+    "type": "file",
+    "path": "穿墙问题分析与解决方案.md",
+    "ext": ".md",
+    "lastModified": 1773496263369
+  },
+  {
+    "name": "自动路线规划实现规范.md",
+    "type": "file",
+    "path": "自动路线规划实现规范.md",
+    "ext": ".md",
+    "lastModified": 1773496783179
+  },
+  {
+    "name": "迷宫管理器.spec",
+    "type": "file",
+    "path": "迷宫管理器.spec",
+    "ext": ".spec",
+    "lastModified": 1774152471665
+  }
+]

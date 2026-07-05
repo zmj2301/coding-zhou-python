@@ -1,0 +1,135 @@
+[
+  {
+    "name": "data",
+    "type": "directory",
+    "path": "data",
+    "children": [
+      {
+        "name": "ci.csv",
+        "type": "file",
+        "path": "data/ci.csv",
+        "ext": ".csv",
+        "lastModified": 1710560868057
+      },
+      {
+        "name": "ci.json",
+        "type": "file",
+        "path": "data/ci.json",
+        "ext": ".json",
+        "lastModified": 1710560872235
+      },
+      {
+        "name": "idiom.json",
+        "type": "file",
+        "path": "data/idiom.json",
+        "ext": ".json",
+        "lastModified": 1710560864104
+      },
+      {
+        "name": "word.json",
+        "type": "file",
+        "path": "data/word.json",
+        "ext": ".json",
+        "lastModified": 1710560884264
+      },
+      {
+        "name": "xiehouyu.json",
+        "type": "file",
+        "path": "data/xiehouyu.json",
+        "ext": ".json",
+        "lastModified": 1710560856894
+      }
+    ]
+  },
+  {
+    "name": "a.py",
+    "type": "file",
+    "path": "a.py",
+    "ext": ".py",
+    "lastModified": 1767243463724
+  },
+  {
+    "name": "combined.ico",
+    "type": "file",
+    "path": "combined.ico",
+    "ext": ".ico",
+    "lastModified": 1767243315659
+  },
+  {
+    "name": "my_idiom_book.txt",
+    "type": "file",
+    "path": "my_idiom_book.txt",
+    "ext": ".txt",
+    "lastModified": 1767242593263
+  },
+  {
+    "name": "text copy.py",
+    "type": "file",
+    "path": "text copy.py",
+    "ext": ".py",
+    "lastModified": 1729296228699
+  },
+  {
+    "name": "text.py",
+    "type": "file",
+    "path": "text.py",
+    "ext": ".py",
+    "lastModified": 1729163341961
+  },
+  {
+    "name": "成语列表.txt",
+    "type": "file",
+    "path": "成语列表.txt",
+    "ext": ".txt",
+    "lastModified": 1728910136601
+  },
+  {
+    "name": "成语接龙01.py",
+    "type": "file",
+    "path": "成语接龙01.py",
+    "ext": ".py",
+    "lastModified": 1710561076540
+  },
+  {
+    "name": "成语接龙02.py",
+    "type": "file",
+    "path": "成语接龙02.py",
+    "ext": ".py",
+    "lastModified": 1728827772144
+  },
+  {
+    "name": "成语接龙03.py",
+    "type": "file",
+    "path": "成语接龙03.py",
+    "ext": ".py",
+    "lastModified": 1729900866276
+  },
+  {
+    "name": "数字列表.txt",
+    "type": "file",
+    "path": "数字列表.txt",
+    "ext": ".txt",
+    "lastModified": 1729338352530
+  },
+  {
+    "name": "数据来源.py",
+    "type": "file",
+    "path": "数据来源.py",
+    "ext": ".py",
+    "lastModified": 1728820541818
+  },
+  {
+    "name": "汉字列表.txt",
+    "type": "file",
+    "path": "汉字列表.txt",
+    "ext": ".txt",
+    "lastModified": 1710561922879
+  },
+  {
+    "name": "汉字拼音.txt",
+    "type": "file",
+    "path": "汉字拼音.txt",
+    "ext": ".txt",
+    "lastModified": 1710561909352
+  }
+]

@@ -1,0 +1,51 @@
+[
+  {
+    "name": "dist",
+    "type": "directory",
+    "path": "dist",
+    "children": [
+      {
+        "name": "main.exe",
+        "type": "file",
+        "path": "dist/main.exe",
+        "ext": ".exe",
+        "lastModified": 1744376539506
+      }
+    ]
+  },
+  {
+    "name": "python 2026马年魔术揭秘",
+    "type": "directory",
+    "path": "python 2026马年魔术揭秘",
+    "children": [
+      {
+        "name": "main_magcal.py",
+        "type": "file",
+        "path": "python 2026马年魔术揭秘/main_magcal.py",
+        "ext": ".py",
+        "lastModified": 1772241962540
+      },
+      {
+        "name": "text.py",
+        "type": "file",
+        "path": "python 2026马年魔术揭秘/text.py",
+        "ext": ".py",
+        "lastModified": 1772195829368
+      }
+    ]
+  },
+  {
+    "name": "main.py",
+    "type": "file",
+    "path": "main.py",
+    "ext": ".py",
+    "lastModified": 1772196103070
+  },
+  {
+    "name": "text.py",
+    "type": "file",
+    "path": "text.py",
+    "ext": ".py",
+    "lastModified": 1772190344684
+  }
+]
