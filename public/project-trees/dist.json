@@ -1,0 +1,23 @@
+[
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1783161339366
+  },
+  {
+    "name": "worker.js",
+    "type": "file",
+    "path": "worker.js",
+    "ext": ".js",
+    "lastModified": 1783161339390
+  },
+  {
+    "name": "worker.js.map",
+    "type": "file",
+    "path": "worker.js.map",
+    "ext": ".map",
+    "lastModified": 1783161339398
+  }
+]
