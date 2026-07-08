@@ -476,6 +476,169 @@ body::before {
   color: var(--text-primary);
 }
 
+.ai-recommend-entry {
+  border-top: 1px solid var(--border-color);
+  margin-top: 4px;
+  padding-top: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(168,85,247,0.06));
+  transition: background 0.2s;
+}
+.ai-recommend-entry:hover {
+  background: linear-gradient(135deg, rgba(99,102,241,0.14), rgba(168,85,247,0.14));
+  color: var(--text-primary);
+}
+
+/* ===== AI Recommend Modal ===== */
+.ai-recommend-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100005;
+  backdrop-filter: blur(4px);
+}
+.ai-recommend-overlay.active { display: flex; }
+.ai-recommend-modal {
+  position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 560px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.ai-recommend-modal h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-recommend-modal .ai-subtitle {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin: 0 0 18px 0;
+}
+.ai-recommend-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ai-recommend-input-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ai-recommend-input-row input:focus {
+  border-color: #818cf8;
+}
+.ai-recommend-input-row input::placeholder {
+  color: var(--text-tertiary);
+}
+.ai-recommend-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.ai-recommend-btn:hover { opacity: 0.88; }
+.ai-recommend-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ai-recommend-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ai-recommend-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.ai-recommend-card:hover {
+  border-color: #818cf8;
+  background: var(--bg-tertiary);
+}
+.ai-recommend-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.ai-recommend-card-info {
+  flex: 1;
+  min-width: 0;
+}
+.ai-recommend-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+.ai-recommend-card-reason {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.ai-recommend-card-type {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: center;
+}
+.ai-recommend-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 0;
+  gap: 12px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.ai-recommend-empty {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.ai-recommend-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: none; border: none;
+  font-size: 24px; color: var(--text-tertiary);
+  cursor: pointer;
+}
+.ai-recommend-close:hover { color: var(--text-primary); }
+
 /* ===== Mindmap Modal ===== */
 .mindmap-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -731,6 +894,14 @@ body::before {
   border-color: var(--accent-blue);
   background: var(--bg-tertiary);
 }
+.project-card.system-file {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+.project-card.system-file:hover {
+  border-color: var(--border-color);
+  background: var(--bg-secondary);
+}
 .project-card.selected {
   border-color: var(--accent-blue);
   box-shadow: 0 0 0 1px var(--accent-blue);
@@ -799,6 +970,7 @@ body::before {
 .badge-css { background: rgba(88,166,255,0.15); color: var(--accent-blue); }
 .badge-md { background: rgba(163,113,247,0.15); color: var(--accent-purple); }
 .badge-files { background: var(--bg-overlay); color: var(--text-secondary); }
+.badge-system { background: rgba(156,163,175,0.15); color: var(--text-tertiary); }
 
 .card-title {
   font-size: 15px;
@@ -1562,6 +1734,118 @@ body::before {
   overflow: hidden;
   background: var(--bg-primary);
   min-width: 0;
+}
+.code-panel.has-terminal {
+  flex: 2;
+}
+
+/* Terminal Panel */
+.terminal-panel {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  background: #0d1117;
+  border-top: 1px solid var(--border-color);
+  overflow: hidden;
+}
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.terminal-header .terminal-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.terminal-header .terminal-title svg {
+  width: 12px;
+  height: 12px;
+}
+.terminal-body {
+  flex: 1;
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  overflow-y: auto;
+  background: #0d1117;
+}
+.terminal-body::-webkit-scrollbar {
+  width: 8px;
+}
+.terminal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.terminal-body::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+.terminal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-overlay);
+}
+.terminal-output {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.terminal-output .stdout {
+  color: var(--text-primary);
+}
+.terminal-output .stderr {
+  color: var(--accent-red);
+}
+.terminal-output .prompt {
+  color: var(--accent-green);
+  margin-right: 8px;
+}
+.terminal-output .error {
+  color: var(--accent-red);
+  font-weight: 500;
+}
+.terminal-output .info {
+  color: var(--accent-blue);
+}
+.terminal-input-line {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+.terminal-input-line .prompt {
+  flex-shrink: 0;
+}
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.terminal-close-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all var(--transition);
+}
+.terminal-close-btn:hover {
+  background: rgba(248,81,73,0.15);
+  color: var(--accent-red);
+}
+.terminal-close-btn svg {
+  width: 14px;
+  height: 14px;
 }
 .code-header {
   display: flex;
@@ -2818,6 +3102,10 @@ body::before {
         <span class="category-index-icon"></span>
         <span class="category-index-label">思维导图</span>
       </div>
+      <div class="category-index-item ai-recommend-entry" id="aiRecommendEntry">
+        <span class="category-index-icon">✨</span>
+        <span class="category-index-label">AI 推荐</span>
+      </div>
     </div>
     <div class="cards-grid" id="cardsGrid">
       <div class="home-loading" style="grid-column:1/-1;padding:60px">
@@ -2901,6 +3189,10 @@ body::before {
         <div class="code-header">
           <div class="code-tabs" id="codeTabs"></div>
           <div class="code-actions">
+            <button class="code-action-btn" id="btnRun" title="运行 Python 代码" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              运行
+            </button>
             <button class="code-action-btn" id="btnCopy" title="复制代码">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
               复制
@@ -2926,6 +3218,22 @@ body::before {
           </div>
         </div>
       </div>
+      <div class="terminal-panel" id="terminalPanel" style="display:none">
+        <div class="terminal-header">
+          <div class="terminal-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <span>Python 终端</span>
+          </div>
+          <div>
+            <button class="terminal-close-btn" id="btnTerminalClose" title="关闭终端">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <div class="terminal-output" id="terminalOutput"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2945,6 +3253,7 @@ body::before {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 
 <!-- ========== 更新日志弹窗 ========== -->
 <div class="changelog-modal-overlay" id="changelogModalOverlay" onclick="if(event.target===this)closeChangelogModal()">
@@ -2987,6 +3296,20 @@ body::before {
     <h3>关于 Code Explorer</h3>
     <p>Code Explorer 是一个在线 Python 项目浏览与运行平台。在这里你可以浏览、编辑并运行各种 Python 项目，包括游戏、AI 应用、实用工具等。部分网页游戏无需安装即可直接在浏览器中体验。</p>
     <p>支持代码高亮、文件搜索、在线执行、留言交流等功能，让学习和分享代码变得更加便捷。</p>
+  </div>
+</div>
+
+<!-- ========== AI 推荐弹窗 ========== -->
+<div class="ai-recommend-overlay" id="aiRecommendOverlay" onclick="if(event.target===this)closeAIRecommendModal()">
+  <div class="ai-recommend-modal">
+    <button class="ai-recommend-close" onclick="closeAIRecommendModal()">&times;</button>
+    <h3>✨ AI 推荐</h3>
+    <p class="ai-subtitle">告诉我你的兴趣，AI 为你推荐最合适的项目</p>
+    <div class="ai-recommend-input-row">
+      <input type="text" id="aiRecommendInput" placeholder="例如：推荐游戏项目、我想看 AI 相关的..." />
+      <button class="ai-recommend-btn" id="aiRecommendBtn" onclick="fetchAIRecommend()">推荐</button>
+    </div>
+    <div class="ai-recommend-results" id="aiRecommendResults"></div>
   </div>
 </div>
 
@@ -3067,24 +3390,31 @@ const $ = (sel) => document.querySelector(sel);
 
 // ==================== API ====================
 async function api(url, opts = {}) {
-  const res = await fetch(url, opts);
-  if (res.status === 401) {
-    delCookie('wg_token');
-    if (userMenuBtn) userMenuBtn.classList.add('hidden');
-    if (userDropdown) userDropdown.classList.remove('show');
-    hideAdminDashboard();
-    const hasProjects = state.projects && state.projects.length > 0;
-    if (!hasProjects) {
-      showLoginPage(false);
-      const grid = document.getElementById('cardsGrid');
-      if (grid) grid.innerHTML = '';
-    } else {
-      toast('请先登录后再操作');
+  try {
+    const res = await fetch(url, opts);
+    if (res.status === 401) {
+      delCookie('wg_token');
+      if (userMenuBtn) userMenuBtn.classList.add('hidden');
+      if (userDropdown) userDropdown.classList.remove('show');
+      hideAdminDashboard();
+      const hasProjects = state.projects && state.projects.length > 0;
+      if (!hasProjects) {
+        showLoginPage(false);
+        const grid = document.getElementById('cardsGrid');
+        if (grid) grid.innerHTML = '';
+      } else {
+        toast('请先登录后再操作');
+      }
+      throw new Error('请先登录');
     }
-    throw new Error('请先登录');
+    if (!res.ok) throw new Error((await res.json().catch(()=>({error:`HTTP ${res.status}`}))).error);
+    return res;
+  } catch(e) {
+    if (e.name === 'AbortError' || e.message === 'Failed to fetch') {
+      throw e;
+    }
+    throw e;
   }
-  if (!res.ok) throw new Error((await res.json().catch(()=>({error:`HTTP ${res.status}`}))).error);
-  return res;
 }
 async function fetchTree() { return (await api('/api/files/tree')).json(); }
 async function fetchProjectList() { return (await api('/api/projects/list')).json(); }
@@ -3157,6 +3487,7 @@ const PROJECT_ICONS = {
 };
 
 const PROJECT_COVERS = {
+  'codinghou': 'https://aka.doubaocdn.com/s/eD7Z1wkXWE',
   'Python AI象棋对战': 'https://aka.doubaocdn.com/s/ND2h1wkXWC',
   'Python AI象棋对战 - 副本': 'https://aka.doubaocdn.com/s/ND2h1wkXWC',
   '口算战争': 'https://aka.doubaocdn.com/s/ojHr1wkXWD',
@@ -3413,6 +3744,7 @@ const CATEGORY_CONFIG = [
   { filter: 'ai', icon: '🤖', label: 'AI' },
   { filter: 'tool', icon: '🔧', label: '工具' },
   { filter: 'other', icon: '📁', label: '其他' },
+  { filter: 'system-file', icon: '📋', label: '系统文件' },
 ];
 
 function renderCategoryIndex(projects) {
@@ -3431,6 +3763,8 @@ function renderCategoryIndex(projects) {
       counts['other'] = (counts['other'] || 0) + 1;
     }
   });
+
+  counts['all'] = projects.length;
 
   const currentFilter = state.currentFilter || 'all';
 
@@ -3490,12 +3824,14 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
                        p.type === 'popup-preview' ? 'badge-css' :
                        p.type === 'game' ? 'badge-py' : 
                        p.type === 'ai' ? 'badge-md' : 
-                       p.type === 'tool' ? 'badge-css' : 'badge-files';
+                       p.type === 'tool' ? 'badge-css' :
+                       p.type === 'system-file' ? 'badge-system' : 'badge-files';
     const typeLabel = p.type === 'web-game' ? '网页游戏' :
                       p.type === 'popup-preview' ? '节日祝福' :
                       p.type === 'game' ? '游戏' : 
                       p.type === 'ai' ? 'AI' : 
-                      p.type === 'tool' ? '工具' : '其他';
+                      p.type === 'tool' ? '工具' :
+                      p.type === 'system-file' ? '系统文件' : '其他';
     const mainFileLabel = p.type === 'web-game' ? '打开网页 →' :
                           p.type === 'popup-preview' ? '点击查看 →' :
                           (p.mainFile ? esc(p.mainFile) : '无主文件');
@@ -3504,7 +3840,7 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
       `<div class="card-cover"><div class="card-icon-wrap" style="background:${esc(p.themeColor).replace(')', ', 0.10)')};color:${esc(p.themeColor)};width:64px;height:64px;font-size:28px">${p.icon}</div></div>`;
     const pathId = esc(p.path.replace(/[/\\]/g, '-'));
     return `
-    <div class="project-card ${p.cardClass}" data-project="${esc(p.path)}" style="--theme:${esc(p.themeColor)}">
+    <div class="project-card ${p.cardClass} ${p.type === 'system-file' ? 'system-file' : ''}" data-project="${esc(p.path)}" style="--theme:${esc(p.themeColor)}">
       <div class="card-accent-bar" style="background:${esc(p.themeColor)}"></div>
       ${coverHtml}
       <div class="card-top" style="justify-content:flex-end;">
@@ -3579,6 +3915,11 @@ function updateStats(projects) {
 async function openProject(projectPath) {
   const project = state.projects.find(p => p.path === projectPath);
   if (!project) return;
+
+  if (project.type === 'system-file') {
+    showToast('系统文件，暂不支持访问');
+    return;
+  }
 
   // P2: 登录引导优化 - 点击查看项目详情时检查登录
   // 网页游戏和弹出预览不需要登录检查（它们是公开的）
@@ -3849,6 +4190,86 @@ function renderCode() {
     `<span>${esc(p)}</span>${i<a.length-1?'<span class="sep">/</span>':''}`).join('');
   $('#btnCopy').style.display = '';
   $('#btnPreview').style.display = isPreviewable(tab.path) ? '' : 'none';
+  $('#btnRun').style.display = (tab.path || '').toLowerCase().endsWith('.py') ? '' : 'none';
+}
+
+// ==================== PYTHON EXECUTION ====================
+let pyodide = null;
+let pyodideLoading = false;
+
+async function initPyodide() {
+  if (pyodide) return pyodide;
+  if (pyodideLoading) {
+    return new Promise((resolve) => {
+      const check = setInterval(() => {
+        if (pyodide) { clearInterval(check); resolve(pyodide); }
+      }, 100);
+    });
+  }
+  pyodideLoading = true;
+  try {
+    pyodide = await loadPyodide({
+      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/"
+    });
+    pyodideLoading = false;
+    return pyodide;
+  } catch(e) {
+    pyodideLoading = false;
+    throw e;
+  }
+}
+
+function appendToTerminal(text, className = 'stdout') {
+  const output = $('#terminalOutput');
+  const div = document.createElement('div');
+  div.className = className;
+  div.textContent = text;
+  output.appendChild(div);
+  output.scrollTop = output.scrollHeight;
+}
+
+function showTerminal() {
+  $('#terminalPanel').style.display = 'flex';
+  $('#codePanel').classList.add('has-terminal');
+}
+
+function hideTerminal() {
+  $('#terminalPanel').style.display = 'none';
+  $('#codePanel').classList.remove('has-terminal');
+}
+
+async function runPythonCode() {
+  if (state.activeTabIdx < 0 || !state.openTabs.length) return;
+  const tab = state.openTabs[state.activeTabIdx];
+  if (!tab.path.toLowerCase().endsWith('.py')) return;
+  
+  showTerminal();
+  const output = $('#terminalOutput');
+  output.innerHTML = '';
+  appendToTerminal('正在启动 Python 运行环境...', 'info');
+  
+  try {
+    const py = await initPyodide();
+    appendToTerminal('Python 环境就绪！', 'info');
+    appendToTerminal('', 'stdout');
+    appendToTerminal('========== 运行结果 ==========', 'info');
+    
+    let stdout = '';
+    let stderr = '';
+    
+    py.setStdout({ batched: (text) => { stdout += text; } });
+    py.setStderr({ batched: (text) => { stderr += text; } });
+    
+    await py.runPythonAsync(tab.content);
+    
+    if (stdout) appendToTerminal(stdout, 'stdout');
+    if (stderr) appendToTerminal(stderr, 'stderr');
+    
+    appendToTerminal('', 'stdout');
+    appendToTerminal('========== 运行完成 ==========', 'info');
+  } catch(e) {
+    appendToTerminal('错误: ' + (e.message || e), 'error');
+  }
 }
 
 // ==================== SEARCH ====================
@@ -3965,7 +4386,9 @@ if ($('#viewToggle')) {
 }
 
 $('#btnCopy').addEventListener('click', copyCode);
+$('#btnRun').addEventListener('click', runPythonCode);
 document.getElementById('btnPreview').addEventListener('click', togglePreview);
+$('#btnTerminalClose').addEventListener('click', hideTerminal);
 $('#btnSearchFile').addEventListener('click', openSearchGlobal);
 $('#btnToggleSidebar').addEventListener('click', toggleSidebar);
 $('#btnDownload').addEventListener('click', downloadProject);
@@ -4020,6 +4443,111 @@ function closeMindmapModal() {
   if (overlay) overlay.classList.remove('active');
   const input = $('#mindmapSearch');
   if (input) input.value = '';
+}
+
+// ===== AI 推荐 =====
+function openAIRecommendModal() {
+  const overlay = $('#aiRecommendOverlay');
+  if (overlay) overlay.classList.add('active');
+  setTimeout(() => {
+    const input = $('#aiRecommendInput');
+    if (input) input.focus();
+  }, 100);
+}
+
+function closeAIRecommendModal() {
+  const overlay = $('#aiRecommendOverlay');
+  if (overlay) overlay.classList.remove('active');
+}
+
+const TYPE_ICONS = {
+  'game': '🎮', 'ai': '🤖', 'tool': '🔧', 'other': '📁',
+  'web-game': '🌐', 'system-file': '📋', 'popup-preview': '🎯'
+};
+const TYPE_LABELS = {
+  'game': '游戏', 'ai': 'AI', 'tool': '工具', 'other': '其他',
+  'web-game': '网页游戏', 'system-file': '系统文件', 'popup-preview': '弹出预览'
+};
+
+function renderAIRecommendations(recommendations) {
+  const container = $('#aiRecommendResults');
+  if (!container) return;
+
+  if (!recommendations || recommendations.length === 0) {
+    container.innerHTML = '<div class="ai-recommend-empty">没有找到推荐结果，换个关键词试试？</div>';
+    return;
+  }
+
+  container.innerHTML = recommendations.map(rec => {
+    const icon = rec.type && TYPE_ICONS[rec.type] ? TYPE_ICONS[rec.type] : '📁';
+    const typeLabel = rec.type && TYPE_LABELS[rec.type] ? TYPE_LABELS[rec.type] : '';
+    const bgColor = rec.themeColor || 'var(--bg-tertiary)';
+
+    return `
+      <div class="ai-recommend-card" ${rec.path ? `onclick="handleRecommendCardClick('${rec.path}')"` : ''}>
+        <div class="ai-recommend-card-icon" style="background:${bgColor}20">${icon}</div>
+        <div class="ai-recommend-card-info">
+          <div class="ai-recommend-card-name">${escapeHtml(rec.name)}</div>
+          <div class="ai-recommend-card-reason">${escapeHtml(rec.reason)}</div>
+        </div>
+        ${typeLabel ? `<span class="ai-recommend-card-type">${typeLabel}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function handleRecommendCardClick(path) {
+  closeAIRecommendModal();
+  const projects = state.projects || [];
+  const project = projects.find(p => p.path === path);
+  if (project) {
+    openProject(project);
+  }
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+async function fetchAIRecommend() {
+  const input = $('#aiRecommendInput');
+  const btn = $('#aiRecommendBtn');
+  const container = $('#aiRecommendResults');
+  if (!input || !btn || !container) return;
+
+  const preferences = input.value.trim();
+
+  btn.disabled = true;
+  btn.textContent = '思考中...';
+  container.innerHTML = `
+    <div class="ai-recommend-loading">
+      <div class="spinner"></div>
+      <span>AI 正在分析你的偏好...</span>
+    </div>
+  `;
+
+  try {
+    const resp = await fetch('/api/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ preferences })
+    });
+
+    const data = await resp.json();
+
+    if (data.success && data.recommendations) {
+      renderAIRecommendations(data.recommendations);
+    } else {
+      container.innerHTML = `<div class="ai-recommend-empty">${data.error || '推荐服务暂时不可用'}</div>`;
+    }
+  } catch (e) {
+    container.innerHTML = `<div class="ai-recommend-empty">请求失败，请稍后再试</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '推荐';
+  }
 }
 
 let _mindmapSearchHandler = null;
@@ -4134,7 +4662,8 @@ function getTagColor(type) {
   const colors = {
     'web-game': '#e74c3c', 'game': '#e67e22',
     'ai': '#9b59b6', 'tool': '#27ae60',
-    'other': '#7f8c8d', 'popup-preview': '#7f8c8d'
+    'other': '#7f8c8d', 'popup-preview': '#7f8c8d',
+    'system-file': '#9ca3af'
   };
   return colors[type] || '#7f8c8d';
 }
@@ -4143,7 +4672,8 @@ function getTypeLabel(type) {
   const labels = {
     'web-game': '网页游戏', 'game': '游戏',
     'ai': 'AI', 'tool': '工具',
-    'other': '其他', 'popup-preview': '弹出预览'
+    'other': '其他', 'popup-preview': '弹出预览',
+    'system-file': '系统文件'
   };
   return labels[type] || '其他';
 }
@@ -4492,7 +5022,9 @@ async function refreshProjectMeta() {
       if (commentEl) commentEl.textContent = p.comments || 0;
     });
   } catch(e) {
-    if (e.name !== 'AbortError') console.error('刷新项目数据失败:', e);
+    if (e.name !== 'AbortError' && e.message !== 'Failed to fetch') {
+      console.error('刷新项目数据失败:', e);
+    }
   }
 }
 
@@ -4943,6 +5475,10 @@ const aboutEntry = document.getElementById('aboutEntry');
 if (aboutEntry) aboutEntry.addEventListener('click', openAboutModal);
 const mindmapEntry = document.getElementById('mindmapEntry');
 if (mindmapEntry) mindmapEntry.addEventListener('click', openMindmapModal);
+const aiRecommendEntry = document.getElementById('aiRecommendEntry');
+if (aiRecommendEntry) aiRecommendEntry.addEventListener('click', openAIRecommendModal);
+const aiRecommendInput = document.getElementById('aiRecommendInput');
+if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
 // 初始化主题
 setTheme(getTheme());
 
