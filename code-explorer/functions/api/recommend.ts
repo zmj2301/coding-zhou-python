@@ -83,6 +83,10 @@ async function getAIRecommendation(userInput: string, projects: any[], env: any)
 
       const results = parseRecommendations(text, projects);
       try {
+        const today = new Date().toISOString().slice(0, 10);
+        const usageKey = `ai-usage:${today}`;
+        const currentUsage = parseInt(await kv.get(usageKey) || '0', 10);
+        await kv.put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
         await kv.put(cacheKey, JSON.stringify({ results, timestamp: Date.now() }), { expirationTtl: CACHE_TTL });
       } catch {}
       return results;
@@ -111,13 +115,26 @@ function parseRecommendations(text: string, projects: any[]): any[] {
   return getRuleBasedRecommendation(text, projects);
 }
 
-function getRuleBasedRecommendation(input: string, projects: any[]): any[] {
+function extractKeywords(input: string): string[] {
   const lower = input.toLowerCase();
-  const keywords = lower.split(/[\s,，、]+/).filter(Boolean);
+  const tokens = lower.split(/[\s,，、。、!！?？~～]+/).filter(Boolean);
+  const keywords: string[] = [];
+  for (const token of tokens) {
+    if (token.length >= 2) keywords.push(token);
+    for (let i = 0; i < token.length - 1; i++) {
+      const bigram = token.substring(i, i + 2);
+      if (!keywords.includes(bigram)) keywords.push(bigram);
+    }
+  }
+  return [...new Set(keywords)];
+}
+
+function getRuleBasedRecommendation(input: string, projects: any[]): any[] {
+  const keywords = extractKeywords(input);
 
   const scored = projects.map((p: any) => {
     let score = 0;
-    const fields = [p.name, p.path, p.description, p.type].join(' ').toLowerCase();
+    const fields = [p.name, p.path, p.description || '', p.type || ''].join(' ').toLowerCase();
 
     if (p.likes) score += (p.likes || 0) * 0.1;
     if (p.comments) score += (p.comments || 0) * 0.2;

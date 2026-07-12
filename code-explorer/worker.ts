@@ -903,6 +903,20 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     return optionsResponse();
   }
 
+  if (path === '/api/ai-quota') {
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const usageKey = `ai-usage:${today}`;
+      const usage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
+      const DAILY_LIMIT = 10000;
+      const neuronsPerRequest = 100;
+      const remaining = Math.max(0, DAILY_LIMIT - usage * neuronsPerRequest);
+      return jsonResponse({ usage, remaining, limit: DAILY_LIMIT, neuronsPerRequest });
+    } catch (e: any) {
+      return jsonResponse({ usage: 0, remaining: 10000, limit: 10000, neuronsPerRequest: 100 });
+    }
+  }
+
   return errorResponse('未找到接口', 404);
 }
 
@@ -961,6 +975,9 @@ async function getAIRecommendation(userInput: string, projects: any[], env: Env)
   } catch {}
 
   const ai = (env as any).AI;
+  if (!ai) {
+    console.warn('AI binding not available, falling back to rule-based recommendation');
+  }
   if (ai) {
     try {
       const systemPrompt = buildAISystemPrompt(projects);
@@ -980,6 +997,10 @@ async function getAIRecommendation(userInput: string, projects: any[], env: Env)
 
       const results = parseAIRecommendations(text, projects);
       try {
+        const today = new Date().toISOString().slice(0, 10);
+        const usageKey = `ai-usage:${today}`;
+        const currentUsage = parseInt(await kv.get(usageKey) || '0', 10);
+        await kv.put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
         await kv.put(cacheKey, JSON.stringify({ results, timestamp: Date.now() }), { expirationTtl: AI_CACHE_TTL });
       } catch {}
       return results;
@@ -1008,13 +1029,26 @@ function parseAIRecommendations(text: string, projects: any[]): any[] {
   return getRuleBasedRecommendation(text, projects);
 }
 
-function getRuleBasedRecommendation(input: string, projects: any[]): any[] {
+function extractKeywords(input: string): string[] {
   const lower = input.toLowerCase();
-  const keywords = lower.split(/[\s,，、]+/).filter(Boolean);
+  const tokens = lower.split(/[\s,，、。、!！?？~～]+/).filter(Boolean);
+  const keywords: string[] = [];
+  for (const token of tokens) {
+    if (token.length >= 2) keywords.push(token);
+    for (let i = 0; i < token.length - 1; i++) {
+      const bigram = token.substring(i, i + 2);
+      if (!keywords.includes(bigram)) keywords.push(bigram);
+    }
+  }
+  return [...new Set(keywords)];
+}
+
+function getRuleBasedRecommendation(input: string, projects: any[]): any[] {
+  const keywords = extractKeywords(input);
 
   const scored = projects.map((p: any) => {
     let score = 0;
-    const fields = [p.name, p.path, p.description, p.type].join(' ').toLowerCase();
+    const fields = [p.name, p.path, p.description || '', p.type || ''].join(' ').toLowerCase();
     if (p.likes) score += (p.likes || 0) * 0.1;
     if (p.comments) score += (p.comments || 0) * 0.2;
     for (const kw of keywords) {

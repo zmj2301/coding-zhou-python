@@ -560,6 +560,19 @@ body::before {
 }
 .ai-recommend-btn:hover { opacity: 0.88; }
 .ai-recommend-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ai-recommend-quota {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.ai-quota-text strong {
+  color: #818cf8;
+  font-weight: 600;
+}
 .ai-recommend-results {
   display: flex;
   flex-direction: column;
@@ -3309,6 +3322,7 @@ body::before {
       <input type="text" id="aiRecommendInput" placeholder="例如：推荐游戏项目、我想看 AI 相关的..." />
       <button class="ai-recommend-btn" id="aiRecommendBtn" onclick="fetchAIRecommend()">推荐</button>
     </div>
+    <div class="ai-recommend-quota" id="aiRecommendQuota"></div>
     <div class="ai-recommend-results" id="aiRecommendResults"></div>
   </div>
 </div>
@@ -4449,6 +4463,7 @@ function closeMindmapModal() {
 function openAIRecommendModal() {
   const overlay = $('#aiRecommendOverlay');
   if (overlay) overlay.classList.add('active');
+  fetchAIQuota();
   setTimeout(() => {
     const input = $('#aiRecommendInput');
     if (input) input.focus();
@@ -4484,7 +4499,7 @@ function renderAIRecommendations(recommendations) {
     const bgColor = rec.themeColor || 'var(--bg-tertiary)';
 
     return `
-      <div class="ai-recommend-card" ${rec.path ? `onclick="handleRecommendCardClick('${rec.path}')"` : ''}>
+      <div class="ai-recommend-card" ${rec.path ? `data-path="${escapeHtml(rec.path)}" onclick="handleRecommendCardClick(this.dataset.path)"` : ''}>
         <div class="ai-recommend-card-icon" style="background:${bgColor}20">${icon}</div>
         <div class="ai-recommend-card-info">
           <div class="ai-recommend-card-name">${escapeHtml(rec.name)}</div>
@@ -4498,17 +4513,26 @@ function renderAIRecommendations(recommendations) {
 
 function handleRecommendCardClick(path) {
   closeAIRecommendModal();
-  const projects = state.projects || [];
-  const project = projects.find(p => p.path === path);
-  if (project) {
-    openProject(project);
-  }
+  setTimeout(() => openProject(path), 100);
 }
 
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str || '';
   return div.innerHTML;
+}
+
+async function fetchAIQuota() {
+  const el = $('#aiRecommendQuota');
+  if (!el) return;
+  try {
+    const resp = await fetch('/api/ai-quota');
+    const data = await resp.json();
+    const remainingRequests = Math.floor(data.remaining / data.neuronsPerRequest);
+    el.innerHTML = `<span class="ai-quota-text">今日 AI 额度：剩余约 <strong>${remainingRequests}</strong> 次推荐（${data.remaining.toLocaleString()} / ${data.limit.toLocaleString()} neurons）</span>`;
+  } catch {
+    el.innerHTML = '';
+  }
 }
 
 async function fetchAIRecommend() {
@@ -4547,6 +4571,7 @@ async function fetchAIRecommend() {
   } finally {
     btn.disabled = false;
     btn.textContent = '推荐';
+    fetchAIQuota();
   }
 }
 
