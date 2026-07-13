@@ -1,0 +1,22 @@
+  // ---- AI 推荐 API（公开）----
+  if (path === '/api/recommend' && request.method === 'POST') {
+    try {
+      const data = await request.json() as { input?: string };
+      const userInput = (data.input || '').trim();
+      if (!userInput) return errorResponse('请输入你的兴趣或需求', 400);
+      if (userInput.length > 200) return errorResponse('输入内容过长', 400);
+
+      const projects = await loadProjectsForRecommend(env);
+      if (projects.length === 0) return errorResponse('项目列表为空', 503);
+
+      const recommendations = await getAIRecommendation(userInput, projects, env);
+      return jsonResponse({ success: true, recommendations });
+    } catch (e: any) {
+      return errorResponse(`推荐失败: ${e.message || e}`, 500);
+    }
+  }
+
+  if (path === '/api/recommend' && request.method === 'OPTIONS') {
+    return optionsResponse();
+  }
+
