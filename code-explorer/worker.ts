@@ -10,6 +10,7 @@ export interface Env {
   JWT_SECRET: string;
   GITHUB_REPO: string;
   GITHUB_BRANCH: string;
+  ZHIPU_API_KEY: string;
   ASSETS: {
     fetch: (request: Request) => Promise<Response>;
   };
@@ -886,9 +887,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- AI 对话 API ----
   if (path === '/api/recommend' && request.method === 'POST') {
     try {
-      const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string } };
+      const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string };
       let messages = data.messages;
       const contextInfo = data.context;
+      const model = data.model;
 
       // 兼容旧格式: { input } 或 { preferences }
       if (!messages && (data.input || data.preferences)) {
@@ -904,14 +906,14 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const projects = await loadProjectsForRecommend(env);
       if (projects.length === 0) return errorResponse('项目列表为空', 503);
 
-      const result = await getConversationalAI(messages, projects, env, contextInfo);
+      const result = await getConversationalAI(messages, projects, env, contextInfo, model);
       try {
         const today = new Date().toISOString().slice(0, 10);
         const usageKey = `ai-usage:${today}`;
         const currentUsage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
         await env.CODE_EXPLORER_KV.put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
       } catch {}
-      return jsonResponse({ success: true, response: result.text, recommendations: result.recommendations });
+      return jsonResponse({ success: true, response: result.text, recommendations: result.recommendations, reasoning: result.reasoning });
     } catch (e: any) {
       return errorResponse(`请求失败: ${e.message || e}`, 500);
     }
@@ -943,6 +945,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 // ------------------------------------------------------------
 
 const AI_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
+const ZHIPU_API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+const ZHIPU_MODEL = 'glm-4.7-flash';
 const AI_CACHE_TTL = 3600;
 
 function simpleHashForAI(str: string): string {
@@ -986,7 +990,69 @@ ${projectList}
 推荐 3-5 个最相关的项目。没有推荐需求时正常聊天即可。`;
 }
 
-async function getConversationalAI(messages: { role: string; content: string }[], projects: any[], env: Env, contextInfo?: { folder?: string }): Promise<{ text: string; recommendations: any[] }> {
+async function callZhipuAI(messages: { role: string; content: string }[], apiKey: string, model: string = ZHIPU_MODEL): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {
+  const systemPrompt = buildConversationalPrompt([], undefined);
+  const payload = {
+    model,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...messages
+    ],
+    temperature: 0.7,
+    max_tokens: 800,
+    stream: false,
+    thinking: { type: 'enabled' }
+  };
+
+  const resp = await fetch(ZHIPU_API_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!resp.ok) {
+    const err = await resp.text();
+    throw new Error(`Zhipu API error: ${resp.status} ${err}`);
+  }
+
+  const data = await resp.json();
+  let text = data.choices?.[0]?.message?.content || '';
+  const reasoning = data.choices?.[0]?.message?.reasoning_content || '';
+
+  const recMatch = text.match(/---RECOMMEND---\n?([\s\S]*?)\n?---END---/);
+  let recommendations: any[] = [];
+  if (recMatch) {
+    try {
+      const parsed = JSON.parse(recMatch[1]);
+      if (Array.isArray(parsed)) {
+        recommendations = parsed.filter((r: any) => r.path && r.reason).map((r: any) => ({
+          path: r.path, reason: r.reason, name: r.name || r.path
+        })).slice(0, 5);
+      }
+    } catch {}
+    text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
+  }
+
+  return { text, recommendations, reasoning };
+}
+
+async function getConversationalAI(messages: { role: string; content: string }[], projects: any[], env: Env, contextInfo?: { folder?: string }, model?: string): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {
+  // Zhipu AI (glm-4.7-flash)
+  if (model === 'glm-4.7-flash') {
+    const apiKey = env.ZHIPU_API_KEY;
+    if (apiKey) {
+      try {
+        return await callZhipuAI(messages, apiKey);
+      } catch (e: any) {
+        console.error('Zhipu AI call failed:', e);
+      }
+    }
+  }
+
+  // 默认使用 Cloudflare Workers AI (Llama 3.1)
   const ai = (env as any).AI;
   if (ai) {
     try {

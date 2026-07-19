@@ -554,6 +554,20 @@ body::before {
   white-space: nowrap;
 }
 .ai-chat-quota.loading { opacity: 0.5; }
+.ai-model-select {
+  font-size: 12px;
+  padding: 0 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+  height: 40px;
+  min-width: 105px;
+}
+.ai-model-select:focus { outline: none; border-color: var(--accent-purple); }
+.ai-model-select option { background: var(--bg-secondary); color: var(--text-primary); }
 .ai-chat-context {
   display: flex;
   align-items: center;
@@ -647,6 +661,30 @@ body::before {
   font-size: 13px;
   line-height: 1.5;
 }
+.ai-message-reasoning {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+.ai-message-reasoning details { font-size: 13px; }
+.ai-message-reasoning summary {
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  user-select: none;
+}
+.ai-message-reasoning summary:hover { color: var(--accent-purple); }
+.ai-reasoning-text {
+  margin-top: 6px;
+  padding: 8px;
+  background: var(--bg-primary);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.ai-message-text { min-width: 0; }
 .ai-rec-cards {
   display: flex;
   flex-direction: column;
@@ -3438,6 +3476,10 @@ body::before {
         </div>
         <div class="ai-chat-panel-input">
           <div class="ai-chat-input-row">
+            <select id="aiModelSelect" class="ai-model-select" onchange="setAIModel(this.value)" title="选择 AI 模型">
+              <option value="cf-llama">☁️ Llama 3.1</option>
+              <option value="glm-4.7-flash">🧠 GLM-4.7-Flash</option>
+            </select>
             <input type="text" id="aiChatInput" placeholder="输入你的问题或需求..." autocomplete="off" />
             <button class="ai-chat-send-btn" id="aiChatSendBtn" onclick="sendAIChatMessage()">发送</button>
           </div>
@@ -4699,7 +4741,7 @@ function closeMindmapModal() {
 }
 
 // ===== AI 助手（对话式）=====
-const AI_STATE = { messages: [], awaiting: false, selectedFolder: null };
+const AI_STATE = { messages: [], awaiting: false, selectedFolder: null, model: 'cf-llama' };
 
 const TYPE_ICONS = {
   'game': '🎮', 'ai': '🤖', 'tool': '🔧', 'other': '📁',
@@ -4782,7 +4824,7 @@ function closeAIChat() {
   }
 }
 
-function addAIMessage(role, content, recommendations) {
+function addAIMessage(role, content, recommendations, reasoning) {
   const container = $('#aiChatMessages');
   if (!container) return;
 
@@ -4802,13 +4844,22 @@ function addAIMessage(role, content, recommendations) {
   const contentDiv = document.createElement('div');
   contentDiv.className = 'ai-message-content';
 
+  if (reasoning) {
+    const reasoningDiv = document.createElement('div');
+    reasoningDiv.className = 'ai-message-reasoning';
+    reasoningDiv.innerHTML = `<details><summary>🤔 推理过程</summary><div class="ai-reasoning-text">${escapeHtml(reasoning)}</div></details>`;
+    contentDiv.appendChild(reasoningDiv);
+  }
+
   if (content) {
-    // Simple markdown-like rendering
+    const textDiv = document.createElement('div');
+    textDiv.className = 'ai-message-text';
     const escaped = escapeHtml(content);
     const withCode = escaped.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
     const withInline = withCode.replace(/`([^`]+)`/g, '<code>$1</code>');
     const withPara = withInline.split('\n').filter(Boolean).map(p => `<p>${p}</p>`).join('');
-    contentDiv.innerHTML = withPara || escaped;
+    textDiv.innerHTML = withPara || escaped;
+    contentDiv.appendChild(textDiv);
   }
 
   msgDiv.appendChild(avatar);
@@ -4891,7 +4942,7 @@ async function sendAIChatMessage(prefilledText) {
   showAITyping();
 
   try {
-    const body = { messages: AI_STATE.messages };
+    const body = { messages: AI_STATE.messages, model: AI_STATE.model };
     if (AI_STATE.selectedFolder) {
       body.context = { folder: AI_STATE.selectedFolder };
     }
@@ -4906,7 +4957,7 @@ async function sendAIChatMessage(prefilledText) {
 
     if (data.success) {
       AI_STATE.messages.push({ role: 'assistant', content: data.response || '' });
-      addAIMessage('assistant', data.response, data.recommendations);
+      addAIMessage('assistant', data.response, data.recommendations, data.reasoning);
     } else {
       addAIMessage('assistant', data.error || '服务暂时不可用，请稍后再试。', null);
     }
@@ -4957,6 +5008,29 @@ function clearAIContext() {
   AI_STATE.selectedFolder = null;
   const bar = $('#aiChatContext');
   if (bar) bar.style.display = 'none';
+}
+
+function setAIModel(model) {
+  AI_STATE.model = model;
+  try { localStorage.setItem('ai-model', model); } catch {}
+}
+
+function initAIModel() {
+  try {
+    const saved = localStorage.getItem('ai-model');
+    if (saved === 'cf-llama' || saved === 'glm-4.7-flash') {
+      AI_STATE.model = saved;
+    }
+  } catch {}
+  const sel = $('#aiModelSelect');
+  if (sel) sel.value = AI_STATE.model;
+}
+
+// Init model on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAIModel);
+} else {
+  initAIModel();
 }
 
 let _mindmapSearchHandler = null;
