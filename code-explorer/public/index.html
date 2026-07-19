@@ -3580,6 +3580,7 @@ const state = {
   currentFilter: 'all',
   view: 'home',
   projectTreeCache: {},
+  fileContentCache: {},
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -3621,6 +3622,24 @@ async function fetchSearch(q) { return (await api(`/api/files/search?q=${encodeU
 // ==================== UTILS ====================
 function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 function toast(msg) { const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2200); }
+function similarity(a, b) {
+  const longer = a.length >= b.length ? a : b;
+  const shorter = a.length < b.length ? a : b;
+  if (longer.length === 0) return 1.0;
+  const editDist = (s1, s2) => {
+    const m = Array.from({length: s1.length + 1}, (_, i) => i);
+    for (let i = 1; i <= s2.length; i++) {
+      let prev = i;
+      for (let j = 1; j <= s1.length; j++) {
+        const cur = s1[j-1] === s2[i-1] ? m[j-1] : 1 + Math.min(m[j], m[j-1], prev);
+        m[j-1] = prev; prev = cur;
+      }
+      m[s1.length] = prev;
+    }
+    return m[s1.length];
+  };
+  return 1 - editDist(longer, shorter) / longer.length;
+}
 
 // ==================== PROJECT CARDS ====================
 const PROJECT_TYPES = {
@@ -4109,8 +4128,18 @@ function updateStats(projects) {
 
 // ==================== VIEW SWITCHING ====================
 async function openProject(projectPath) {
-  const project = state.projects.find(p => p.path === projectPath);
-  if (!project) return;
+  let project = state.projects.find(p => p.path === projectPath);
+  if (!project) {
+    project = state.projects.find(p => p.path.toLowerCase() === projectPath.toLowerCase());
+  }
+  if (!project) {
+    const best = state.projects.reduce((best, p) => {
+      const score = similarity(p.path, projectPath);
+      return score > best.score ? { p, score } : best;
+    }, { p: null, score: 0 });
+    if (best.p && best.score > 0.3) project = best.p;
+  }
+  if (!project) { toast('找不到该项目'); return; }
 
   if (project.type === 'system-file') {
     showToast('系统文件，暂不支持访问');
@@ -4319,7 +4348,11 @@ async function openFile(filePath) {
   const ex = state.openTabs.findIndex(t => t.path === filePath);
   if (ex >= 0) { switchTab(ex); return; }
   try {
-    const d = await fetchContent(filePath);
+    let d = state.fileContentCache[filePath];
+    if (!d) {
+      d = await fetchContent(filePath);
+      state.fileContentCache[filePath] = d;
+    }
     state.openTabs.push({ path: d.path, name: d.name, content: d.content, language: d.language });
     switchTab(state.openTabs.length - 1);
     $('#fileTree').querySelectorAll('.tree-item.active').forEach(el => el.classList.remove('active'));
@@ -4692,7 +4725,8 @@ async function fetchAIChatQuota() {
     const resp = await fetch('/api/ai-quota');
     const data = await resp.json();
     if (data && typeof data.remaining === 'number') {
-      el.textContent = `今日剩余 ${data.remaining} 次`;
+      const remainingRequests = data.neuronsPerRequest ? Math.floor(data.remaining / data.neuronsPerRequest) : data.remaining;
+      el.textContent = `今日剩余 ${remainingRequests} 次`;
     } else {
       el.textContent = '';
     }
