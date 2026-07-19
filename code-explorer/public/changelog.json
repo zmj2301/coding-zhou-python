@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.5.2",
+    "date": "2026-07-19",
+    "title": "集成智谱 AI (GLM-4.7-Flash) + 模型选择器 + 推理过程显示",
+    "changes": [
+      "后端 worker.ts 新增 callZhipuAI 函数，调用智谱 GLM-4.7-Flash 模型（无需额度限制）",
+      "后端 /api/recommend 接口新增 model 参数支持，前端可切换 Llama 3.1 / GLM-4.7-Flash",
+      "前端 AI 面板输入框旁添加模型选择下拉框（☁️ Llama 3.1 / 🧠 GLM-4.7-Flash），选择持久化到 localStorage",
+      "前端支持显示 Zhipu reasoning 推理过程，以可折叠 details 展示",
+      "Zhipu 模型不消耗免费额度，使用时不走 quota 检查"
+    ]
+  },
+  {
     "version": "1.5.1",
     "date": "2026-07-19",
     "title": "AI 助手嵌入主界面 + 修复导航覆盖 + 后端对话支持",
