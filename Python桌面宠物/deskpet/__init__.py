@@ -63,9 +63,11 @@ class DeskPet:
 
         self._pet_window = PetWindow(self._config, countdown_widget=self._countdown_widget)
         self._pet_window.show()
-        self._pet_window.position_to_bottom_right()
+        
+        # 将宠物窗口定位到倒计时窗口正上方居中
+        self._position_pet_centered()
 
-        if self._countdown_widget and self._countdown_widget.isVisible():
+        if self._countdown_widget:
             QApplication.processEvents()
             self._sync_manager = PositionSyncManager(self._pet_window, self._countdown_widget)
             self._sync_manager.init_offset()
@@ -84,6 +86,18 @@ class DeskPet:
             self._app._timer_mgr.work_duration = work_seconds
             self._app._timer_mgr.break_duration = break_seconds
             logging.debug(f"配置已同步: 工作={self._config.work_minutes}分钟, 休息={self._config.break_minutes}分钟")
+
+    def _position_pet_centered(self) -> None:
+        """将宠物窗口定位到倒计时窗口正上方居中"""
+        if not self._countdown_widget:
+            self._pet_window.position_to_bottom_right()
+            return
+        
+        cw = self._countdown_widget
+        pw = self._pet_window
+        pet_x = cw.x() + (cw.width() - pw.width()) // 2
+        pet_y = cw.y() - pw.height() - 10
+        pw.move(pet_x, pet_y)
 
     def reload_config(self) -> None:
         """重新加载配置文件"""

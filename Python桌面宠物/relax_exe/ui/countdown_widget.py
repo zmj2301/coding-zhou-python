@@ -301,11 +301,11 @@ class CountdownWidget(QWidget):
 
         self.update()
 
-    def set_idle_state(self) -> None:
+    def set_idle_state(self, work_minutes: int = 20) -> None:
         """设置为待机状态"""
         self._state_text = "待机"
         self._remaining = 0
-        self._time_label.setText("20:00")
+        self._time_label.setText(f"{work_minutes:02d}:00")
         self._progress_label.setText("")
         self._status_label.setText(self._state_text)
         self._start_btn.setText("开始")

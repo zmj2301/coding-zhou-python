@@ -652,6 +652,311 @@ body::before {
 }
 .ai-recommend-close:hover { color: var(--text-primary); }
 
+/* ===== AI Chat Page ===== */
+.ai-chat-page {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+.ai-chat-page.active { display: flex; }
+.ai-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+.ai-chat-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-chat-header .ai-status {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-left: auto;
+}
+.ai-chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ai-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+.ai-message {
+  display: flex;
+  gap: 12px;
+  max-width: 85%;
+  animation: fadeInUp 0.25s ease;
+}
+.ai-message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+.ai-message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.ai-message.user .ai-message-avatar {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff;
+}
+.ai-message.assistant .ai-message-avatar {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+}
+.ai-message-content {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ai-message.user .ai-message-content {
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.ai-message.assistant .ai-message-content {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-bottom-left-radius: 4px;
+  color: var(--text-primary);
+}
+.ai-message-content p { margin: 0 0 8px 0; }
+.ai-message-content p:last-child { margin-bottom: 0; }
+.ai-message-content code {
+  background: rgba(0,0,0,0.3);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+.ai-message-content pre {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  overflow-x: auto;
+}
+.ai-message-content pre code {
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.ai-rec-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.ai-rec-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.ai-rec-card:hover {
+  border-color: #818cf8;
+  background: var(--bg-tertiary);
+}
+.ai-rec-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.ai-rec-card-info { flex: 1; min-width: 0; }
+.ai-rec-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.ai-rec-card-reason {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.ai-rec-card-type {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 8px;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+.ai-chat-input-area {
+  border-top: 1px solid var(--border-color);
+  padding: 12px 20px;
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+.ai-chat-input-row {
+  display: flex;
+  gap: 8px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+.ai-chat-input-row input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ai-chat-input-row input:focus {
+  border-color: #818cf8;
+}
+.ai-chat-input-row input::placeholder {
+  color: var(--text-tertiary);
+}
+.ai-chat-send-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.ai-chat-send-btn:hover { opacity: 0.88; }
+.ai-chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ai-chat-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 60px 20px;
+  text-align: center;
+  gap: 16px;
+}
+.ai-chat-welcome-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+.ai-chat-welcome h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.ai-chat-welcome p {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  max-width: 400px;
+  line-height: 1.6;
+}
+.ai-chat-welcome .suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 8px;
+}
+.ai-chat-welcome .suggestion-chip {
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ai-chat-welcome .suggestion-chip:hover {
+  border-color: #818cf8;
+  color: #818cf8;
+  background: rgba(99,102,241,0.08);
+}
+.ai-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+}
+.ai-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  animation: typingBounce 1.4s infinite ease-in-out both;
+}
+.ai-typing span:nth-child(1) { animation-delay: -0.32s; }
+.ai-typing span:nth-child(2) { animation-delay: -0.16s; }
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ai-chat-toolbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ai-chat-toolbar-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-overlay);
+}
+.ai-chat-toolbar-btn svg { width: 14px; height: 14px; }
+
 /* ===== Mindmap Modal ===== */
 .mindmap-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -3115,9 +3420,9 @@ body::before {
         <span class="category-index-icon"></span>
         <span class="category-index-label">思维导图</span>
       </div>
-      <div class="category-index-item ai-recommend-entry" id="aiRecommendEntry">
+      <div class="category-index-item ai-recommend-entry" id="aiRecommendEntry" onclick="openAIChat()">
         <span class="category-index-icon">✨</span>
-        <span class="category-index-label">AI 推荐</span>
+        <span class="category-index-label">AI 助手</span>
       </div>
     </div>
     <div class="cards-grid" id="cardsGrid">
@@ -3175,6 +3480,9 @@ body::before {
       </button>
       <button class="toolbar-btn" id="btnToggleSidebar" title="切换侧边栏">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+      </button>
+      <button class="toolbar-btn" onclick="openAIChat()" title="AI 助手" style="color:var(--accent-purple)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
       </button>
     </div>
   </div>
@@ -3312,18 +3620,40 @@ body::before {
   </div>
 </div>
 
-<!-- ========== AI 推荐弹窗 ========== -->
-<div class="ai-recommend-overlay" id="aiRecommendOverlay" onclick="if(event.target===this)closeAIRecommendModal()">
-  <div class="ai-recommend-modal">
-    <button class="ai-recommend-close" onclick="closeAIRecommendModal()">&times;</button>
-    <h3>✨ AI 推荐</h3>
-    <p class="ai-subtitle">告诉我你的兴趣，AI 为你推荐最合适的项目</p>
-    <div class="ai-recommend-input-row">
-      <input type="text" id="aiRecommendInput" placeholder="例如：推荐游戏项目、我想看 AI 相关的..." />
-      <button class="ai-recommend-btn" id="aiRecommendBtn" onclick="fetchAIRecommend()">推荐</button>
+<!-- ========== AI 助手页面 ========== -->
+<div class="ai-chat-page" id="aiChatPage">
+  <div class="ai-chat-header">
+    <button class="toolbar-back" onclick="closeAIChat()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      返回
+    </button>
+    <h2><span>✨</span> AI 助手</h2>
+    <div class="ai-status" id="aiChatStatus">Powered by Llama 3.1</div>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="ai-chat-toolbar-btn" onclick="clearAIChat()" title="清除对话">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        清除对话
+      </button>
     </div>
-    <div class="ai-recommend-quota" id="aiRecommendQuota"></div>
-    <div class="ai-recommend-results" id="aiRecommendResults"></div>
+  </div>
+  <div class="ai-chat-messages" id="aiChatMessages">
+    <div class="ai-chat-welcome">
+      <div class="ai-chat-welcome-icon">✨</div>
+      <h3>AI 助手</h3>
+      <p>我可以帮你推荐项目、回答关于代码的问题，或者和你聊天。</p>
+      <div class="suggestions">
+        <span class="suggestion-chip" onclick="sendAIChatMessage('推荐几个游戏项目')">推荐几个游戏项目</span>
+        <span class="suggestion-chip" onclick="sendAIChatMessage('有哪些 AI 相关的项目？')">有哪些 AI 相关的项目？</span>
+        <span class="suggestion-chip" onclick="sendAIChatMessage('我想做一个工具类项目')">我想做一个工具类项目</span>
+        <span class="suggestion-chip" onclick="sendAIChatMessage('给我推荐热门项目')">给我推荐热门项目</span>
+      </div>
+    </div>
+  </div>
+  <div class="ai-chat-input-area">
+    <div class="ai-chat-input-row">
+      <input type="text" id="aiChatInput" placeholder="输入你的问题或需求..." autocomplete="off" />
+      <button class="ai-chat-send-btn" id="aiChatSendBtn" onclick="sendAIChatMessage()">发送</button>
+    </div>
   </div>
 </div>
 
@@ -3955,6 +4285,10 @@ async function openProject(projectPath) {
     return;
   }
 
+  // Close AI chat if open
+  const aiChatPage = $('#aiChatPage');
+  if (aiChatPage) aiChatPage.classList.remove('active');
+
   state.currentProject = project;
   $('#toolbarProject').textContent = project.name;
   $('#homePage').style.display = 'none';
@@ -3991,6 +4325,8 @@ async function openProject(projectPath) {
 }
 
 function goHome() {
+  const aiChatPage = $('#aiChatPage');
+  if (aiChatPage) aiChatPage.classList.remove('active');
   $('#editorPage').style.display = 'none';
   $('#homePage').style.display = 'flex';
   state.currentProject = null;
@@ -4459,21 +4795,8 @@ function closeMindmapModal() {
   if (input) input.value = '';
 }
 
-// ===== AI 推荐 =====
-function openAIRecommendModal() {
-  const overlay = $('#aiRecommendOverlay');
-  if (overlay) overlay.classList.add('active');
-  fetchAIQuota();
-  setTimeout(() => {
-    const input = $('#aiRecommendInput');
-    if (input) input.focus();
-  }, 100);
-}
-
-function closeAIRecommendModal() {
-  const overlay = $('#aiRecommendOverlay');
-  if (overlay) overlay.classList.remove('active');
-}
+// ===== AI 助手（对话式）=====
+const AI_STATE = { messages: [], awaiting: false };
 
 const TYPE_ICONS = {
   'game': '🎮', 'ai': '🤖', 'tool': '🔧', 'other': '📁',
@@ -4484,95 +4807,185 @@ const TYPE_LABELS = {
   'web-game': '网页游戏', 'system-file': '系统文件', 'popup-preview': '弹出预览'
 };
 
-function renderAIRecommendations(recommendations) {
-  const container = $('#aiRecommendResults');
-  if (!container) return;
-
-  if (!recommendations || recommendations.length === 0) {
-    container.innerHTML = '<div class="ai-recommend-empty">没有找到推荐结果，换个关键词试试？</div>';
-    return;
-  }
-
-  container.innerHTML = recommendations.map(rec => {
-    const icon = rec.type && TYPE_ICONS[rec.type] ? TYPE_ICONS[rec.type] : '📁';
-    const typeLabel = rec.type && TYPE_LABELS[rec.type] ? TYPE_LABELS[rec.type] : '';
-    const bgColor = rec.themeColor || 'var(--bg-tertiary)';
-
-    return `
-      <div class="ai-recommend-card" ${rec.path ? `data-path="${escapeHtml(rec.path)}" onclick="handleRecommendCardClick(this.dataset.path)"` : ''}>
-        <div class="ai-recommend-card-icon" style="background:${bgColor}20">${icon}</div>
-        <div class="ai-recommend-card-info">
-          <div class="ai-recommend-card-name">${escapeHtml(rec.name)}</div>
-          <div class="ai-recommend-card-reason">${escapeHtml(rec.reason)}</div>
-        </div>
-        ${typeLabel ? `<span class="ai-recommend-card-type">${typeLabel}</span>` : ''}
-      </div>
-    `;
-  }).join('');
-}
-
-function handleRecommendCardClick(path) {
-  closeAIRecommendModal();
-  setTimeout(() => openProject(path), 100);
-}
-
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str || '';
   return div.innerHTML;
 }
 
-async function fetchAIQuota() {
-  const el = $('#aiRecommendQuota');
-  if (!el) return;
-  try {
-    const resp = await fetch('/api/ai-quota');
-    const data = await resp.json();
-    const remainingRequests = Math.floor(data.remaining / data.neuronsPerRequest);
-    el.innerHTML = `<span class="ai-quota-text">今日 AI 额度：剩余约 <strong>${remainingRequests}</strong> 次推荐（${data.remaining.toLocaleString()} / ${data.limit.toLocaleString()} neurons）</span>`;
-  } catch {
-    el.innerHTML = '';
-  }
+function openAIChat() {
+  const homePage = $('#homePage');
+  const editorPage = $('#editorPage');
+  const aiChatPage = $('#aiChatPage');
+  if (homePage) homePage.style.display = 'none';
+  if (editorPage) editorPage.style.display = 'none';
+  if (aiChatPage) aiChatPage.classList.add('active');
+  setTimeout(() => {
+    const input = $('#aiChatInput');
+    if (input) input.focus();
+  }, 200);
 }
 
-async function fetchAIRecommend() {
-  const input = $('#aiRecommendInput');
-  const btn = $('#aiRecommendBtn');
-  const container = $('#aiRecommendResults');
-  if (!input || !btn || !container) return;
+function closeAIChat() {
+  const aiChatPage = $('#aiChatPage');
+  if (aiChatPage) aiChatPage.classList.remove('active');
+  const homePage = $('#homePage');
+  if (homePage) homePage.style.display = 'flex';
+}
 
-  const preferences = input.value.trim();
+function addAIMessage(role, content, recommendations) {
+  const container = $('#aiChatMessages');
+  if (!container) return;
 
-  btn.disabled = true;
-  btn.textContent = '思考中...';
-  container.innerHTML = `
-    <div class="ai-recommend-loading">
-      <div class="spinner"></div>
-      <span>AI 正在分析你的偏好...</span>
+  // Remove welcome and typing indicator
+  const welcome = container.querySelector('.ai-chat-welcome');
+  if (welcome) welcome.style.display = 'none';
+  const typingEl = container.querySelector('.ai-typing-message');
+  if (typingEl) typingEl.remove();
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `ai-message ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'ai-message-avatar';
+  avatar.textContent = role === 'user' ? 'U' : '✨';
+
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'ai-message-content';
+
+  if (content) {
+    // Simple markdown-like rendering
+    const escaped = escapeHtml(content);
+    const withCode = escaped.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+    const withInline = withCode.replace(/`([^`]+)`/g, '<code>$1</code>');
+    const withPara = withInline.split('\n').filter(Boolean).map(p => `<p>${p}</p>`).join('');
+    contentDiv.innerHTML = withPara || escaped;
+  }
+
+  msgDiv.appendChild(avatar);
+  msgDiv.appendChild(contentDiv);
+
+  if (recommendations && recommendations.length > 0) {
+    const cardsDiv = document.createElement('div');
+    cardsDiv.className = 'ai-rec-cards';
+    cardsDiv.innerHTML = recommendations.map(rec => {
+      const icon = rec.type && TYPE_ICONS[rec.type] ? TYPE_ICONS[rec.type] : '📁';
+      const typeLabel = rec.type && TYPE_LABELS[rec.type] ? TYPE_LABELS[rec.type] : '';
+      const bgColor = rec.themeColor || 'var(--bg-tertiary)';
+      return `
+        <div class="ai-rec-card" onclick="openProject('${escapeHtml(rec.path)}')">
+          <div class="ai-rec-card-icon" style="background:${bgColor}20">${icon}</div>
+          <div class="ai-rec-card-info">
+            <div class="ai-rec-card-name">${escapeHtml(rec.name)}</div>
+            <div class="ai-rec-card-reason">${escapeHtml(rec.reason)}</div>
+          </div>
+          ${typeLabel ? `<span class="ai-rec-card-type">${typeLabel}</span>` : ''}
+        </div>
+      `;
+    }).join('');
+    msgDiv.appendChild(cardsDiv);
+  }
+
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showAITyping() {
+  const container = $('#aiChatMessages');
+  if (!container) return;
+  const welcome = container.querySelector('.ai-chat-welcome');
+  if (welcome) welcome.style.display = 'none';
+
+  const existing = container.querySelector('.ai-typing-message');
+  if (existing) return;
+
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'ai-message assistant ai-typing-message';
+  typingDiv.innerHTML = `
+    <div class="ai-message-avatar">✨</div>
+    <div class="ai-message-content">
+      <div class="ai-typing">
+        <span></span><span></span><span></span>
+      </div>
     </div>
   `;
+  container.appendChild(typingDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeAITyping() {
+  const el = document.querySelector('.ai-typing-message');
+  if (el) el.remove();
+}
+
+async function sendAIChatMessage(prefilledText) {
+  const input = $('#aiChatInput');
+  const sendBtn = $('#aiChatSendBtn');
+  if (!input || !sendBtn) return;
+  if (AI_STATE.awaiting) return;
+
+  let text;
+  if (prefilledText) {
+    text = prefilledText;
+  } else {
+    text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+  }
+
+  AI_STATE.awaiting = true;
+  sendBtn.disabled = true;
+  sendBtn.textContent = '发送中...';
+
+  AI_STATE.messages.push({ role: 'user', content: text });
+  addAIMessage('user', text, null);
+  showAITyping();
 
   try {
     const resp = await fetch('/api/recommend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ preferences })
+      body: JSON.stringify({ messages: AI_STATE.messages })
     });
 
+    removeAITyping();
     const data = await resp.json();
 
-    if (data.success && data.recommendations) {
-      renderAIRecommendations(data.recommendations);
+    if (data.success) {
+      AI_STATE.messages.push({ role: 'assistant', content: data.response || '' });
+      addAIMessage('assistant', data.response, data.recommendations);
     } else {
-      container.innerHTML = `<div class="ai-recommend-empty">${data.error || '推荐服务暂时不可用'}</div>`;
+      addAIMessage('assistant', data.error || '服务暂时不可用，请稍后再试。', null);
     }
   } catch (e) {
-    container.innerHTML = `<div class="ai-recommend-empty">请求失败，请稍后再试</div>`;
+    removeAITyping();
+    addAIMessage('assistant', '网络请求失败，请检查网络连接后重试。', null);
   } finally {
-    btn.disabled = false;
-    btn.textContent = '推荐';
-    fetchAIQuota();
+    AI_STATE.awaiting = false;
+    sendBtn.disabled = false;
+    sendBtn.textContent = '发送';
+    const chatInput = $('#aiChatInput');
+    if (chatInput) chatInput.focus();
   }
+}
+
+function clearAIChat() {
+  AI_STATE.messages = [];
+  const container = $('#aiChatMessages');
+  if (!container) return;
+  container.innerHTML = `
+    <div class="ai-chat-welcome">
+      <div class="ai-chat-welcome-icon">✨</div>
+      <h3>AI 助手</h3>
+      <p>我可以帮你推荐项目、回答关于代码的问题，或者和你聊天。</p>
+      <div class="suggestions">
+        <span class="suggestion-chip" onclick="sendAIChatMessage('推荐几个游戏项目')">推荐几个游戏项目</span>
+        <span class="suggestion-chip" onclick="sendAIChatMessage('有哪些 AI 相关的项目？')">有哪些 AI 相关的项目？</span>
+        <span class="suggestion-chip" onclick="sendAIChatMessage('我想做一个工具类项目')">我想做一个工具类项目</span>
+        <span class="suggestion-chip" onclick="sendAIChatMessage('给我推荐热门项目')">给我推荐热门项目</span>
+      </div>
+    </div>
+  `;
 }
 
 let _mindmapSearchHandler = null;
@@ -5500,10 +5913,8 @@ const aboutEntry = document.getElementById('aboutEntry');
 if (aboutEntry) aboutEntry.addEventListener('click', openAboutModal);
 const mindmapEntry = document.getElementById('mindmapEntry');
 if (mindmapEntry) mindmapEntry.addEventListener('click', openMindmapModal);
-const aiRecommendEntry = document.getElementById('aiRecommendEntry');
-if (aiRecommendEntry) aiRecommendEntry.addEventListener('click', openAIRecommendModal);
-const aiRecommendInput = document.getElementById('aiRecommendInput');
-if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
+const aiChatInput = document.getElementById('aiChatInput');
+if (aiChatInput) aiChatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAIChatMessage(); } });
 // 初始化主题
 setTheme(getTheme());
 
@@ -5667,6 +6078,11 @@ document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 'b' && state.currentProject) {
     e.preventDefault();
     toggleBookmark(state.currentProject);
+  }
+  // Ctrl+Shift+A: AI 助手
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'a' || e.key === 'A')) {
+    e.preventDefault();
+    openAIChat();
   }
 });
 

@@ -83,7 +83,7 @@ class TimerManager(QObject):
 
     def start_work(self) -> None:
         """开始工作计时"""
-        if self._state == TimerState.IDLE:
+        if self._state in (TimerState.IDLE, TimerState.BREAK_DONE):
             self._remaining = self._work_duration
             self._set_state(TimerState.WORKING)
             self._timer.start()
