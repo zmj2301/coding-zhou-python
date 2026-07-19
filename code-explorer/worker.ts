@@ -886,8 +886,9 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- AI 对话 API ----
   if (path === '/api/recommend' && request.method === 'POST') {
     try {
-      const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string };
+      const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string } };
       let messages = data.messages;
+      const contextInfo = data.context;
 
       // 兼容旧格式: { input } 或 { preferences }
       if (!messages && (data.input || data.preferences)) {
@@ -903,7 +904,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const projects = await loadProjectsForRecommend(env);
       if (projects.length === 0) return errorResponse('项目列表为空', 503);
 
-      const result = await getConversationalAI(messages, projects, env);
+      const result = await getConversationalAI(messages, projects, env, contextInfo);
       try {
         const today = new Date().toISOString().slice(0, 10);
         const usageKey = `ai-usage:${today}`;
@@ -965,12 +966,15 @@ async function loadProjectsForRecommend(env: Env): Promise<any[]> {
   try { return await listResp.json(); } catch { return []; }
 }
 
-function buildConversationalPrompt(projects: any[]): string {
+function buildConversationalPrompt(projects: any[], contextInfo?: { folder?: string }): string {
   const projectList = projects.map((p: any) =>
     `- ${p.name} (path: ${p.path}, type: ${p.type || 'unknown'}, desc: ${p.description || 'none'})`
   ).join('\n');
-  return `你是 Code Explorer 的 AI 编程助手。你可以回答用户的问题、聊天，也可以推荐项目。
-
+  let contextNote = '';
+  if (contextInfo?.folder) {
+    contextNote = `\n用户当前关注的文件夹：${contextInfo.folder}\n`;
+  }
+  return `你是 Code Explorer 的 AI 编程助手。你可以回答用户的问题、聊天，也可以推荐项目。${contextNote}
 项目列表：
 ${projectList}
 
@@ -982,11 +986,11 @@ ${projectList}
 推荐 3-5 个最相关的项目。没有推荐需求时正常聊天即可。`;
 }
 
-async function getConversationalAI(messages: { role: string; content: string }[], projects: any[], env: Env): Promise<{ text: string; recommendations: any[] }> {
+async function getConversationalAI(messages: { role: string; content: string }[], projects: any[], env: Env, contextInfo?: { folder?: string }): Promise<{ text: string; recommendations: any[] }> {
   const ai = (env as any).AI;
   if (ai) {
     try {
-      const systemPrompt = buildConversationalPrompt(projects);
+      const systemPrompt = buildConversationalPrompt(projects, contextInfo);
       const response = await ai.run(AI_MODEL, {
         messages: [
           { role: 'system', content: systemPrompt },

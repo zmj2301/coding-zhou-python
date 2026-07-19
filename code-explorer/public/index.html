@@ -547,6 +547,36 @@ body::before {
   background: var(--bg-secondary);
   flex-shrink: 0;
 }
+.ai-chat-quota {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-left: 8px;
+  white-space: nowrap;
+}
+.ai-chat-quota.loading { opacity: 0.5; }
+.ai-chat-context {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--accent-purple);
+  flex-shrink: 0;
+}
+.ai-chat-context svg { color: var(--accent-purple); }
+.ai-chat-context-clear {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+.ai-chat-context-clear:hover { color: var(--text-primary); }
 .ai-message {
   display: flex;
   gap: 12px;
@@ -3380,12 +3410,18 @@ body::before {
       <div class="ai-chat-panel" id="aiChatPanel" style="display:none">
         <div class="ai-chat-panel-header">
           <span class="ai-chat-panel-title">✨ AI 助手</span>
-          <div style="display:flex;gap:6px">
+          <span class="ai-chat-quota" id="aiChatQuota"></span>
+          <div style="display:flex;gap:6px;margin-left:auto">
             <button class="ai-chat-panel-btn" onclick="clearAIChat()" title="清除对话">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               清除
             </button>
           </div>
+        </div>
+        <div class="ai-chat-context" id="aiChatContext" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          <span id="aiChatContextLabel"></span>
+          <button class="ai-chat-context-clear" onclick="clearAIContext()" title="清除上下文">×</button>
         </div>
         <div class="ai-chat-panel-body" id="aiChatMessages">
           <div class="ai-chat-welcome">
@@ -3534,7 +3570,7 @@ body::before {
 const state = {
   fileTree: [],
   flatFiles: [],
-  projects: [],        // 项目卡片数据
+  projects: [],
   currentProject: null,
   openTabs: [],
   activeTabIdx: -1,
@@ -3542,7 +3578,8 @@ const state = {
   isRunning: false,
   execReader: null,
   currentFilter: 'all',
-  view: 'home',        // 当前视图: home | editor
+  view: 'home',
+  projectTreeCache: {},
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -4101,6 +4138,7 @@ async function openProject(projectPath) {
   }
 
   // Close AI chat if open
+  clearAIContext();
   const aiPanel = $('#aiChatPanel');
   if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
   const codePanel = $('#codePanel');
@@ -4124,7 +4162,11 @@ async function openProject(projectPath) {
   $('#fileTree').innerHTML = '<div class="home-loading" style="padding:20px"><div class="spinner"></div> 加载中...</div>';
 
   try {
-    const treeData = await fetchProjectTree(projectPath);
+    let treeData = state.projectTreeCache[projectPath];
+    if (!treeData) {
+      treeData = await fetchProjectTree(projectPath);
+      state.projectTreeCache[projectPath] = treeData;
+    }
     const projectTreeNode = {
       name: project.name,
       type: 'directory',
@@ -4234,6 +4276,7 @@ function renderProjectFileTree(nodes, filter = '') {
 
   tree.querySelectorAll('[data-dir]').forEach(el => {
     el.addEventListener('click', e => { e.stopPropagation(); toggleDir(el.dataset.dir); });
+    el.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); setAIContext(el.dataset.dir); });
   });
   tree.querySelectorAll('[data-file]').forEach(el => {
     el.addEventListener('click', e => { e.stopPropagation(); openFile(el.dataset.file); });
@@ -4623,7 +4666,7 @@ function closeMindmapModal() {
 }
 
 // ===== AI 助手（对话式）=====
-const AI_STATE = { messages: [], awaiting: false };
+const AI_STATE = { messages: [], awaiting: false, selectedFolder: null };
 
 const TYPE_ICONS = {
   'game': '🎮', 'ai': '🤖', 'tool': '🔧', 'other': '📁',
@@ -4638,6 +4681,26 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str || '';
   return div.innerHTML;
+}
+
+async function fetchAIChatQuota() {
+  const el = $('#aiChatQuota');
+  if (!el) return;
+  el.textContent = '加载额度...';
+  el.classList.add('loading');
+  try {
+    const resp = await fetch('/api/ai-quota');
+    const data = await resp.json();
+    if (data && typeof data.remaining === 'number') {
+      el.textContent = `今日剩余 ${data.remaining} 次`;
+    } else {
+      el.textContent = '';
+    }
+  } catch {
+    el.textContent = '';
+  } finally {
+    el.classList.remove('loading');
+  }
 }
 
 function openAIChat() {
@@ -4662,6 +4725,7 @@ function openAIChat() {
     if (codePanel) codePanel.style.display = 'none';
     if (terminalPanel) terminalPanel.style.display = 'none';
   }
+  fetchAIChatQuota();
   setTimeout(() => {
     const input = $('#aiChatInput');
     if (input) input.focus();
@@ -4793,10 +4857,14 @@ async function sendAIChatMessage(prefilledText) {
   showAITyping();
 
   try {
+    const body = { messages: AI_STATE.messages };
+    if (AI_STATE.selectedFolder) {
+      body.context = { folder: AI_STATE.selectedFolder };
+    }
     const resp = await fetch('/api/recommend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: AI_STATE.messages })
+      body: JSON.stringify(body)
     });
 
     removeAITyping();
@@ -4822,6 +4890,7 @@ async function sendAIChatMessage(prefilledText) {
 
 function clearAIChat() {
   AI_STATE.messages = [];
+  clearAIContext();
   const container = $('#aiChatMessages');
   if (!container) return;
   container.innerHTML = `
@@ -4837,6 +4906,23 @@ function clearAIChat() {
       </div>
     </div>
   `;
+}
+
+function setAIContext(folderPath) {
+  if (!folderPath) return;
+  AI_STATE.selectedFolder = folderPath;
+  const bar = $('#aiChatContext');
+  const label = $('#aiChatContextLabel');
+  if (bar && label) {
+    label.textContent = folderPath;
+    bar.style.display = 'flex';
+  }
+}
+
+function clearAIContext() {
+  AI_STATE.selectedFolder = null;
+  const bar = $('#aiChatContext');
+  if (bar) bar.style.display = 'none';
 }
 
 let _mindmapSearchHandler = null;
