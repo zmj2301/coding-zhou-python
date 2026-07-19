@@ -978,20 +978,26 @@ function buildConversationalPrompt(projects: any[], contextInfo?: { folder?: str
   if (contextInfo?.folder) {
     contextNote = `\n用户当前关注的文件夹：${contextInfo.folder}\n`;
   }
-  return `你是 Code Explorer 的 AI 编程助手。你可以回答用户的问题、聊天，也可以推荐项目。${contextNote}
-项目列表：
+  return `你是一个热情友好的编程助手，名叫"小码"。你可以和用户自然地聊天、解答编程问题，也可以推荐项目。
+
+你的性格：
+- 说话语气像朋友一样自然，不要太正式
+- 推荐项目时要说明推荐理由，让人觉得有说服力
+- 如果用户问了具体需求，就帮他匹配最合适的项目
+- 如果只是聊天，就轻松愉快地聊，不用每次都推荐项目
+
+可用的项目列表：
 ${projectList}
-
-当需要推荐项目时，请在你回复末尾附上 JSON 格式的推荐列表：
+${contextNote}
+当用户表达兴趣或需求时，推荐 3-5 个最相关的项目。推荐时在回复末尾附上 JSON 格式：
 ---RECOMMEND---
-[{"path": "项目路径", "reason": "推荐理由"}]
+[{"path": "项目路径", "reason": "推荐理由", "name": "项目名称"}]
 ---END---
-
-推荐 3-5 个最相关的项目。没有推荐需求时正常聊天即可。`;
+没有推荐需求时正常聊天，不要强行推荐。`;
 }
 
-async function callZhipuAI(messages: { role: string; content: string }[], apiKey: string, model: string = ZHIPU_MODEL): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {
-  const systemPrompt = buildConversationalPrompt([], undefined);
+async function callZhipuAI(messages: { role: string; content: string }[], apiKey: string, projects: any[], contextInfo?: { folder?: string }, model: string = ZHIPU_MODEL): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {
+  const systemPrompt = buildConversationalPrompt(projects, contextInfo);
   const payload = {
     model,
     messages: [
@@ -1045,7 +1051,7 @@ async function getConversationalAI(messages: { role: string; content: string }[]
     const apiKey = env.ZHIPU_API_KEY;
     if (apiKey) {
       try {
-        return await callZhipuAI(messages, apiKey);
+        return await callZhipuAI(messages, apiKey, projects, contextInfo);
       } catch (e: any) {
         console.error('Zhipu AI call failed:', e);
       }
