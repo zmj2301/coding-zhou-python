@@ -258,13 +258,46 @@ class App(QApplication):
         logger.info(f"状态改变: {state}")
         if state == TimerState.WORKING:
             self._countdown_widget.set_running_state(True)
+            self._stop_lock_guard()
         elif state == TimerState.LOCKED:
             self._countdown_widget.set_running_state(True)
             self._countdown_widget.show()
+            self._start_lock_guard()
         elif state == TimerState.IDLE:
             self._countdown_widget.set_running_state(False)
             work_min = self._timer_mgr.work_duration // 60
             self._countdown_widget.set_idle_state(work_min)
+            self._stop_lock_guard()
+        elif state == TimerState.BREAK_DONE:
+            self._stop_lock_guard()
+
+    def _start_lock_guard(self) -> None:
+        """启动高频锁屏守护：休息期间每 500ms 检测一次"""
+        if not self._lock_guard_timer.isActive():
+            logger.info("启动休息期锁屏守护 (500ms 间隔)")
+            self._lock_guard_timer.start()
+
+    def _stop_lock_guard(self) -> None:
+        """停止高频锁屏守护"""
+        if self._lock_guard_timer.isActive():
+            logger.info("停止休息期锁屏守护")
+            self._lock_guard_timer.stop()
+
+    def _lock_guard_check(self) -> None:
+        """锁屏守护检测：休息期间检测到解锁立即重新锁屏"""
+        if self._timer_mgr.state != TimerState.LOCKED:
+            self._stop_lock_guard()
+            return
+        
+        # 组合检测：任一判定为未锁定即视为用户解锁
+        locked1 = _check_desktop_locked_via_input_desktop()
+        locked2 = _check_desktop_locked_via_desktop_name()
+        locked3 = _check_locked_via_foreground_window()
+        is_locked = locked1 or locked2 or locked3
+        
+        if not is_locked:
+            logger.warning("锁屏守护检测到解锁，立即重新锁屏！")
+            _lock_screen()
 
     def _on_start_clicked(self) -> None:
         """开始按钮点击事件"""

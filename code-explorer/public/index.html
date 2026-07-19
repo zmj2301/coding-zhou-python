@@ -489,215 +489,63 @@ body::before {
   color: var(--text-primary);
 }
 
-/* ===== AI Recommend Modal ===== */
-.ai-recommend-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
-  display: none; align-items: center; justify-content: center;
-  z-index: 100005;
-  backdrop-filter: blur(4px);
-}
-.ai-recommend-overlay.active { display: flex; }
-.ai-recommend-modal {
-  position: relative;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  max-width: 560px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-}
-.ai-recommend-modal h3 {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 6px 0;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.ai-recommend-modal .ai-subtitle {
-  font-size: 13px;
-  color: var(--text-tertiary);
-  margin: 0 0 18px 0;
-}
-.ai-recommend-input-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.ai-recommend-input-row input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.ai-recommend-input-row input:focus {
-  border-color: #818cf8;
-}
-.ai-recommend-input-row input::placeholder {
-  color: var(--text-tertiary);
-}
-.ai-recommend-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #6366f1, #a855f7);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: opacity 0.2s;
-}
-.ai-recommend-btn:hover { opacity: 0.88; }
-.ai-recommend-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.ai-recommend-quota {
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-md);
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-}
-.ai-quota-text strong {
-  color: #818cf8;
-  font-weight: 600;
-}
-.ai-recommend-results {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.ai-recommend-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  background: var(--bg-primary);
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-}
-.ai-recommend-card:hover {
-  border-color: #818cf8;
-  background: var(--bg-tertiary);
-}
-.ai-recommend-card-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-.ai-recommend-card-info {
-  flex: 1;
-  min-width: 0;
-}
-.ai-recommend-card-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 3px;
-}
-.ai-recommend-card-reason {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-.ai-recommend-card-type {
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  background: var(--bg-tertiary);
-  color: var(--text-tertiary);
-  white-space: nowrap;
-  flex-shrink: 0;
-  align-self: center;
-}
-.ai-recommend-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px 0;
-  gap: 12px;
-  color: var(--text-tertiary);
-  font-size: 14px;
-}
-.ai-recommend-empty {
-  text-align: center;
-  padding: 24px 0;
-  color: var(--text-tertiary);
-  font-size: 14px;
-}
-.ai-recommend-close {
-  position: absolute;
-  top: 16px; right: 16px;
-  background: none; border: none;
-  font-size: 24px; color: var(--text-tertiary);
-  cursor: pointer;
-}
-.ai-recommend-close:hover { color: var(--text-primary); }
-
-/* ===== AI Chat Page ===== */
-.ai-chat-page {
+/* ===== AI Chat Panel (embedded) ===== */
+.ai-chat-panel {
   flex: 1;
   display: none;
   flex-direction: column;
-  height: 100vh;
   overflow: hidden;
+  background: var(--bg-primary);
 }
-.ai-chat-page.active { display: flex; }
-.ai-chat-header {
+.ai-chat-panel.active { display: flex; }
+.ai-chat-panel-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 8px 16px;
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-secondary);
   flex-shrink: 0;
 }
-.ai-chat-header h2 {
-  font-size: 16px;
+.ai-chat-panel-title {
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.ai-chat-header .ai-status {
+.ai-chat-panel-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
   font-size: 12px;
-  color: var(--text-tertiary);
-  margin-left: auto;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
-.ai-chat-body {
+.ai-chat-panel-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.ai-chat-panel-btn svg { width: 13px; height: 13px; }
+.ai-chat-panel-body {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-.ai-chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   scroll-behavior: smooth;
+}
+.ai-chat-panel-input {
+  border-top: 1px solid var(--border-color);
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  flex-shrink: 0;
 }
 .ai-message {
   display: flex;
@@ -818,17 +666,9 @@ body::before {
   color: var(--text-tertiary);
   flex-shrink: 0;
 }
-.ai-chat-input-area {
-  border-top: 1px solid var(--border-color);
-  padding: 12px 20px;
-  background: var(--bg-secondary);
-  flex-shrink: 0;
-}
 .ai-chat-input-row {
   display: flex;
   gap: 8px;
-  max-width: 900px;
-  margin: 0 auto;
   width: 100%;
 }
 .ai-chat-input-row input {
@@ -938,24 +778,6 @@ body::before {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.ai-chat-toolbar-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.ai-chat-toolbar-btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-overlay);
-}
-.ai-chat-toolbar-btn svg { width: 14px; height: 14px; }
 
 /* ===== Mindmap Modal ===== */
 .mindmap-overlay {
@@ -3555,6 +3377,36 @@ body::before {
           <div class="terminal-output" id="terminalOutput"></div>
         </div>
       </div>
+      <div class="ai-chat-panel" id="aiChatPanel" style="display:none">
+        <div class="ai-chat-panel-header">
+          <span class="ai-chat-panel-title">✨ AI 助手</span>
+          <div style="display:flex;gap:6px">
+            <button class="ai-chat-panel-btn" onclick="clearAIChat()" title="清除对话">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              清除
+            </button>
+          </div>
+        </div>
+        <div class="ai-chat-panel-body" id="aiChatMessages">
+          <div class="ai-chat-welcome">
+            <div class="ai-chat-welcome-icon">✨</div>
+            <h3>AI 助手</h3>
+            <p>我可以帮你推荐项目、回答代码问题，或者和你聊天。</p>
+            <div class="suggestions">
+              <span class="suggestion-chip" onclick="sendAIChatMessage('推荐几个游戏项目')">推荐几个游戏项目</span>
+              <span class="suggestion-chip" onclick="sendAIChatMessage('有哪些 AI 相关的项目？')">有哪些 AI 相关的项目？</span>
+              <span class="suggestion-chip" onclick="sendAIChatMessage('我想做一个工具类项目')">我想做一个工具类项目</span>
+              <span class="suggestion-chip" onclick="sendAIChatMessage('给我推荐热门项目')">给我推荐热门项目</span>
+            </div>
+          </div>
+        </div>
+        <div class="ai-chat-panel-input">
+          <div class="ai-chat-input-row">
+            <input type="text" id="aiChatInput" placeholder="输入你的问题或需求..." autocomplete="off" />
+            <button class="ai-chat-send-btn" id="aiChatSendBtn" onclick="sendAIChatMessage()">发送</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -3617,43 +3469,6 @@ body::before {
     <h3>关于 Code Explorer</h3>
     <p>Code Explorer 是一个在线 Python 项目浏览与运行平台。在这里你可以浏览、编辑并运行各种 Python 项目，包括游戏、AI 应用、实用工具等。部分网页游戏无需安装即可直接在浏览器中体验。</p>
     <p>支持代码高亮、文件搜索、在线执行、留言交流等功能，让学习和分享代码变得更加便捷。</p>
-  </div>
-</div>
-
-<!-- ========== AI 助手页面 ========== -->
-<div class="ai-chat-page" id="aiChatPage">
-  <div class="ai-chat-header">
-    <button class="toolbar-back" onclick="closeAIChat()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      返回
-    </button>
-    <h2><span>✨</span> AI 助手</h2>
-    <div class="ai-status" id="aiChatStatus">Powered by Llama 3.1</div>
-    <div style="margin-left:auto;display:flex;gap:6px">
-      <button class="ai-chat-toolbar-btn" onclick="clearAIChat()" title="清除对话">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-        清除对话
-      </button>
-    </div>
-  </div>
-  <div class="ai-chat-messages" id="aiChatMessages">
-    <div class="ai-chat-welcome">
-      <div class="ai-chat-welcome-icon">✨</div>
-      <h3>AI 助手</h3>
-      <p>我可以帮你推荐项目、回答关于代码的问题，或者和你聊天。</p>
-      <div class="suggestions">
-        <span class="suggestion-chip" onclick="sendAIChatMessage('推荐几个游戏项目')">推荐几个游戏项目</span>
-        <span class="suggestion-chip" onclick="sendAIChatMessage('有哪些 AI 相关的项目？')">有哪些 AI 相关的项目？</span>
-        <span class="suggestion-chip" onclick="sendAIChatMessage('我想做一个工具类项目')">我想做一个工具类项目</span>
-        <span class="suggestion-chip" onclick="sendAIChatMessage('给我推荐热门项目')">给我推荐热门项目</span>
-      </div>
-    </div>
-  </div>
-  <div class="ai-chat-input-area">
-    <div class="ai-chat-input-row">
-      <input type="text" id="aiChatInput" placeholder="输入你的问题或需求..." autocomplete="off" />
-      <button class="ai-chat-send-btn" id="aiChatSendBtn" onclick="sendAIChatMessage()">发送</button>
-    </div>
   </div>
 </div>
 
@@ -4286,8 +4101,10 @@ async function openProject(projectPath) {
   }
 
   // Close AI chat if open
-  const aiChatPage = $('#aiChatPage');
-  if (aiChatPage) aiChatPage.classList.remove('active');
+  const aiPanel = $('#aiChatPanel');
+  if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
+  const codePanel = $('#codePanel');
+  if (codePanel) codePanel.style.display = 'flex';
 
   state.currentProject = project;
   $('#toolbarProject').textContent = project.name;
@@ -4325,8 +4142,10 @@ async function openProject(projectPath) {
 }
 
 function goHome() {
-  const aiChatPage = $('#aiChatPage');
-  if (aiChatPage) aiChatPage.classList.remove('active');
+  const aiPanel = $('#aiChatPanel');
+  if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
+  const codePanel = $('#codePanel');
+  if (codePanel) codePanel.style.display = 'flex';
   $('#editorPage').style.display = 'none';
   $('#homePage').style.display = 'flex';
   state.currentProject = null;
@@ -4446,6 +4265,14 @@ function toggleDir(dirPath) {
 
 // ==================== TABS & CODE ====================
 async function openFile(filePath) {
+  // Close AI chat if open
+  const aiPanel = $('#aiChatPanel');
+  if (aiPanel && aiPanel.classList.contains('active')) {
+    aiPanel.classList.remove('active');
+    aiPanel.style.display = 'none';
+    const codePanel = $('#codePanel');
+    if (codePanel) codePanel.style.display = 'flex';
+  }
   const ex = state.openTabs.findIndex(t => t.path === filePath);
   if (ex >= 0) { switchTab(ex); return; }
   try {
@@ -4816,10 +4643,25 @@ function escapeHtml(str) {
 function openAIChat() {
   const homePage = $('#homePage');
   const editorPage = $('#editorPage');
-  const aiChatPage = $('#aiChatPage');
-  if (homePage) homePage.style.display = 'none';
-  if (editorPage) editorPage.style.display = 'none';
-  if (aiChatPage) aiChatPage.classList.add('active');
+  const codePanel = $('#codePanel');
+  const terminalPanel = $('#terminalPanel');
+  const aiPanel = $('#aiChatPanel');
+  if (state.view === 'editor') {
+    if (aiPanel && aiPanel.classList.contains('active')) {
+      closeAIChat();
+      return;
+    }
+    if (aiPanel) { aiPanel.classList.add('active'); aiPanel.style.display = 'flex'; }
+    if (codePanel) codePanel.style.display = 'none';
+    if (terminalPanel) terminalPanel.style.display = 'none';
+  } else {
+    if (homePage) homePage.style.display = 'none';
+    if (editorPage) editorPage.style.display = 'flex';
+    state.view = 'editor';
+    if (aiPanel) { aiPanel.classList.add('active'); aiPanel.style.display = 'flex'; }
+    if (codePanel) codePanel.style.display = 'none';
+    if (terminalPanel) terminalPanel.style.display = 'none';
+  }
   setTimeout(() => {
     const input = $('#aiChatInput');
     if (input) input.focus();
@@ -4827,10 +4669,19 @@ function openAIChat() {
 }
 
 function closeAIChat() {
-  const aiChatPage = $('#aiChatPage');
-  if (aiChatPage) aiChatPage.classList.remove('active');
   const homePage = $('#homePage');
-  if (homePage) homePage.style.display = 'flex';
+  const editorPage = $('#editorPage');
+  const aiPanel = $('#aiChatPanel');
+  const codePanel = $('#codePanel');
+  const terminalPanel = $('#terminalPanel');
+  if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
+  if (codePanel) codePanel.style.display = 'flex';
+  if (terminalPanel && state.currentProject) terminalPanel.style.display = 'flex';
+  if (state.view === 'editor' && !state.currentProject) {
+    if (homePage) homePage.style.display = 'flex';
+    if (editorPage) editorPage.style.display = 'none';
+    state.view = 'home';
+  }
 }
 
 function addAIMessage(role, content, recommendations) {

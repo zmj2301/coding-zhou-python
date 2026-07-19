@@ -883,19 +883,36 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     });
   }
 
-  // ---- AI 推荐 API（公开）----
+  // ---- AI 对话 API ----
   if (path === '/api/recommend' && request.method === 'POST') {
     try {
-      const data = await request.json() as { input?: string; preferences?: string };
-      const userInput = (data.input || data.preferences || '').trim();
-      if (!userInput) return errorResponse('请输入你的兴趣或需求', 400);
-      if (userInput.length > 200) return errorResponse('输入内容过长', 400);
+      const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string };
+      let messages = data.messages;
+
+      // 兼容旧格式: { input } 或 { preferences }
+      if (!messages && (data.input || data.preferences)) {
+        const userInput = (data.input || data.preferences || '').trim();
+        if (!userInput) return errorResponse('请输入你的兴趣或需求', 400);
+        messages = [{ role: 'user', content: `我的兴趣：${userInput}` }];
+      }
+
+      if (!messages || messages.length === 0) {
+        return errorResponse('请输入消息', 400);
+      }
+
       const projects = await loadProjectsForRecommend(env);
       if (projects.length === 0) return errorResponse('项目列表为空', 503);
-      const recommendations = await getAIRecommendation(userInput, projects, env);
-      return jsonResponse({ success: true, recommendations });
+
+      const result = await getConversationalAI(messages, projects, env);
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        const usageKey = `ai-usage:${today}`;
+        const currentUsage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
+        await env.CODE_EXPLORER_KV.put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
+      } catch {}
+      return jsonResponse({ success: true, response: result.text, recommendations: result.recommendations });
     } catch (e: any) {
-      return errorResponse(`推荐失败: ${e.message || e}`, 500);
+      return errorResponse(`请求失败: ${e.message || e}`, 500);
     }
   }
 
@@ -921,7 +938,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 }
 
 // ------------------------------------------------------------
-// AI 推荐：辅助函数
+// AI 对话辅助函数
 // ------------------------------------------------------------
 
 const AI_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
@@ -948,45 +965,34 @@ async function loadProjectsForRecommend(env: Env): Promise<any[]> {
   try { return await listResp.json(); } catch { return []; }
 }
 
-function buildAISystemPrompt(projects: any[]): string {
+function buildConversationalPrompt(projects: any[]): string {
   const projectList = projects.map((p: any) =>
     `- ${p.name} (path: ${p.path}, type: ${p.type || 'unknown'}, desc: ${p.description || 'none'})`
   ).join('\n');
-  return `你是一个项目推荐助手。用户会告诉你他们的兴趣，你需要从以下项目列表中推荐最匹配的项目。
+  return `你是 Code Explorer 的 AI 编程助手。你可以回答用户的问题、聊天，也可以推荐项目。
 
 项目列表：
 ${projectList}
 
-请严格按以下 JSON 格式返回（不要返回其他内容）：
-[{"path": "项目路径", "reason": "推荐理由（中文，一句话）"}]
+当需要推荐项目时，请在你回复末尾附上 JSON 格式的推荐列表：
+---RECOMMEND---
+[{"path": "项目路径", "reason": "推荐理由"}]
+---END---
 
-每次推荐 3-5 个最相关的项目，按相关度从高到低排列。如果用户没有明确兴趣，推荐最受欢迎的项目。`;
+推荐 3-5 个最相关的项目。没有推荐需求时正常聊天即可。`;
 }
 
-async function getAIRecommendation(userInput: string, projects: any[], env: Env): Promise<any[]> {
-  const kv = env.CODE_EXPLORER_KV;
-  const cacheKey = `cache:ai-recommend:${simpleHashForAI(userInput)}`;
-
-  try {
-    const cached = await kv.get(cacheKey, { type: 'json' });
-    if (cached && cached.timestamp && (Date.now() - cached.timestamp < AI_CACHE_TTL * 1000)) {
-      return cached.results;
-    }
-  } catch {}
-
+async function getConversationalAI(messages: { role: string; content: string }[], projects: any[], env: Env): Promise<{ text: string; recommendations: any[] }> {
   const ai = (env as any).AI;
-  if (!ai) {
-    console.warn('AI binding not available, falling back to rule-based recommendation');
-  }
   if (ai) {
     try {
-      const systemPrompt = buildAISystemPrompt(projects);
+      const systemPrompt = buildConversationalPrompt(projects);
       const response = await ai.run(AI_MODEL, {
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: `我的兴趣：${userInput}` }
+          ...messages
         ],
-        max_tokens: 500,
+        max_tokens: 800,
         temperature: 0.7
       });
 
@@ -995,75 +1001,26 @@ async function getAIRecommendation(userInput: string, projects: any[], env: Env)
       else if (response.response) text = response.response;
       else if (response.content) text = typeof response.content === 'string' ? response.content : JSON.stringify(response.content);
 
-      const results = parseAIRecommendations(text, projects);
-      try {
-        const today = new Date().toISOString().slice(0, 10);
-        const usageKey = `ai-usage:${today}`;
-        const currentUsage = parseInt(await kv.get(usageKey) || '0', 10);
-        await kv.put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
-        await kv.put(cacheKey, JSON.stringify({ results, timestamp: Date.now() }), { expirationTtl: AI_CACHE_TTL });
-      } catch {}
-      return results;
-    } catch (e: any) {
-      console.error('AI recommendation failed:', e);
-      return getRuleBasedRecommendation(userInput, projects);
-    }
-  }
-
-  return getRuleBasedRecommendation(userInput, projects);
-}
-
-function parseAIRecommendations(text: string, projects: any[]): any[] {
-  try {
-    const jsonMatch = text.match(/\[[\s\S]*?\]/);
-    if (jsonMatch) {
-      const parsed = JSON.parse(jsonMatch[0]);
-      if (Array.isArray(parsed)) {
-        return parsed.filter((r: any) => r.path && r.reason).map((r: any) => {
-          const project = projects.find((p: any) => p.path === r.path);
-          return { path: r.path, reason: r.reason, name: project?.name || r.path };
-        }).slice(0, 5);
+      const recMatch = text.match(/---RECOMMEND---\n?([\s\S]*?)\n?---END---/);
+      let recommendations: any[] = [];
+      if (recMatch) {
+        try {
+          const parsed = JSON.parse(recMatch[1]);
+          if (Array.isArray(parsed)) {
+            recommendations = parsed.filter((r: any) => r.path && r.reason).map((r: any) => ({
+              path: r.path, reason: r.reason, name: r.name || r.path
+            })).slice(0, 5);
+          }
+        } catch {}
+        text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
       }
-    }
-  } catch {}
-  return getRuleBasedRecommendation(text, projects);
-}
 
-function extractKeywords(input: string): string[] {
-  const lower = input.toLowerCase();
-  const tokens = lower.split(/[\s,，、。、!！?？~～]+/).filter(Boolean);
-  const keywords: string[] = [];
-  for (const token of tokens) {
-    if (token.length >= 2) keywords.push(token);
-    for (let i = 0; i < token.length - 1; i++) {
-      const bigram = token.substring(i, i + 2);
-      if (!keywords.includes(bigram)) keywords.push(bigram);
+      return { text, recommendations };
+    } catch (e: any) {
+      console.error('AI call failed:', e);
     }
   }
-  return [...new Set(keywords)];
-}
-
-function getRuleBasedRecommendation(input: string, projects: any[]): any[] {
-  const keywords = extractKeywords(input);
-
-  const scored = projects.map((p: any) => {
-    let score = 0;
-    const fields = [p.name, p.path, p.description || '', p.type || ''].join(' ').toLowerCase();
-    if (p.likes) score += (p.likes || 0) * 0.1;
-    if (p.comments) score += (p.comments || 0) * 0.2;
-    for (const kw of keywords) {
-      if (fields.includes(kw)) score += 10;
-    }
-    return { ...p, score };
-  });
-
-  scored.sort((a: any, b: any) => b.score - a.score);
-
-  return scored.slice(0, 5).map((p: any) => ({
-    path: p.path,
-    name: p.name,
-    reason: p.score > 0 ? `匹配你的兴趣关键词` : '热门推荐项目'
-  }));
+  return { text: '', recommendations: [] };
 }
 
 // ------------------------------------------------------------
