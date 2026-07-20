@@ -887,10 +887,11 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- AI 对话 API ----
   if (path === '/api/recommend' && request.method === 'POST') {
     try {
-      const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string };
+      const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string; needsProjects?: boolean };
       let messages = data.messages;
       const contextInfo = data.context;
       const model = data.model;
+      const needsProjects = data.needsProjects !== false; // 默认为 true 保持兼容
 
       // 兼容旧格式: { input } 或 { preferences }
       if (!messages && (data.input || data.preferences)) {
@@ -903,8 +904,12 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         return errorResponse('请输入消息', 400);
       }
 
-      const projects = await loadProjectsForRecommend(env);
-      if (projects.length === 0) return errorResponse('项目列表为空', 503);
+      // 只在需要时加载项目列表，减少不必要的开销
+      let projects: any[] = [];
+      if (needsProjects) {
+        projects = await loadProjectsForRecommend(env);
+        if (projects.length === 0) return errorResponse('项目列表为空', 503);
+      }
 
       const result = await getConversationalAI(messages, projects, env, contextInfo, model);
       try {
@@ -971,13 +976,28 @@ async function loadProjectsForRecommend(env: Env): Promise<any[]> {
 }
 
 function buildConversationalPrompt(projects: any[], contextInfo?: { folder?: string }): string {
-  const projectList = projects.map((p: any) =>
-    `- ${p.name} (path: ${p.path}, type: ${p.type || 'unknown'}, desc: ${p.description || 'none'})`
-  ).join('\n');
+  let projectSection = '';
+  if (projects && projects.length > 0) {
+    const projectList = projects.map((p: any) =>
+      `- ${p.name} (path: ${p.path}, type: ${p.type || 'unknown'}, desc: ${p.description || 'none'})`
+    ).join('\n');
+    projectSection = `\n可用的项目列表：\n${projectList}\n`;
+  }
+
   let contextNote = '';
   if (contextInfo?.folder) {
     contextNote = `\n用户当前关注的文件夹：${contextInfo.folder}\n`;
   }
+
+  // 如果有项目列表，包含推荐指令；否则只是普通聊天
+  const recommendInstruction = projects && projects.length > 0
+    ? `\n当用户表达兴趣或需求时，推荐 3-5 个最相关的项目。推荐时在回复末尾附上 JSON 格式：
+---RECOMMEND---
+[{"path": "项目路径", "reason": "推荐理由", "name": "项目名称"}]
+---END---
+没有推荐需求时正常聊天，不要强行推荐。`
+    : '';
+
   return `你是一个热情友好的编程助手，名叫"小码"。你可以和用户自然地聊天、解答编程问题，也可以推荐项目。
 
 你的性格：
@@ -985,15 +1005,7 @@ function buildConversationalPrompt(projects: any[], contextInfo?: { folder?: str
 - 推荐项目时要说明推荐理由，让人觉得有说服力
 - 如果用户问了具体需求，就帮他匹配最合适的项目
 - 如果只是聊天，就轻松愉快地聊，不用每次都推荐项目
-
-可用的项目列表：
-${projectList}
-${contextNote}
-当用户表达兴趣或需求时，推荐 3-5 个最相关的项目。推荐时在回复末尾附上 JSON 格式：
----RECOMMEND---
-[{"path": "项目路径", "reason": "推荐理由", "name": "项目名称"}]
----END---
-没有推荐需求时正常聊天，不要强行推荐。`;
+${projectSection}${contextNote}${recommendInstruction}`;
 }
 
 async function callZhipuAI(messages: { role: string; content: string }[], apiKey: string, projects: any[], contextInfo?: { folder?: string }, model: string = ZHIPU_MODEL): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {

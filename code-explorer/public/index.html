@@ -4761,7 +4761,8 @@ function closeMindmapModal() {
 }
 
 // ===== AI 助手（对话式）=====
-const AI_STATE = { messages: [], awaiting: false, selectedFolder: null, model: 'cf-llama' };
+const AI_STATE = { messages: [], awaiting: false, selectedFolder: null, model: 'cf-llama', abortController: null };
+const AI_MAX_MESSAGES = 20; // 滑动窗口：只保留最近20条消息
 
 const TYPE_ICONS = {
   'game': '🎮', 'ai': '🤖', 'tool': '🔧', 'other': '📁',
@@ -4958,6 +4959,12 @@ async function sendAIChatMessage(prefilledText) {
     input.value = '';
   }
 
+  // 取消之前的请求（如果有）
+  if (AI_STATE.abortController) {
+    AI_STATE.abortController.abort();
+  }
+  AI_STATE.abortController = new AbortController();
+
   AI_STATE.awaiting = true;
   sendBtn.disabled = true;
   sendBtn.textContent = '发送中...';
@@ -4966,15 +4973,23 @@ async function sendAIChatMessage(prefilledText) {
   addAIMessage('user', text, null);
   showAITyping();
 
+  // 滑动窗口：只保留最近的消息，防止请求体过大
+  if (AI_STATE.messages.length > AI_MAX_MESSAGES) {
+    AI_STATE.messages = AI_STATE.messages.slice(-AI_MAX_MESSAGES);
+  }
+
   try {
     const body = { messages: AI_STATE.messages, model: AI_STATE.model };
     if (AI_STATE.selectedFolder) {
       body.context = { folder: AI_STATE.selectedFolder };
     }
+    // 检测是否需要项目列表，只有询问推荐相关问题时才发送
+    body.needsProjects = needsProjectList(text);
     const resp = await fetch('/api/recommend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      signal: AI_STATE.abortController.signal
     });
 
     removeAITyping();
@@ -4988,9 +5003,13 @@ async function sendAIChatMessage(prefilledText) {
     }
   } catch (e) {
     removeAITyping();
-    addAIMessage('assistant', '网络请求失败，请检查网络连接后重试。', null);
+    // 如果是用户主动取消，不显示错误
+    if (e.name !== 'AbortError') {
+      addAIMessage('assistant', '网络请求失败，请检查网络连接后重试。', null);
+    }
   } finally {
     AI_STATE.awaiting = false;
+    AI_STATE.abortController = null;
     sendBtn.disabled = false;
     sendBtn.textContent = '发送';
     const chatInput = $('#aiChatInput');
@@ -4999,7 +5018,13 @@ async function sendAIChatMessage(prefilledText) {
 }
 
 function clearAIChat() {
+  // 取消正在进行的请求
+  if (AI_STATE.abortController) {
+    AI_STATE.abortController.abort();
+    AI_STATE.abortController = null;
+  }
   AI_STATE.messages = [];
+  AI_STATE.awaiting = false;
   clearAIContext();
   const container = $('#aiChatMessages');
   if (!container) return;
@@ -5049,6 +5074,13 @@ function initAIModel() {
   } catch {}
   const sel = $('#aiModelSelect');
   if (sel) sel.value = AI_STATE.model;
+}
+
+// 检测用户是否在询问项目推荐相关问题
+function needsProjectList(text) {
+  const lower = text.toLowerCase();
+  const keywords = ['推荐', '项目', '有什么', '哪些', '找一个', '适合', '游戏', '工具', 'ai', '人工智能', '热门', '好玩', '有趣'];
+  return keywords.some(kw => lower.includes(kw));
 }
 
 // Init model on page load
