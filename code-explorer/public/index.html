@@ -491,13 +491,27 @@ body::before {
 
 /* ===== AI Chat Panel (embedded) ===== */
 .ai-chat-panel {
-  flex: 1;
+  width: 380px;
+  min-width: 250px;
+  max-width: 600px;
   display: none;
   flex-direction: column;
   overflow: hidden;
   background: var(--bg-primary);
+  border-left: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
 .ai-chat-panel.active { display: flex; }
+.ai-sidebar-resizer {
+  width: 4px;
+  background: var(--border-color);
+  cursor: col-resize;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  z-index: 5;
+}
+.ai-sidebar-resizer:hover,
+.ai-sidebar-resizer.active { background: var(--accent-blue); }
 .ai-chat-panel-header {
   display: flex;
   align-items: center;
@@ -2269,7 +2283,8 @@ body::before {
   .cards-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
   .editor-main { flex-direction: column; }
   .sidebar { width: 100% !important; max-width: 100% !important; max-height: 180px; border-right: none; border-bottom: 1px solid var(--border-color); }
-  .resizer, .resizer-horizontal { display: none; }
+  .resizer, .resizer-horizontal, .ai-sidebar-resizer { display: none; }
+  .ai-chat-panel { width: 100% !important; min-width: 0 !important; max-width: 100% !important; border-left: none; border-top: 1px solid var(--border-color); }
   .code-panel { min-height: 280px; }
   .category-sidebar { display: none; }
   .project-list-layout { padding: 0 16px 48px; }
@@ -3445,6 +3460,7 @@ body::before {
           <div class="terminal-output" id="terminalOutput"></div>
         </div>
       </div>
+      <div class="ai-sidebar-resizer" id="aiSidebarResizer" style="display:none"></div>
       <div class="ai-chat-panel" id="aiChatPanel" style="display:none">
         <div class="ai-chat-panel-header">
           <span class="ai-chat-panel-title">✨ AI 助手</span>
@@ -4211,7 +4227,9 @@ async function openProject(projectPath) {
   // Close AI chat if open
   clearAIContext();
   const aiPanel = $('#aiChatPanel');
+  const aiResizer = $('#aiSidebarResizer');
   if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
+  if (aiResizer) aiResizer.style.display = 'none';
   const codePanel = $('#codePanel');
   if (codePanel) codePanel.style.display = 'flex';
 
@@ -4248,6 +4266,7 @@ async function openProject(projectPath) {
     };
     state.currentProjectTreeNode = projectTreeNode;
     state.flatFiles = flattenTree([projectTreeNode]);
+    state.expandedDirs = new Set([project.path]);
     renderProjectFileTree([projectTreeNode]);
   } catch(err) {
     $('#fileTree').innerHTML = `<div class="home-loading" style="padding:20px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
@@ -4256,7 +4275,9 @@ async function openProject(projectPath) {
 
 function goHome() {
   const aiPanel = $('#aiChatPanel');
+  const aiResizer = $('#aiSidebarResizer');
   if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
+  if (aiResizer) aiResizer.style.display = 'none';
   const codePanel = $('#codePanel');
   if (codePanel) codePanel.style.display = 'flex';
   $('#editorPage').style.display = 'none';
@@ -4379,21 +4400,19 @@ function toggleDir(dirPath) {
 
 // ==================== TABS & CODE ====================
 async function openFile(filePath) {
-  // Close AI chat if open
-  const aiPanel = $('#aiChatPanel');
-  if (aiPanel && aiPanel.classList.contains('active')) {
-    aiPanel.classList.remove('active');
-    aiPanel.style.display = 'none';
-    const codePanel = $('#codePanel');
-    if (codePanel) codePanel.style.display = 'flex';
+  if (AI_STATE.awaiting) return;
+  // Resolve relative path to full repo path
+  let fullPath = filePath;
+  if (state.currentProject && !filePath.startsWith(state.currentProject.path)) {
+    fullPath = state.currentProject.path + '/' + filePath;
   }
-  const ex = state.openTabs.findIndex(t => t.path === filePath);
+  const ex = state.openTabs.findIndex(t => t.path === fullPath);
   if (ex >= 0) { switchTab(ex); return; }
   try {
-    let d = state.fileContentCache[filePath];
+    let d = state.fileContentCache[fullPath];
     if (!d) {
-      d = await fetchContent(filePath);
-      state.fileContentCache[filePath] = d;
+      d = await fetchContent(fullPath);
+      state.fileContentCache[fullPath] = d;
     }
     state.openTabs.push({ path: d.path, name: d.name, content: d.content, language: d.language });
     switchTab(state.openTabs.length - 1);
@@ -4785,21 +4804,24 @@ function openAIChat() {
   const codePanel = $('#codePanel');
   const terminalPanel = $('#terminalPanel');
   const aiPanel = $('#aiChatPanel');
+  const aiResizer = $('#aiSidebarResizer');
   if (state.view === 'editor') {
     if (aiPanel && aiPanel.classList.contains('active')) {
       closeAIChat();
       return;
     }
     if (aiPanel) { aiPanel.classList.add('active'); aiPanel.style.display = 'flex'; }
-    if (codePanel) codePanel.style.display = 'none';
-    if (terminalPanel) terminalPanel.style.display = 'none';
+    if (aiResizer) aiResizer.style.display = 'block';
+    if (codePanel) codePanel.style.display = 'flex';
+    if (terminalPanel && state.currentProject) terminalPanel.style.display = 'flex';
   } else {
     if (homePage) homePage.style.display = 'none';
     if (editorPage) editorPage.style.display = 'flex';
     state.view = 'editor';
     if (aiPanel) { aiPanel.classList.add('active'); aiPanel.style.display = 'flex'; }
-    if (codePanel) codePanel.style.display = 'none';
-    if (terminalPanel) terminalPanel.style.display = 'none';
+    if (aiResizer) aiResizer.style.display = 'block';
+    if (codePanel) codePanel.style.display = 'flex';
+    if (state.currentProject && terminalPanel) terminalPanel.style.display = 'flex';
   }
   fetchAIChatQuota();
   setTimeout(() => {
@@ -4812,9 +4834,11 @@ function closeAIChat() {
   const homePage = $('#homePage');
   const editorPage = $('#editorPage');
   const aiPanel = $('#aiChatPanel');
+  const aiResizer = $('#aiSidebarResizer');
   const codePanel = $('#codePanel');
   const terminalPanel = $('#terminalPanel');
   if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
+  if (aiResizer) aiResizer.style.display = 'none';
   if (codePanel) codePanel.style.display = 'flex';
   if (terminalPanel && state.currentProject) terminalPanel.style.display = 'flex';
   if (state.view === 'editor' && !state.currentProject) {
@@ -5032,6 +5056,66 @@ if (document.readyState === 'loading') {
 } else {
   initAIModel();
 }
+
+// ===== AI 侧边栏拖动调整大小 =====
+(function() {
+  const resizer = $('#aiSidebarResizer');
+  const aiPanel = $('#aiChatPanel');
+  if (!resizer || !aiPanel) return;
+  let startX, startW;
+  resizer.addEventListener('mousedown', e => {
+    e.preventDefault();
+    startX = e.clientX;
+    startW = aiPanel.offsetWidth;
+    resizer.classList.add('active');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    function onMove(e) {
+      const dx = startX - e.clientX;
+      const newW = Math.min(600, Math.max(250, startW + dx));
+      aiPanel.style.width = newW + 'px';
+    }
+    function onUp() {
+      resizer.classList.remove('active');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+})();
+
+// ===== 左侧文件树拖动调整大小 =====
+(function() {
+  const resizer = $('#resizerLeft');
+  const sidebar = $('#sidebar');
+  if (!resizer || !sidebar) return;
+  let startX, startW;
+  resizer.addEventListener('mousedown', e => {
+    e.preventDefault();
+    startX = e.clientX;
+    startW = sidebar.offsetWidth;
+    resizer.classList.add('active');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    function onMove(e) {
+      const dx = e.clientX - startX;
+      const newW = Math.min(400, Math.max(150, startW + dx));
+      sidebar.style.width = newW + 'px';
+    }
+    function onUp() {
+      resizer.classList.remove('active');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+})();
 
 let _mindmapSearchHandler = null;
 
