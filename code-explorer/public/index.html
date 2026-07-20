@@ -496,10 +496,11 @@ body::before {
   max-width: 600px;
   display: none;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
   background: var(--bg-primary);
   border-left: 1px solid var(--border-color);
   flex-shrink: 0;
+  height: 100%;
 }
 .ai-chat-panel.active { display: flex; }
 .ai-sidebar-resizer {
