@@ -608,6 +608,7 @@ body::before {
 .ai-chat-context-clear:hover { color: var(--text-primary); }
 .ai-message {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   max-width: 85%;
   animation: fadeInUp 0.25s ease;
@@ -704,7 +705,9 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 8px;
+  width: 100%;
+  margin-left: 44px;
+  margin-top: 4px;
 }
 .ai-rec-card {
   display: flex;
@@ -716,6 +719,8 @@ body::before {
   background: var(--bg-primary);
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 .ai-rec-card:hover {
   border-color: #818cf8;
@@ -3483,8 +3488,15 @@ body::before {
         <div class="ai-chat-panel-input">
           <div class="ai-chat-input-row">
             <select id="aiModelSelect" class="ai-model-select" onchange="setAIModel(this.value)" title="选择 AI 模型">
-              <option value="cf-llama">☁️ Llama 3.1</option>
               <option value="glm-4.7-flash">🧠 GLM-4.7-Flash</option>
+              <optgroup label="OpenRouter (免费)">
+                <option value="openrouter/free">🌐 Free Auto-Route</option>
+                <option value="nvidia/nemotron-3-super-120b-a12b:free">🟢 Nemotron 3 Super 120B</option>
+                <option value="nvidia/nemotron-3-ultra:free">🟢 Nemotron 3 Ultra</option>
+                <option value="google/gemma-4-31b:free">🔵 Gemma 4 31B</option>
+                <option value="openai/gpt-oss-20b:free">⚪ GPT-OSS 20B</option>
+                <option value="qwen/qwen3-8b:free">🟠 Qwen3 8B</option>
+              </optgroup>
             </select>
             <input type="text" id="aiChatInput" placeholder="输入你的问题或需求..." autocomplete="off" />
             <button class="ai-chat-send-btn" id="aiChatSendBtn" onclick="sendAIChatMessage()">发送</button>
@@ -4754,7 +4766,7 @@ function closeMindmapModal() {
 }
 
 // ===== AI 助手（对话式）=====
-const AI_STATE = { messages: [], awaiting: false, selectedFolder: null, model: 'cf-llama', abortController: null };
+const AI_STATE = { messages: [], awaiting: false, selectedFolder: null, model: 'glm-4.7-flash', abortController: null };
 const AI_MAX_MESSAGES = 20; // 滑动窗口：只保留最近20条消息
 
 const TYPE_ICONS = {
@@ -5061,7 +5073,7 @@ function setAIModel(model) {
 function initAIModel() {
   try {
     const saved = localStorage.getItem('ai-model');
-    if (saved === 'cf-llama' || saved === 'glm-4.7-flash') {
+    if (saved) {
       AI_STATE.model = saved;
     }
   } catch {}

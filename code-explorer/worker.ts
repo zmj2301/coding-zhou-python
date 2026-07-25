@@ -195,7 +195,7 @@ async function fetchAsset(path: string, env: Env): Promise<Response> {
       if (resp.ok) return resp;
     }
   } catch {}
-  return fetchFromGitHub('public' + path, env);
+  return fetchFromGitHub('code-explorer/public' + path, env);
 }
 
 // ------------------------------------------------------------
@@ -1276,8 +1276,8 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     return new Response(body, { status: 200, headers });
   }
 
-  // Fallback: 从 GitHub 代理静态文件（直接从根路径，web-games/fathers-day 等）
-  const rootGhPath = path.substring(1);
+  // Fallback: 从 GitHub 代理静态文件（code-explorer/public 下的资源）
+  const rootGhPath = 'code-explorer/public/' + path.substring(1);
   const rootGhResp = await fetchFromGitHub(rootGhPath, env);
   if (rootGhResp.ok) {
     const ctype = CONTENT_TYPE_MAP[ext] || rootGhResp.headers.get('Content-Type') || 'application/octet-stream';
