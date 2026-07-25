@@ -710,7 +710,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         await env.CODE_EXPLORER_KV.put(key, JSON.stringify(projectData));
         try { await env.CODE_EXPLORER_KV.delete('cache:comment-counts'); } catch {}
         try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:home-page'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:home-page-v2'); } catch {}
         return jsonResponse(comment, 201);
       } catch {
         return errorResponse('无效的请求', 400);
@@ -830,7 +830,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         await env.CODE_EXPLORER_KV.put(key, String(current));
         try { await env.CODE_EXPLORER_KV.delete('cache:likes'); } catch {}
         try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:home-page'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:home-page-v2'); } catch {}
         return jsonResponse({ project, likes: current });
       } catch {
         return errorResponse('点赞失败', 500);
@@ -1115,7 +1115,7 @@ async function getConversationalAI(messages: { role: string; content: string }[]
 // 首页服务（内联项目数据 + KV 缓存）
 // ------------------------------------------------------------
 async function serveHomePage(request: Request, env: Env): Promise<Response> {
-  const CACHE_KEY = 'cache:home-page';
+  const CACHE_KEY = 'cache:home-page-v2';
   const CACHE_TTL = 1800;
 
   try {
