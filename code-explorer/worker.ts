@@ -1314,6 +1314,14 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // 一次性清理旧首页缓存
+    ctx.waitUntil(
+      Promise.all([
+        env.CODE_EXPLORER_KV.delete('cache:home-page').catch(() => {}),
+        env.CODE_EXPLORER_KV.delete('cache:home-page-v2').catch(() => {}),
+      ])
+    );
+
     // API 请求
     if (path.startsWith('/api/')) {
       return handleApi(request, env, path);
