@@ -55,6 +55,7 @@ Thumbs.db
 *.ico
 *.webp
 *.bmp
+!code-explorer/public/images/covers/*.jpg
 
 # 视频文件
 *.mp4
