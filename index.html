@@ -3572,8 +3572,10 @@ const PROJECT_COVERS = {
   'Python桌面宠物': '/images/covers/python_community.jpg',
 };
 
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/zmj2301/coding-zhou-python/main/code-explorer/public';
 function getProjectCover(name) {
-  return PROJECT_COVERS[name] || null;
+  const path = PROJECT_COVERS[name];
+  return path ? GITHUB_RAW_BASE + path : null;
 }
 
 function getProjectIcon(name) {
