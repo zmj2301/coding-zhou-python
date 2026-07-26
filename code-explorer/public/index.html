@@ -3134,6 +3134,26 @@ body::before {
     color: white;
   }
 </style>
+<!-- IE 浏览器检测 -->
+<script>
+(function() {
+  var isIE = !!document.documentMode || (navigator.userAgent.indexOf('MSIE') > -1) || (navigator.userAgent.indexOf('Trident/') > -1);
+  if (isIE) {
+    document.write(
+      '<div style="position:fixed;inset:0;z-index:999999;background:#0d1117;color:#c9d1d9;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif">' +
+      '<div style="text-align:center;padding:40px">' +
+      '<div style="font-size:48px;margin-bottom:20px">⚠️</div>' +
+      '<h1 style="font-size:24px;margin:0 0 12px;color:#f85149">您的浏览器不受支持</h1>' +
+      '<p style="font-size:16px;color:#8b949e;margin:0 0 24px">请更新到最新的浏览器以正常使用本平台</p>' +
+      '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
+      '<a href="https://www.google.cn/chrome/" style="padding:10px 20px;background:#58a6ff;color:#fff;border-radius:8px;text-decoration:none;font-size:14px">下载 Chrome</a>' +
+      '<a href="https://www.microsoft.com/edge" style="padding:10px 20px;background:#58a6ff;color:#fff;border-radius:8px;text-decoration:none;font-size:14px">下载 Edge</a>' +
+      '</div></div></div>'
+    );
+    document.close();
+  }
+})();
+</script>
 </head>
 <body>
 
@@ -3273,6 +3293,24 @@ body::before {
       </a>
     </div>
     <div class="hero-gallery">
+      <div class="gallery-item gallery-item-1">
+        <img src="/images/covers/fathers_day.jpg" alt="父亲节快乐" loading="lazy">
+        <div class="gallery-overlay">
+          <span class="gallery-label">❤️ 父亲节</span>
+        </div>
+      </div>
+      <div class="gallery-item gallery-item-2">
+        <img src="/images/covers/code_explorer.jpg" alt="编程之夜" loading="lazy">
+        <div class="gallery-overlay">
+          <span class="gallery-label">💻 编程创作</span>
+        </div>
+      </div>
+      <div class="gallery-item gallery-item-3">
+        <img src="/images/covers/weird_ai_tools.jpg" alt="科技未来" loading="lazy">
+        <div class="gallery-overlay">
+          <span class="gallery-label">🚀 科技未来</span>
+        </div>
+      </div>
     </div>
   </div>
   <div class="home-stats" id="homeStats"></div>
@@ -3826,7 +3864,7 @@ const PROJECT_COVERS = {
   'Python桌面宠物': '/images/covers/python_community.jpg',
 };
 
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/zmj2301/coding-zhou-python/main/code-explorer/public';
+const GITHUB_RAW_BASE = '';
 function getProjectCover(name) {
   const path = PROJECT_COVERS[name];
   return path ? GITHUB_RAW_BASE + path : null;
@@ -5793,6 +5831,7 @@ async function doUserLogin() {
     const d = await r.json();
     if (r.ok && d.token) {
       setCookie('wg_token', d.token, 7);
+      state.isAuthenticated = true;
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
       loginPasswordInput.value = '';
