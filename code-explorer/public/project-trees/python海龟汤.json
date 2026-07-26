@@ -1,26 +1,5 @@
 [
   {
-    "name": "dist",
-    "type": "directory",
-    "path": "dist",
-    "children": [
-      {
-        "name": "ZCLAW.exe",
-        "type": "file",
-        "path": "dist/ZCLAW.exe",
-        "ext": ".exe",
-        "lastModified": 1776475065272
-      }
-    ]
-  },
-  {
-    "name": "256x256 (1).ico",
-    "type": "file",
-    "path": "256x256 (1).ico",
-    "ext": ".ico",
-    "lastModified": 1773393385208
-  },
-  {
     "name": "found_ask_root.py",
     "type": "file",
     "path": "found_ask_root.py",
@@ -138,12 +117,5 @@
     "path": "users.json",
     "ext": ".json",
     "lastModified": 1742017124132
-  },
-  {
-    "name": "ZCLAW.spec",
-    "type": "file",
-    "path": "ZCLAW.spec",
-    "ext": ".spec",
-    "lastModified": 1776470804040
   }
 ]

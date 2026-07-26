@@ -5,13 +5,6 @@
     "path": "assets",
     "children": [
       {
-        "name": "1.png",
-        "type": "file",
-        "path": "assets/1.png",
-        "ext": ".png",
-        "lastModified": 1677292949551
-      },
-      {
         "name": "arm.blend",
         "type": "file",
         "path": "assets/arm.blend",
@@ -37,13 +30,6 @@
         "type": "file",
         "path": "assets/arm.obj",
         "ext": ".obj",
-        "lastModified": 1606860372000
-      },
-      {
-        "name": "arm_texture.png",
-        "type": "file",
-        "path": "assets/arm_texture.png",
-        "ext": ".png",
         "lastModified": 1606860372000
       },
       {
@@ -75,20 +61,6 @@
         "lastModified": 1606860372000
       },
       {
-        "name": "brick_block.png",
-        "type": "file",
-        "path": "assets/brick_block.png",
-        "ext": ".png",
-        "lastModified": 1606860372000
-      },
-      {
-        "name": "dirt_block.png",
-        "type": "file",
-        "path": "assets/dirt_block.png",
-        "ext": ".png",
-        "lastModified": 1606860372000
-      },
-      {
         "name": "Grass_block.blend",
         "type": "file",
         "path": "assets/Grass_block.blend",
@@ -96,67 +68,11 @@
         "lastModified": 1606860372000
       },
       {
-        "name": "grass_block.png",
-        "type": "file",
-        "path": "assets/grass_block.png",
-        "ext": ".png",
-        "lastModified": 1606860372000
-      },
-      {
-        "name": "green_block.png",
-        "type": "file",
-        "path": "assets/green_block.png",
-        "ext": ".png",
-        "lastModified": 1677491229514
-      },
-      {
-        "name": "hays_block.png",
-        "type": "file",
-        "path": "assets/hays_block.png",
-        "ext": ".png",
-        "lastModified": 1677407734063
-      },
-      {
         "name": "punch.xmp",
         "type": "file",
         "path": "assets/punch.xmp",
         "ext": ".xmp",
         "lastModified": 1606860372000
-      },
-      {
-        "name": "punch_sound.wav",
-        "type": "file",
-        "path": "assets/punch_sound.wav",
-        "ext": ".wav",
-        "lastModified": 1606860372000
-      },
-      {
-        "name": "Sans.png",
-        "type": "file",
-        "path": "assets/Sans.png",
-        "ext": ".png",
-        "lastModified": 1606860372000
-      },
-      {
-        "name": "skybox.png",
-        "type": "file",
-        "path": "assets/skybox.png",
-        "ext": ".png",
-        "lastModified": 1606860372000
-      },
-      {
-        "name": "stone_block.png",
-        "type": "file",
-        "path": "assets/stone_block.png",
-        "ext": ".png",
-        "lastModified": 1606860372000
-      },
-      {
-        "name": "white_block.png",
-        "type": "file",
-        "path": "assets/white_block.png",
-        "ext": ".png",
-        "lastModified": 1677490936076
       }
     ]
   },

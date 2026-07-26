@@ -161,13 +161,6 @@
     "lastModified": 1783072310770
   },
   {
-    "name": "exam_271_screenshot.png",
-    "type": "file",
-    "path": "exam_271_screenshot.png",
-    "ext": ".png",
-    "lastModified": 1783072310831
-  },
-  {
     "name": "exam_271_text.txt",
     "type": "file",
     "path": "exam_271_text.txt",
@@ -278,13 +271,6 @@
     "path": "test_page_text.txt",
     "ext": ".txt",
     "lastModified": 1783073540860
-  },
-  {
-    "name": "test_screenshot.png",
-    "type": "file",
-    "path": "test_screenshot.png",
-    "ext": ".png",
-    "lastModified": 1783073540894
   },
   {
     "name": "test_single_exam.py",

@@ -7,24 +7,10 @@
     "lastModified": 1782012889836
   },
   {
-    "name": "app.exe",
-    "type": "file",
-    "path": "app.exe",
-    "ext": ".exe",
-    "lastModified": 1782466463344
-  },
-  {
     "name": "index.html",
     "type": "file",
     "path": "index.html",
     "ext": ".html",
     "lastModified": 1782010156770
-  },
-  {
-    "name": "recording1.wav",
-    "type": "file",
-    "path": "recording1.wav",
-    "ext": ".wav",
-    "lastModified": 1781961255970
   }
 ]

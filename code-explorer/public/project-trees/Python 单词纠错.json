@@ -89,31 +89,10 @@
         "lastModified": 1736184845000
       },
       {
-        "name": "words.zip",
-        "type": "file",
-        "path": "english-words-master/words.zip",
-        "ext": ".zip",
-        "lastModified": 1736184845000
-      },
-      {
-        "name": "words_alpha.zip",
-        "type": "file",
-        "path": "english-words-master/words_alpha.zip",
-        "ext": ".zip",
-        "lastModified": 1736184845000
-      },
-      {
         "name": "words_dictionary.json",
         "type": "file",
         "path": "english-words-master/words_dictionary.json",
         "ext": ".json",
-        "lastModified": 1736184845000
-      },
-      {
-        "name": "words_dictionary.zip",
-        "type": "file",
-        "path": "english-words-master/words_dictionary.zip",
-        "ext": ".zip",
         "lastModified": 1736184845000
       }
     ]

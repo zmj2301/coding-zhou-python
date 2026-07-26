@@ -49,13 +49,6 @@
     "lastModified": 1781411429599
   },
   {
-    "name": "output.png",
-    "type": "file",
-    "path": "output.png",
-    "ext": ".png",
-    "lastModified": 1781601546210
-  },
-  {
     "name": "output_log.txt",
     "type": "file",
     "path": "output_log.txt",

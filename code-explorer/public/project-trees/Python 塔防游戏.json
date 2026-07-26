@@ -1,47 +1,5 @@
 [
   {
-    "name": "img",
-    "type": "directory",
-    "path": "img",
-    "children": [
-      {
-        "name": "Ordinary_enemy.png",
-        "type": "file",
-        "path": "img/Ordinary_enemy.png",
-        "ext": ".png",
-        "lastModified": 1774007205936
-      },
-      {
-        "name": "ordinary​​_fort.png",
-        "type": "file",
-        "path": "img/ordinary​​_fort.png",
-        "ext": ".png",
-        "lastModified": 1774007134722
-      },
-      {
-        "name": "park.png",
-        "type": "file",
-        "path": "img/park.png",
-        "ext": ".png",
-        "lastModified": 1774001327362
-      },
-      {
-        "name": "park_line.png",
-        "type": "file",
-        "path": "img/park_line.png",
-        "ext": ".png",
-        "lastModified": 1774001543762
-      },
-      {
-        "name": "stop_button.png",
-        "type": "file",
-        "path": "img/stop_button.png",
-        "ext": ".png",
-        "lastModified": 1774007048072
-      }
-    ]
-  },
-  {
     "name": "tafang.py",
     "type": "file",
     "path": "tafang.py",

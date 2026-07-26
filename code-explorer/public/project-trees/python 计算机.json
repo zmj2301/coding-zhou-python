@@ -1,19 +1,5 @@
 [
   {
-    "name": "dist",
-    "type": "directory",
-    "path": "dist",
-    "children": [
-      {
-        "name": "main.exe",
-        "type": "file",
-        "path": "dist/main.exe",
-        "ext": ".exe",
-        "lastModified": 1744376539506
-      }
-    ]
-  },
-  {
     "name": "python 2026马年魔术揭秘",
     "type": "directory",
     "path": "python 2026马年魔术揭秘",

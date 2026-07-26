@@ -1,12 +1,5 @@
 [
   {
-    "name": "128x128.ico",
-    "type": "file",
-    "path": "128x128.ico",
-    "ext": ".ico",
-    "lastModified": 1766889094868
-  },
-  {
     "name": "html.html",
     "type": "file",
     "path": "html.html",
@@ -19,13 +12,6 @@
     "path": "ico.svg",
     "ext": ".svg",
     "lastModified": 1766889071983
-  },
-  {
-    "name": "main.exe",
-    "type": "file",
-    "path": "main.exe",
-    "ext": ".exe",
-    "lastModified": 1767190379738
   },
   {
     "name": "main.py",

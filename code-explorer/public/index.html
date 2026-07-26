@@ -489,383 +489,168 @@ body::before {
   color: var(--text-primary);
 }
 
-/* ===== AI Chat Panel (embedded) ===== */
-.ai-chat-panel {
-  width: 380px;
-  min-width: 250px;
-  max-width: 600px;
-  display: none;
-  flex-direction: column;
-  overflow: visible;
-  background: var(--bg-primary);
-  border-left: 1px solid var(--border-color);
-  flex-shrink: 0;
-  height: 100%;
+/* ===== AI Recommend Modal ===== */
+.ai-recommend-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100005;
+  backdrop-filter: blur(4px);
 }
-.ai-chat-panel.active { display: flex; }
-.ai-sidebar-resizer {
-  width: 4px;
-  background: var(--border-color);
-  cursor: col-resize;
-  flex-shrink: 0;
-  transition: background 0.15s;
-  z-index: 5;
-}
-.ai-sidebar-resizer:hover,
-.ai-sidebar-resizer.active { background: var(--accent-blue); }
-.ai-chat-panel-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
-  border-bottom: 1px solid var(--border-color);
+.ai-recommend-overlay.active { display: flex; }
+.ai-recommend-modal {
+  position: relative;
   background: var(--bg-secondary);
-  flex-shrink: 0;
-}
-.ai-chat-panel-title {
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.ai-chat-panel-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.ai-chat-panel-btn:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-}
-.ai-chat-panel-btn svg { width: 13px; height: 13px; }
-.ai-chat-panel-body {
-  flex: 1;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 560px;
+  width: 90%;
+  max-height: 80vh;
   overflow-y: auto;
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  scroll-behavior: smooth;
+  box-shadow: var(--shadow-lg);
 }
-.ai-chat-panel-input {
-  border-top: 1px solid var(--border-color);
-  padding: 8px 12px;
-  background: var(--bg-secondary);
-  flex-shrink: 0;
-}
-.ai-chat-quota {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  margin-left: 8px;
-  white-space: nowrap;
-}
-.ai-chat-quota.loading { opacity: 0.5; }
-.ai-model-select {
-  font-size: 12px;
-  padding: 0 8px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  background: var(--bg-primary);
+.ai-recommend-modal h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
   color: var(--text-primary);
-  cursor: pointer;
-  flex-shrink: 0;
-  height: 40px;
-  min-width: 105px;
-}
-.ai-model-select:focus { outline: none; border-color: var(--accent-purple); }
-.ai-model-select option { background: var(--bg-secondary); color: var(--text-primary); }
-.ai-chat-context {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  background: var(--bg-tertiary);
-  border-bottom: 1px solid var(--border-color);
-  font-size: 12px;
-  color: var(--accent-purple);
-  flex-shrink: 0;
-}
-.ai-chat-context svg { color: var(--accent-purple); }
-.ai-chat-context-clear {
-  margin-left: auto;
-  background: none;
-  border: none;
-  color: var(--text-tertiary);
-  font-size: 16px;
-  cursor: pointer;
-  padding: 0 2px;
-  line-height: 1;
-}
-.ai-chat-context-clear:hover { color: var(--text-primary); }
-.ai-message {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  max-width: 85%;
-  animation: fadeInUp 0.25s ease;
-}
-.ai-message.user {
-  align-self: flex-end;
-  flex-direction: row-reverse;
-}
-.ai-message-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
-.ai-message.user .ai-message-avatar {
-  background: linear-gradient(135deg, #6366f1, #a855f7);
-  color: #fff;
-}
-.ai-message.assistant .ai-message-avatar {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-}
-.ai-message-content {
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 14px;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-.ai-message.user .ai-message-content {
-  background: linear-gradient(135deg, #6366f1, #7c3aed);
-  color: #fff;
-  border-bottom-right-radius: 4px;
-}
-.ai-message.assistant .ai-message-content {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-bottom-left-radius: 4px;
-  color: var(--text-primary);
-}
-.ai-message-content p { margin: 0 0 8px 0; }
-.ai-message-content p:last-child { margin-bottom: 0; }
-.ai-message-content code {
-  background: rgba(0,0,0,0.3);
-  padding: 1px 5px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-family: var(--font-mono);
-}
-.ai-message-content pre {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 12px;
-  margin: 8px 0;
-  overflow-x: auto;
-}
-.ai-message-content pre code {
-  background: none;
-  padding: 0;
-  font-size: 13px;
-  line-height: 1.5;
-}
-.ai-message-reasoning {
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-color);
-}
-.ai-message-reasoning details { font-size: 13px; }
-.ai-message-reasoning summary {
-  cursor: pointer;
-  color: var(--text-tertiary);
-  font-size: 12px;
-  user-select: none;
-}
-.ai-message-reasoning summary:hover { color: var(--accent-purple); }
-.ai-reasoning-text {
-  margin-top: 6px;
-  padding: 8px;
-  background: var(--bg-primary);
-  border-radius: 6px;
-  font-size: 13px;
-  color: var(--text-tertiary);
-  line-height: 1.5;
-  white-space: pre-wrap;
-}
-.ai-message-text { min-width: 0; }
-.ai-rec-cards {
-  display: flex;
-  flex-direction: column;
   gap: 8px;
-  width: 100%;
-  margin-left: 44px;
-  margin-top: 4px;
 }
-.ai-rec-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--bg-primary);
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  width: 100%;
-  box-sizing: border-box;
-}
-.ai-rec-card:hover {
-  border-color: #818cf8;
-  background: var(--bg-tertiary);
-}
-.ai-rec-card-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-.ai-rec-card-info { flex: 1; min-width: 0; }
-.ai-rec-card-name {
+.ai-recommend-modal .ai-subtitle {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-.ai-rec-card-reason {
-  font-size: 12px;
-  color: var(--text-secondary);
-}
-.ai-rec-card-type {
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 8px;
-  background: var(--bg-tertiary);
   color: var(--text-tertiary);
-  flex-shrink: 0;
+  margin: 0 0 18px 0;
 }
-.ai-chat-input-row {
+.ai-recommend-input-row {
   display: flex;
   gap: 8px;
-  width: 100%;
+  margin-bottom: 16px;
 }
-.ai-chat-input-row input {
+.ai-recommend-input-row input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border: 1px solid var(--border-color);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--bg-primary);
   color: var(--text-primary);
   font-size: 14px;
   outline: none;
   transition: border-color 0.2s;
 }
-.ai-chat-input-row input:focus {
+.ai-recommend-input-row input:focus {
   border-color: #818cf8;
 }
-.ai-chat-input-row input::placeholder {
+.ai-recommend-input-row input::placeholder {
   color: var(--text-tertiary);
 }
-.ai-chat-send-btn {
-  padding: 12px 24px;
+.ai-recommend-btn {
+  padding: 10px 20px;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: linear-gradient(135deg, #6366f1, #a855f7);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
   white-space: nowrap;
+  transition: opacity 0.2s;
 }
-.ai-chat-send-btn:hover { opacity: 0.88; }
-.ai-chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.ai-chat-welcome {
+.ai-recommend-btn:hover { opacity: 0.88; }
+.ai-recommend-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ai-recommend-quota {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.ai-quota-text strong {
+  color: #818cf8;
+  font-weight: 600;
+}
+.ai-recommend-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ai-recommend-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.ai-recommend-card:hover {
+  border-color: #818cf8;
+  background: var(--bg-tertiary);
+}
+.ai-recommend-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.ai-recommend-card-info {
+  flex: 1;
+  min-width: 0;
+}
+.ai-recommend-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+.ai-recommend-card-reason {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.ai-recommend-card-type {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: center;
+}
+.ai-recommend-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 60px 20px;
-  text-align: center;
-  gap: 16px;
-}
-.ai-chat-welcome-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-}
-.ai-chat-welcome h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-.ai-chat-welcome p {
-  font-size: 14px;
+  padding: 30px 0;
+  gap: 12px;
   color: var(--text-tertiary);
-  max-width: 400px;
-  line-height: 1.6;
+  font-size: 14px;
 }
-.ai-chat-welcome .suggestions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 8px;
+.ai-recommend-empty {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--text-tertiary);
+  font-size: 14px;
 }
-.ai-chat-welcome .suggestion-chip {
-  padding: 8px 16px;
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  font-size: 13px;
+.ai-recommend-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: none; border: none;
+  font-size: 24px; color: var(--text-tertiary);
   cursor: pointer;
-  transition: all 0.2s;
 }
-.ai-chat-welcome .suggestion-chip:hover {
-  border-color: #818cf8;
-  color: #818cf8;
-  background: rgba(99,102,241,0.08);
-}
-.ai-typing {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 0;
-}
-.ai-typing span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--text-tertiary);
-  animation: typingBounce 1.4s infinite ease-in-out both;
-}
-.ai-typing span:nth-child(1) { animation-delay: -0.32s; }
-.ai-typing span:nth-child(2) { animation-delay: -0.16s; }
-@keyframes typingBounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.ai-recommend-close:hover { color: var(--text-primary); }
 
 /* ===== Mindmap Modal ===== */
 .mindmap-overlay {
@@ -2295,8 +2080,7 @@ body::before {
   .cards-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
   .editor-main { flex-direction: column; }
   .sidebar { width: 100% !important; max-width: 100% !important; max-height: 180px; border-right: none; border-bottom: 1px solid var(--border-color); }
-  .resizer, .resizer-horizontal, .ai-sidebar-resizer { display: none; }
-  .ai-chat-panel { width: 100% !important; min-width: 0 !important; max-width: 100% !important; border-left: none; border-top: 1px solid var(--border-color); }
+  .resizer, .resizer-horizontal { display: none; }
   .code-panel { min-height: 280px; }
   .category-sidebar { display: none; }
   .project-list-layout { padding: 0 16px 48px; }
@@ -3134,26 +2918,6 @@ body::before {
     color: white;
   }
 </style>
-<!-- IE 浏览器检测 -->
-<script>
-(function() {
-  var isIE = !!document.documentMode || (navigator.userAgent.indexOf('MSIE') > -1) || (navigator.userAgent.indexOf('Trident/') > -1);
-  if (isIE) {
-    document.write(
-      '<div style="position:fixed;inset:0;z-index:999999;background:#0d1117;color:#c9d1d9;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif">' +
-      '<div style="text-align:center;padding:40px">' +
-      '<div style="font-size:48px;margin-bottom:20px">⚠️</div>' +
-      '<h1 style="font-size:24px;margin:0 0 12px;color:#f85149">您的浏览器不受支持</h1>' +
-      '<p style="font-size:16px;color:#8b949e;margin:0 0 24px">请更新到最新的浏览器以正常使用本平台</p>' +
-      '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">' +
-      '<a href="https://www.google.cn/chrome/" style="padding:10px 20px;background:#58a6ff;color:#fff;border-radius:8px;text-decoration:none;font-size:14px">下载 Chrome</a>' +
-      '<a href="https://www.microsoft.com/edge" style="padding:10px 20px;background:#58a6ff;color:#fff;border-radius:8px;text-decoration:none;font-size:14px">下载 Edge</a>' +
-      '</div></div></div>'
-    );
-    document.close();
-  }
-})();
-</script>
 </head>
 <body>
 
@@ -3294,19 +3058,19 @@ body::before {
     </div>
     <div class="hero-gallery">
       <div class="gallery-item gallery-item-1">
-        <img src="/images/covers/fathers_day.jpg" alt="父亲节快乐" loading="lazy">
+        <img src="https://aka.doubaocdn.com/s/m5sx1wljga" alt="父亲节快乐" loading="lazy">
         <div class="gallery-overlay">
           <span class="gallery-label">❤️ 父亲节</span>
         </div>
       </div>
       <div class="gallery-item gallery-item-2">
-        <img src="/images/covers/code_explorer.jpg" alt="编程之夜" loading="lazy">
+        <img src="https://aka.doubaocdn.com/s/eRKL1wljgY" alt="编程之夜" loading="lazy">
         <div class="gallery-overlay">
           <span class="gallery-label">💻 编程创作</span>
         </div>
       </div>
       <div class="gallery-item gallery-item-3">
-        <img src="/images/covers/weird_ai_tools.jpg" alt="科技未来" loading="lazy">
+        <img src="https://aka.doubaocdn.com/s/QoO01wljgb" alt="科技未来" loading="lazy">
         <div class="gallery-overlay">
           <span class="gallery-label">🚀 科技未来</span>
         </div>
@@ -3357,9 +3121,9 @@ body::before {
         <span class="category-index-icon"></span>
         <span class="category-index-label">思维导图</span>
       </div>
-      <div class="category-index-item ai-recommend-entry" id="aiRecommendEntry" onclick="window.location.href='/ai-assistant.html'">
+      <div class="category-index-item ai-recommend-entry" id="aiRecommendEntry">
         <span class="category-index-icon">✨</span>
-        <span class="category-index-label">AI 助手</span>
+        <span class="category-index-label">AI 推荐</span>
       </div>
     </div>
     <div class="cards-grid" id="cardsGrid">
@@ -3417,9 +3181,6 @@ body::before {
       </button>
       <button class="toolbar-btn" id="btnToggleSidebar" title="切换侧边栏">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
-      </button>
-      <button class="toolbar-btn" onclick="window.location.href='/ai-assistant.html'" title="AI 助手" style="color:var(--accent-purple)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
       </button>
     </div>
   </div>
@@ -3492,54 +3253,6 @@ body::before {
           <div class="terminal-output" id="terminalOutput"></div>
         </div>
       </div>
-      </div>
-      <div class="ai-sidebar-resizer" id="aiSidebarResizer"></div>
-      <div class="ai-chat-panel active" id="aiChatPanel">
-        <div class="ai-chat-panel-header">
-          <span class="ai-chat-panel-title">✨ AI 助手</span>
-          <span class="ai-chat-quota" id="aiChatQuota"></span>
-          <div style="display:flex;gap:6px;margin-left:auto">
-            <button class="ai-chat-panel-btn" onclick="clearAIChat()" title="清除对话">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              清除
-            </button>
-          </div>
-        </div>
-        <div class="ai-chat-context" id="aiChatContext" style="display:none">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-          <span id="aiChatContextLabel"></span>
-          <button class="ai-chat-context-clear" onclick="clearAIContext()" title="清除上下文">×</button>
-        </div>
-        <div class="ai-chat-panel-body" id="aiChatMessages">
-          <div class="ai-chat-welcome">
-            <div class="ai-chat-welcome-icon">✨</div>
-            <h3>AI 助手</h3>
-            <p>我可以帮你推荐项目、回答代码问题，或者和你聊天。</p>
-            <div class="suggestions">
-              <span class="suggestion-chip" onclick="sendAIChatMessage('推荐几个游戏项目')">推荐几个游戏项目</span>
-              <span class="suggestion-chip" onclick="sendAIChatMessage('有哪些 AI 相关的项目？')">有哪些 AI 相关的项目？</span>
-              <span class="suggestion-chip" onclick="sendAIChatMessage('我想做一个工具类项目')">我想做一个工具类项目</span>
-              <span class="suggestion-chip" onclick="sendAIChatMessage('给我推荐热门项目')">给我推荐热门项目</span>
-            </div>
-          </div>
-        </div>
-        <div class="ai-chat-panel-input">
-          <div class="ai-chat-input-row">
-            <select id="aiModelSelect" class="ai-model-select" onchange="setAIModel(this.value)" title="选择 AI 模型">
-              <option value="glm-4.7-flash">🧠 GLM-4.7-Flash</option>
-              <optgroup label="OpenRouter (免费)">
-                <option value="openrouter/free">🌐 Free Auto-Route</option>
-                <option value="nvidia/nemotron-3-super-120b-a12b:free">🟢 Nemotron 3 Super 120B</option>
-                <option value="nvidia/nemotron-3-ultra:free">🟢 Nemotron 3 Ultra</option>
-                <option value="google/gemma-4-31b:free">🔵 Gemma 4 31B</option>
-                <option value="openai/gpt-oss-20b:free">⚪ GPT-OSS 20B</option>
-                <option value="qwen/qwen3-8b:free">🟠 Qwen3 8B</option>
-              </optgroup>
-            </select>
-            <input type="text" id="aiChatInput" placeholder="输入你的问题或需求..." autocomplete="off" />
-            <button class="ai-chat-send-btn" id="aiChatSendBtn" onclick="sendAIChatMessage()">发送</button>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -3605,6 +3318,21 @@ body::before {
   </div>
 </div>
 
+<!-- ========== AI 推荐弹窗 ========== -->
+<div class="ai-recommend-overlay" id="aiRecommendOverlay" onclick="if(event.target===this)closeAIRecommendModal()">
+  <div class="ai-recommend-modal">
+    <button class="ai-recommend-close" onclick="closeAIRecommendModal()">&times;</button>
+    <h3>✨ AI 推荐</h3>
+    <p class="ai-subtitle">告诉我你的兴趣，AI 为你推荐最合适的项目</p>
+    <div class="ai-recommend-input-row">
+      <input type="text" id="aiRecommendInput" placeholder="例如：推荐游戏项目、我想看 AI 相关的..." />
+      <button class="ai-recommend-btn" id="aiRecommendBtn" onclick="fetchAIRecommend()">推荐</button>
+    </div>
+    <div class="ai-recommend-quota" id="aiRecommendQuota"></div>
+    <div class="ai-recommend-results" id="aiRecommendResults"></div>
+  </div>
+</div>
+
 <!-- ========== 登录提示弹窗 ========== -->
 <div class="auth-prompt-overlay" id="authPromptOverlay" onclick="if(event.target===this)closeAuthPromptModal()">
   <div class="auth-prompt-modal">
@@ -3667,7 +3395,7 @@ body::before {
 const state = {
   fileTree: [],
   flatFiles: [],
-  projects: [],
+  projects: [],        // 项目卡片数据
   currentProject: null,
   openTabs: [],
   activeTabIdx: -1,
@@ -3675,9 +3403,7 @@ const state = {
   isRunning: false,
   execReader: null,
   currentFilter: 'all',
-  view: 'home',
-  projectTreeCache: {},
-  fileContentCache: {},
+  view: 'home',        // 当前视图: home | editor
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -3719,24 +3445,6 @@ async function fetchSearch(q) { return (await api(`/api/files/search?q=${encodeU
 // ==================== UTILS ====================
 function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 function toast(msg) { const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2200); }
-function similarity(a, b) {
-  const longer = a.length >= b.length ? a : b;
-  const shorter = a.length < b.length ? a : b;
-  if (longer.length === 0) return 1.0;
-  const editDist = (s1, s2) => {
-    const m = Array.from({length: s1.length + 1}, (_, i) => i);
-    for (let i = 1; i <= s2.length; i++) {
-      let prev = i;
-      for (let j = 1; j <= s1.length; j++) {
-        const cur = s1[j-1] === s2[i-1] ? m[j-1] : 1 + Math.min(m[j], m[j-1], prev);
-        m[j-1] = prev; prev = cur;
-      }
-      m[s1.length] = prev;
-    }
-    return m[s1.length];
-  };
-  return 1 - editDist(longer, shorter) / longer.length;
-}
 
 // ==================== PROJECT CARDS ====================
 const PROJECT_TYPES = {
@@ -3864,7 +3572,7 @@ const PROJECT_COVERS = {
   'Python桌面宠物': '/images/covers/python_community.jpg',
 };
 
-const GITHUB_RAW_BASE = '';
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/zmj2301/coding-zhou-python/main/code-explorer/public';
 function getProjectCover(name) {
   const path = PROJECT_COVERS[name];
   return path ? GITHUB_RAW_BASE + path : null;
@@ -4230,18 +3938,8 @@ function updateStats(projects) {
 
 // ==================== VIEW SWITCHING ====================
 async function openProject(projectPath) {
-  let project = state.projects.find(p => p.path === projectPath);
-  if (!project) {
-    project = state.projects.find(p => p.path.toLowerCase() === projectPath.toLowerCase());
-  }
-  if (!project) {
-    const best = state.projects.reduce((best, p) => {
-      const score = similarity(p.path, projectPath);
-      return score > best.score ? { p, score } : best;
-    }, { p: null, score: 0 });
-    if (best.p && best.score > 0.3) project = best.p;
-  }
-  if (!project) { toast('找不到该项目'); return; }
+  const project = state.projects.find(p => p.path === projectPath);
+  if (!project) return;
 
   if (project.type === 'system-file') {
     showToast('系统文件，暂不支持访问');
@@ -4268,15 +3966,6 @@ async function openProject(projectPath) {
     return;
   }
 
-  // Show AI chat by default
-  clearAIContext();
-  const aiPanel = $('#aiChatPanel');
-  const aiResizer = $('#aiSidebarResizer');
-  if (aiPanel && !aiPanel.classList.contains('active')) { aiPanel.classList.add('active'); aiPanel.style.display = 'flex'; }
-  if (aiResizer) aiResizer.style.display = 'block';
-  const codePanel = $('#codePanel');
-  if (codePanel) codePanel.style.display = 'flex';
-
   state.currentProject = project;
   $('#toolbarProject').textContent = project.name;
   $('#homePage').style.display = 'none';
@@ -4295,11 +3984,7 @@ async function openProject(projectPath) {
   $('#fileTree').innerHTML = '<div class="home-loading" style="padding:20px"><div class="spinner"></div> 加载中...</div>';
 
   try {
-    let treeData = state.projectTreeCache[projectPath];
-    if (!treeData) {
-      treeData = await fetchProjectTree(projectPath);
-      state.projectTreeCache[projectPath] = treeData;
-    }
+    const treeData = await fetchProjectTree(projectPath);
     const projectTreeNode = {
       name: project.name,
       type: 'directory',
@@ -4310,7 +3995,6 @@ async function openProject(projectPath) {
     };
     state.currentProjectTreeNode = projectTreeNode;
     state.flatFiles = flattenTree([projectTreeNode]);
-    state.expandedDirs = new Set([project.path]);
     renderProjectFileTree([projectTreeNode]);
   } catch(err) {
     $('#fileTree').innerHTML = `<div class="home-loading" style="padding:20px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
@@ -4318,12 +4002,6 @@ async function openProject(projectPath) {
 }
 
 function goHome() {
-  const aiPanel = $('#aiChatPanel');
-  const aiResizer = $('#aiSidebarResizer');
-  if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
-  if (aiResizer) aiResizer.style.display = 'none';
-  const codePanel = $('#codePanel');
-  if (codePanel) codePanel.style.display = 'flex';
   $('#editorPage').style.display = 'none';
   $('#homePage').style.display = 'flex';
   state.currentProject = null;
@@ -4412,7 +4090,6 @@ function renderProjectFileTree(nodes, filter = '') {
 
   tree.querySelectorAll('[data-dir]').forEach(el => {
     el.addEventListener('click', e => { e.stopPropagation(); toggleDir(el.dataset.dir); });
-    el.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); setAIContext(el.dataset.dir); });
   });
   tree.querySelectorAll('[data-file]').forEach(el => {
     el.addEventListener('click', e => { e.stopPropagation(); openFile(el.dataset.file); });
@@ -4444,20 +4121,10 @@ function toggleDir(dirPath) {
 
 // ==================== TABS & CODE ====================
 async function openFile(filePath) {
-  if (AI_STATE.awaiting) return;
-  // Resolve relative path to full repo path
-  let fullPath = filePath;
-  if (state.currentProject && !filePath.startsWith(state.currentProject.path)) {
-    fullPath = state.currentProject.path + '/' + filePath;
-  }
-  const ex = state.openTabs.findIndex(t => t.path === fullPath);
+  const ex = state.openTabs.findIndex(t => t.path === filePath);
   if (ex >= 0) { switchTab(ex); return; }
   try {
-    let d = state.fileContentCache[fullPath];
-    if (!d) {
-      d = await fetchContent(fullPath);
-      state.fileContentCache[fullPath] = d;
-    }
+    const d = await fetchContent(filePath);
     state.openTabs.push({ path: d.path, name: d.name, content: d.content, language: d.language });
     switchTab(state.openTabs.length - 1);
     $('#fileTree').querySelectorAll('.tree-item.active').forEach(el => el.classList.remove('active'));
@@ -4803,9 +4470,21 @@ function closeMindmapModal() {
   if (input) input.value = '';
 }
 
-// ===== AI 助手（对话式）=====
-const AI_STATE = { messages: [], awaiting: false, selectedFolder: null, model: 'glm-4.7-flash', abortController: null };
-const AI_MAX_MESSAGES = 20; // 滑动窗口：只保留最近20条消息
+// ===== AI 推荐 =====
+function openAIRecommendModal() {
+  const overlay = $('#aiRecommendOverlay');
+  if (overlay) overlay.classList.add('active');
+  fetchAIQuota();
+  setTimeout(() => {
+    const input = $('#aiRecommendInput');
+    if (input) input.focus();
+  }, 100);
+}
+
+function closeAIRecommendModal() {
+  const overlay = $('#aiRecommendOverlay');
+  if (overlay) overlay.classList.remove('active');
+}
 
 const TYPE_ICONS = {
   'game': '🎮', 'ai': '🤖', 'tool': '🔧', 'other': '📁',
@@ -4816,382 +4495,96 @@ const TYPE_LABELS = {
   'web-game': '网页游戏', 'system-file': '系统文件', 'popup-preview': '弹出预览'
 };
 
+function renderAIRecommendations(recommendations) {
+  const container = $('#aiRecommendResults');
+  if (!container) return;
+
+  if (!recommendations || recommendations.length === 0) {
+    container.innerHTML = '<div class="ai-recommend-empty">没有找到推荐结果，换个关键词试试？</div>';
+    return;
+  }
+
+  container.innerHTML = recommendations.map(rec => {
+    const icon = rec.type && TYPE_ICONS[rec.type] ? TYPE_ICONS[rec.type] : '📁';
+    const typeLabel = rec.type && TYPE_LABELS[rec.type] ? TYPE_LABELS[rec.type] : '';
+    const bgColor = rec.themeColor || 'var(--bg-tertiary)';
+
+    return `
+      <div class="ai-recommend-card" ${rec.path ? `data-path="${escapeHtml(rec.path)}" onclick="handleRecommendCardClick(this.dataset.path)"` : ''}>
+        <div class="ai-recommend-card-icon" style="background:${bgColor}20">${icon}</div>
+        <div class="ai-recommend-card-info">
+          <div class="ai-recommend-card-name">${escapeHtml(rec.name)}</div>
+          <div class="ai-recommend-card-reason">${escapeHtml(rec.reason)}</div>
+        </div>
+        ${typeLabel ? `<span class="ai-recommend-card-type">${typeLabel}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function handleRecommendCardClick(path) {
+  closeAIRecommendModal();
+  setTimeout(() => openProject(path), 100);
+}
+
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str || '';
   return div.innerHTML;
 }
 
-async function fetchAIChatQuota() {
-  const el = $('#aiChatQuota');
+async function fetchAIQuota() {
+  const el = $('#aiRecommendQuota');
   if (!el) return;
-  el.textContent = '加载额度...';
-  el.classList.add('loading');
   try {
     const resp = await fetch('/api/ai-quota');
     const data = await resp.json();
-    if (data && typeof data.remaining === 'number') {
-      const remainingRequests = data.neuronsPerRequest ? Math.floor(data.remaining / data.neuronsPerRequest) : data.remaining;
-      el.textContent = `今日剩余 ${remainingRequests} 次`;
-    } else {
-      el.textContent = '';
-    }
+    const remainingRequests = Math.floor(data.remaining / data.neuronsPerRequest);
+    el.innerHTML = `<span class="ai-quota-text">今日 AI 额度：剩余约 <strong>${remainingRequests}</strong> 次推荐（${data.remaining.toLocaleString()} / ${data.limit.toLocaleString()} neurons）</span>`;
   } catch {
-    el.textContent = '';
-  } finally {
-    el.classList.remove('loading');
+    el.innerHTML = '';
   }
 }
 
-function openAIChat() {
-  const homePage = $('#homePage');
-  const editorPage = $('#editorPage');
-  const codePanel = $('#codePanel');
-  const terminalPanel = $('#terminalPanel');
-  const aiPanel = $('#aiChatPanel');
-  const aiResizer = $('#aiSidebarResizer');
-  if (state.view === 'editor') {
-    if (aiPanel && aiPanel.classList.contains('active')) {
-      closeAIChat();
-      return;
-    }
-    if (aiPanel) { aiPanel.classList.add('active'); aiPanel.style.display = 'flex'; }
-    if (aiResizer) aiResizer.style.display = 'block';
-    if (codePanel) codePanel.style.display = 'flex';
-    if (terminalPanel && state.currentProject) terminalPanel.style.display = 'flex';
-  } else {
-    if (homePage) homePage.style.display = 'none';
-    if (editorPage) editorPage.style.display = 'flex';
-    state.view = 'editor';
-    if (aiPanel) { aiPanel.classList.add('active'); aiPanel.style.display = 'flex'; }
-    if (aiResizer) aiResizer.style.display = 'block';
-    if (codePanel) codePanel.style.display = 'flex';
-    if (state.currentProject && terminalPanel) terminalPanel.style.display = 'flex';
-  }
-  fetchAIChatQuota();
-  setTimeout(() => {
-    const input = $('#aiChatInput');
-    if (input) input.focus();
-  }, 200);
-}
+async function fetchAIRecommend() {
+  const input = $('#aiRecommendInput');
+  const btn = $('#aiRecommendBtn');
+  const container = $('#aiRecommendResults');
+  if (!input || !btn || !container) return;
 
-function closeAIChat() {
-  const homePage = $('#homePage');
-  const editorPage = $('#editorPage');
-  const aiPanel = $('#aiChatPanel');
-  const aiResizer = $('#aiSidebarResizer');
-  const codePanel = $('#codePanel');
-  const terminalPanel = $('#terminalPanel');
-  if (aiPanel) { aiPanel.classList.remove('active'); aiPanel.style.display = 'none'; }
-  if (aiResizer) aiResizer.style.display = 'none';
-  if (codePanel) codePanel.style.display = 'flex';
-  if (terminalPanel && state.currentProject) terminalPanel.style.display = 'flex';
-  if (state.view === 'editor' && !state.currentProject) {
-    if (homePage) homePage.style.display = 'flex';
-    if (editorPage) editorPage.style.display = 'none';
-    state.view = 'home';
-  }
-}
+  const preferences = input.value.trim();
 
-function addAIMessage(role, content, recommendations, reasoning) {
-  const container = $('#aiChatMessages');
-  if (!container) return;
-
-  // Remove welcome and typing indicator
-  const welcome = container.querySelector('.ai-chat-welcome');
-  if (welcome) welcome.style.display = 'none';
-  const typingEl = container.querySelector('.ai-typing-message');
-  if (typingEl) typingEl.remove();
-
-  const msgDiv = document.createElement('div');
-  msgDiv.className = `ai-message ${role}`;
-
-  const avatar = document.createElement('div');
-  avatar.className = 'ai-message-avatar';
-  avatar.textContent = role === 'user' ? 'U' : '✨';
-
-  const contentDiv = document.createElement('div');
-  contentDiv.className = 'ai-message-content';
-
-  if (reasoning) {
-    const reasoningDiv = document.createElement('div');
-    reasoningDiv.className = 'ai-message-reasoning';
-    reasoningDiv.innerHTML = `<details><summary>🤔 推理过程</summary><div class="ai-reasoning-text">${escapeHtml(reasoning)}</div></details>`;
-    contentDiv.appendChild(reasoningDiv);
-  }
-
-  if (content) {
-    const textDiv = document.createElement('div');
-    textDiv.className = 'ai-message-text';
-    const escaped = escapeHtml(content);
-    const withCode = escaped.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
-    const withInline = withCode.replace(/`([^`]+)`/g, '<code>$1</code>');
-    const withPara = withInline.split('\n').filter(Boolean).map(p => `<p>${p}</p>`).join('');
-    textDiv.innerHTML = withPara || escaped;
-    contentDiv.appendChild(textDiv);
-  }
-
-  msgDiv.appendChild(avatar);
-  msgDiv.appendChild(contentDiv);
-
-  if (recommendations && recommendations.length > 0) {
-    const cardsDiv = document.createElement('div');
-    cardsDiv.className = 'ai-rec-cards';
-    cardsDiv.innerHTML = recommendations.map(rec => {
-      const icon = rec.type && TYPE_ICONS[rec.type] ? TYPE_ICONS[rec.type] : '📁';
-      const typeLabel = rec.type && TYPE_LABELS[rec.type] ? TYPE_LABELS[rec.type] : '';
-      const bgColor = rec.themeColor || 'var(--bg-tertiary)';
-      return `
-        <div class="ai-rec-card" onclick="openProject('${escapeHtml(rec.path)}')">
-          <div class="ai-rec-card-icon" style="background:${bgColor}20">${icon}</div>
-          <div class="ai-rec-card-info">
-            <div class="ai-rec-card-name">${escapeHtml(rec.name)}</div>
-            <div class="ai-rec-card-reason">${escapeHtml(rec.reason)}</div>
-          </div>
-          ${typeLabel ? `<span class="ai-rec-card-type">${typeLabel}</span>` : ''}
-        </div>
-      `;
-    }).join('');
-    msgDiv.appendChild(cardsDiv);
-  }
-
-  container.appendChild(msgDiv);
-  container.scrollTop = container.scrollHeight;
-}
-
-function showAITyping() {
-  const container = $('#aiChatMessages');
-  if (!container) return;
-  const welcome = container.querySelector('.ai-chat-welcome');
-  if (welcome) welcome.style.display = 'none';
-
-  const existing = container.querySelector('.ai-typing-message');
-  if (existing) return;
-
-  const typingDiv = document.createElement('div');
-  typingDiv.className = 'ai-message assistant ai-typing-message';
-  typingDiv.innerHTML = `
-    <div class="ai-message-avatar">✨</div>
-    <div class="ai-message-content">
-      <div class="ai-typing">
-        <span></span><span></span><span></span>
-      </div>
+  btn.disabled = true;
+  btn.textContent = '思考中...';
+  container.innerHTML = `
+    <div class="ai-recommend-loading">
+      <div class="spinner"></div>
+      <span>AI 正在分析你的偏好...</span>
     </div>
   `;
-  container.appendChild(typingDiv);
-  container.scrollTop = container.scrollHeight;
-}
-
-function removeAITyping() {
-  const el = document.querySelector('.ai-typing-message');
-  if (el) el.remove();
-}
-
-async function sendAIChatMessage(prefilledText) {
-  const input = $('#aiChatInput');
-  const sendBtn = $('#aiChatSendBtn');
-  if (!input || !sendBtn) return;
-  if (AI_STATE.awaiting) return;
-
-  let text;
-  if (prefilledText) {
-    text = prefilledText;
-  } else {
-    text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-  }
-
-  // 取消之前的请求（如果有）
-  if (AI_STATE.abortController) {
-    AI_STATE.abortController.abort();
-  }
-  AI_STATE.abortController = new AbortController();
-
-  AI_STATE.awaiting = true;
-  sendBtn.disabled = true;
-  sendBtn.textContent = '发送中...';
-
-  AI_STATE.messages.push({ role: 'user', content: text });
-  addAIMessage('user', text, null);
-  showAITyping();
-
-  // 滑动窗口：只保留最近的消息，防止请求体过大
-  if (AI_STATE.messages.length > AI_MAX_MESSAGES) {
-    AI_STATE.messages = AI_STATE.messages.slice(-AI_MAX_MESSAGES);
-  }
 
   try {
-    const body = { messages: AI_STATE.messages, model: AI_STATE.model };
-    if (AI_STATE.selectedFolder) {
-      body.context = { folder: AI_STATE.selectedFolder };
-    }
-    // 检测是否需要项目列表，只有询问推荐相关问题时才发送
-    body.needsProjects = needsProjectList(text);
     const resp = await fetch('/api/recommend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      signal: AI_STATE.abortController.signal
+      body: JSON.stringify({ preferences })
     });
 
-    removeAITyping();
     const data = await resp.json();
 
-    if (data.success) {
-      AI_STATE.messages.push({ role: 'assistant', content: data.response || '' });
-      addAIMessage('assistant', data.response, data.recommendations, data.reasoning);
+    if (data.success && data.recommendations) {
+      renderAIRecommendations(data.recommendations);
     } else {
-      addAIMessage('assistant', data.error || '服务暂时不可用，请稍后再试。', null);
+      container.innerHTML = `<div class="ai-recommend-empty">${data.error || '推荐服务暂时不可用'}</div>`;
     }
   } catch (e) {
-    removeAITyping();
-    // 如果是用户主动取消，不显示错误
-    if (e.name !== 'AbortError') {
-      addAIMessage('assistant', '网络请求失败，请检查网络连接后重试。', null);
-    }
+    container.innerHTML = `<div class="ai-recommend-empty">请求失败，请稍后再试</div>`;
   } finally {
-    AI_STATE.awaiting = false;
-    AI_STATE.abortController = null;
-    sendBtn.disabled = false;
-    sendBtn.textContent = '发送';
-    const chatInput = $('#aiChatInput');
-    if (chatInput) chatInput.focus();
+    btn.disabled = false;
+    btn.textContent = '推荐';
+    fetchAIQuota();
   }
 }
-
-function clearAIChat() {
-  // 取消正在进行的请求
-  if (AI_STATE.abortController) {
-    AI_STATE.abortController.abort();
-    AI_STATE.abortController = null;
-  }
-  AI_STATE.messages = [];
-  AI_STATE.awaiting = false;
-  clearAIContext();
-  const container = $('#aiChatMessages');
-  if (!container) return;
-  container.innerHTML = `
-    <div class="ai-chat-welcome">
-      <div class="ai-chat-welcome-icon">✨</div>
-      <h3>AI 助手</h3>
-      <p>我可以帮你推荐项目、回答关于代码的问题，或者和你聊天。</p>
-      <div class="suggestions">
-        <span class="suggestion-chip" onclick="sendAIChatMessage('推荐几个游戏项目')">推荐几个游戏项目</span>
-        <span class="suggestion-chip" onclick="sendAIChatMessage('有哪些 AI 相关的项目？')">有哪些 AI 相关的项目？</span>
-        <span class="suggestion-chip" onclick="sendAIChatMessage('我想做一个工具类项目')">我想做一个工具类项目</span>
-        <span class="suggestion-chip" onclick="sendAIChatMessage('给我推荐热门项目')">给我推荐热门项目</span>
-      </div>
-    </div>
-  `;
-}
-
-function setAIContext(folderPath) {
-  if (!folderPath) return;
-  AI_STATE.selectedFolder = folderPath;
-  const bar = $('#aiChatContext');
-  const label = $('#aiChatContextLabel');
-  if (bar && label) {
-    label.textContent = folderPath;
-    bar.style.display = 'flex';
-  }
-}
-
-function clearAIContext() {
-  AI_STATE.selectedFolder = null;
-  const bar = $('#aiChatContext');
-  if (bar) bar.style.display = 'none';
-}
-
-function setAIModel(model) {
-  AI_STATE.model = model;
-  try { localStorage.setItem('ai-model', model); } catch {}
-}
-
-function initAIModel() {
-  try {
-    const saved = localStorage.getItem('ai-model');
-    if (saved) {
-      AI_STATE.model = saved;
-    }
-  } catch {}
-  const sel = $('#aiModelSelect');
-  if (sel) sel.value = AI_STATE.model;
-}
-
-// 检测用户是否在询问项目推荐相关问题
-function needsProjectList(text) {
-  const lower = text.toLowerCase();
-  const keywords = ['推荐', '项目', '有什么', '哪些', '找一个', '适合', '游戏', '工具', 'ai', '人工智能', '热门', '好玩', '有趣'];
-  return keywords.some(kw => lower.includes(kw));
-}
-
-// Init model on page load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAIModel);
-} else {
-  initAIModel();
-}
-
-// ===== AI 侧边栏拖动调整大小 =====
-(function() {
-  const resizer = $('#aiSidebarResizer');
-  const aiPanel = $('#aiChatPanel');
-  if (!resizer || !aiPanel) return;
-  let startX, startW;
-  resizer.addEventListener('mousedown', e => {
-    e.preventDefault();
-    startX = e.clientX;
-    startW = aiPanel.offsetWidth;
-    resizer.classList.add('active');
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-    function onMove(e) {
-      const dx = startX - e.clientX;
-      const newW = Math.min(600, Math.max(250, startW + dx));
-      aiPanel.style.width = newW + 'px';
-    }
-    function onUp() {
-      resizer.classList.remove('active');
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-    }
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  });
-})();
-
-// ===== 左侧文件树拖动调整大小 =====
-(function() {
-  const resizer = $('#resizerLeft');
-  const sidebar = $('#sidebar');
-  if (!resizer || !sidebar) return;
-  let startX, startW;
-  resizer.addEventListener('mousedown', e => {
-    e.preventDefault();
-    startX = e.clientX;
-    startW = sidebar.offsetWidth;
-    resizer.classList.add('active');
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-    function onMove(e) {
-      const dx = e.clientX - startX;
-      const newW = Math.min(400, Math.max(150, startW + dx));
-      sidebar.style.width = newW + 'px';
-    }
-    function onUp() {
-      resizer.classList.remove('active');
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-    }
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-  });
-})();
 
 let _mindmapSearchHandler = null;
 
@@ -5831,7 +5224,6 @@ async function doUserLogin() {
     const d = await r.json();
     if (r.ok && d.token) {
       setCookie('wg_token', d.token, 7);
-      state.isAuthenticated = true;
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
       loginPasswordInput.value = '';
@@ -6119,8 +5511,10 @@ const aboutEntry = document.getElementById('aboutEntry');
 if (aboutEntry) aboutEntry.addEventListener('click', openAboutModal);
 const mindmapEntry = document.getElementById('mindmapEntry');
 if (mindmapEntry) mindmapEntry.addEventListener('click', openMindmapModal);
-const aiChatInput = document.getElementById('aiChatInput');
-if (aiChatInput) aiChatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAIChatMessage(); } });
+const aiRecommendEntry = document.getElementById('aiRecommendEntry');
+if (aiRecommendEntry) aiRecommendEntry.addEventListener('click', openAIRecommendModal);
+const aiRecommendInput = document.getElementById('aiRecommendInput');
+if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
 // 初始化主题
 setTheme(getTheme());
 
@@ -6284,11 +5678,6 @@ document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 'b' && state.currentProject) {
     e.preventDefault();
     toggleBookmark(state.currentProject);
-  }
-  // Ctrl+Shift+A: AI 助手
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'a' || e.key === 'A')) {
-    e.preventDefault();
-    openAIChat();
   }
 });
 

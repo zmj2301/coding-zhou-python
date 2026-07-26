@@ -1,93 +1,9 @@
 [
   {
-    "name": "image",
-    "type": "directory",
-    "path": "image",
-    "children": [
-      {
-        "name": "blue1.png",
-        "type": "file",
-        "path": "image/blue1.png",
-        "ext": ".png",
-        "lastModified": 1780192077515
-      },
-      {
-        "name": "blue2.png",
-        "type": "file",
-        "path": "image/blue2.png",
-        "ext": ".png",
-        "lastModified": 1780192084800
-      },
-      {
-        "name": "blue3.png",
-        "type": "file",
-        "path": "image/blue3.png",
-        "ext": ".png",
-        "lastModified": 1780192090891
-      },
-      {
-        "name": "level1.png",
-        "type": "file",
-        "path": "image/level1.png",
-        "ext": ".png",
-        "lastModified": 1780192528285
-      },
-      {
-        "name": "red1.png",
-        "type": "file",
-        "path": "image/red1.png",
-        "ext": ".png",
-        "lastModified": 1780192098895
-      },
-      {
-        "name": "red2.png",
-        "type": "file",
-        "path": "image/red2.png",
-        "ext": ".png",
-        "lastModified": 1780192104999
-      },
-      {
-        "name": "red3.png",
-        "type": "file",
-        "path": "image/red3.png",
-        "ext": ".png",
-        "lastModified": 1780192110810
-      }
-    ]
-  },
-  {
     "name": "img",
     "type": "directory",
     "path": "img",
     "children": [
-      {
-        "name": "oga_cc0_walks",
-        "type": "directory",
-        "path": "img/oga_cc0_walks",
-        "children": [
-          {
-            "name": "pixel_hero.png",
-            "type": "file",
-            "path": "img/oga_cc0_walks/pixel_hero.png",
-            "ext": ".png",
-            "lastModified": 1780188175799
-          },
-          {
-            "name": "rpg_adventurer.png",
-            "type": "file",
-            "path": "img/oga_cc0_walks/rpg_adventurer.png",
-            "ext": ".png",
-            "lastModified": 1780188172561
-          },
-          {
-            "name": "rpg_peasant.png",
-            "type": "file",
-            "path": "img/oga_cc0_walks/rpg_peasant.png",
-            "ext": ".png",
-            "lastModified": 1780188173719
-          }
-        ]
-      },
       {
         "name": "README.md",
         "type": "file",
@@ -117,12 +33,5 @@
     "path": "main.py",
     "ext": ".py",
     "lastModified": 1780196485466
-  },
-  {
-    "name": "main_log.log",
-    "type": "file",
-    "path": "main_log.log",
-    "ext": ".log",
-    "lastModified": 1780198650496
   }
 ]

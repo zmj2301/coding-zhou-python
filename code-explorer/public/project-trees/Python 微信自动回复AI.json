@@ -1,12 +1,5 @@
 [
   {
-    "name": "edge_tts.mp3",
-    "type": "file",
-    "path": "edge_tts.mp3",
-    "ext": ".mp3",
-    "lastModified": 1771826981286
-  },
-  {
     "name": "main.py",
     "type": "file",
     "path": "main.py",

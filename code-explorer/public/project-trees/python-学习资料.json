@@ -236,13 +236,6 @@
         "lastModified": 1772509588383
       },
       {
-        "name": "edge_tts.mp3",
-        "type": "file",
-        "path": "实用技巧/edge_tts.mp3",
-        "ext": ".mp3",
-        "lastModified": 1773389767094
-      },
-      {
         "name": "output.txt",
         "type": "file",
         "path": "实用技巧/output.txt",
@@ -257,25 +250,11 @@
         "lastModified": 1783216794941
       },
       {
-        "name": "rule.mp3",
-        "type": "file",
-        "path": "实用技巧/rule.mp3",
-        "ext": ".mp3",
-        "lastModified": 1772025906030
-      },
-      {
         "name": "test_ollama.py",
         "type": "file",
         "path": "实用技巧/test_ollama.py",
         "ext": ".py",
         "lastModified": 1772509083341
-      },
-      {
-        "name": "出牌不合规.mp3",
-        "type": "file",
-        "path": "实用技巧/出牌不合规.mp3",
-        "ext": ".mp3",
-        "lastModified": 1772029604627
       },
       {
         "name": "朗读文本 copy.py",
@@ -297,13 +276,6 @@
         "path": "实用技巧/朗读文本.txt",
         "ext": ".txt",
         "lastModified": 1772197433885
-      },
-      {
-        "name": "要不起.mp3",
-        "type": "file",
-        "path": "实用技巧/要不起.mp3",
-        "ext": ".mp3",
-        "lastModified": 1771943905782
       },
       {
         "name": "鼠标长按-pygame.py",
