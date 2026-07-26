@@ -8,8 +8,8 @@
         "transparent": false
     },
     "timer": {
-        "work_minutes": 1,
-        "break_minutes": 1
+        "work_minutes": 20,
+        "break_minutes": 5
     },
     "menus": {
         "cctv_channels": [

@@ -6,8 +6,8 @@
     "label": "AI",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 4455,
-    "lastModified": 1784431113508,
+    "fileCount": 5925,
+    "lastModified": 1784514176037,
     "themeColor": "hsl(173, 37%, 60%)",
     "popupUrl": null
   },
@@ -78,8 +78,8 @@
     "label": "其他",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 1237,
-    "lastModified": 1784465470269,
+    "fileCount": 1266,
+    "lastModified": 1784727259119,
     "themeColor": "hsl(241, 33%, 66%)",
     "popupUrl": null
   },

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻页日历预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calendar-container {
+            perspective: 1000px;
+            width: 360px;
+            height: 480px;
+        }
+
+        .calendar-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .calendar-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .calendar-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .front-face {
+            background: linear-gradient(145deg, #1e1e2e 0%, #252538 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-face {
+            background: linear-gradient(145deg, #0f3460 0%, #16537e 100%);
+            border: 1px solid rgba(0, 188, 242, 0.3);
+            transform: rotateY(180deg);
+        }
+
+        /* 顶部月份/标题栏 */
+        .calendar-header {
+            padding: 20px 24px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .month-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .month-title .year {
+            font-size: 14px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            margin-left: 8px;
+        }
+
+        .page-indicator {
+            display: flex;
+            gap: 6px;
+        }
+
+        .page-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .page-dot.active {
+            background: #00bcf2;
+            box-shadow: 0 0 10px #00bcf2;
+            transform: scale(1.2);
+        }
+
+        .page-dot.completed {
+            background: #00d47e;
+        }
+
+        /* 周标题 */
+        .week-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            padding: 12px 16px 8px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 日期网格 */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            padding: 0 16px 16px;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .day-cell:hover {
+            background: rgba(0, 188, 242, 0.15);
+            color: #00bcf2;
+        }
+
+        .day-cell.other-month {
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .day-cell.other-month:hover {
+            color: rgba(255, 255, 255, 0.3);
+            background: transparent;
+        }
+
+        .day-cell.today {
+            background: linear-gradient(135deg, #0078d4, #00bcf2);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 120, 212, 0.4);
+        }
+
+        .day-cell.completed {
+            background: linear-gradient(135deg, #00a65e, #00d47e);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .day-cell.completed::after {
+            content: '✓';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .day-cell.current-session {
+            background: rgba(255, 180, 0, 0.2);
+            color: #ffb400;
+            border: 2px solid #ffb400;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 180, 0, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(255, 180, 0, 0); }
+        }
+
+        /* 翻面内容 - 统计页 */
+        .stats-face {
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .stats-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 188, 242, 0.2), rgba(0, 120, 212, 0.2));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+            border: 2px solid rgba(0, 188, 242, 0.3);
+        }
+
+        .stats-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: #00bcf2;
+        }
+
+        .stats-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .stats-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            width: 100%;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(0, 188, 242, 0.1);
+            border-color: rgba(0, 188, 242, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #00bcf2;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-item:nth-child(2) .stat-value { color: #00d47e; }
+        .stat-item:nth-child(3) .stat-value { color: #ffb400; }
+        .stat-item:nth-child(4) .stat-value { color: #e84d5a; }
+
+        /* 底部提示 */
+        .flip-hint {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .flip-hint svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            animation: flipHint 2s infinite;
+        }
+
+        @keyframes flipHint {
+            0%, 100% { transform: rotateY(0deg); }
+            50% { transform: rotateY(180deg); }
+        }
+
+        /* 控制面板 */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0078d4, #00bcf2);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 120, 212, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 120, 212, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00a65e, #00d47e);
+            color: #fff;
+        }
+
+        /* 响应式 */
+        @media (max-width: 400px) {
+            .calendar-container {
+                width: 320px;
+                height: 420px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="calendar-card" id="calendarCard">
+            <!-- 正面：月历 -->
+            <div class="calendar-face front-face">
+                <div class="calendar-header">
+                    <div class="month-title" id="monthTitle">12月 <span class="year">2024</span></div>
+                    <div class="page-indicator" id="pageIndicator"></div>
+                </div>
+                <div class="week-header">
+                    <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+                </div>
+                <div class="days-grid" id="daysGrid"></div>
+                <div class="flip-hint">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12H3M3 12l8 8M3 12l8-8"/>
+                    </svg>
+                    点击翻面查看统计
+                </div>
+            </div>
+            
+            <!-- 背面：统计 -->
+            <div class="calendar-face back-face">
+                <div class="stats-face">
+                    <div class="stats-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                    </div>
+                    <div class="stats-title">专注统计</div>
+                    <div class="stats-subtitle">本月完成情况</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="statSessions">12</div>
+                            <div class="stat-label">完成番茄钟</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statHours">4.0</div>
+                            <div class="stat-label">专注时长</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statStreak">5</div>
+                            <div class="stat-label">连续天数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statRate">85%</div>
+                            <div class="stat-label">完成率</div>
+                        </div>
+                    </div>
+                    <div class="flip-hint">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12H3M3 12l8 8M3 12l8-8"/>
+                        </svg>
+                        点击返回日历
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-primary" onclick="simulateSession()">+1 完成番茄钟</button>
+        <button class="btn btn-secondary" onclick="prevMonth()">上月</button>
+        <button class="btn btn-secondary" onclick="nextMonth()">下月</button>
+        <button class="btn btn-success" onclick="toggleFlip()">翻面</button>
+    </div>
+
+    <script>
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let isFlipped = false;
+        
+        // 模拟完成的番茄钟日期 (YYYY-MM-DD)
+        let completedDates = new Set([
+            '2024-12-02', '2024-12-03', '2024-12-04', '2024-12-05',
+            '2024-12-09', '2024-12-10', '2024-12-11', '2024-12-12',
+            '2024-12-16', '2024-12-17', '2024-12-18', '2024-12-19'
+        ]);
+        
+        const card = document.getElementById('calendarCard');
+        const monthTitle = document.getElementById('monthTitle');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const daysGrid = document.getElementById('daysGrid');
+        
+        const statSessions = document.getElementById('statSessions');
+        const statHours = document.getElementById('statHours');
+        const statStreak = document.getElementById('statStreak');
+        const statRate = document.getElementById('statRate');
+
+        function renderCalendar() {
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const startDay = firstDay.getDay(); // 0=周日
+            const daysInMonth = lastDay.getDate();
+            const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+            
+            const today = new Date();
+            const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+            const todayDate = today.getDate();
+            
+            // 更新月份标题
+            const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            monthTitle.innerHTML = `${monthNames[currentMonth]} <span class="year">${currentYear}</span>`;
+            
+            // 更新页码指示器 (模拟多页，这里用周数)
+            const weeksInMonth = Math.ceil((startDay + daysInMonth) / 7);
+            pageIndicator.innerHTML = '';
+            for (let i = 0; i < weeksInMonth; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+                pageIndicator.appendChild(dot);
+            }
+            
+            // 渲染日期
+            daysGrid.innerHTML = '';
+            
+            // 上月剩余天数
+            for (let i = startDay - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'day-cell other-month';
+                day.textContent = prevMonthDays - i;
+                daysGrid.appendChild(day);
+            }
+            
+            // 本月天数
+            for (let d = 1; d <= daysInMonth; d++) {
+                const day = document.createElement('div');
+                day.className = 'day-cell';
+                day.textContent = d;
+                
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                
+                if (isCurrentMonth && d === todayDate) {
+                    day.classList.add('today');
+                }
+                
+                if (completedDates.has(dateStr)) {
+                    day.classList.add('completed');
+                }
+                
+                // 当前正在进行的 session (模拟今天)
+                if (isCurrentMonth && d === todayDate && !completedDates.has(dateStr)) {
+                    day.classList.add('current-session');
+                }
+                
+                daysGrid.appendChild(day);
+            }
+            
+            // 下月开始天数填充
+            const totalCells = startDay + daysInMonth;
+            const remainingCells = (Math.ceil(totalCells / 7) * 7) - totalCells;
+            for (let d = 1; d <= remainingCells; d++) {
+                const day = document.createElement('div');
+                day.className = 'day-cell other-month';
+                day.textContent = d;
+                daysGrid.appendChild(day);
+            }
+            
+            updateStats();
+        }
+        
+        function updateStats() {
+            // 统计本月完成的番茄钟
+            const monthPrefix = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            const monthCompleted = Array.from(completedDates).filter(d => d.startsWith(monthPrefix)).length;
+            
+            statSessions.textContent = monthCompleted;
+            statHours.textContent = (monthCompleted * 25 / 60).toFixed(1);
+            
+            // 计算连续天数 (简化)
+            let streak = 0;
+            const checkDate = new Date();
+            while (true) {
+                const str = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+                if (completedDates.has(str)) {
+                    streak++;
+                    checkDate.setDate(checkDate.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+            statStreak.textContent = streak;
+            
+            // 完成率
+            const daysSoFar = new Date().getDate();
+            statRate.textContent = daysSoFar > 0 ? Math.round(monthCompleted / daysSoFar * 100) + '%' : '0%';
+        }
+        
+        function toggleFlip() {
+            isFlipped = !isFlipped;
+            card.classList.toggle('flipped', isFlipped);
+        }
+        
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+        
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+        
+        function simulateSession() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            completedDates.add(dateStr);
+            renderCalendar();
+            
+            // 触发翻页动画
+            if (!isFlipped) {
+                toggleFlip();
+                setTimeout(() => toggleFlip(), 1500);
+            }
+        }
+        
+        // 点击卡片翻面
+        card.addEventListener('click', (e) => {
+            // 避免点击按钮时触发
+            if (!e.target.closest('.btn')) {
+                toggleFlip();
+            }
+        });
+        
+        // 键盘控制
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevMonth();
+            if (e.key === 'ArrowRight') nextMonth();
+            if (e.key === ' ') { e.preventDefault(); toggleFlip(); }
+        });
+        
+        // 初始化
+        renderCalendar();
+    </script>
+</body>
+</html>

@@ -63,6 +63,7 @@ class DeskPet:
 
         self._pet_window = PetWindow(self._config, countdown_widget=self._countdown_widget)
         self._pet_window.show()
+        self._app._pet_window = self._pet_window
         
         # 将宠物窗口定位到倒计时窗口正上方居中
         self._position_pet_centered()
@@ -74,6 +75,10 @@ class DeskPet:
             self._countdown_widget.position_changed.connect(self._sync_manager.sync_from_b)
             self._pet_window._sync_manager = self._sync_manager
             logging.debug("位置同步已建立")
+            
+            if hasattr(self._app, '_timer_mgr'):
+                self._app._timer_mgr.time_updated.connect(self._pet_window.set_countdown_overlay)
+                logging.debug("倒计时覆盖层已连接")
 
         sys.exit(self._app.exec())
     

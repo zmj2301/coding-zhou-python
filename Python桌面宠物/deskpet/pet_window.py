@@ -21,6 +21,8 @@ class AnimatedLabel(QLabel):
         self._breathe_timer.timeout.connect(self._breathe)
         self._breathe_phase: int = 0
         self._breathe_timer.start(50)
+        self._countdown_text: str = ""
+        self._show_countdown: bool = False
         
     def get_scale(self) -> float:
         return self._scale
@@ -30,6 +32,12 @@ class AnimatedLabel(QLabel):
         self.update()
     
     scale = Property(float, get_scale, set_scale)
+
+    def set_countdown(self, text: str, show: bool) -> None:
+        """设置倒计时覆盖层"""
+        self._countdown_text = text
+        self._show_countdown = show
+        self.update()
     
     def _breathe(self) -> None:
         """轻微的呼吸动画"""
@@ -53,6 +61,28 @@ class AnimatedLabel(QLabel):
             painter.drawPixmap(x, y, w, h, self.pixmap())
         else:
             super().paintEvent(event)
+        
+        if self._show_countdown and self._countdown_text:
+            self._paint_countdown_overlay(painter)
+
+    def _paint_countdown_overlay(self, painter: QPainter) -> None:
+        """绘制倒计时文字覆盖层"""
+        painter.save()
+        size = min(self.width(), self.height())
+        font_size = max(8, size // 4)
+        font = QFont("Consolas", font_size, QFont.Bold)
+        painter.setFont(font)
+        text = self._countdown_text
+        metrics = painter.fontMetrics()
+        tw = metrics.horizontalAdvance(text)
+        th = metrics.height()
+        tx = (self.width() - tw) // 2
+        ty = (self.height() + th) // 2 - metrics.descent()
+        painter.setPen(QColor(0, 0, 0, 120))
+        painter.drawText(tx + 1, ty + 1, text)
+        painter.setPen(QColor(255, 255, 255, 230))
+        painter.drawText(tx, ty, text)
+        painter.restore()
 
 
 class PetWindow(QWidget):
@@ -92,6 +122,22 @@ class PetWindow(QWidget):
         self._shine_timer.timeout.connect(self.update)
         self._shine_phase: float = 0
         self._shine_timer.start(50)
+
+    def set_countdown_overlay(self, remaining: int, total: int, is_work: bool) -> None:
+        """接收倒计时数据并更新覆盖层：倒计时窗口隐藏时显示文字"""
+        if self._countdown_widget and not self._countdown_widget.isVisible():
+            minutes = remaining // 60
+            seconds = remaining % 60
+            self.label.set_countdown(f"{minutes:02d}:{seconds:02d}", True)
+        else:
+            self.label.set_countdown("", False)
+
+    def set_countdown_overlay_text(self, text: str) -> None:
+        """直接设置覆盖层文字（用于时间到提示）"""
+        if text:
+            self.label.set_countdown(text, True)
+        else:
+            self.label.set_countdown("", False)
 
     def _init_window(self) -> None:
         """初始化窗口设置"""

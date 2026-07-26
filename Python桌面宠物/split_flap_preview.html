@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>翻页钟倒计时</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            color: rgba(255,255,255,0.6);
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        /* 整体容器 */
+        .flap-clock {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* 单个翻牌组（如 "29" 或 "56"） */
+        .digit-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 冒号 */
+        .colon {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+            padding: 0 6px;
+        }
+        .colon-dot {
+            width: 14px;
+            height: 14px;
+            background: #d4d0c8;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        /* 单个翻牌卡片 */
+        .flap-card {
+            width: 120px;
+            height: 180px;
+            position: relative;
+            perspective: 400px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* 每张牌的通用底色 + 阴影 */
+        .flap-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #d4d0c8;
+            border-radius: 10px;
+            box-shadow:
+                0 2px 4px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.3),
+                inset 0 -1px 0 rgba(0,0,0,0.08);
+            z-index: 0;
+        }
+
+        /* 静态：上半部分 */
+        .half-top {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            overflow: hidden;
+            z-index: 1;
+            border-radius: 10px 10px 0 0;
+        }
+
+        /* 静态：下半部分 */
+        .half-bottom {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 50%;
+            overflow: hidden;
+            z-index: 1;
+            border-radius: 0 0 10px 10px;
+        }
+
+        /* 数字文本 */
+        .half-top .digit,
+        .half-bottom .digit {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 180px;
+            font-weight: 900;
+            color: #3a3632;
+            font-family: 'Arial Black', 'Impact', sans-serif;
+            line-height: 180px;  /* 和卡片等高 */
+            user-select: none;
+        }
+
+        /* 上半数字：显示上半截 → 所以 top:0 */
+        .half-top .digit {
+            top: 0;
+        }
+
+        /* 下半数字：显示下半截 → 上移刚好让下半截对齐容器 */
+        .half-bottom .digit {
+            top: -90px;
+        }
+
+        /* 中间分割线 */
+        .split-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(0,0,0,0.12);
+            z-index: 5;
+            transform: translateY(-1px);
+        }
+
+        .split-line::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* ===== 翻页动画层 ===== */
+        /* 正在翻下的上半片（旧数字） */
+        .flap-fall-top {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            overflow: hidden;
+            z-index: 10;
+            transform-origin: bottom center;
+            border-radius: 10px 10px 0 0;
+            background: #d4d0c8;
+            backface-visibility: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .flap-fall-top .digit {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 180px;
+            font-weight: 900;
+            color: #3a3632;
+            font-family: 'Arial Black', 'Impact', sans-serif;
+            line-height: 180px;
+            user-select: none;
+        }
+
+        .flap-fall-top.animating {
+            animation: flapFallTop 0.4s ease-in forwards;
+        }
+
+        @keyframes flapFallTop {
+            0% {
+                transform: rotateX(0deg);
+            }
+            100% {
+                transform: rotateX(-90deg);
+            }
+        }
+
+        /* 正在翻入的下半片（新数字） */
+        .flap-rise-bottom {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 50%;
+            overflow: hidden;
+            z-index: 10;
+            transform-origin: top center;
+            transform: rotateX(90deg);
+            border-radius: 0 0 10px 10px;
+            background: #d4d0c8;
+            backface-visibility: hidden;
+            box-shadow: 0 -1px 3px rgba(0,0,0,0.15);
+        }
+
+        .flap-rise-bottom .digit {
+            position: absolute;
+            top: -90px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 180px;
+            font-weight: 900;
+            color: #3a3632;
+            font-family: 'Arial Black', 'Impact', sans-serif;
+            line-height: 180px;
+            user-select: none;
+        }
+
+        .flap-rise-bottom.animating {
+            animation: flapRiseBottom 0.4s ease-out forwards;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes flapRiseBottom {
+            0% {
+                transform: rotateX(90deg);
+            }
+            100% {
+                transform: rotateX(0deg);
+            }
+        }
+
+        /* 控制区 */
+        .controls {
+            margin-top: 50px;
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #0078d4; color: #fff; }
+        .btn-primary:hover { background: #0086e5; transform: translateY(-1px); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+
+        .hint {
+            margin-top: 24px;
+            color: rgba(255,255,255,0.3);
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Split-Flap · 翻页钟倒计时</h1>
+
+    <div class="flap-clock">
+        <!-- 分钟十位 -->
+        <div class="digit-group">
+            <div class="flap-card" id="m1">
+                <div class="half-top"><div class="digit">2</div></div>
+                <div class="half-bottom"><div class="digit">2</div></div>
+                <div class="split-line"></div>
+            </div>
+            <!-- 分钟个位 -->
+            <div class="flap-card" id="m0">
+                <div class="half-top"><div class="digit">0</div></div>
+                <div class="half-bottom"><div class="digit">0</div></div>
+                <div class="split-line"></div>
+            </div>
+        </div>
+
+        <div class="colon">
+            <div class="colon-dot"></div>
+            <div class="colon-dot"></div>
+        </div>
+
+        <!-- 秒数十位 -->
+        <div class="digit-group">
+            <div class="flap-card" id="s1">
+                <div class="half-top"><div class="digit">0</div></div>
+                <div class="half-bottom"><div class="digit">0</div></div>
+                <div class="split-line"></div>
+            </div>
+            <!-- 秒数个位 -->
+            <div class="flap-card" id="s0">
+                <div class="half-top"><div class="digit">0</div></div>
+                <div class="half-bottom"><div class="digit">0</div></div>
+                <div class="split-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-primary" onclick="startTimer()">▶ 开始</button>
+        <button class="btn btn-secondary" onclick="pauseTimer()">⏸ 暂停</button>
+        <button class="btn btn-secondary" onclick="resetTimer()">↺ 重置</button>
+        <button class="btn btn-secondary" onclick="flipOnce()">🎬 翻一页</button>
+    </div>
+    <div class="hint">点击「翻一页」单独体验动画 · 空格键开始/暂停</div>
+
+    <script>
+        let totalSeconds = 20 * 60;
+        let remaining = totalSeconds;
+        let timer = null;
+        let animating = false;
+
+        const cards = {
+            m1: document.getElementById('m1'),
+            m0: document.getElementById('m0'),
+            s1: document.getElementById('s1'),
+            s0: document.getElementById('s0'),
+        };
+
+        // 为每个卡片创建动画层
+        Object.values(cards).forEach(card => {
+            card._fallTop = null;
+            card._riseBottom = null;
+        });
+
+        /**
+         * 核心：让某个 flap-card 翻页，从 oldDigit 翻到 newDigit
+         */
+        function flipDigit(cardEl, oldDigit, newDigit) {
+            return new Promise(resolve => {
+                // 先确保没有残留动画层
+                clearAnimLayers(cardEl);
+
+                const card = cardEl;
+                const rect = card.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+
+                // 创建「翻下去的上半片」（旧数字）
+                const fallTop = document.createElement('div');
+                fallTop.className = 'flap-fall-top';
+                fallTop.style.width = w + 'px';
+                fallTop.style.height = (h / 2) + 'px';
+                fallTop.innerHTML = `<div class="digit" style="width:${w}px;height:${h}px;font-size:${h}px;line-height:${h}px;">${oldDigit}</div>`;
+                card.appendChild(fallTop);
+
+                // 创建「翻上来的下半片」（新数字）
+                const riseBottom = document.createElement('div');
+                riseBottom.className = 'flap-rise-bottom';
+                riseBottom.style.width = w + 'px';
+                riseBottom.style.height = (h / 2) + 'px';
+                riseBottom.innerHTML = `<div class="digit" style="width:${w}px;height:${h}px;font-size:${h}px;line-height:${h}px;">${newDigit}</div>`;
+                card.appendChild(riseBottom);
+
+                card._fallTop = fallTop;
+                card._riseBottom = riseBottom;
+
+                // 同步触发第一帧后再加 class（确保动画从头开始）
+                requestAnimationFrame(() => {
+                    fallTop.classList.add('animating');
+                    riseBottom.classList.add('animating');
+                });
+
+                // 动画结束：更新静态层，移除动画层
+                setTimeout(() => {
+                    // 更新静态上半为新数字的上半
+                    card.querySelector('.half-top .digit').textContent = newDigit;
+                    // 更新静态下半为新数字的下半
+                    card.querySelector('.half-bottom .digit').textContent = newDigit;
+                    clearAnimLayers(card);
+                    resolve();
+                }, 650);
+            });
+        }
+
+        function clearAnimLayers(card) {
+            if (card._fallTop) { card._fallTop.remove(); card._fallTop = null; }
+            if (card._riseBottom) { card._riseBottom.remove(); card._riseBottom = null; }
+            // 也清理可能残留的
+            card.querySelectorAll('.flap-fall-top, .flap-rise-bottom').forEach(el => el.remove());
+        }
+
+        /**
+         * 批量翻页：只翻变化的那几位
+         */
+        async function flipToValue(m1, m0, s1, s0) {
+            if (animating) return;
+            animating = true;
+
+            const targets = [
+                { card: cards.m1, id: 'm1', newVal: m1 },
+                { card: cards.m0, id: 'm0', newVal: m0 },
+                { card: cards.s1, id: 's1', newVal: s1 },
+                { card: cards.s0, id: 's0', newVal: s0 },
+            ];
+
+            const promises = targets.map(t => {
+                const oldDigit = t.card.querySelector('.half-top .digit').textContent;
+                if (oldDigit !== t.newVal) {
+                    return flipDigit(t.card, oldDigit, t.newVal);
+                }
+                return Promise.resolve();
+            });
+
+            await Promise.all(promises);
+            animating = false;
+        }
+
+        function getDigits(secs) {
+            const m = Math.floor(secs / 60);
+            const s = secs % 60;
+            return [
+                Math.floor(m / 10).toString(),
+                (m % 10).toString(),
+                Math.floor(s / 10).toString(),
+                (s % 10).toString(),
+            ];
+        }
+
+        function updateDisplay() {
+            const [m1, m0, s1, s0] = getDigits(remaining);
+            flipToValue(m1, m0, s1, s0);
+        }
+
+        function tick() {
+            if (remaining > 0) {
+                remaining--;
+                updateDisplay();
+            } else {
+                pauseTimer();
+                // 抖动提示
+                document.querySelector('.flap-clock').style.animation = 'shake 0.5s';
+                setTimeout(() => document.querySelector('.flap-clock').style.animation = '', 500);
+            }
+        }
+
+        function startTimer() {
+            if (!timer && remaining > 0) {
+                timer = setInterval(tick, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            remaining = totalSeconds;
+            updateDisplay();
+        }
+
+        function flipOnce() {
+            if (remaining > 0) {
+                remaining--;
+                updateDisplay();
+            }
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', e => {
+            if (e.code === 'Space') { e.preventDefault(); timer ? pauseTimer() : startTimer(); }
+            if (e.key === 'ArrowRight') flipOnce();
+        });
+
+        // 初始化显示
+        updateDisplay();
+    </script>
+</body>
+</html>

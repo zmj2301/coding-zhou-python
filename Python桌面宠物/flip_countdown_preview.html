@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻页倒计时预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: #0d0d12;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* 对比展示区域 */
+        .comparison {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .panel {
+            background: linear-gradient(145deg, #14141e 0%, #1a1a28 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            min-width: 320px;
+            max-width: 380px;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .panel-title {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* 原版倒计时（黑框） */
+        .original-countdown {
+            background: #0a0a0f;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .original-time {
+            font-size: 64px;
+            font-weight: 800;
+            color: #fff;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 8px;
+            font-family: 'SF Mono', 'Monaco', monospace;
+        }
+
+        .original-progress {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .original-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0078d4, #00bcf2);
+            border-radius: 3px;
+            transition: width 1s linear;
+        }
+
+        .original-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .original-btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-start { background: linear-gradient(135deg, #0078d4, #00bcf2); color: #fff; }
+        .btn-pause { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+        .btn-stop { background: rgba(232,17,35,0.2); color: #e81123; border: 1px solid rgba(232,17,35,0.3); }
+
+        /* 新版：翻页倒计时 */
+        .flip-countdown {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* 翻页卡片 */
+        .flip-card {
+            width: 200px;
+            height: 260px;
+            perspective: 1000px;
+            cursor: default;
+        }
+
+        .flip-card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+        }
+
+        .flip-card.flipping .flip-card-inner {
+            transform: rotateX(-180deg);
+        }
+
+        .flip-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255,255,255,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .flip-front {
+            background: linear-gradient(145deg, #1e1e2e 0%, #252538 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .flip-back {
+            background: linear-gradient(145deg, #0f3460 0%, #16537e 100%);
+            border: 1px solid rgba(0,188,242,0.3);
+            transform: rotateX(180deg);
+        }
+
+        /* 翻页数字 */
+        .flip-number {
+            font-size: 110px;
+            font-weight: 800;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            font-family: 'SF Mono', 'Monaco', monospace;
+            background: linear-gradient(180deg, #fff 0%, #a0a0b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .flip-label {
+            margin-top: 12px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .flip-back .flip-number {
+            background: linear-gradient(180deg, #00d4ff 0%, #0078d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .flip-back .flip-label {
+            color: rgba(0,212,242,0.7);
+        }
+
+        /* 进度环 */
+        .progress-ring {
+            width: 140px;
+            height: 140px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.1);
+            stroke-width: 6;
+        }
+
+        .progress-ring-fg {
+            fill: none;
+            stroke: url(#progressGradient);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 408;
+            stroke-dashoffset: 408;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        /* 状态指示 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-work { background: rgba(0,120,212,0.2); color: #00bcf2; border: 1px solid rgba(0,188,242,0.3); }
+        .status-break { background: rgba(0,166,94,0.2); color: #00d47e; border: 1px solid rgba(0,212,126,0.3); }
+        .status-idle { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.15); }
+
+        .status-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .status-work .status-dot { background: #00bcf2; }
+        .status-break .status-dot { background: #00d47e; }
+        .status-idle .status-dot { background: rgba(255,255,255,0.5); animation: none; }
+
+        @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+
+        /* 会话计数 */
+        .session-info {
+            display: flex;
+            gap: 24px;
+            margin-top: 8px;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+        }
+        .session-info span { color: #fff; font-weight: 600; }
+
+        /* 控制区 */
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .control-btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, #0078d4, #00bcf2); color: #fff; box-shadow: 0 4px 15px rgba(0,120,212,0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,120,212,0.5); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+        .btn-success { background: linear-gradient(135deg, #00a65e, #00d47e); color: #fff; }
+        .btn-danger { background: linear-gradient(135deg, #c42b1c, #e81123); color: #fff; }
+
+        /* 动画演示提示 */
+        .demo-hint {
+            text-align: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 760px) {
+            .comparison { flex-direction: column; align-items: center; }
+            .panel { width: 100%; max-width: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG 渐变定义 -->
+    <svg style="position:absolute;width:0;height:0;">
+        <defs>
+            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0078d4"/>
+                <stop offset="100%" stop-color="#00bcf2"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <h1 style="color:#fff;font-size:28px;font-weight:700;margin-bottom:8px;text-align:center;">翻页倒计时 · 方案预览</h1>
+    <p style="color:rgba(255,255,255,0.35);text-align:center;margin-bottom:30px;">左侧：原版黑框倒计时 &nbsp;|&nbsp; 右侧：翻页数字卡片（撕日历风格）</p>
+
+    <div class="comparison">
+        <!-- 原版黑框倒计时 -->
+        <div class="panel">
+            <div class="panel-title">原版 · 黑框倒计时</div>
+            <div class="original-countdown" id="originalCountdown">
+                <div class="original-time" id="origTime">20:00</div>
+                <div class="original-progress">
+                    <div class="original-progress-bar" id="origProgress" style="width: 100%"></div>
+                </div>
+                <div class="original-btns">
+                    <button class="original-btn btn-start" onclick="origStart()">开始</button>
+                    <button class="original-btn btn-pause" onclick="origPause()">暂停</button>
+                    <button class="original-btn btn-stop" onclick="origStop()">停止</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新版翻页倒计时 -->
+        <div class="panel">
+            <div class="panel-title">新版 · 翻页倒计时（撕日历风格）</div>
+            <div class="flip-countdown">
+                <div class="status-badge status-work" id="flipStatus">
+                    <span class="status-dot"></span> 专注中
+                </div>
+
+                <div class="flip-card" id="flipCard">
+                    <div class="flip-card-inner" id="flipInner">
+                        <!-- 正面：当前分钟 -->
+                        <div class="flip-face flip-front">
+                            <div class="flip-number" id="frontNumber">20</div>
+                            <div class="flip-label">分钟</div>
+                        </div>
+                        <!-- 背面：下一分钟/进度环 -->
+                        <div class="flip-face flip-back">
+                            <svg class="progress-ring" viewBox="0 0 140 140">
+                                <circle class="progress-ring-bg" cx="70" cy="70" r="65"/>
+                                <circle class="progress-ring-fg" id="progressRing" cx="70" cy="70" r="65"/>
+                            </svg>
+                            <div class="flip-number" id="backNumber" style="font-size:48px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">19</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="session-info">
+                    <span>第 <span id="sessionCurrent">1</span> / <span id="sessionTotal">4</span> 轮</span>
+                    <span>已专注 <span id="focusTime">0</span> 分钟</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn btn-primary" onclick="flipStart()">▶ 开始翻页倒计时</button>
+        <button class="control-btn btn-secondary" onclick="flipPause()">⏸ 暂停</button>
+        <button class="control-btn btn-secondary" onclick="flipReset()">↺ 重置</button>
+        <button class="control-btn btn-success" onclick="demoFlip()">🎬 演示翻页</button>
+        <button class="control-btn btn-danger" onclick="skipMinute()">⏭ 跳过分钟</button>
+    </div>
+
+    <div class="demo-hint">
+        点击「演示翻页」体验撕日历动画 · 点击「跳过分钟」模拟分钟递减
+    </div>
+
+    <script>
+        // ============ 原版倒计时逻辑 ============
+        let origRemaining = 20 * 60;
+        let origTimer = null;
+        let origTotal = 20 * 60;
+
+        function updateOrigDisplay() {
+            const m = Math.floor(origRemaining / 60).toString().padStart(2, '0');
+            const s = (origRemaining % 60).toString().padStart(2, '0');
+            document.getElementById('origTime').textContent = `${m}:${s}`;
+            const pct = (origRemaining / origTotal) * 100;
+            document.getElementById('origProgress').style.width = `${pct}%`;
+        }
+
+        function origTick() {
+            if (origRemaining > 0) {
+                origRemaining--;
+                updateOrigDisplay();
+            } else {
+                origStop();
+                alert('原版：时间到！');
+            }
+        }
+
+        function origStart() {
+            if (!origTimer) {
+                origTimer = setInterval(origTick, 1000);
+            }
+        }
+        function origPause() { if (origTimer) { clearInterval(origTimer); origTimer = null; } }
+        function origStop() { origPause(); origRemaining = origTotal; updateOrigDisplay(); }
+
+        // ============ 翻页倒计时逻辑 ============
+        let flipMinutes = 20;       // 当前显示的分钟
+        let flipSeconds = 0;        // 当前秒数
+        let flipTotalMinutes = 20;  // 总分钟数
+        let flipTimer = null;
+        let isWork = true;          // true=工作, false=休息
+        let sessionCount = 1;
+        let totalSessions = 4;
+        let focusMinutes = 0;
+        let isFlipping = false;
+
+        const card = document.getElementById('flipCard');
+        const inner = document.getElementById('flipInner');
+        const frontNum = document.getElementById('frontNumber');
+        const backNum = document.getElementById('backNumber');
+        const progressRing = document.getElementById('progressRing');
+        const statusBadge = document.getElementById('flipStatus');
+        const sessionCur = document.getElementById('sessionCurrent');
+        const sessionTot = document.getElementById('sessionTotal');
+        const focusTimeEl = document.getElementById('focusTime');
+
+        const RING_CIRCUMFERENCE = 2 * Math.PI * 65; // ~408
+
+        function updateFlipDisplay() {
+            frontNum.textContent = flipMinutes.toString().padStart(2, '0');
+            // 进度环：基于总分钟数的进度
+            const totalSecs = flipTotalMinutes * 60;
+            const elapsedSecs = totalSecs - (flipMinutes * 60 + flipSeconds);
+            const progress = elapsedSecs / totalSecs;
+            const offset = RING_CIRCUMFERENCE * (1 - progress);
+            progressRing.style.strokeDashoffset = offset;
+            
+            // 更新会话信息
+            sessionCur.textContent = sessionCount;
+            sessionTot.textContent = totalSessions;
+            focusTimeEl.textContent = focusMinutes;
+        }
+
+        function flipAnimation(nextMinute) {
+            if (isFlipping) return;
+            isFlipping = true;
+            
+            // 设置背面数字为下一分钟
+            backNum.textContent = nextMinute.toString().padStart(2, '0');
+            
+            card.classList.add('flipping');
+            
+            setTimeout(() => {
+                // 动画中点：更新正面数字
+                flipMinutes = nextMinute;
+                frontNum.textContent = flipMinutes.toString().padStart(2, '0');
+                updateFlipDisplay();
+                
+                setTimeout(() => {
+                    card.classList.remove('flipping');
+                    isFlipping = false;
+                }, 300);
+            }, 300);
+        }
+
+        function flipTick() {
+            if (flipSeconds > 0) {
+                flipSeconds--;
+            } else if (flipMinutes > 0) {
+                flipMinutes--;
+                flipSeconds = 59;
+                // 触发翻页动画
+                flipAnimation(flipMinutes);
+            } else {
+                // 时间到：切换工作/休息
+                flipComplete();
+                return;
+            }
+            updateFlipDisplay();
+        }
+
+        function flipComplete() {
+            clearInterval(flipTimer);
+            flipTimer = null;
+            
+            if (isWork) {
+                // 工作结束 -> 休息
+                isWork = false;
+                focusMinutes += 20;
+                flipMinutes = 5;  // 休息5分钟
+                flipTotalMinutes = 5;
+                statusBadge.className = 'status-badge status-break';
+                statusBadge.innerHTML = '<span class="status-dot"></span> 休息中';
+            } else {
+                // 休息结束 -> 下一轮工作或结束
+                sessionCount++;
+                if (sessionCount > totalSessions) {
+                    statusBadge.className = 'status-badge status-idle';
+                    statusBadge.innerHTML = '<span class="status-dot"></span> 全部完成';
+                    alert('翻页版：全天专注完成！');
+                    flipReset();
+                    return;
+                }
+                isWork = true;
+                flipMinutes = 20;
+                flipTotalMinutes = 20;
+                statusBadge.className = 'status-badge status-work';
+                statusBadge.innerHTML = '<span class="status-dot"></span> 专注中';
+            }
+            
+            flipSeconds = 0;
+            frontNum.textContent = flipMinutes.toString().padStart(2, '0');
+            updateFlipDisplay();
+        }
+
+        function flipStart() {
+            if (!flipTimer) {
+                flipTimer = setInterval(flipTick, 1000);
+            }
+        }
+
+        function flipPause() {
+            if (flipTimer) {
+                clearInterval(flipTimer);
+                flipTimer = null;
+            }
+        }
+
+        function flipReset() {
+            flipPause();
+            isWork = true;
+            flipMinutes = 20;
+            flipTotalMinutes = 20;
+            flipSeconds = 0;
+            sessionCount = 1;
+            focusMinutes = 0;
+            statusBadge.className = 'status-badge status-work';
+            statusBadge.innerHTML = '<span class="status-dot"></span> 专注中';
+            frontNum.textContent = '20';
+            backNum.textContent = '19';
+            card.classList.remove('flipping');
+            updateFlipDisplay();
+        }
+
+        function demoFlip() {
+            if (flipMinutes > 1) {
+                flipAnimation(flipMinutes - 1);
+            }
+        }
+
+        function skipMinute() {
+            if (flipMinutes > 0) {
+                flipAnimation(Math.max(0, flipMinutes - 1));
+                flipMinutes = Math.max(0, flipMinutes - 1);
+                flipSeconds = 0;
+                updateFlipDisplay();
+            }
+        }
+
+        // 初始化
+        updateFlipDisplay();
+        updateOrigDisplay();
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') { e.preventDefault(); flipStart(); }
+            if (e.key === 'ArrowRight') skipMinute();
+            if (e.key === 'f') demoFlip();
+        });
+    </script>
+</body>
+</html>

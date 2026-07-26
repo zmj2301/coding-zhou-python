@@ -24,6 +24,8 @@ import uuid
 import base64
 import hashlib
 import secrets
+import urllib.request
+import ssl
 
 # 编码设置：仅在非控制台输出时强制 UTF-8（如管道/重定向），
 # 控制台输出使用系统默认编码（Windows 下为 GBK），避免中文乱码
@@ -32,9 +34,15 @@ if sys.platform == 'win32':
     import asyncio
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 if not sys.stdout.isatty():
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except AttributeError:
+        pass
 if not sys.stderr.isatty():
-    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    try:
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except AttributeError:
+        pass
 
 # 配置
 PORT = 8765
@@ -119,10 +127,17 @@ _likes_lock = threading.Lock()     # 防止多线程并发读写点赞文件
 # 登录认证配置
 WEB_GAMES_PASSWORD = os.environ.get('CODE_EXPLORER_KEY', '')
 ADMIN_PASSWORD = os.environ.get('CODE_EXPLORER_ADMINISTRATOR', '')
+ZHIPU_API_KEY = os.environ.get('ZHIPU_API_KEY', '')
+ZHIPU_API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions'
+ZHIPU_MODEL = 'glm-4.7-flash'
 _sessions = {}          # token -> {'expiry': timestamp, 'is_admin': bool}
 _sessions_lock = threading.Lock()
 SESSION_TIMEOUT = 3600 * 24  # 24小时过期
 SERVER_START_TIME = time.time()
+
+# AI 使用追踪
+_ai_usage_file = Path(__file__).parent / 'ai_usage.json'
+_ai_usage_lock = threading.Lock()
 
 
 def load_likes():
@@ -226,6 +241,137 @@ def _destroy_session(token):
     """销毁会话"""
     with _sessions_lock:
         _sessions.pop(token, None)
+
+
+def _load_ai_usage():
+    """加载 AI 使用数据"""
+    with _ai_usage_lock:
+        if _ai_usage_file.exists():
+            try:
+                return json.loads(_ai_usage_file.read_text(encoding='utf-8'))
+            except Exception:
+                return {}
+        return {}
+
+
+def _save_ai_usage(data):
+    """保存 AI 使用数据"""
+    with _ai_usage_lock:
+        _ai_usage_file.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+
+
+def _get_ai_usage_today():
+    """获取今日 AI 使用次数"""
+    today = time.strftime('%Y-%m-%d')
+    usage = _load_ai_usage()
+    return usage.get(today, 0)
+
+
+def _increment_ai_usage():
+    """增加今日 AI 使用次数"""
+    today = time.strftime('%Y-%m-%d')
+    usage = _load_ai_usage()
+    usage[today] = usage.get(today, 0) + 1
+    # 清理7天前的数据
+    cutoff = time.strftime('%Y-%m-%d', time.localtime(time.time() - 7 * 86400))
+    usage = {k: v for k, v in usage.items() if k >= cutoff}
+    _save_ai_usage(usage)
+
+
+def _load_project_list():
+    """加载项目列表（从 project-list.json）"""
+    project_file = Path(__file__).parent / 'public' / 'project-list.json'
+    if not project_file.exists():
+        project_file = Path(__file__).parent / 'project-list.json'
+    if project_file.exists():
+        try:
+            return json.loads(project_file.read_text(encoding='utf-8'))
+        except Exception:
+            return []
+    return []
+
+
+def _build_ai_prompt(projects, context_info=None):
+    """构建 AI 系统提示词"""
+    project_section = ''
+    if projects:
+        project_list = '\n'.join([
+            f"- {p.get('name', 'unknown')} (path: {p.get('path', '')}, type: {p.get('type', 'unknown')}, desc: {p.get('description', 'none')})"
+            for p in projects
+        ])
+        project_section = f'\n可用的项目列表：\n{project_list}\n'
+
+    context_note = ''
+    if context_info and context_info.get('folder'):
+        context_note = f'\n用户当前关注的文件夹：{context_info["folder"]}\n'
+
+    recommend_instruction = ''
+    if projects:
+        recommend_instruction = '''
+当用户表达兴趣或需求时，推荐 3-5 个最相关的项目。推荐时在回复末尾附上 JSON 格式：
+---RECOMMEND---
+[{"path": "项目路径", "reason": "推荐理由", "name": "项目名称"}]
+---END---
+没有推荐需求时正常聊天，不要强行推荐。'''
+
+    return f'''你是一个热情友好的编程助手，名叫"小码"。你可以和用户自然地聊天、解答编程问题，也可以推荐项目。
+
+你的性格：
+- 说话语气像朋友一样自然，不要太正式
+- 推荐项目时要说明推荐理由，让人觉得有说服力
+- 如果用户问了具体需求，就帮他匹配最合适的项目
+- 如果只是聊天，就轻松愉快地聊，不用每次都推荐项目
+{project_section}{context_note}{recommend_instruction}'''
+
+
+def _call_zhipu_ai(messages, projects, context_info=None):
+    """调用智谱 AI API"""
+    if not ZHIPU_API_KEY:
+        raise Exception('ZHIPU_API_KEY 未配置')
+
+    system_prompt = _build_ai_prompt(projects, context_info)
+    payload = {
+        'model': ZHIPU_MODEL,
+        'messages': [{'role': 'system', 'content': system_prompt}] + messages,
+        'temperature': 0.7,
+        'max_tokens': 800,
+        'stream': False,
+        'thinking': {'type': 'enabled'}
+    }
+
+    data = json.dumps(payload).encode('utf-8')
+    req = urllib.request.Request(
+        ZHIPU_API_URL,
+        data=data,
+        headers={
+            'Authorization': f'Bearer {ZHIPU_API_KEY}',
+            'Content-Type': 'application/json'
+        }
+    )
+
+    ctx = ssl.create_default_context()
+    resp = urllib.request.urlopen(req, context=ctx, timeout=30)
+    result = json.loads(resp.read().decode('utf-8'))
+
+    text = result.get('choices', [{}])[0].get('message', {}).get('content', '')
+    reasoning = result.get('choices', [{}])[0].get('message', {}).get('reasoning_content', '')
+
+    # 解析推荐
+    recommendations = []
+    rec_match = re.search(r'---RECOMMEND---\s*([\s\S]*?)\s*---END---', text)
+    if rec_match:
+        try:
+            parsed = json.loads(rec_match.group(1))
+            if isinstance(parsed, list):
+                recommendations = [
+                    {'path': r.get('path', ''), 'reason': r.get('reason', ''), 'name': r.get('name', r.get('path', ''))}
+                    for r in parsed if r.get('path') and r.get('reason')
+                ][:5]
+        except Exception:
+            pass
+        text = re.sub(r'---RECOMMEND---[\s\S]*?---END---', '', text).strip()
+
+    return {'text': text, 'recommendations': recommendations, 'reasoning': reasoning}
 
 
 def _require_auth(headers):
@@ -394,6 +540,7 @@ class CodeExplorerHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        global _file_tree_cache, _cache_time, _theme_cache
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path.rstrip('/')  # 规范化：去掉末尾斜杠
         params = urllib.parse.parse_qs(parsed.query)
@@ -412,7 +559,6 @@ class CodeExplorerHandler(http.server.BaseHTTPRequestHandler):
             if _require_auth(self.headers):
                 self.send_error_json('请先登录', 401)
                 return
-            global _file_tree_cache, _cache_time
             now = time.time()
             if _file_tree_cache is None or now - _cache_time > 300:
                 _file_tree_cache = get_file_tree(str(BASE_DIR))
@@ -727,10 +873,66 @@ class CodeExplorerHandler(http.server.BaseHTTPRequestHandler):
                 },
             })
             return
+        elif path == '/api/ai-quota':
+            usage = _get_ai_usage_today()
+            DAILY_LIMIT = 10000
+            neurons_per_request = 100
+            remaining = max(0, DAILY_LIMIT - usage * neurons_per_request)
+            self.send_json({'usage': usage, 'remaining': remaining, 'limit': DAILY_LIMIT, 'neuronsPerRequest': neurons_per_request})
+            return
+        elif path == '/api/projects/list':
+            projects = _load_project_list()
+            likes = load_likes()
+            comment_counts = {}
+            if COMMENTS_DIR.exists():
+                for f in COMMENTS_DIR.glob('*.json'):
+                    try:
+                        data = json.loads(f.read_text(encoding='utf-8'))
+                        if isinstance(data, dict) and 'project' in data and 'comments' in data:
+                            comment_counts[data['project']] = len(data['comments'])
+                    except Exception:
+                        pass
+            for p in projects:
+                p_path = p.get('path', '')
+                p['likes'] = likes.get(p_path, 0)
+                p['commentCount'] = comment_counts.get(p_path, 0)
+            self.send_json(projects)
+            return
+        elif path == '/api/projects/tree':
+            project_path = params.get('path', [None])[0]
+            if not project_path:
+                self.send_error_json('缺少 path 参数')
+                return
+            full_path = BASE_DIR / project_path
+            full_path = full_path.resolve()
+            if not str(full_path).startswith(str(BASE_DIR.resolve())):
+                self.send_error_json('访问被拒绝：路径越界', 403)
+                return
+            if not full_path.exists() or not full_path.is_dir():
+                self.send_error_json('项目不存在', 404)
+                return
+            tree = get_file_tree(str(full_path), project_path)
+            self.send_json(tree)
+            return
+        elif path == '/api/recommend' and 'POST' not in self.command:
+            self.send_error_json('请使用 POST 方法', 405)
+            return
+        elif path == '/api/admin/clear-cache':
+            if not _check_admin(self.headers):
+                self.send_error_json('管理员未登录', 401)
+                return
+            _file_tree_cache = None
+            _cache_time = 0
+            _theme_cache = {}
+            self.send_json({'success': True, 'message': '缓存已清除'})
+            return
         else:
             # 静态文件服务
+            public_dir = Path(__file__).parent / 'public'
             if path == '/' or path == '':
-                file_path = Path(__file__).parent / 'index.html'
+                file_path = public_dir / 'index.html'
+                if not file_path.exists():
+                    file_path = Path(__file__).parent / 'index.html'
             elif path.startswith('/web-games'):
                 # web-games 目录在 code-explorer 的上级目录中
                 safe_path = path[len('/web-games'):].lstrip('/')
@@ -771,9 +973,11 @@ class CodeExplorerHandler(http.server.BaseHTTPRequestHandler):
                     self.send_error_json('请先登录', 401)
                     return
             else:
-                # 安全检查
+                # 安全检查 - 先找 public 目录，再找当前目录
                 safe_path = path.lstrip('/')
-                file_path = (Path(__file__).parent / safe_path).resolve()
+                file_path = (public_dir / safe_path).resolve()
+                if not file_path.exists() or not file_path.is_file():
+                    file_path = (Path(__file__).parent / safe_path).resolve()
                 
                 if not str(file_path).startswith(str(Path(__file__).parent.resolve())):
                     self.send_error_json('访问被拒绝', 403)
@@ -785,8 +989,13 @@ class CodeExplorerHandler(http.server.BaseHTTPRequestHandler):
                 if index_file.exists():
                     file_path = index_file
                 else:
-                    self.send_error_json(f'页面未找到: {path}', 404)
-                    return
+                    # 尝试 public 子目录
+                    public_index = file_path / 'public' / 'index.html'
+                    if public_index.exists():
+                        file_path = public_index
+                    else:
+                        self.send_error_json(f'页面未找到: {path}', 404)
+                        return
             
             if file_path.exists() and file_path.is_file():
                 content_type, _ = mimetypes.guess_type(str(file_path))
@@ -965,6 +1174,51 @@ class CodeExplorerHandler(http.server.BaseHTTPRequestHandler):
             token = _create_session(is_admin=True)
             self.send_json({'token': token})
             return
+        elif path == '/api/recommend':
+            content_length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(content_length)
+            try:
+                data = json.loads(body)
+            except json.JSONDecodeError:
+                self.send_error_json('无效的 JSON 数据')
+                return
+
+            messages = data.get('messages')
+            context_info = data.get('context')
+            needs_projects = data.get('needsProjects', True)
+
+            # 兼容旧格式
+            if not messages and (data.get('input') or data.get('preferences')):
+                user_input = (data.get('input') or data.get('preferences') or '').strip()
+                if not user_input:
+                    self.send_error_json('请输入你的兴趣或需求', 400)
+                    return
+                messages = [{'role': 'user', 'content': f'我的兴趣：{user_input}'}]
+
+            if not messages or len(messages) == 0:
+                self.send_error_json('请输入消息', 400)
+                return
+
+            projects = []
+            if needs_projects:
+                projects = _load_project_list()
+                if len(projects) == 0:
+                    self.send_error_json('项目列表为空', 503)
+                    return
+
+            try:
+                result = _call_zhipu_ai(messages, projects, context_info)
+                _increment_ai_usage()
+                self.send_json({
+                    'success': True,
+                    'response': result['text'],
+                    'recommendations': result['recommendations'],
+                    'reasoning': result.get('reasoning', '')
+                })
+            except Exception as e:
+                print(f'[AI ERROR] {e}', flush=True)
+                self.send_error_json(f'AI 服务暂时不可用: {str(e)}', 500)
+            return
         else:
             self.send_error_json('未找到接口', 404)
 
@@ -982,6 +1236,7 @@ def main():
     print('=' * 55)
     print(f'  监听地址: http://localhost:{PORT}')
     print(f'  代码目录: {BASE_DIR}')
+    print(f'  AI 模型: {"已配置" if ZHIPU_API_KEY else "未配置 (ZHIPU_API_KEY)"}')
     print('=' * 55)
     print()
     print('  正在预加载项目列表...')

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Flip Clock</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black','Impact',sans-serif;background:transparent}
+
+.clock-wrap{
+    display:flex;align-items:center;justify-content:center;
+    width:100%;height:100%;gap:10px;
+}
+
+/* 单个翻牌卡片 */
+.flap{
+    position:relative;width:100px;height:140px;
+    perspective:300px;border-radius:10px;
+    background:#d4d0c8;
+    box-shadow:0 4px 12px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.flap::after{
+    content:'';position:absolute;top:50%;left:0;right:0;height:1px;
+    background:rgba(0,0,0,0.15);z-index:10;
+}
+.flap::before{
+    content:'';position:absolute;top:50%;left:0;right:0;height:1px;
+    background:rgba(255,255,255,0.18);z-index:11;transform:translateY(1px);
+}
+
+/* 上半（静态） */
+.flap .top{
+    position:absolute;top:0;left:0;right:0;height:50%;overflow:hidden;
+    border-radius:10px 10px 0 0;z-index:1;
+    background:linear-gradient(180deg,#e8e4dc 0%,#d4d0c8 100%);
+}
+.flap .top .num{
+    position:absolute;bottom:0;left:0;right:0;
+    text-align:center;font-size:100px;font-weight:900;
+    color:#3a3632;line-height:140px;
+    transform:translateY(0);
+}
+
+/* 下半（静态） */
+.flap .bot{
+    position:absolute;bottom:0;left:0;right:0;height:50%;overflow:hidden;
+    border-radius:0 0 10px 10px;z-index:1;
+    background:linear-gradient(180deg,#d4d0c8 0%,#c8c4bc 100%);
+}
+.flap .bot .num{
+    position:absolute;top:0;left:0;right:0;
+    text-align:center;font-size:100px;font-weight:900;
+    color:#3a3632;line-height:140px;
+    transform:translateY(-70px);
+}
+
+/* ===== 翻页动画层 ===== */
+.flap .fall{
+    position:absolute;top:0;left:0;right:0;height:50%;overflow:hidden;
+    border-radius:10px 10px 0 0;z-index:20;
+    background:linear-gradient(180deg,#e8e4dc 0%,#d4d0c8 100%);
+    transform-origin:50% 100%;
+    backface-visibility:hidden;
+}
+.flap .fall .num{
+    position:absolute;bottom:0;left:0;right:0;
+    text-align:center;font-size:100px;font-weight:900;
+    color:#3a3632;line-height:140px;
+}
+.flap .fall.on{animation:fallDown .35s ease-in forwards}
+
+.flap .rise{
+    position:absolute;bottom:0;left:0;right:0;height:50%;overflow:hidden;
+    border-radius:0 0 10px 10px;z-index:20;
+    background:linear-gradient(180deg,#d4d0c8 0%,#c8c4bc 100%);
+    transform-origin:50% 0%;
+    transform:rotateX(90deg);
+    backface-visibility:hidden;
+}
+.flap .rise .num{
+    position:absolute;top:0;left:0;right:0;
+    text-align:center;font-size:100px;font-weight:900;
+    color:#3a3632;line-height:140px;
+    transform:translateY(-70px);
+}
+.flap .rise.on{animation:riseUp .35s ease-out forwards;animation-delay:.18s}
+
+@keyframes fallDown{
+    0%{transform:rotateX(0deg)}
+    100%{transform:rotateX(-90deg)}
+}
+@keyframes riseUp{
+    0%{transform:rotateX(90deg)}
+    100%{transform:rotateX(0deg)}
+}
+
+/* 冒号 */
+.colon{
+    display:flex;flex-direction:column;justify-content:center;
+    gap:20px;padding:0 4px;
+}
+.colon i{
+    width:12px;height:12px;border-radius:50%;
+    background:#b0a898;opacity:.6;
+}
+
+/* 底部状态栏 */
+.status-bar{
+    position:fixed;bottom:16px;left:0;right:0;
+    display:flex;justify-content:center;gap:20px;
+    font-family:'Segoe UI','Microsoft YaHei',sans-serif;
+    font-size:12px;color:rgba(255,255,255,.45);
+}
+.status-bar .tag{
+    padding:4px 12px;border-radius:12px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.1);
+}
+.status-bar .tag.active{
+    background:rgba(0,120,212,.25);
+    border-color:rgba(0,188,242,.4);
+    color:#00bcf2;
+}
+</style>
+</head>
+<body>
+
+<div class="clock-wrap" id="clock">
+    <div class="flap" id="m1"><div class="top"><div class="num">2</div></div><div class="bot"><div class="num">2</div></div></div>
+    <div class="flap" id="m0"><div class="top"><div class="num">0</div></div><div class="bot"><div class="num">0</div></div></div>
+    <div class="colon"><i></i><i></i></div>
+    <div class="flap" id="s1"><div class="top"><div class="num">0</div></div><div class="bot"><div class="num">0</div></div></div>
+    <div class="flap" id="s0"><div class="top"><div class="num">0</div></div><div class="bot"><div class="num">0</div></div></div>
+</div>
+
+<div class="status-bar">
+    <span class="tag" id="tagWork">专注中</span>
+    <span class="tag" id="tagPause">已暂停</span>
+    <span class="tag" id="tagDone">完成!</span>
+</div>
+
+<script>
+// ========== 核心翻牌逻辑 ==========
+var cards={m1:document.getElementById('m1'),m0:document.getElementById('m0'),
+           s1:document.getElementById('s1'),s0:document.getElementById('s0')};
+var busy=false;
+
+function flip(cardEl,oldD,newD){
+    if(busy||oldD===newD)return Promise.resolve();
+    return new Promise(function(resolve){
+        var c=cardEl;
+        // 移除旧动画层
+        c.querySelectorAll('.fall,.rise').forEach(function(e){e.remove()});
+
+        // 翻下去的上半片（旧数字）
+        var fall=document.createElement('div');
+        fall.className='fall';
+        fall.innerHTML='<div class="num">'+oldD+'</div>';
+        c.appendChild(fall);
+
+        // 翻上来的下半片（新数字）
+        var rise=document.createElement('div');
+        rise.className='rise';
+        rise.innerHTML='<div class="num">'+newD+'</div>';
+        c.appendChild(rise);
+
+        // 同一帧触发
+        requestAnimationFrame(function(){
+            fall.classList.add('on');
+            rise.classList.add('on');
+        });
+
+        // 动画结束
+        setTimeout(function(){
+            c.querySelector('.top .num').textContent=newD;
+            c.querySelector('.bot .num').textContent=newD;
+            fall.remove();rise.remove();
+            resolve();
+        },560);
+    });
+}
+
+function getDigits(secs){
+    var m=Math.floor(secs/60),s=secs%60;
+    return[
+        String(Math.floor(m/10)),String(m%10),
+        String(Math.floor(s/10)),String(s%10)
+    ];
+}
+
+async function updateDisplay(secs){
+    var d=getDigits(secs);
+    var ids=['m1','m0','s1','s0'];
+    for(var i=0;i<4;i++){
+        var card=cards[ids[i]];
+        var oldD=card.querySelector('.top .num').textContent;
+        await flip(card,oldD,d[i]);
+    }
+}
+
+// ========== 外部接口 ==========
+// Python通过 QWebChannel 调用这些方法
+
+var totalSec=20*60;
+var remain=totalSec;
+var timer=null;
+
+// 标签控制
+function setTag(state){
+    document.getElementById('tagWork').className='tag'+(state==='work'?' active':'');
+    document.getElementById('tagPause').className='tag'+(state==='pause'?' active':'');
+    document.getElementById('tagDone').className='tag'+(state==='done'?' active':'');
+}
+
+// Python调用：设置总时长
+function setDuration(minutes){
+    totalSec=minutes*60;
+    remain=totalSec;
+    updateDisplay(remain);
+}
+
+// Python调用：开始倒计时
+function startCountdown(){
+    if(timer)return;
+    setTag('work');
+    timer=setInterval(function(){
+        if(remain>0){
+            remain--;
+            updateDisplay(remain);
+            // 每秒通知Python
+            if(typeof pywebview!=='undefined'&&pywebview.api&&pywebview.api.on_tick){
+                pywebview.api.on_tick(remain,totalSec);
+            }
+        }else{
+            stopCountdown();
+            setTag('done');
+            if(typeof pywebview!=='undefined'&&pywebview.api&&pywebview.api.on_finished){
+                pywebview.api.on_finished();
+            }
+        }
+    },1000);
+}
+
+// Python调用：暂停
+function pauseCountdown(){
+    if(timer){clearInterval(timer);timer=null}
+    setTag('pause');
+}
+
+// Python调用：停止并重置
+function stopCountdown(){
+    if(timer){clearInterval(timer);timer=null}
+    remain=totalSec;
+    updateDisplay(remain);
+    setTag('work');
+}
+
+// Python调用：直接设置剩余秒数
+function setRemaining(secs){
+    remain=secs;
+    updateDisplay(remain);
+}
+
+// 初始化
+updateDisplay(remain);
+setTag('work');
+</script>
+</body>
+</html>
