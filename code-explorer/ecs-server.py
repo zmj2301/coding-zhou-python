@@ -120,6 +120,63 @@ def get_data_path(name):
     return DATA_DIR / f'{name}.json'
 
 
+def scan_directory(dir_path, base_path=''):
+    """扫描目录，返回文件树结构（与 generate_filetree.py 一致）"""
+    items = []
+    try:
+        for entry in sorted(dir_path.iterdir(), key=lambda x: (not x.is_dir(), x.name.lower())):
+            name = entry.name
+            if name.startswith('.'):
+                continue
+            if entry.is_dir():
+                if name in ('__pycache__', 'node_modules', '.git', '.venv', 'venv'):
+                    continue
+                children = scan_directory(entry, f"{base_path}/{name}" if base_path else name)
+                if children:
+                    items.append({
+                        'name': name,
+                        'type': 'directory',
+                        'path': f"{base_path}/{name}" if base_path else name,
+                        'children': children,
+                    })
+            elif entry.is_file():
+                ext = os.path.splitext(name)[1].lower()
+                items.append({
+                    'name': name,
+                    'type': 'file',
+                    'path': f"{base_path}/{name}" if base_path else name,
+                    'ext': ext,
+                    'lastModified': int(entry.stat().st_mtime * 1000),
+                })
+    except PermissionError:
+        pass
+    return items
+
+
+def get_project_tree(project_path):
+    """获取项目文件树：优先 JSON 文件，fallback 到文件系统扫描"""
+    safe_name = project_path.replace('/', '__').replace('\\', '__')
+    data = read_json_file(BASE_DIR / 'project-trees' / f'{safe_name}.json')
+    if data is not None:
+        return data
+
+    # Fallback：尝试多种可能的文件系统路径
+    candidates = [
+        BASE_DIR / project_path,                    # public/ 下的项目目录
+        BASE_DIR.parent / project_path,              # code-explorer/ 下的项目目录
+        BASE_DIR.parent.parent / project_path,       # repo 根目录下的项目目录
+    ]
+    for full_path in candidates:
+        try:
+            full_path = full_path.resolve()
+            if full_path.exists() and full_path.is_dir():
+                return scan_directory(full_path)
+        except Exception:
+            continue
+
+    return []
+
+
 class MyHandler(http.server.BaseHTTPRequestHandler):
 
     def send_json(self, data, status=200):
@@ -169,15 +226,14 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             project_path = qs.get('path', [''])[0]
             if not project_path:
                 return self.send_json([])
-            safe_name = project_path.replace('/', '__').replace('\\', '__')
-            data = read_json_file(BASE_DIR / 'project-trees' / f'{safe_name}.json')
-            return self.send_json(data or [])
+            data = get_project_tree(project_path)
+            return self.send_json(data)
 
         if path == '/api/files/tree':
             project = qs.get('project', [''])[0]
             if project:
-                data = read_json_file(BASE_DIR / 'project-trees' / f'{project}.json')
-                return self.send_json(data or [])
+                data = get_project_tree(project)
+                return self.send_json(data)
             return self.send_json([])
 
         if path == '/api/ai-quota':
@@ -230,12 +286,19 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             if '..' in file_path or file_path.startswith('/'):
                 return self.send_error_json('访问被拒绝：路径越界', 403)
             try:
-                repo = 'zmj2301/coding-zhou-python'
-                branch = 'main'
-                url = f'https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(file_path)}'
-                req = urllib.request.Request(url)
-                with urllib.request.urlopen(req, timeout=15) as resp:
-                    content = resp.read().decode('utf-8', errors='replace')
+                search_paths = [
+                    BASE_DIR.parent.parent / file_path,
+                    BASE_DIR.parent / file_path,
+                    BASE_DIR / file_path,
+                ]
+                local_path = None
+                for sp in search_paths:
+                    if sp.exists() and sp.is_file():
+                        local_path = sp
+                        break
+                if not local_path:
+                    return self.send_error_json('文件不存在', 404)
+                content = local_path.read_text(encoding='utf-8', errors='replace')
                 ext = os.path.splitext(file_path)[1].lower()
                 lang_map = {'.py': 'python', '.js': 'javascript', '.ts': 'typescript', '.html': 'html', '.css': 'css', '.json': 'json', '.md': 'markdown', '.java': 'java', '.cpp': 'cpp', '.c': 'c', '.rs': 'rust', '.go': 'go'}
                 return self.send_json({
@@ -245,10 +308,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     'language': lang_map.get(ext, 'plaintext'),
                     'size': len(content.encode('utf-8'))
                 })
-            except urllib.error.HTTPError as e:
-                if e.code == 404:
-                    return self.send_error_json('文件不存在', 404)
-                return self.send_error_json(f'读取文件失败: {e.code}', e.code)
+            except FileNotFoundError:
+                return self.send_error_json('文件不存在', 404)
             except Exception as e:
                 return self.send_error_json(f'读取文件失败: {e}', 500)
 
@@ -510,6 +571,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                         except Exception:
                             pass
                         text = re.sub(r'---RECOMMEND---[\s\S]*?---END---', '', text).strip()
+                    if not text and recommendations:
+                        text = '为你推荐以下项目：'
+                    elif not text:
+                        text = '抱歉，AI 暂时无法生成回复，请稍后再试。'
                     return self.send_json({'success': True, 'response': text, 'reasoning': reasoning, 'recommendations': recommendations})
             except Exception as e:
                 import traceback

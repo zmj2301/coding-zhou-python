@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.6.1",
+    "date": "2026-07-27",
+    "title": "修复部分项目文件树显示为空的问题：ECS 服务器添加文件系统扫描 fallback",
+    "changes": [
+      "ecs-server.py 新增 scan_directory() 函数，支持直接扫描文件系统获取文件树",
+      "ecs-server.py 新增 get_project_tree() 函数，优先读取 JSON 缓存，fallback 到文件系统扫描",
+      "/api/projects/tree 和 /api/files/tree 端点改用 get_project_tree()，解决 JSON 文件缺失导致返回空数组的问题",
+      "fallback 支持多级路径查找：public/、code-explorer/、repo 根目录，适配不同 ECS 部署结构"
+    ]
+  },
+  {
     "version": "1.6.0",
     "date": "2026-07-26",
     "title": "AI 助手全屏界面重构：三栏布局 + 对话历史 + 视觉升级",

@@ -1054,6 +1054,11 @@ async function callZhipuAI(messages: { role: string; content: string }[], apiKey
     text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
   }
 
+  if (!text && recommendations.length > 0) {
+    text = '为你推荐以下项目：';
+  } else if (!text) {
+    text = '抱歉，AI 暂时无法生成回复，请稍后再试。';
+  }
   return { text, recommendations, reasoning };
 }
 
@@ -1103,6 +1108,11 @@ async function getConversationalAI(messages: { role: string; content: string }[]
         text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
       }
 
+      if (!text && recommendations.length > 0) {
+        text = '为你推荐以下项目：';
+      } else if (!text) {
+        text = '抱歉，AI 暂时无法生成回复，请稍后再试。';
+      }
       return { text, recommendations };
     } catch (e: any) {
       console.error('AI call failed:', e);
