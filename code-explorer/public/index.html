@@ -4516,8 +4516,15 @@ async function openFile(filePath) {
   const ex = state.openTabs.findIndex(t => t.path === filePath);
   if (ex >= 0) { switchTab(ex); return; }
   try {
-    const d = await fetchContent(filePath);
-    state.openTabs.push({ path: d.path, name: d.name, content: d.content, language: d.language });
+    // 拼接项目路径前缀，确保 API 能找到文件
+    // 搜索结果的路径已经是完整路径，不需要再加前缀
+    const projectPath = state.currentProject ? state.currentProject.path : '';
+    let apiPath = filePath;
+    if (projectPath && !filePath.startsWith(projectPath + '/') && !filePath.startsWith(projectPath + '\\')) {
+      apiPath = `${projectPath}/${filePath}`;
+    }
+    const d = await fetchContent(apiPath);
+    state.openTabs.push({ path: filePath, apiPath: apiPath, name: d.name, content: d.content, language: d.language });
     switchTab(state.openTabs.length - 1);
     $('#fileTree').querySelectorAll('.tree-item.active').forEach(el => el.classList.remove('active'));
     const fe = $('#fileTree').querySelector(`[data-file="${esc(filePath)}"]`);
@@ -4574,7 +4581,7 @@ function togglePreview() {
     viewer.style.display = 'none';
     preview.style.display = 'flex';
     // 用 srcdoc 加载更轻量，但对于有外部资源的 HTML，用预览接口更好
-    frame.src = `/api/files/preview?path=${encodeURIComponent(tab.path)}`;
+    frame.src = `/api/files/preview?path=${encodeURIComponent(tab.apiPath || tab.path)}`;
     label.textContent = '代码';
   } else {
     preview.style.display = 'none';
@@ -4603,7 +4610,7 @@ function renderCode() {
       : hljs.highlightAuto(tab.content).value;
   } catch(e) { hi = esc(tab.content); }
   $('#codeContent').innerHTML = `<pre><code class="hljs">${hi}</code></pre>`;
-  $('#breadcrumb').innerHTML = tab.path.split('/').map((p,i,a) =>
+  $('#breadcrumb').innerHTML = (tab.apiPath || tab.path).split('/').map((p,i,a) =>
     `<span>${esc(p)}</span>${i<a.length-1?'<span class="sep">/</span>':''}`).join('');
   $('#btnCopy').style.display = '';
   $('#btnPreview').style.display = isPreviewable(tab.path) ? '' : 'none';
