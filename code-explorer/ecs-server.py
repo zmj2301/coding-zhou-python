@@ -21,6 +21,56 @@ HOST = '0.0.0.0'
 BASE_DIR = Path(__file__).resolve().parent / 'public'
 DATA_DIR = Path(__file__).resolve().parent / 'data'
 
+# 项目根目录探测：ECS 上项目目录可能在不同层级，优先使用 PROJECTS_ROOT 环境变量
+# 否则从 BASE_DIR 向上递归查找包含 project-list.json 或实际项目目录的根目录
+PROJECTS_ROOT = None
+if os.environ.get('PROJECTS_ROOT'):
+    _pr = Path(os.environ.get('PROJECTS_ROOT')).resolve()
+    if _pr.exists():
+        PROJECTS_ROOT = _pr
+
+def _find_projects_root():
+    """自动探测项目根目录：优先查找 BASE_DIR 同级/父级中是否存在项目文件夹"""
+    global PROJECTS_ROOT
+    if PROJECTS_ROOT is not None:
+        return PROJECTS_ROOT
+    # 候选路径：ECS 常见部署结构
+    candidates = [
+        BASE_DIR,                                # public 本身
+        BASE_DIR.parent,                         # code-explorer/
+        BASE_DIR.parent.parent,                  # repo 根目录
+        Path('/home/code-explorer/public'),      # 常见 ECS 绝对路径
+        Path('/home/code-explorer'),
+        Path('/opt/code-explorer/public'),
+        Path('/opt/code-explorer'),
+        Path('/var/www/code-explorer/public'),
+        Path('/var/www/code-explorer'),
+        Path('/www/code-explorer/public'),
+        Path('/www/code-explorer'),
+        Path('/root/code-explorer/public'),
+        Path('/root/code-explorer'),
+    ]
+    for c in candidates:
+        try:
+            c = c.resolve()
+            if c.exists() and c.is_dir():
+                # 如果包含 project-list.json 或 project-trees 目录，认为是项目根
+                if (c / 'project-list.json').exists() or (c / 'project-trees').exists():
+                    PROJECTS_ROOT = c
+                    return c
+                # 或者包含若干 Python 项目目录（以.py 文件为特征）
+                for entry in c.iterdir():
+                    if entry.is_dir() and any(entry.glob('*.py')):
+                        PROJECTS_ROOT = c
+                        return c
+        except Exception:
+            continue
+    # 兜底：使用 BASE_DIR
+    PROJECTS_ROOT = BASE_DIR
+    return PROJECTS_ROOT
+
+_find_projects_root()
+
 USER_PASSWORD = os.environ.get('USER_PASSWORD', '')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'default-secret-change-me')
@@ -160,9 +210,11 @@ def get_project_tree(project_path):
     if data is not None:
         return data
 
-    # Fallback：尝试多种可能的文件系统路径
+    # Fallback：尝试多种可能的文件系统路径（包括自动探测的项目根目录）
+    root = _find_projects_root()
     candidates = [
-        BASE_DIR / project_path,                    # public/ 下的项目目录
+        root / project_path,                         # 探测到的项目根目录
+        BASE_DIR / project_path,                     # public/ 下的项目目录
         BASE_DIR.parent / project_path,              # code-explorer/ 下的项目目录
         BASE_DIR.parent.parent / project_path,       # repo 根目录下的项目目录
     ]
@@ -220,7 +272,29 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
         if path == '/api/projects/list':
             data = read_json_file(BASE_DIR / 'project-list.json')
-            return self.send_json(data or [])
+            if data:
+                return self.send_json(data)
+            # fallback：从项目根目录实时扫描
+            root = _find_projects_root()
+            projects = []
+            if root.exists():
+                for entry in sorted(root.iterdir()):
+                    if not entry.is_dir() or entry.name.startswith('.') or entry.name in ('code-explorer', 'public', '__pycache__', 'node_modules'):
+                        continue
+                    if any(entry.glob('*.py')):
+                        projects.append({
+                            'name': entry.name,
+                            'path': entry.name,
+                            'type': 'other',
+                            'label': '其他',
+                            'desc': '',
+                            'mainFile': '',
+                            'fileCount': len(list(entry.rglob('*.py'))),
+                            'lastModified': int(entry.stat().st_mtime * 1000),
+                            'themeColor': 'hsl(200, 40%, 60%)',
+                            'popupUrl': None,
+                        })
+            return self.send_json(projects)
 
         if path == '/api/projects/tree':
             project_path = qs.get('path', [''])[0]
@@ -286,7 +360,9 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             if '..' in file_path or file_path.startswith('/'):
                 return self.send_error_json('访问被拒绝：路径越界', 403)
             try:
+                root = _find_projects_root()
                 search_paths = [
+                    root / file_path,
                     BASE_DIR.parent.parent / file_path,
                     BASE_DIR.parent / file_path,
                     BASE_DIR / file_path,
@@ -335,12 +411,21 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             if '..' in file_path or file_path.startswith('/'):
                 return self.send_error_json('访问被拒绝：路径越界', 403)
             try:
-                repo = 'zmj2301/coding-zhou-python'
-                branch = 'main'
-                url = f'https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(file_path)}'
-                req = urllib.request.Request(url)
-                with urllib.request.urlopen(req, timeout=15) as resp:
-                    body = resp.read()
+                root = _find_projects_root()
+                search_paths = [
+                    root / file_path,
+                    BASE_DIR.parent.parent / file_path,
+                    BASE_DIR.parent / file_path,
+                    BASE_DIR / file_path,
+                ]
+                local_path = None
+                for sp in search_paths:
+                    if sp.exists() and sp.is_file():
+                        local_path = sp
+                        break
+                if not local_path:
+                    return self.send_error_json('文件不存在', 404)
+                body = local_path.read_bytes()
                 ext = os.path.splitext(file_path)[1].lower()
                 ct_map = {'.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml'}
                 content_type = ct_map.get(ext, 'application/octet-stream')
@@ -358,12 +443,21 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             if not file_path:
                 return self.send_error_json('缺少 path 参数')
             try:
-                repo = 'zmj2301/coding-zhou-python'
-                branch = 'main'
-                url = f'https://raw.githubusercontent.com/{repo}/{branch}/{urllib.parse.quote(file_path)}'
-                req = urllib.request.Request(url)
-                with urllib.request.urlopen(req, timeout=15) as resp:
-                    body = resp.read()
+                root = _find_projects_root()
+                search_paths = [
+                    root / file_path,
+                    BASE_DIR.parent.parent / file_path,
+                    BASE_DIR.parent / file_path,
+                    BASE_DIR / file_path,
+                ]
+                local_path = None
+                for sp in search_paths:
+                    if sp.exists() and sp.is_file():
+                        local_path = sp
+                        break
+                if not local_path:
+                    return self.send_error_json('文件不存在', 404)
+                body = local_path.read_bytes()
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/octet-stream')
                 self.send_header('Content-Disposition', f'attachment; filename="{os.path.basename(file_path)}"')
@@ -644,6 +738,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     print(f'Code Explorer 服务器启动: http://{HOST}:{PORT}')
+    print(f'BASE_DIR: {BASE_DIR}')
+    print(f'PROJECTS_ROOT: {_find_projects_root()}')
     print(f'USER_PASSWORD: {"已设置" if USER_PASSWORD else "未设置"}')
     print(f'ADMIN_PASSWORD: {"已设置" if ADMIN_PASSWORD else "未设置"}')
     print(f'ZHIPU_API_KEY: {"已设置" if ZHIPU_API_KEY else "未设置"}')

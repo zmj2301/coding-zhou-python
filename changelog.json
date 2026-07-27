@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.6.3",
+    "date": "2026-07-27",
+    "title": "修复 ECS 服务器找不到项目文件导致内容 404 的问题",
+    "changes": [
+      "ecs-server.py 新增 PROJECTS_ROOT 自动探测逻辑，支持环境变量和常见 ECS 部署路径",
+      "/api/files/content、/api/files/preview、/api/files/download 优先从项目根目录查找本地文件",
+      "/api/projects/list 和 /api/projects/tree 支持 fallback 到项目根目录实时扫描",
+      "启动日志新增 BASE_DIR 和 PROJECTS_ROOT 输出，方便排查路径问题"
+    ]
+  },
+  {
     "version": "1.6.2",
     "date": "2026-07-27",
     "title": "修复文件树中打开文件内容为空的问题：前端自动拼接项目路径前缀",
