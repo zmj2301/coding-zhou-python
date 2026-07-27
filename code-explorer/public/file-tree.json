@@ -30301,7 +30301,7 @@
     "type": "directory",
     "path": "Python桌面宠物",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784470599766,
+    "lastModified": 1785156831032,
     "children": [
       {
         "name": "deskpet",
@@ -30362,7 +30362,7 @@
             "type": "file",
             "path": "Python桌面宠物/deskpet/__init__.py",
             "ext": ".py",
-            "lastModified": 1784470920126
+            "lastModified": 1785156831023
           },
           {
             "name": "auto_start.py",
@@ -30383,7 +30383,7 @@
             "type": "file",
             "path": "Python桌面宠物/deskpet/pet_window.py",
             "ext": ".py",
-            "lastModified": 1784470967607
+            "lastModified": 1785156831026
           },
           {
             "name": "size_settings_dialog.py",
@@ -31236,6 +31236,13 @@
                 "path": "Python桌面宠物/relax_exe/logs/app_20260726_083620.log",
                 "ext": ".log",
                 "lastModified": 1785029297292
+              },
+              {
+                "name": "app_20260727_081440.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260727_081440.log",
+                "ext": ".log",
+                "lastModified": 1785112424934
               }
             ]
           },
@@ -31312,14 +31319,14 @@
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/ui/flip_clock.html",
                 "ext": ".html",
-                "lastModified": 1784464501629
+                "lastModified": 1785156831030
               },
               {
                 "name": "flip_clock_widget.py",
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/ui/flip_clock_widget.py",
                 "ext": ".py",
-                "lastModified": 1784519194997
+                "lastModified": 1785156831030
               },
               {
                 "name": "settings_dialog.py",
@@ -31335,7 +31342,7 @@
             "type": "file",
             "path": "Python桌面宠物/relax_exe/app.py",
             "ext": ".py",
-            "lastModified": 1784552601960
+            "lastModified": 1785156831029
           },
           {
             "name": "main.py",
@@ -31372,21 +31379,21 @@
         "type": "file",
         "path": "Python桌面宠物/calendar_preview.html",
         "ext": ".html",
-        "lastModified": 1784461622797
+        "lastModified": 1785156830996
       },
       {
         "name": "config.json",
         "type": "file",
         "path": "Python桌面宠物/config.json",
         "ext": ".json",
-        "lastModified": 1784681971894
+        "lastModified": 1785156830998
       },
       {
         "name": "flip_countdown_preview.html",
         "type": "file",
         "path": "Python桌面宠物/flip_countdown_preview.html",
         "ext": ".html",
-        "lastModified": 1784461843165
+        "lastModified": 1785156831027
       },
       {
         "name": "icon.png",
@@ -31414,7 +31421,7 @@
         "type": "file",
         "path": "Python桌面宠物/split_flap_preview.html",
         "ext": ".html",
-        "lastModified": 1784462721963
+        "lastModified": 1785156831031
       },
       {
         "name": "test_auto_start.py",
@@ -31428,7 +31435,7 @@
         "type": "file",
         "path": "Python桌面宠物/test_flip_clock.py",
         "ext": ".py",
-        "lastModified": 1784464708566
+        "lastModified": 1785156831032
       }
     ]
   },
@@ -35549,7 +35556,7 @@
     "type": "directory",
     "path": "快捷键操作",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1785028887237,
+    "lastModified": 1785156831095,
     "children": [
       {
         "name": "__pycache__",
@@ -35647,56 +35654,56 @@
         "type": "file",
         "path": "快捷键操作/main.py",
         "ext": ".py",
-        "lastModified": 1784859223490
+        "lastModified": 1785156831090
       },
       {
         "name": "ocr_engine.py",
         "type": "file",
         "path": "快捷键操作/ocr_engine.py",
         "ext": ".py",
-        "lastModified": 1784813805918
+        "lastModified": 1785156831091
       },
       {
         "name": "ocr_result_window.py",
         "type": "file",
         "path": "快捷键操作/ocr_result_window.py",
         "ext": ".py",
-        "lastModified": 1784861823492
+        "lastModified": 1785156831092
       },
       {
         "name": "README.md",
         "type": "file",
         "path": "快捷键操作/README.md",
         "ext": ".md",
-        "lastModified": 1784809984819
+        "lastModified": 1785156831090
       },
       {
         "name": "requirements.txt",
         "type": "file",
         "path": "快捷键操作/requirements.txt",
         "ext": ".txt",
-        "lastModified": 1784813918942
+        "lastModified": 1785156831093
       },
       {
         "name": "screenshot_overlay.py",
         "type": "file",
         "path": "快捷键操作/screenshot_overlay.py",
         "ext": ".py",
-        "lastModified": 1784856053510
+        "lastModified": 1785156831094
       },
       {
         "name": "wechat_detector.py",
         "type": "file",
         "path": "快捷键操作/wechat_detector.py",
         "ext": ".py",
-        "lastModified": 1784809195853
+        "lastModified": 1785156831094
       },
       {
         "name": "wechat_paster.py",
         "type": "file",
         "path": "快捷键操作/wechat_paster.py",
         "ext": ".py",
-        "lastModified": 1784809893241
+        "lastModified": 1785156831095
       }
     ]
   },

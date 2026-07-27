@@ -58,7 +58,7 @@
         "type": "file",
         "path": "deskpet/__init__.py",
         "ext": ".py",
-        "lastModified": 1784470920126
+        "lastModified": 1785156831023
       },
       {
         "name": "auto_start.py",
@@ -79,7 +79,7 @@
         "type": "file",
         "path": "deskpet/pet_window.py",
         "ext": ".py",
-        "lastModified": 1784470967607
+        "lastModified": 1785156831026
       },
       {
         "name": "size_settings_dialog.py",
@@ -932,6 +932,13 @@
             "path": "relax_exe/logs/app_20260726_083620.log",
             "ext": ".log",
             "lastModified": 1785029297292
+          },
+          {
+            "name": "app_20260727_081440.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260727_081440.log",
+            "ext": ".log",
+            "lastModified": 1785112424934
           }
         ]
       },
@@ -1008,14 +1015,14 @@
             "type": "file",
             "path": "relax_exe/ui/flip_clock.html",
             "ext": ".html",
-            "lastModified": 1784464501629
+            "lastModified": 1785156831030
           },
           {
             "name": "flip_clock_widget.py",
             "type": "file",
             "path": "relax_exe/ui/flip_clock_widget.py",
             "ext": ".py",
-            "lastModified": 1784519194997
+            "lastModified": 1785156831030
           },
           {
             "name": "settings_dialog.py",
@@ -1031,7 +1038,7 @@
         "type": "file",
         "path": "relax_exe/app.py",
         "ext": ".py",
-        "lastModified": 1784552601960
+        "lastModified": 1785156831029
       },
       {
         "name": "main.py",
@@ -1068,21 +1075,21 @@
     "type": "file",
     "path": "calendar_preview.html",
     "ext": ".html",
-    "lastModified": 1784461622797
+    "lastModified": 1785156830996
   },
   {
     "name": "config.json",
     "type": "file",
     "path": "config.json",
     "ext": ".json",
-    "lastModified": 1784681971894
+    "lastModified": 1785156830998
   },
   {
     "name": "flip_countdown_preview.html",
     "type": "file",
     "path": "flip_countdown_preview.html",
     "ext": ".html",
-    "lastModified": 1784461843165
+    "lastModified": 1785156831027
   },
   {
     "name": "icon.png",
@@ -1110,7 +1117,7 @@
     "type": "file",
     "path": "split_flap_preview.html",
     "ext": ".html",
-    "lastModified": 1784462721963
+    "lastModified": 1785156831031
   },
   {
     "name": "test_auto_start.py",
@@ -1124,6 +1131,6 @@
     "type": "file",
     "path": "test_flip_clock.py",
     "ext": ".py",
-    "lastModified": 1784464708566
+    "lastModified": 1785156831032
   }
 ]
