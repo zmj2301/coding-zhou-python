@@ -71,7 +71,8 @@ def main():
         preserved_images = tempfile.mkdtemp()
         preserved_images_path = Path(preserved_images)
         copy_dir(images_src, preserved_images_path / 'images')
-        print(f'  保留: images/ 目录 ({len(list(images_src.rglob(\"*\")))} 个文件)')
+        img_count = len(list(images_src.rglob('*')))
+        print(f'  保留: images/ 目录 ({img_count} 个文件)')
 
     if PUBLIC_DIR.exists():
         print(f'清理旧的 public 目录...')
