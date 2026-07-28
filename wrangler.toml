@@ -14,9 +14,6 @@ binding = "CODE_EXPLORER_KV"
 id = "70cb2749fafd40fdb5b8e3140d65a414"
 preview_id = "70cb2749fafd40fdb5b8e3140d65a414"
 
-[ai]
-binding = "AI"
-
 [assets]
 binding = "ASSETS"
 directory = "code-explorer/public"

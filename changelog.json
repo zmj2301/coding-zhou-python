@@ -1,5 +1,14 @@
 [
   {
+    "version": "1.6.11",
+    "date": "2026-07-28",
+    "title": "重新构建 public/index.html 修复文件内容不显示的问题",
+    "changes": [
+      "v1.6.10 修复后未运行 build.py 重新构建，导致 public/index.html 缺少 state.openTabs.push()",
+      "重新构建 public 目录，确保部署版本包含 openFile 修复代码"
+    ]
+  },
+  {
     "version": "1.6.10",
     "date": "2026-07-28",
     "title": "修复点击文件后右侧不显示内容的问题",
