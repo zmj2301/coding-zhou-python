@@ -1,14 +1,47 @@
 [
   {
-    "version": "1.6.1",
-    "date": "2026-07-26",
-    "title": "AI 助手改为首页内嵌 Overlay：统一入口，移除独立页面跳转",
+    "version": "1.6.4",
+    "date": "2026-07-28",
+    "title": "修复项目卡片点赞/评论数刷新后显示 00 的问题",
     "changes": [
-      "AI 助手不再跳转独立页面 ai-assistant.html，改为首页内全屏 Overlay",
-      "侧边栏「✨ AI 助手」入口点击直接在当前页面展开三栏全屏界面",
-      "左侧导航精简为「首页 / 关于 / 思维导图 / AI 助手」，分类筛选通过聊天对话完成，复用首页已有项目列表",
-      "保留全部功能：对话历史、模型切换、图片生成、快捷建议",
-      "统一入口体验，避免新建网页造成的割裂感"
+      "修复 ecs-server.py 中 likes/comments 数据路径错误，指向 code-explorer/likes.json 与 code-explorer/comments/",
+      "修复 /api/projects/list 未合并点赞/评论数的问题",
+      "前端 init() 初始化时主动拉取真实点赞/评论数",
+      "前端 refreshProjectMeta() 增加防御判断，避免后端缺失字段时覆写为 0",
+      "修正 build.py 中 changelog.json 的源文件路径"
+    ]
+  },
+  {
+    "version": "1.6.3",
+    "date": "2026-07-27",
+    "title": "修复 ECS 服务器找不到项目文件导致内容 404 的问题",
+    "changes": [
+      "ecs-server.py 新增 PROJECTS_ROOT 自动探测逻辑，支持环境变量和常见 ECS 部署路径",
+      "/api/files/content、/api/files/preview、/api/files/download 优先从项目根目录查找本地文件",
+      "/api/projects/list 和 /api/projects/tree 支持 fallback 到项目根目录实时扫描",
+      "启动日志新增 BASE_DIR 和 PROJECTS_ROOT 输出，方便排查路径问题"
+    ]
+  },
+  {
+    "version": "1.6.2",
+    "date": "2026-07-27",
+    "title": "修复文件树中打开文件内容为空的问题：前端自动拼接项目路径前缀",
+    "changes": [
+      "openFile() 调用内容 API 时自动拼接项目路径前缀（如 Python图像识别/image.py），确保服务器能正确定位文件",
+      "智能判断：搜索结果的完整路径不会重复拼接前缀",
+      "面包屑导航和 HTML 预览功能同步使用完整路径",
+      "兼容本地 server.py 和 ECS ecs-server.py 两种部署环境"
+    ]
+  },
+  {
+    "version": "1.6.1",
+    "date": "2026-07-27",
+    "title": "修复部分项目文件树显示为空的问题：ECS 服务器添加文件系统扫描 fallback",
+    "changes": [
+      "ecs-server.py 新增 scan_directory() 函数，支持直接扫描文件系统获取文件树",
+      "ecs-server.py 新增 get_project_tree() 函数，优先读取 JSON 缓存，fallback 到文件系统扫描",
+      "/api/projects/tree 和 /api/files/tree 端点改用 get_project_tree()，解决 JSON 文件缺失导致返回空数组的问题",
+      "fallback 支持多级路径查找：public/、code-explorer/、repo 根目录，适配不同 ECS 部署结构"
     ]
   },
   {

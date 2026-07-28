@@ -191,7 +191,7 @@
         "type": "file",
         "path": "wxauto/deepseek.py",
         "ext": ".py",
-        "lastModified": 1783216794869
+        "lastModified": 1785199351833
       },
       {
         "name": "run_wx.py",
@@ -226,7 +226,7 @@
         "type": "file",
         "path": "实用技巧/ai_chatbot_gui.py",
         "ext": ".py",
-        "lastModified": 1783216794928
+        "lastModified": 1785199351868
       },
       {
         "name": "deepseek_ri.py",
@@ -247,7 +247,7 @@
         "type": "file",
         "path": "实用技巧/qingyunke_chat.py",
         "ext": ".py",
-        "lastModified": 1783216794941
+        "lastModified": 1785199351876
       },
       {
         "name": "test_ollama.py",

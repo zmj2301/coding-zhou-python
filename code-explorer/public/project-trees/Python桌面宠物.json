@@ -14,7 +14,7 @@
             "type": "file",
             "path": "deskpet/__pycache__/__init__.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1784552615868
+            "lastModified": 1785199014118
           },
           {
             "name": "auto_start.cpython-312.pyc",
@@ -35,7 +35,7 @@
             "type": "file",
             "path": "deskpet/__pycache__/pet_window.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1784552615781
+            "lastModified": 1785199014385
           },
           {
             "name": "size_settings_dialog.cpython-312.pyc",
@@ -112,7 +112,7 @@
             "type": "file",
             "path": "relax_exe/__pycache__/app.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1784552615547
+            "lastModified": 1785199014463
           }
         ]
       },
@@ -939,6 +939,13 @@
             "path": "relax_exe/logs/app_20260727_081440.log",
             "ext": ".log",
             "lastModified": 1785112424934
+          },
+          {
+            "name": "app_20260728_083654.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260728_083654.log",
+            "ext": ".log",
+            "lastModified": 1785199017176
           }
         ]
       },
@@ -978,7 +985,7 @@
                 "type": "file",
                 "path": "relax_exe/ui/__pycache__/flip_clock_widget.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1784552615688
+                "lastModified": 1785199014490
               },
               {
                 "name": "settings_dialog.cpython-312.pyc",
