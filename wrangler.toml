@@ -5,6 +5,7 @@ main = "code-explorer/worker.ts"
 [vars]
 GITHUB_REPO = "zmj2301/coding-zhou-python"
 GITHUB_BRANCH = "main"
+ECS_SERVER_URL = "http://39.107.96.165:8765"
 
 account_id = "d6b8ca32610afe0fd9407736b9266cb3"
 

@@ -1,17 +1,5 @@
 [
   {
-    "version": "1.6.8",
-    "date": "2026-07-28",
-    "title": "修复文件内容 API 报'文件不存在'的问题：Worker 代理到 ECS 服务器",
-    "changes": [
-      "worker.ts 新增 ECS_SERVER_URL 环境变量和 fetchFromEcs() 代理函数",
-      "/api/files/content 和 /api/files/preview 优先代理到 ECS 服务器获取文件内容",
-      "ECS 代理失败时回退到 GitHub raw 获取，增加容错性",
-      "build.py 修复构建时 images 目录被删除的问题，构建时自动保留并恢复封面图",
-      "wrangler.toml 新增 ECS_SERVER_URL 配置"
-    ]
-  },
-  {
     "version": "1.6.7",
     "date": "2026-07-28",
     "title": "修复封面图不显示和文件路径错误：添加图片到构建 + 同步 ECS 服务器",

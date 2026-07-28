@@ -11,6 +11,7 @@ export interface Env {
   GITHUB_REPO: string;
   GITHUB_BRANCH: string;
   ZHIPU_API_KEY: string;
+  ECS_SERVER_URL: string;
   ASSETS: {
     fetch: (request: Request) => Promise<Response>;
   };
@@ -185,6 +186,23 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
   const cleanPath = path.replace(/^\/+/, '');
   const url = `https://raw.githubusercontent.com/${repo}/${branch}/${encodeURI(cleanPath)}`;
   return fetch(url);
+}
+
+// ------------------------------------------------------------
+// 工具：ECS 服务器代理
+// ------------------------------------------------------------
+
+async function fetchFromEcs(path: string, env: Env, request: Request): Promise<Response> {
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
+  const url = `${ecsUrl}${path}`;
+  const headers = new Headers(request.headers);
+  headers.set('Host', new URL(ecsUrl).host);
+  // 保留 Cookie 用于认证
+  const cookie = request.headers.get('Cookie');
+  if (cookie) {
+    headers.set('Cookie', cookie);
+  }
+  return fetch(url, { method: request.method, headers });
 }
 
 async function fetchAsset(path: string, env: Env): Promise<Response> {
@@ -548,6 +566,17 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     if (!filePath) return errorResponse('缺少 path 参数');
     if (filePath.includes('..') || filePath.startsWith('/')) return errorResponse('访问被拒绝：路径越界', 403);
 
+    // 代理到 ECS 服务器（ECS 服务器有实际文件）
+    const ecsResp = await fetchFromEcs(`/api/files/content${url.search}`, env, request);
+    if (ecsResp.ok) {
+      // 成功时直接返回 ECS 响应
+      const data = await ecsResp.json();
+      const resp = jsonResponse(data);
+      addCacheHeader(resp.headers, 3600);
+      return resp;
+    }
+
+    // ECS 失败时回退到 GitHub
     const cacheKey = `cache:file:${filePath}`;
     try {
       const cached = await env.CODE_EXPLORER_KV.get(cacheKey, { type: 'json' });
@@ -587,6 +616,12 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     const filePath = url.searchParams.get('path') || '';
     if (!filePath) return errorResponse('缺少 path 参数');
     if (filePath.includes('..') || filePath.startsWith('/')) return errorResponse('访问被拒绝：路径越界', 403);
+
+    // 优先代理到 ECS 服务器
+    const ecsResp = await fetchFromEcs(`/api/files/preview${url.search}`, env, request);
+    if (ecsResp.ok) {
+      return ecsResp;
+    }
 
     const ext = getExt(filePath);
     const contentType = CONTENT_TYPE_MAP[ext] || 'application/octet-stream';

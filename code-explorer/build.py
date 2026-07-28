@@ -55,13 +55,23 @@ def main():
     print('=' * 50)
     print()
 
-    # 保留 ai-assistant.html 和 changelog.json（如果已存在）
+    # 保留 ai-assistant.html、changelog.json 和 images 目录（如果已存在）
     preserved_files = {}
     for fname in ['ai-assistant.html', 'changelog.json']:
         fpath = PUBLIC_DIR / fname
         if fpath.exists():
             preserved_files[fname] = fpath.read_bytes()
             print(f'  保留: {fname}')
+
+    # 保留 images 目录（封面图）
+    preserved_images = None
+    images_src = PUBLIC_DIR / 'images'
+    if images_src.exists():
+        import tempfile
+        preserved_images = tempfile.mkdtemp()
+        preserved_images_path = Path(preserved_images)
+        copy_dir(images_src, preserved_images_path / 'images')
+        print(f'  保留: images/ 目录 ({len(list(images_src.rglob(\"*\")))} 个文件)')
 
     if PUBLIC_DIR.exists():
         print(f'清理旧的 public 目录...')
@@ -73,6 +83,14 @@ def main():
     for fname, content in preserved_files.items():
         (PUBLIC_DIR / fname).write_bytes(content)
         print(f'  恢复: {fname}')
+
+    # 恢复 images 目录
+    if preserved_images:
+        preserved_images_path = Path(preserved_images)
+        copy_dir(preserved_images_path / 'images', PUBLIC_DIR / 'images')
+        import shutil as shutil2
+        shutil2.rmtree(preserved_images_path, ignore_errors=True)
+        print('  恢复: images/ 目录')
 
     print()
     print('步骤 1: 生成文件树和项目列表 JSON...')
