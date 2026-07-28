@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.6.5",
+    "date": "2026-07-28",
+    "title": "修复点赞按钮点击后刷新归零的问题",
+    "changes": [
+      "前端 init() 增加 __INITIAL_PROJECTS__ 有效性校验，缺失 likes/comments 时强制拉取完整列表",
+      "fetchProjectList、loadAllLikeCounts、loadAllCommentCounts 强制使用 no-store 避免浏览器缓存旧数据",
+      "init() 中等待点赞/评论数加载完成后再结束初始化，避免先显示 0",
+      "ecs-server.py 所有 JSON API 响应增加 Cache-Control: max-age=0, must-revalidate, no-store"
+    ]
+  },
+  {
     "version": "1.6.4",
     "date": "2026-07-28",
     "title": "修复项目卡片点赞/评论数刷新后显示 00 的问题",

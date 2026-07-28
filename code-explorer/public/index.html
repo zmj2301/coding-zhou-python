@@ -3829,7 +3829,10 @@ async function api(url, opts = {}) {
   }
 }
 async function fetchTree() { return (await api('/api/files/tree')).json(); }
-async function fetchProjectList() { return (await api('/api/projects/list')).json(); }
+async function fetchProjectList() {
+  const res = await api('/api/projects/list', { cache: 'no-store' });
+  return res.json();
+}
 async function fetchProjectTree(path) { return (await api(`/api/projects/tree?path=${encodeURIComponent(path)}`)).json(); }
 async function fetchContent(path) { return (await api(`/api/files/content?path=${encodeURIComponent(path)}`)).json(); }
 async function fetchSearch(q) { return (await api(`/api/files/search?q=${encodeURIComponent(q)}`)).json(); }
@@ -5672,7 +5675,7 @@ document.addEventListener('keydown', e => {
 async function loadAllCommentCounts() {
   if (document.hidden) return;
   try {
-    const res = await fetch('/api/comments/counts');
+    const res = await fetch('/api/comments/counts', { cache: 'no-store' });
     if (!res.ok) return;
     const counts = await res.json();
     for (const [projectPath, count] of Object.entries(counts)) {
@@ -5685,7 +5688,7 @@ async function loadAllCommentCounts() {
 async function loadAllLikeCounts() {
   if (document.hidden) return;
   try {
-    const res = await fetch('/api/likes');
+    const res = await fetch('/api/likes', { cache: 'no-store' });
     if (!res.ok) return;
     const likes = await res.json();
     for (const [projectPath, count] of Object.entries(likes)) {
@@ -5715,7 +5718,13 @@ async function init() {
   try {
     let projects;
     const initialProjects = (window).__INITIAL_PROJECTS__;
-    if (initialProjects && Array.isArray(initialProjects) && initialProjects.length > 0) {
+    const hasValidInitial = initialProjects &&
+      Array.isArray(initialProjects) &&
+      initialProjects.length > 0 &&
+      typeof initialProjects[0].likes === 'number' &&
+      typeof initialProjects[0].comments === 'number';
+
+    if (hasValidInitial) {
       projects = initialProjects;
     } else {
       showSkeleton();
@@ -5734,9 +5743,11 @@ async function init() {
     renderCategoryIndex(state.projects);
     renderCards(state.projects);
 
-    // 初始加载真实点赞/评论数（冗余保护，避免后端列表接口未返回字段时显示 00）
-    loadAllLikeCounts();
-    loadAllCommentCounts();
+    // 等待真实点赞/评论数加载完成，确保不会先显示 0 再更新
+    try {
+      await loadAllLikeCounts();
+      await loadAllCommentCounts();
+    } catch(_) {}
 
     requestAnimationFrame(() => {
       renderRecentProjects();
