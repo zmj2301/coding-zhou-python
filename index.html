@@ -3967,7 +3967,7 @@ const PROJECT_COVERS = {
   'Python桌面宠物': '/images/covers/python_community.jpg',
 };
 
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/zmj2301/coding-zhou-python/main/code-explorer/public';
+const GITHUB_RAW_BASE = '';
 function getProjectCover(name) {
   const path = PROJECT_COVERS[name];
   return path ? GITHUB_RAW_BASE + path : null;
@@ -4519,8 +4519,10 @@ async function openFile(filePath) {
   const ex = state.openTabs.findIndex(t => t.path === filePath);
   if (ex >= 0) { switchTab(ex); return; }
   try {
-    const d = await fetchContent(filePath);
-    state.openTabs.push({ path: d.path, name: d.name, content: d.content, language: d.language });
+    // 如果当前在项目中且文件路径是相对路径，补全项目路径前缀
+    const fullPath = state.currentProject && !filePath.startsWith(state.currentProject.path + '/')
+      ? state.currentProject.path + '/' + filePath : filePath;
+    const d = await fetchContent(fullPath);
     switchTab(state.openTabs.length - 1);
     $('#fileTree').querySelectorAll('.tree-item.active').forEach(el => el.classList.remove('active'));
     const fe = $('#fileTree').querySelector(`[data-file="${esc(filePath)}"]`);
