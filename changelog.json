@@ -1,5 +1,19 @@
 [
   {
+    "version": "1.7.0",
+    "date": "2026-07-28",
+    "title": "代码查看器升级：highlight.js 替换为 CodeMirror 6",
+    "changes": [
+      "用 CodeMirror 6 替代 highlight.js，提供专业代码编辑体验",
+      "内置行号、当前行高亮、代码折叠、搜索（Ctrl+F）、自动换行等功能",
+      "支持 Python、JavaScript、HTML、CSS、JSON、Markdown 等 100+ 语言语法高亮",
+      "通过 esm.sh CDN + import map 加载，零框架依赖、轻量模块化",
+      "Python 运行和 HTML 预览从 CodeMirror 实例获取最新内容",
+      "暗色主题使用 one-dark，亮色主题使用默认主题，切换时自动刷新",
+      "CDN 加载失败时自动降级为纯文本显示"
+    ]
+  },
+  {
     "version": "1.6.11",
     "date": "2026-07-28",
     "title": "重新构建 public/index.html 修复文件内容不显示的问题",

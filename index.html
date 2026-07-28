@@ -4,7 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Code Explorer - 代码浏览与执行平台</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script type="importmap">
+{
+  "imports": {
+    "@codemirror/state": "https://esm.sh/@codemirror/state@6",
+    "@codemirror/view": "https://esm.sh/@codemirror/view@6",
+    "@codemirror/language": "https://esm.sh/@codemirror/language@6",
+    "@codemirror/commands": "https://esm.sh/@codemirror/commands@6",
+    "@codemirror/search": "https://esm.sh/@codemirror/search@6",
+    "@codemirror/lang-python": "https://esm.sh/@codemirror/lang-python@6",
+    "@codemirror/lang-javascript": "https://esm.sh/@codemirror/lang-javascript@6",
+    "@codemirror/lang-html": "https://esm.sh/@codemirror/lang-html@6",
+    "@codemirror/lang-css": "https://esm.sh/@codemirror/lang-css@6",
+    "@codemirror/lang-json": "https://esm.sh/@codemirror/lang-json@6",
+    "@codemirror/lang-markdown": "https://esm.sh/@codemirror/lang-markdown@6",
+    "@codemirror/theme-one-dark": "https://esm.sh/@codemirror/theme-one-dark@6"
+  }
+}
+</script>
 <style>
 /* ========== CSS Reset & Variables ========== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -2179,11 +2196,10 @@ body::before {
 .code-empty .hint { font-size: 12px; opacity: 0.7; }
 .code-viewer {
   display: flex;
+  flex-direction: column;
+  min-height: 100%;
   font-family: var(--font-mono);
   font-size: 13px;
-  line-height: 1.6;
-  tab-size: 4;
-  min-height: 100%;
 }
 .code-preview {
   width: 100%;
@@ -2196,32 +2212,7 @@ body::before {
   border: none;
   background: #fff;
 }
-.line-numbers {
-  padding: 12px 0;
-  text-align: right;
-  user-select: none;
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border-color);
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  min-width: 50px;
-}
-.line-numbers span {
-  display: block;
-  padding: 0 12px;
-  color: var(--text-tertiary);
-  font-size: 12px;
-  line-height: 1.6;
-}
-.code-content { flex: 1; padding: 12px 16px; overflow-x: auto; }
-.code-content pre { margin: 0; padding: 0; background: transparent !important; }
-.code-content code {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.6;
-  background: transparent !important;
-}
+/* line-numbers and code-content now handled by CodeMirror 6 */
 
 /* Search overlay */
 .search-overlay {
@@ -2401,10 +2392,7 @@ body::before {
   .code-action-btn { font-size: 11px; padding: 6px 8px; }
   .code-action-btn svg { width: 14px; height: 14px; }
   .code-body { font-size: 12px; }
-  .code-content { padding: 8px 10px; }
-  .code-content code { font-size: 12px; }
-  .line-numbers { min-width: 36px; font-size: 11px; }
-  .line-numbers span { padding: 0 6px; }
+  #codeViewer .cm-editor .cm-scroller { font-size: 12px; }
 
   /* ===== 留言弹窗 ===== */
   .comment-modal { width: 92vw; margin: 10px auto; border-radius: 12px; }
@@ -2448,14 +2436,11 @@ body::before {
   .cards-grid { gap: 8px; }
 }
 
-/* highlight.js overrides */
-.hljs { background: transparent !important; }
-.hljs-keyword { color: #ff7b72 !important; }
-.hljs-string { color: #a5d6ff !important; }
-.hljs-comment { color: #8b949e !important; font-style: italic !important; }
-.hljs-number { color: #79c0ff !important; }
-.hljs-built_in { color: #ffa657 !important; }
-.hljs-function .hljs-title { color: #d2a8ff !important; }
+/* CodeMirror 6 container */
+#codeViewer { display: flex; flex-direction: column; min-height: 100%; }
+#codeViewer .cm-editor { flex: 1; outline: none; }
+#codeViewer .cm-editor .cm-scroller { overflow: auto; font-family: var(--font-mono); }
+#codeViewer .cm-editor .cm-gutters { border-right: 1px solid var(--border-color); }
 
   /* ========== 登录页面（独立全屏） ========== */
   .auth-page {
@@ -3471,10 +3456,7 @@ body::before {
             <p>选择一个文件开始浏览代码</p>
             <p class="hint">从左侧文件树中选择一个文件</p>
           </div>
-          <div class="code-viewer" id="codeViewer" style="display:none">
-            <div class="line-numbers" id="lineNumbers"></div>
-            <div class="code-content" id="codeContent"></div>
-          </div>
+          <div class="code-viewer" id="codeViewer" style="display:none"></div>
           <div class="code-preview" id="codePreview" style="display:none">
             <iframe id="codePreviewFrame" sandbox="allow-scripts allow-forms allow-popups allow-pointer-lock allow-same-origin" referrerpolicy="no-referrer"></iframe>
           </div>
@@ -3514,7 +3496,7 @@ body::before {
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<!-- CodeMirror 6 loaded via import map + dynamic import() -->
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 
 <!-- ========== 更新日志弹窗 ========== -->
@@ -4590,25 +4572,88 @@ function togglePreview() {
   }
 }
 
-function renderCode() {
+// ==================== CODEMIRROR 6 ====================
+let cmModules = null;
+let cmView = null;
+let cmLineWrapping = false;
+
+async function loadCodeMirror() {
+  if (cmModules) return cmModules;
+  const [view, state, search, language, commands, theme] = await Promise.all([
+    import("@codemirror/view"),
+    import("@codemirror/state"),
+    import("@codemirror/search"),
+    import("@codemirror/language"),
+    import("@codemirror/commands"),
+    import("@codemirror/theme-one-dark"),
+  ]);
+  cmModules = { view, state, search, language, commands, theme };
+  return cmModules;
+}
+
+async function getLanguageExtension(lang) {
+  const langMap = {
+    'python': '@codemirror/lang-python',
+    'javascript': '@codemirror/lang-javascript',
+    'html': '@codemirror/lang-html',
+    'css': '@codemirror/lang-css',
+    'json': '@codemirror/lang-json',
+    'markdown': '@codemirror/lang-markdown',
+  };
+  const modulePath = langMap[lang];
+  if (!modulePath) return [];
+  try {
+    const mod = await import(modulePath);
+    const fn = mod.default || mod[Object.keys(mod)[0]];
+    return typeof fn === 'function' ? [fn()] : [];
+  } catch { return []; }
+}
+
+function getCmThemeExtension() {
+  const theme = getTheme();
+  if (theme === 'dark') return cmModules.theme.oneDark;
+  return [];
+}
+
+async function renderCode() {
   if (state.activeTabIdx < 0 || !state.openTabs.length) { showEmptyState(); return; }
   const tab = state.openTabs[state.activeTabIdx];
   $('#codeEmpty').style.display = 'none';
-  // 每次切换 tab 默认回到代码视图
   state.previewMode = false;
   document.getElementById('codePreview').style.display = 'none';
   document.getElementById('codePreviewFrame').src = 'about:blank';
   $('#codeViewer').style.display = 'flex';
   document.getElementById('btnPreviewLabel').textContent = '预览';
-  const lines = tab.content.split('\n');
-  $('#lineNumbers').innerHTML = lines.map((_,i) => `<span>${i+1}</span>`).join('');
-  let hi;
+
   try {
-    hi = tab.language && hljs.getLanguage(tab.language)
-      ? hljs.highlight(tab.content, { language: tab.language }).value
-      : hljs.highlightAuto(tab.content).value;
-  } catch(e) { hi = esc(tab.content); }
-  $('#codeContent').innerHTML = `<pre><code class="hljs">${hi}</code></pre>`;
+    const cm = await loadCodeMirror();
+    const langExt = await getLanguageExtension(tab.language);
+    const container = document.getElementById('codeViewer');
+    container.innerHTML = '';
+
+    const extensions = [
+      cm.view.lineNumbers(),
+      cm.view.highlightActiveLine(),
+      cm.language.foldGutter(),
+      cm.search.search(),
+      cm.commands.defaultKeymap,
+      cm.view.highlightSpecialChars(),
+      cm.view.drawSelection(),
+    ];
+
+    if (cmLineWrapping) extensions.push(cm.view.EditorView.lineWrapping);
+    extensions.push(...langExt);
+    extensions.push(getCmThemeExtension());
+
+    cmView = new cm.view.EditorView({
+      state: cm.state.EditorState.create({ doc: tab.content, extensions }),
+      parent: container
+    });
+  } catch(e) {
+    // Fallback: 显示纯文本
+    const container = document.getElementById('codeViewer');
+    container.innerHTML = '<pre style="padding:12px;margin:0;white-space:pre-wrap;font-family:var(--font-mono);font-size:13px;line-height:1.6">' + esc(tab.content) + '</pre>';
+  }
   $('#breadcrumb').innerHTML = tab.path.split('/').map((p,i,a) =>
     `<span>${esc(p)}</span>${i<a.length-1?'<span class="sep">/</span>':''}`).join('');
   $('#btnCopy').style.display = '';
@@ -4683,7 +4728,8 @@ async function runPythonCode() {
     py.setStdout({ batched: (text) => { stdout += text; } });
     py.setStderr({ batched: (text) => { stderr += text; } });
     
-    await py.runPythonAsync(tab.content);
+    const code = cmView ? cmView.state.doc.toString() : tab.content;
+    await py.runPythonAsync(code);
     
     if (stdout) appendToTerminal(stdout, 'stdout');
     if (stderr) appendToTerminal(stderr, 'stderr');
@@ -6236,13 +6282,8 @@ function getTheme() {
 function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem(THEME_KEY, theme);
-  // 更新代码高亮主题
-  const hljsLink = document.querySelector('link[href*="highlight.js"]');
-  if (hljsLink) {
-    hljsLink.href = theme === 'light'
-      ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css'
-      : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css';
-  }
+  // 更新 CodeMirror 主题：重新渲染当前代码
+  if (cmView && cmModules) { renderCode(); }
 }
 
 function toggleTheme() {
