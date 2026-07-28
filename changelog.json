@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.6.4",
+    "date": "2026-07-28",
+    "title": "修复项目卡片点赞/评论数刷新后显示 00 的问题",
+    "changes": [
+      "修复 ecs-server.py 中 likes/comments 数据路径错误，指向 code-explorer/likes.json 与 code-explorer/comments/",
+      "修复 /api/projects/list 未合并点赞/评论数的问题",
+      "前端 init() 初始化时主动拉取真实点赞/评论数",
+      "前端 refreshProjectMeta() 增加防御判断，避免后端缺失字段时覆写为 0",
+      "修正 build.py 中 changelog.json 的源文件路径"
+    ]
+  },
+  {
     "version": "1.6.3",
     "date": "2026-07-27",
     "title": "修复 ECS 服务器找不到项目文件导致内容 404 的问题",

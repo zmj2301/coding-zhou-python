@@ -89,7 +89,7 @@ def main():
 
     print()
     print('步骤 2.5: 确保 changelog.json 存在...')
-    changelog_src = BASE_DIR / 'changelog.json'
+    changelog_src = PROJECT_ROOT / 'changelog.json'
     changelog_dst = PUBLIC_DIR / 'changelog.json'
     if changelog_src.exists() and changelog_src.resolve() != changelog_dst.resolve():
         copy_file(changelog_src, changelog_dst)

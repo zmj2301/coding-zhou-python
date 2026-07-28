@@ -21,6 +21,10 @@ HOST = '0.0.0.0'
 BASE_DIR = Path(__file__).resolve().parent / 'public'
 DATA_DIR = Path(__file__).resolve().parent / 'data'
 
+# 点赞/评论数据文件实际存放路径（与 worker.ts 保持一致）
+LIKES_FILE = Path(__file__).resolve().parent / 'likes.json'
+COMMENTS_DIR = Path(__file__).resolve().parent / 'comments'
+
 # 项目根目录探测：ECS 上项目目录可能在不同层级，优先使用 PROJECTS_ROOT 环境变量
 # 否则从 BASE_DIR 向上递归查找包含 project-list.json 或实际项目目录的根目录
 PROJECTS_ROOT = None
@@ -83,6 +87,7 @@ AGNES_AI_API_KEY = os.environ.get('AGNES_AI_API_KEY', '')
 AGNES_AI_API_URL = 'https://apihub.agnes-ai.com/v1/images/generations'
 
 DATA_DIR.mkdir(exist_ok=True)
+COMMENTS_DIR.mkdir(exist_ok=True)
 
 def hmac_sha256(key, msg):
     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).digest()
@@ -168,6 +173,46 @@ def write_json_file(filepath, data):
 
 def get_data_path(name):
     return DATA_DIR / f'{name}.json'
+
+
+def _safe_project_filename(project_name):
+    """生成安全的项目文件名（与 worker.ts 的 safeProjectName 保持一致）"""
+    return re.sub(r'[\\/:*?"<>|]', '_', project_name)
+
+
+def _get_comments_file(project_name):
+    return COMMENTS_DIR / f'{_safe_project_filename(project_name)}.json'
+
+
+def _load_likes():
+    data = read_json_file(LIKES_FILE)
+    return data if isinstance(data, dict) else {}
+
+
+def _load_comments(project_name):
+    data = read_json_file(_get_comments_file(project_name))
+    if isinstance(data, dict) and isinstance(data.get('comments'), list):
+        return data
+    return {'project': project_name, 'comments': []}
+
+
+def _save_comments(project_name, data):
+    write_json_file(_get_comments_file(project_name), data)
+
+
+def _load_all_comment_counts():
+    """扫描 comments 目录，返回每个项目的评论数"""
+    counts = {}
+    if not COMMENTS_DIR.exists():
+        return counts
+    for f in COMMENTS_DIR.glob('*.json'):
+        try:
+            data = json.loads(f.read_text(encoding='utf-8'))
+            if isinstance(data, dict) and isinstance(data.get('comments'), list):
+                counts[data.get('project', f.stem)] = len(data['comments'])
+        except Exception:
+            continue
+    return counts
 
 
 def scan_directory(dir_path, base_path=''):
@@ -273,6 +318,12 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         if path == '/api/projects/list':
             data = read_json_file(BASE_DIR / 'project-list.json')
             if data:
+                likes_data = _load_likes()
+                comment_counts = _load_all_comment_counts()
+                for p in data:
+                    p_path = p.get('path', '')
+                    p['likes'] = likes_data.get(p_path, 0) if isinstance(likes_data, dict) else 0
+                    p['comments'] = comment_counts.get(p_path, 0)
                 return self.send_json(data)
             # fallback：从项目根目录实时扫描
             root = _find_projects_root()
@@ -317,35 +368,30 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             project = qs.get('project', [''])[0]
             if not project:
                 return self.send_error_json('缺少 project 参数')
-            comments_data = read_json_file(get_data_path('comments')) or {}
-            project_data = comments_data.get(project, {'project': project, 'comments': []})
+            project_data = _load_comments(project)
             return self.send_json(project_data)
 
         if path == '/api/comments/counts':
-            comments_data = read_json_file(get_data_path('comments')) or {}
-            counts = {}
-            for k, v in comments_data.items():
-                if isinstance(v, dict) and 'comments' in v:
-                    counts[k] = len(v['comments'])
+            counts = _load_all_comment_counts()
             return self.send_json(counts)
 
         if path == '/api/likes':
-            likes_data = read_json_file(get_data_path('likes')) or {}
+            likes_data = _load_likes()
             return self.send_json(likes_data)
 
         if path == '/api/admin/dashboard':
             if not check_admin(self):
                 return self.send_error_json('管理员未登录', 401)
-            comments_data = read_json_file(get_data_path('comments')) or {}
-            likes_data = read_json_file(get_data_path('likes')) or {}
+            comment_counts = _load_all_comment_counts()
+            likes_data = _load_likes()
             return self.send_json({
                 'server': {'uptime': 'ECS Python Server', 'uptime_seconds': 0, 'total_files': 0, 'base_dir': '/home/code-explorer/public', 'port': PORT},
                 'auth': {'password_set': bool(USER_PASSWORD), 'admin_password_set': bool(ADMIN_PASSWORD)},
                 'data': {
                     'likes_count': len(likes_data),
                     'total_likes': sum(likes_data.values()) if isinstance(likes_data, dict) else 0,
-                    'comment_files': len(comments_data),
-                    'total_comments': sum(len(v.get('comments', [])) for v in comments_data.values() if isinstance(v, dict)),
+                    'comment_files': len(comment_counts),
+                    'total_comments': sum(comment_counts.values()),
                     'uploaded_files_count': 0,
                 }
             })
@@ -540,16 +586,14 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             text = (body.get('text', '') or '').strip()
             if not project or not text:
                 return self.send_error_json('缺少 project 或 text 参数')
-            comments_data = read_json_file(get_data_path('comments')) or {}
-            if project not in comments_data:
-                comments_data[project] = {'project': project, 'comments': []}
+            project_data = _load_comments(project)
             comment_id = hashlib.md5(f'{time.time()}{text}'.encode()).hexdigest()[:8]
             comment = {
                 'id': comment_id, 'project': project, 'text': text,
                 'timestamp': int(time.time() * 1000), 'image': None, 'likes': 0
             }
-            comments_data[project]['comments'].append(comment)
-            write_json_file(get_data_path('comments'), comments_data)
+            project_data['comments'].append(comment)
+            _save_comments(project, project_data)
             return self.send_json(comment, 201)
 
         if path == '/api/comments/like' and self.command == 'POST':
@@ -557,28 +601,28 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             comment_id = body.get('id', '')
             if not project or not comment_id:
                 return self.send_error_json('缺少 project 或 id 参数')
-            comments_data = read_json_file(get_data_path('comments')) or {}
-            project_data = comments_data.get(project)
-            if not project_data:
+            project_data = _load_comments(project)
+            comments = project_data.get('comments', [])
+            if not comments:
                 return self.send_error_json('评论不存在', 404)
             found = False
-            for c in project_data.get('comments', []):
+            for c in comments:
                 if c['id'] == comment_id:
                     c['likes'] = c.get('likes', 0) + 1
                     found = True
                     break
             if not found:
                 return self.send_error_json('评论不存在', 404)
-            write_json_file(get_data_path('comments'), comments_data)
+            _save_comments(project, project_data)
             return self.send_json({'success': True})
 
         if path == '/api/likes' and self.command == 'POST':
             project = body.get('project', '')
             if not project:
                 return self.send_error_json('缺少 project 参数')
-            likes_data = read_json_file(get_data_path('likes')) or {}
+            likes_data = _load_likes()
             likes_data[project] = likes_data.get(project, 0) + 1
-            write_json_file(get_data_path('likes'), likes_data)
+            write_json_file(LIKES_FILE, likes_data)
             return self.send_json({'project': project, 'likes': likes_data[project]})
 
         if path == '/api/admin/clear-cache' and self.command == 'POST':

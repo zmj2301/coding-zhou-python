@@ -5734,6 +5734,10 @@ async function init() {
     renderCategoryIndex(state.projects);
     renderCards(state.projects);
 
+    // 初始加载真实点赞/评论数（冗余保护，避免后端列表接口未返回字段时显示 00）
+    loadAllLikeCounts();
+    loadAllCommentCounts();
+
     requestAnimationFrame(() => {
       renderRecentProjects();
       renderBookmarks();
@@ -5780,9 +5784,10 @@ async function refreshProjectMeta() {
     const projects = await fetchProjectList();
     projects.forEach(p => {
       const likeEl = document.getElementById('lk-' + p.path.replace(/[/\\]/g, '-'));
-      if (likeEl) likeEl.textContent = p.likes || 0;
+      // 仅当后端返回有效数字时才更新，避免缺失字段时被覆写为 0
+      if (likeEl && typeof p.likes === 'number') likeEl.textContent = p.likes;
       const commentEl = document.getElementById('cc-' + p.path.replace(/[/\\]/g, '-'));
-      if (commentEl) commentEl.textContent = p.comments || 0;
+      if (commentEl && typeof p.comments === 'number') commentEl.textContent = p.comments;
     });
   } catch(e) {
     if (e.name !== 'AbortError' && e.message !== 'Failed to fetch') {
