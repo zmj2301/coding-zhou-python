@@ -72943,6 +72943,13 @@
             "lastModified": 1784684485797
           },
           {
+            "name": "ChunkManager.js",
+            "type": "file",
+            "path": "赛车游戏/js/ChunkManager.js",
+            "ext": ".js",
+            "lastModified": 1784945814973
+          },
+          {
             "name": "CircuitManager.js",
             "type": "file",
             "path": "赛车游戏/js/CircuitManager.js",
@@ -72954,14 +72961,21 @@
             "type": "file",
             "path": "赛车游戏/js/CircuitTrack.js",
             "ext": ".js",
-            "lastModified": 1784637875398
+            "lastModified": 1784728428634
           },
           {
             "name": "Game.js",
             "type": "file",
             "path": "赛车游戏/js/Game.js",
             "ext": ".js",
-            "lastModified": 1784727033175
+            "lastModified": 1784949830984
+          },
+          {
+            "name": "HighwayTrack.js",
+            "type": "file",
+            "path": "赛车游戏/js/HighwayTrack.js",
+            "ext": ".js",
+            "lastModified": 1784816765537
           },
           {
             "name": "InputManager.js",
@@ -72978,11 +72992,39 @@
             "lastModified": 1784634888752
           },
           {
+            "name": "Minimap.js",
+            "type": "file",
+            "path": "赛车游戏/js/Minimap.js",
+            "ext": ".js",
+            "lastModified": 1784902780547
+          },
+          {
+            "name": "NPCManager.js",
+            "type": "file",
+            "path": "赛车游戏/js/NPCManager.js",
+            "ext": ".js",
+            "lastModified": 1784808532275
+          },
+          {
+            "name": "NPCVehicle.js",
+            "type": "file",
+            "path": "赛车游戏/js/NPCVehicle.js",
+            "ext": ".js",
+            "lastModified": 1784808336542
+          },
+          {
             "name": "ProceduralTrackGenerator.js",
             "type": "file",
             "path": "赛车游戏/js/ProceduralTrackGenerator.js",
             "ext": ".js",
             "lastModified": 1784640125021
+          },
+          {
+            "name": "RoadChunk.js",
+            "type": "file",
+            "path": "赛车游戏/js/RoadChunk.js",
+            "ext": ".js",
+            "lastModified": 1784950530855
           },
           {
             "name": "SceneBuilder.js",
@@ -72996,7 +73038,7 @@
             "type": "file",
             "path": "赛车游戏/js/SceneManager.js",
             "ext": ".js",
-            "lastModified": 1784641394533
+            "lastModified": 1784730424363
           },
           {
             "name": "SceneManager.js.backup",
@@ -73010,14 +73052,14 @@
             "type": "file",
             "path": "赛车游戏/js/Track.js",
             "ext": ".js",
-            "lastModified": 1784688834766
+            "lastModified": 1784859828921
           },
           {
             "name": "TrackData.js",
             "type": "file",
             "path": "赛车游戏/js/TrackData.js",
             "ext": ".js",
-            "lastModified": 1784638195969
+            "lastModified": 1784809235429
           }
         ]
       },
@@ -73026,7 +73068,7 @@
         "type": "file",
         "path": "赛车游戏/index.html",
         "ext": ".html",
-        "lastModified": 1784606043232
+        "lastModified": 1784949394036
       },
       {
         "name": "server.py",
