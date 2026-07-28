@@ -4523,6 +4523,7 @@ async function openFile(filePath) {
     const fullPath = state.currentProject && !filePath.startsWith(state.currentProject.path + '/')
       ? state.currentProject.path + '/' + filePath : filePath;
     const d = await fetchContent(fullPath);
+    state.openTabs.push({ path: filePath, name: d.name, content: d.content, language: d.language });
     switchTab(state.openTabs.length - 1);
     $('#fileTree').querySelectorAll('.tree-item.active').forEach(el => el.classList.remove('active'));
     const fe = $('#fileTree').querySelector(`[data-file="${esc(filePath)}"]`);

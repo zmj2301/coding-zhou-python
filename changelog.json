@@ -1,5 +1,15 @@
 [
   {
+    "version": "1.6.10",
+    "date": "2026-07-28",
+    "title": "修复点击文件后右侧不显示内容的问题",
+    "changes": [
+      "index.html: openFile() 函数缺少 state.openTabs.push() 导致获取内容后未添加到标签页",
+      "fetchContent 成功获取文件数据后，添加 state.openTabs.push({path, name, content, language})",
+      "修复 switchTab(-1) 导致 renderCode() 直接显示空状态的问题"
+    ]
+  },
+  {
     "version": "1.6.9",
     "date": "2026-07-28",
     "title": "修复 ECS 服务器端口 8765 被屏蔽导致文件不显示和图片加载失败",
