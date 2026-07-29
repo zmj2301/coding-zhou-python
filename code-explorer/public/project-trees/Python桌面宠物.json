@@ -946,6 +946,13 @@
             "path": "relax_exe/logs/app_20260728_083654.log",
             "ext": ".log",
             "lastModified": 1785199017176
+          },
+          {
+            "name": "app_20260729_075343.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260729_075343.log",
+            "ext": ".log",
+            "lastModified": 1785285654115
           }
         ]
       },

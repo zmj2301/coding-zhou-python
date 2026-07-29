@@ -1,0 +1,242 @@
+[
+  {
+    "version": "1.7.0",
+    "date": "2026-07-28",
+    "title": "代码查看器升级：highlight.js 替换为 CodeMirror 6",
+    "changes": [
+      "用 CodeMirror 6 替代 highlight.js，提供专业代码编辑体验",
+      "内置行号、当前行高亮、代码折叠、搜索（Ctrl+F）、自动换行等功能",
+      "支持 Python、JavaScript、HTML、CSS、JSON、Markdown 等 100+ 语言语法高亮",
+      "通过 esm.sh CDN + import map 加载，零框架依赖、轻量模块化",
+      "Python 运行和 HTML 预览从 CodeMirror 实例获取最新内容",
+      "暗色主题使用 one-dark，亮色主题使用默认主题，切换时自动刷新",
+      "CDN 加载失败时自动降级为纯文本显示"
+    ]
+  },
+  {
+    "version": "1.6.11",
+    "date": "2026-07-28",
+    "title": "重新构建 public/index.html 修复文件内容不显示的问题",
+    "changes": [
+      "v1.6.10 修复后未运行 build.py 重新构建，导致 public/index.html 缺少 state.openTabs.push()",
+      "重新构建 public 目录，确保部署版本包含 openFile 修复代码"
+    ]
+  },
+  {
+    "version": "1.6.10",
+    "date": "2026-07-28",
+    "title": "修复点击文件后右侧不显示内容的问题",
+    "changes": [
+      "index.html: openFile() 函数缺少 state.openTabs.push() 导致获取内容后未添加到标签页",
+      "fetchContent 成功获取文件数据后，添加 state.openTabs.push({path, name, content, language})",
+      "修复 switchTab(-1) 导致 renderCode() 直接显示空状态的问题"
+    ]
+  },
+  {
+    "version": "1.6.9",
+    "date": "2026-07-28",
+    "title": "修复 ECS 服务器端口 8765 被屏蔽导致文件不显示和图片加载失败",
+    "changes": [
+      "wrangler.toml: ECS_SERVER_URL 从 :8765 改为默认 80 端口，通过 nginx 反向代理访问",
+      "worker.ts: fetchFromEcs() 默认回退 URL 同步改为 80 端口",
+      "ECS 服务器 8765 端口被安全组防火墙屏蔽，Worker 无法连接，改为通过 nginx(80端口)代理正常通信"
+    ]
+  },
+  {
+    "version": "1.6.8",
+    "date": "2026-07-28",
+    "title": "修复文件内容 API 报'文件不存在'的问题：Worker 代理到 ECS 服务器",
+    "changes": [
+      "worker.ts 新增 ECS_SERVER_URL 环境变量和 fetchFromEcs() 代理函数",
+      "/api/files/content 和 /api/files/preview 优先代理到 ECS 服务器获取文件内容",
+      "ECS 代理失败时回退到 GitHub raw 获取，增加容错性",
+      "build.py 修复构建时 images 目录被删除的问题，构建时自动保留并恢复封面图",
+      "wrangler.toml 新增 ECS_SERVER_URL 配置"
+    ]
+  },
+  {
+    "version": "1.6.7",
+    "date": "2026-07-28",
+    "title": "修复封面图不显示和文件路径错误：添加图片到构建 + 同步 ECS 服务器",
+    "changes": [
+      "build.py 新增复制 images 目录到 public/，确保封面图随 Worker 部署",
+      "从 ECS 服务器下载 50 张封面图到本地 public/images/covers/",
+      "修复 ECS 服务器 public/ 目录未更新导致 index.html 为旧版本的问题",
+      "上传最新构建结果到 ECS 服务器，同步 index.html 和项目文件"
+    ]
+  },
+  {
+    "version": "1.6.6",
+    "date": "2026-07-28",
+    "title": "修复图片加载失败和点击文件显示不存在的问题",
+    "changes": [
+      "封面图从 raw.githubusercontent.com 改为 ECS 服务器本地路径，避免 Chrome ORB 跨域拦截",
+      "worker.ts 新增 ECS 服务器代理函数 fetchFromEcs()，代理文件内容 API 到 ECS 服务器",
+      "index.html 新增 openFile 自动补全项目路径前缀，修复文件路径拼接错误",
+      "ecs-server.py 增强 _find_projects_root() 探测更多 ECS 部署路径"
+    ]
+  },
+  {
+    "version": "1.6.5",
+    "date": "2026-07-28",
+    "title": "修复点赞/评论数据未正确加载，添加 ECS 服务器健康检查与缓存清理",
+    "changes": [
+      "修复 ECS 服务器代理导致点赞/评论数据加载失败的问题",
+      "ECS 服务器健康检查后自动获取最新点赞/评论数据",
+      "清除 KV 缓存确保首页和项目数据从 ECS 刷新"
+    ]
+  },
+  {
+    "version": "1.6.4",
+    "date": "2026-07-28",
+    "title": "修复点赞/评论数据加载失败：ECS 服务器代理和 KV 缓存清理",
+    "changes": [
+      "修复 ECS 服务器代理点赞/评论 API 时数据加载失败的问题",
+      "优化 __INITIAL_PROJECTS__ 注入逻辑，确保点赞/评论数正确显示",
+      "清除 KV 缓存确保首页数据从 ECS 服务器刷新"
+    ]
+  },
+  {
+    "version": "1.6.3",
+    "date": "2026-07-28",
+    "title": "修复点赞/评论数据初始显示为 0 的问题",
+    "changes": [
+      "修复点赞/评论数据初始显示为 0 的问题：ECS 服务器 API 优先获取点赞/评论数据",
+      "优化 __INITIAL_PROJECTS__ 注入逻辑，确保点赞和评论数正确显示",
+      "清除 KV 缓存确保首页数据从 ECS 服务器刷新",
+      "修复 ECS 服务器代理导致点赞/评论数据加载失败的问题"
+    ]
+  },
+  {
+    "version": "1.6.2",
+    "date": "2026-07-28",
+    "title": "修复封面图不显示问题：Worker 优先从 Asset 获取静态文件",
+    "changes": [
+      "修复封面图不显示问题：Worker 优先从 Asset 获取静态文件，GitHub 为 fallback",
+      "修复 build.py 构建时 images 目录被删除的问题，构建时自动保留并恢复封面图",
+      "从 ECS 服务器下载 50 张封面图到本地 public/images/covers/"
+    ]
+  },
+  {
+    "version": "1.6.1",
+    "date": "2026-07-28",
+    "title": "修复图片和文件不显示问题",
+    "changes": [
+      "修复封面图不显示：封面图从 raw.githubusercontent.com 改为本地相对路径",
+      "修复文件内容不显示：index.html openFile 中未正确拼接项目路径前缀",
+      "修复 ECS 服务器文件路径错误：ecs-server.py 中 _find_projects_root() 新增更多 ECS 部署路径",
+      "重新构建 public 目录并提交文件"
+    ]
+  },
+  {
+    "version": "1.5.5",
+    "date": "2026-07-22",
+    "title": "完成 ECS 服务器部署与配置，修复文件访问和图像路径问题",
+    "changes": [
+      "修复 ECS 服务器文件访问路径问题，确保文件内容正确显示",
+      "修复封面图路径问题，确保图片在 ECS 服务器上正确加载",
+      "完成 ECS 服务器部署与配置，包括 nginx 反向代理设置",
+      "更新 index.html 中的图片路径，移除 GitHub raw 引用",
+      "修复 ECS 服务器端口 8765 无法从外网访问的问题"
+    ]
+  },
+  {
+    "version": "1.5.4",
+    "date": "2026-07-28",
+    "title": "修复文件内容显示问题：Worker 请求 ECS 服务器获取文件内容",
+    "changes": [
+      "修复点击文件后不显示内容的问题：Worker 新增 ECS 服务器代理",
+      "ECS 服务器优先响应文件内容请求，提高性能和实时性",
+      "增强文件路径搜索逻辑，添加更多 ECS 部署路径探测"
+    ]
+  },
+  {
+    "version": "1.5.3",
+    "date": "2026-07-28",
+    "title": "修复首页不显示内容和文件内容空白的问题",
+    "changes": [
+      "修复首页不显示问题：Cloudflare Worker 中 __INITIAL_PROJECTS__ 注入逻辑回退到 GitHub raw",
+      "修复文件内容空白问题：打开文件时自动补全项目路径前缀，并确保正确加载",
+      "修复 file-tree.json 路径问题：确保文件树数据正确加载",
+      "修复 changelog 文件路径问题：确保版本更新日志正常显示"
+    ]
+  },
+  {
+    "version": "1.5.2",
+    "date": "2026-07-28",
+    "title": "修复图片加载失败和点击文件显示不存在的问题",
+    "changes": [
+      "将封面图引用从 raw.githubusercontent.com 改为 ECS 服务器本地路径，解决 Chrome ORB 跨域拦截问题",
+      "修复点击文件显示不存在的路径越界问题：增强文件路径搜索逻辑",
+      "重新构建 public 目录并提交到 GitHub",
+      "清除 KV 缓存确保新代码生效"
+    ]
+  },
+  {
+    "version": "1.5.1",
+    "date": "2026-07-24",
+    "title": "修复图片路径错误，新增 ECS 服务器代理功能",
+    "changes": [
+      "修复封面图路径错误：图片路径从相对路径改为绝对路径 /images/covers/...",
+      "新增 ECS 服务器代理功能：Worker 将 API 请求转发到 ECS 服务器",
+      "新增 changelog.json 页面版本更新日志入口",
+      "修复文件内容显示空白问题"
+    ]
+  },
+  {
+    "version": "1.4.1",
+    "date": "2026-07-22",
+    "title": "修复图片路径错误，优化封面图显示",
+    "changes": [
+      "修复封面图路径错误：图片路径改为相对路径，避免跨域问题",
+      "优化封面图显示：添加加载状态和错误处理",
+      "修复封面图不显示的问题"
+    ]
+  },
+  {
+    "version": "1.4.0",
+    "date": "2026-07-22",
+    "title": "新增封面图显示功能",
+    "changes": [
+      "新增封面图显示功能：为每个项目添加封面图",
+      "新增封面图数据：添加 50 张项目封面图"
+    ]
+  },
+  {
+    "version": "1.3.0",
+    "date": "2026-07-14",
+    "title": "新增项目展示页面",
+    "changes": [
+      "新增项目展示页面，展示所有项目列表",
+      "新增项目分类功能，按类型分类展示项目"
+    ]
+  },
+  {
+    "version": "1.2.0",
+    "date": "2026-07-10",
+    "title": "新增文件浏览功能",
+    "changes": [
+      "新增文件浏览功能，可以浏览项目文件",
+      "新增文件搜索功能，支持文件搜索"
+    ]
+  },
+  {
+    "version": "1.1.0",
+    "date": "2026-07-08",
+    "title": "新增用户登录功能",
+    "changes": [
+      "新增用户登录功能，支持密码登录",
+      "新增 JWT 认证，支持会话管理"
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "date": "2026-07-06",
+    "title": "初始版本",
+    "changes": [
+      "初始版本发布",
+      "支持 Cloudflare Worker 部署",
+      "支持 GitHub 文件同步"
+    ]
+  }
+CS 服务器\",\n      \"新增 changelog.json 页面版本更新日志入口\",\n      \"修复文件内容显示空白问题\"\n    ]\n  },\n  {\n    \"version\": \"1.4.1\",\n    \"date\": \"2026-07-22\",\n    \"title\": \"修复图片路径错误，优化封面图显示\",\n    \"changes\": [\n      \"修复封面图路径错误：图片路径改为相对路径，避免跨域问题\",\n      \"优化封面图显示：添加加载状态和错误处理\",\n      \"修复封面图不显示的问题\"\n    ]\n  },\n  {\n    \"version\": \"1.4.0\",\n    \"date\": \"2026-07-22\",\n    \"title\": \"新增封面图显示功能\",\n    \"changes\": [\n      \"新增封面图显示功能：为每个项目添加封面图\",\n      \"新增封面图数据：添加 50 张项目封面图\"\n    ]\n  },\n  {\n    \"version\": \"1.3.0\",\n    \"date\": \"2026-07-14\",\n    \"title\": \"新增项目展示页面\",\n    \"changes\": [\n      \"新增项目展示页面，展示所有项目列表\",\n      \"新增项目分类功能，按类型分类展示项目\"\n    ]\n  },\n  {\n    \"version\": \"1.2.0\",\n    \"date\": \"2026-07-10\",\n    \"title\": \"新增文件浏览功能\",\n    \"changes\": [\n      \"新增文件浏览功能，可以浏览项目文件\",\n      \"新增文件搜索功能，支持文件搜索\"\n    ]\n  },\n  {\n    \"version\": \"1.1.0\",\n    \"date\": \"2026-07-08\",\n    \"title\": \"新增用户登录功能\",\n    \"changes\": [\n      \"新增用户登录功能，支持密码登录\",\n      \"新增 JWT 认证，支持会话管理\"\n    ]\n  },\n  {\n    \"version\": \"1.0.0\",\n    \"date\": \"2026-07-06\",\n    \"title\": \"初始版本\",\n    \"changes\": [\n      \"初始版本发布\",\n      \"支持 Cloudflare Worker 部署\",\n      \"支持 GitHub 文件同步\"\n    ]\n  }\n]"}]
