@@ -2195,9 +2195,6 @@ body::before {
 .code-empty p { font-size: 14px; }
 .code-empty .hint { font-size: 12px; opacity: 0.7; }
 .code-viewer {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
   font-family: var(--font-mono);
   font-size: 13px;
 }
@@ -2437,10 +2434,24 @@ body::before {
 }
 
 /* CodeMirror 6 container */
-#codeViewer { display: flex; flex-direction: column; min-height: 100%; }
+#codeViewer { display: flex; flex-direction: column; height: 100%; min-height: 0; }
 #codeViewer .cm-editor { flex: 1; outline: none; }
-#codeViewer .cm-editor .cm-scroller { overflow: auto; font-family: var(--font-mono); }
+#codeViewer .cm-editor .cm-scroller {
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+}
 #codeViewer .cm-editor .cm-gutters { border-right: 1px solid var(--border-color); }
+#codeViewer .cm-editor .cm-content {
+  white-space: pre-wrap;
+  word-break: normal;
+  padding: 8px 0;
+  caret-color: transparent;
+}
+#codeViewer .cm-editor .cm-line {
+  padding: 0 8px;
+}
 
   /* ========== 登录页面（独立全屏） ========== */
   .auth-page {
@@ -4475,7 +4486,9 @@ function renderProjectFileTree(nodes, filter = '') {
 
 function filterTreeNodes(nodes, filter) {
   const r = [];
+  if (!nodes || !Array.isArray(nodes)) return r;
   for (const n of nodes) {
+    if (!n) continue;
     if (n.type === 'directory') {
       const fc = n.children ? filterTreeNodes(n.children, filter) : [];
       if (fc.length > 0 || n.name.toLowerCase().includes(filter)) r.push({...n, children: fc});
@@ -4629,7 +4642,7 @@ async function renderCode() {
     const cm = await loadCodeMirror();
     const langExt = await getLanguageExtension(tab.language);
     const container = document.getElementById('codeViewer');
-    container.innerHTML = '';
+    container.innerHTML = '<div style="padding:20px;color:var(--text-tertiary);font-size:14px">正在加载代码编辑器...</div>';
 
     const extensions = [
       cm.view.lineNumbers(),
