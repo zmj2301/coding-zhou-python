@@ -1,5 +1,14 @@
 [
   {
+    "version": "1.7.3",
+    "date": "2026-07-29",
+    "title": "修复 Ctrl+P 快捷键报错：openFileSearch 未定义改为 openSearchGlobal",
+    "changes": [
+      "修复编辑器视图中按 Ctrl+P 触发 ReferenceError: openFileSearch is not defined",
+      "将 openFileSearch() 改为 openSearchGlobal()，正确打开文件搜索对话框"
+    ]
+  },
+  {
     "version": "1.7.2",
     "date": "2026-07-29",
     "title": "修复 CodeMirror 6 编辑器未显示：getLanguageExtension 取错导出函数名",
