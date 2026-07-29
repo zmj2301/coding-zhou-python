@@ -4,23 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Code Explorer - 代码浏览与执行平台</title>
-<script type="importmap">
-{
-  "imports": {
-    "@codemirror/state": "https://esm.sh/@codemirror/state@6",
-    "@codemirror/view": "https://esm.sh/@codemirror/view@6",
-    "@codemirror/language": "https://esm.sh/@codemirror/language@6",
-    "@codemirror/commands": "https://esm.sh/@codemirror/commands@6",
-    "@codemirror/search": "https://esm.sh/@codemirror/search@6",
-    "@codemirror/lang-python": "https://esm.sh/@codemirror/lang-python@6",
-    "@codemirror/lang-javascript": "https://esm.sh/@codemirror/lang-javascript@6",
-    "@codemirror/lang-html": "https://esm.sh/@codemirror/lang-html@6",
-    "@codemirror/lang-css": "https://esm.sh/@codemirror/lang-css@6",
-    "@codemirror/lang-json": "https://esm.sh/@codemirror/lang-json@6",
-    "@codemirror/lang-markdown": "https://esm.sh/@codemirror/lang-markdown@6",
-    "@codemirror/theme-one-dark": "https://esm.sh/@codemirror/theme-one-dark@6"
-  }
-}
+<!-- Monaco Editor loader -->
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<script>
+// 配置 Monaco 加载路径
+require.config({
+  paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' }
+});
 </script>
 <style>
 /* ========== CSS Reset & Variables ========== */
@@ -2197,6 +2187,11 @@ body::before {
 .code-viewer {
   font-family: var(--font-mono);
   font-size: 13px;
+  position: relative;
+  overflow: hidden;
+}
+.code-viewer .monaco-editor {
+  border-radius: 4px;
 }
 .code-preview {
   width: 100%;
@@ -2209,7 +2204,7 @@ body::before {
   border: none;
   background: #fff;
 }
-/* line-numbers and code-content now handled by CodeMirror 6 */
+/* code viewer handled by Monaco Editor */
 
 /* Search overlay */
 .search-overlay {
@@ -2389,7 +2384,7 @@ body::before {
   .code-action-btn { font-size: 11px; padding: 6px 8px; }
   .code-action-btn svg { width: 14px; height: 14px; }
   .code-body { font-size: 12px; }
-  #codeViewer .cm-editor .cm-scroller { font-size: 12px; }
+  #codeViewer .monaco-editor { font-size: 12px; }
 
   /* ===== 留言弹窗 ===== */
   .comment-modal { width: 92vw; margin: 10px auto; border-radius: 12px; }
@@ -2433,25 +2428,9 @@ body::before {
   .cards-grid { gap: 8px; }
 }
 
-/* CodeMirror 6 container */
+/* Monaco Editor container */
 #codeViewer { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-#codeViewer .cm-editor { flex: 1; outline: none; }
-#codeViewer .cm-editor .cm-scroller {
-  overflow: auto;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.6;
-}
-#codeViewer .cm-editor .cm-gutters { border-right: 1px solid var(--border-color); }
-#codeViewer .cm-editor .cm-content {
-  white-space: pre-wrap;
-  word-break: normal;
-  padding: 8px 0;
-  caret-color: transparent;
-}
-#codeViewer .cm-editor .cm-line {
-  padding: 0 8px;
-}
+#codeViewer .monaco-editor { border-radius: 4px; }
 
   /* ========== 登录页面（独立全屏） ========== */
   .auth-page {
@@ -3507,7 +3486,7 @@ body::before {
   </div>
 </div>
 
-<!-- CodeMirror 6 loaded via import map + dynamic import() -->
+<!-- Monaco Editor loaded via CDN -->
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 
 <!-- ========== 更新日志弹窗 ========== -->
@@ -4589,55 +4568,69 @@ function togglePreview() {
   }
 }
 
-// ==================== CODEMIRROR 6 ====================
-let cmModules = null;
-let cmView = null;
-let cmLineWrapping = false;
+// ==================== MONACO EDITOR ====================
+let monacoEditor = null;
+let monacoReady = false;
+let monacoInitPromise = null;
 
-async function loadCodeMirror() {
-  if (cmModules) return cmModules;
-  const [view, state, search, language, commands, theme] = await Promise.all([
-    import("@codemirror/view"),
-    import("@codemirror/state"),
-    import("@codemirror/search"),
-    import("@codemirror/language"),
-    import("@codemirror/commands"),
-    import("@codemirror/theme-one-dark"),
-  ]);
-  cmModules = { view, state, search, language, commands, theme };
-  return cmModules;
+function initMonaco() {
+  if (monacoInitPromise) return monacoInitPromise;
+  monacoInitPromise = new Promise((resolve) => {
+    if (typeof monaco !== 'undefined' && monaco.editor && monaco.editor.create) {
+      monacoReady = true;
+      resolve();
+      return;
+    }
+    // 触发 AMD require 加载 Monaco Editor 主模块
+    try {
+      require(['vs/editor/editor.main'], function() {
+        monacoReady = true;
+        resolve();
+      });
+    } catch(e) {
+      // 备用：轮询等待
+      const check = setInterval(function() {
+        if (typeof monaco !== 'undefined' && monaco.editor && monaco.editor.create) {
+          clearInterval(check);
+          monacoReady = true;
+          resolve();
+        }
+      }, 100);
+    }
+  });
+  return monacoInitPromise;
 }
 
-async function getLanguageExtension(lang) {
+function getMonacoLanguage(lang) {
   const langMap = {
-    'python': '@codemirror/lang-python',
-    'javascript': '@codemirror/lang-javascript',
-    'html': '@codemirror/lang-html',
-    'css': '@codemirror/lang-css',
-    'json': '@codemirror/lang-json',
-    'markdown': '@codemirror/lang-markdown',
-  };
-  const exportNames = {
     'python': 'python',
     'javascript': 'javascript',
     'html': 'html',
     'css': 'css',
     'json': 'json',
     'markdown': 'markdown',
+    'typescript': 'typescript',
+    'jsx': 'javascript',
+    'tsx': 'typescript',
+    'xml': 'xml',
+    'yaml': 'yaml',
+    'shell': 'shell',
+    'sql': 'sql',
   };
-  const modulePath = langMap[lang];
-  if (!modulePath) return [];
-  try {
-    const mod = await import(modulePath);
-    const fn = mod[exportNames[lang]] || mod.default;
-    return typeof fn === 'function' ? [fn()] : [];
-  } catch { return []; }
+  return langMap[lang] || 'plaintext';
 }
 
-function getCmThemeExtension() {
-  const theme = getTheme();
-  if (theme === 'dark') return cmModules.theme.oneDark;
-  return [];
+function getMonacoTheme() {
+  return getTheme() === 'dark' ? 'vs-dark' : 'vs';
+}
+
+function ensureMonacoContainer() {
+  const container = document.getElementById('codeViewer');
+  // 如果容器内没有 monaco 编辑器实例，清空并创建 div
+  if (!container.querySelector('.monaco-editor')) {
+    container.innerHTML = '<div id="monacoContainer" style="width:100%;height:100%"></div>';
+  }
+  return document.getElementById('monacoContainer');
 }
 
 async function renderCode() {
@@ -4651,29 +4644,49 @@ async function renderCode() {
   document.getElementById('btnPreviewLabel').textContent = '预览';
 
   try {
-    const cm = await loadCodeMirror();
-    const langExt = await getLanguageExtension(tab.language);
+    // 显示加载状态
     const container = document.getElementById('codeViewer');
-    container.innerHTML = '<div style="padding:20px;color:var(--text-tertiary);font-size:14px">正在加载代码编辑器...</div>';
+    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:14px"><div class="spinner" style="margin-right:10px"></div>正在加载代码编辑器...</div>';
 
-    const extensions = [
-      cm.view.lineNumbers(),
-      cm.view.highlightActiveLine(),
-      cm.language.foldGutter(),
-      cm.search.search(),
-      cm.commands.defaultKeymap,
-      cm.view.highlightSpecialChars(),
-      cm.view.drawSelection(),
-    ];
+    await initMonaco();
+    const language = getMonacoLanguage(tab.language);
+    const theme = getMonacoTheme();
+    container.innerHTML = '<div id="monacoContainer" style="width:100%;height:100%"></div>';
 
-    if (cmLineWrapping) extensions.push(cm.view.EditorView.lineWrapping);
-    extensions.push(...langExt);
-    extensions.push(getCmThemeExtension());
+    if (monacoEditor) {
+      monacoEditor.dispose();
+      monacoEditor = null;
+    }
 
-    if (cmView) { cmView.destroy(); }
-    cmView = new cm.view.EditorView({
-      state: cm.state.EditorState.create({ doc: tab.content, extensions }),
-      parent: container
+    // 创建编辑器
+    monacoEditor = monaco.editor.create(document.getElementById('monacoContainer'), {
+      value: tab.content,
+      language: language,
+      theme: theme,
+      automaticLayout: true,
+      minimap: { enabled: true },
+      fontSize: 14,
+      tabSize: 4,
+      wordWrap: 'on',
+      lineNumbers: 'on',
+      readOnly: false,
+      scrollBeyondLastLine: false,
+      renderWhitespace: 'selection',
+      bracketPairColorization: { enabled: true },
+      fontFamily: "'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace",
+      fontLigatures: true,
+      smoothScrolling: true,
+      cursorBlinking: 'smooth',
+      cursorSmoothCaretAnimation: 'on',
+      padding: { top: 8 },
+    });
+
+    // 监听内容变化
+    monacoEditor.onDidChangeModelContent(function () {
+      // 更新 tab 内容
+      if (state.activeTabIdx >= 0 && state.openTabs[state.activeTabIdx]) {
+        state.openTabs[state.activeTabIdx].content = monacoEditor.getValue();
+      }
     });
   } catch(e) {
     // Fallback: 显示纯文本
@@ -4754,7 +4767,7 @@ async function runPythonCode() {
     py.setStdout({ batched: (text) => { stdout += text; } });
     py.setStderr({ batched: (text) => { stderr += text; } });
     
-    const code = cmView ? cmView.state.doc.toString() : tab.content;
+    const code = monacoEditor ? monacoEditor.getValue() : tab.content;
     await py.runPythonAsync(code);
     
     if (stdout) appendToTerminal(stdout, 'stdout');
@@ -6308,8 +6321,10 @@ function getTheme() {
 function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem(THEME_KEY, theme);
-  // 更新 CodeMirror 主题：重新渲染当前代码
-  if (cmView && cmModules) { renderCode(); }
+  // 更新 Monaco Editor 主题
+  if (monacoReady && monacoEditor) {
+    monaco.editor.setTheme(theme === 'dark' ? 'vs-dark' : 'vs');
+  }
 }
 
 function toggleTheme() {

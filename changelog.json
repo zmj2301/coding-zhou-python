@@ -1,5 +1,19 @@
 [
   {
+    "version": "1.8.0",
+    "date": "2026-07-29",
+    "title": "代码编辑器升级：CodeMirror 6 替换为 Monaco Editor（VS Code 内核）",
+    "changes": [
+      "用 Monaco Editor 替换 CodeMirror 6，提供与 VS Code 相同的专业代码编辑体验",
+      "支持 100+ 语言语法高亮、智能代码补全、错误提示、括号配对着色",
+      "内置小地图（minimap）、行号、代码折叠、自动换行、平滑滚动",
+      "支持自定义字体连字（font ligatures）、光标平滑动画、多种光标样式",
+      "暗色主题使用 vs-dark，亮色主题使用 vs，切换时即时生效无需重新渲染",
+      "通过 CDN 加载 Monaco Editor 0.52.2，自动布局适配容器大小变化",
+      "CDN 加载失败时自动降级为纯文本显示"
+    ]
+  },
+  {
     "version": "1.7.3",
     "date": "2026-07-29",
     "title": "修复 Ctrl+P 快捷键报错：openFileSearch 未定义改为 openSearchGlobal",
