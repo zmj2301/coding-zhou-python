@@ -1,5 +1,15 @@
 [
   {
+    "version": "1.7.2",
+    "date": "2026-07-29",
+    "title": "修复 CodeMirror 6 编辑器未显示：getLanguageExtension 取错导出函数名",
+    "changes": [
+      "修复点击文件后 CodeMirror 6 未显示、降级为纯文本显示的问题",
+      "getLanguageExtension() 使用 exportNames 映射指定正确导出函数名（如 python 而非 globalCompletion）",
+      "renderCode() 创建新 EditorView 前先 destroy() 旧的 cmView，防止内存泄漏"
+    ]
+  },
+  {
     "version": "1.7.1",
     "date": "2026-07-29",
     "title": "修复文件树展开时 TypeError 错误：加强 flattenTree/buildTreeHTML 空值检查",

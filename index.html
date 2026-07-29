@@ -4617,11 +4617,19 @@ async function getLanguageExtension(lang) {
     'json': '@codemirror/lang-json',
     'markdown': '@codemirror/lang-markdown',
   };
+  const exportNames = {
+    'python': 'python',
+    'javascript': 'javascript',
+    'html': 'html',
+    'css': 'css',
+    'json': 'json',
+    'markdown': 'markdown',
+  };
   const modulePath = langMap[lang];
   if (!modulePath) return [];
   try {
     const mod = await import(modulePath);
-    const fn = mod.default || mod[Object.keys(mod)[0]];
+    const fn = mod[exportNames[lang]] || mod.default;
     return typeof fn === 'function' ? [fn()] : [];
   } catch { return []; }
 }
@@ -4662,6 +4670,7 @@ async function renderCode() {
     extensions.push(...langExt);
     extensions.push(getCmThemeExtension());
 
+    if (cmView) { cmView.destroy(); }
     cmView = new cm.view.EditorView({
       state: cm.state.EditorState.create({ doc: tab.content, extensions }),
       parent: container
