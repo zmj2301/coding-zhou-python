@@ -1,5 +1,19 @@
 [
   {
+    "version": "1.8.3",
+    "date": "2026-07-31",
+    "title": "移动端性能优化：文件树懒加载与搜索服务端化",
+    "changes": [
+      "文件搜索改为 ECS 服务器端执行，不再加载 24.5MB 的 file-tree.json 到 Worker 内存",
+      "Worker 代理 /api/files/tree 和 /api/files/search 到 ECS 服务器，ECS 直接扫描文件系统",
+      "项目文件树懒加载：打开项目时只加载第一层目录（depth=1），展开子目录时按需加载",
+      "新增 /api/files/subtree 端点支持目录懒加载，Worker 添加对应代理",
+      "前端 buildTreeHTML 支持 hasChildren 标记，toggleDir 异步加载子节点并显示加载状态",
+      "修复 treeFilter 引用 bug（state.currentProject.treeNode → state.currentProjectTreeNode）",
+      "flattenTree 跳过未加载的子目录，文件计数随目录展开动态更新"
+    ]
+  },
+  {
     "version": "1.8.2",
     "date": "2026-07-30",
     "title": "修复 SSE 连接未关闭导致客户端超时",
