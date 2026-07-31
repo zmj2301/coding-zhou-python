@@ -822,31 +822,9 @@ body::before {
   transition: all 0.15s; flex-shrink: 0;
 }
 .ai-asst-close:hover { background: var(--accent-red); color: #fff; }
-/* AI 助手主体三栏 */
+/* AI 助手主体两栏 */
 .ai-asst-main { flex: 1; display: flex; overflow: hidden; }
-/* 左侧导航 */
-.ai-asst-nav {
-  width: 160px; flex-shrink: 0;
-  border-right: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-  padding: 8px 0; overflow-y: auto;
-}
-.ai-asst-nav-item {
-  padding: 10px 16px; font-size: 13px;
-  color: var(--text-secondary); cursor: pointer;
-  display: flex; align-items: center; gap: 8px;
-  border-left: 3px solid transparent;
-  transition: all 0.15s; user-select: none;
-}
-.ai-asst-nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
-.ai-asst-nav-item.active {
-  background: rgba(163,113,247,0.12);
-  border-left-color: var(--accent-purple);
-  color: var(--accent-purple); font-weight: 500;
-}
-.ai-asst-nav-icon { font-size: 15px; width: 18px; text-align: center; }
-.ai-asst-nav-divider { height: 1px; background: var(--border-color); margin: 8px 12px; }
-/* 中间对话列表 */
+/* 左侧对话列表 */
 .ai-asst-conversations {
   width: 300px; flex-shrink: 0;
   border-right: 1px solid var(--border-color);
@@ -1002,8 +980,8 @@ body::before {
 .ai-asst-send:disabled { opacity: 0.5; cursor: not-allowed; }
 .ai-asst-send svg { width: 16px; height: 16px; }
 /* 响应式 */
-@media (max-width: 1024px) { .ai-asst-conversations { width: 250px; } .ai-asst-nav { width: 130px; } }
-@media (max-width: 768px) { .ai-asst-nav { display: none; } .ai-asst-conversations { display: none; } .ai-asst-feature-cards { flex-direction: column; } }
+@media (max-width: 1024px) { .ai-asst-conversations { width: 220px; } }
+@media (max-width: 768px) { .ai-asst-conversations { display: none; } .ai-asst-feature-cards { flex-direction: column; } }
 
 /* Category section */
 .mm-category {
@@ -3752,43 +3730,10 @@ body::before {
       <button class="ai-asst-close" onclick="closeAIAssistant()" title="返回项目列表">&times;</button>
     </div>
   </div>
-  <!-- Main: 三栏 -->
+  <!-- Main: 两栏 -->
   <div class="ai-asst-main">
-    <!-- 左侧导航 -->
-    <div class="ai-asst-nav">
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();document.getElementById('aiAssistantEntry')&&window.scrollTo({top:0})">
-        <span class="ai-asst-nav-icon">📁</span><span>全部</span>
-      </div>
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();setTimeout(function(){var t=document.querySelector('[data-filter=\"all\"]');if(t){t.click();}},100)">
-        <span class="ai-asst-nav-icon">🌐</span><span>网页游戏</span>
-      </div>
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();setTimeout(function(){var t=document.querySelector('[data-filter=\"web-game\"]');if(t){t.click();}},100)">
-        <span class="ai-asst-nav-icon">🎮</span><span>游戏</span>
-      </div>
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();setTimeout(function(){var t=document.querySelector('[data-filter=\"game\"]');if(t){t.click();}},100)">
-        <span class="ai-asst-nav-icon">🤖</span><span>AI</span>
-      </div>
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();setTimeout(function(){var t=document.querySelector('[data-filter=\"ai\"]');if(t){t.click();}},100)">
-        <span class="ai-asst-nav-icon">🔧</span><span>工具</span>
-      </div>
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();setTimeout(function(){var t=document.querySelector('[data-filter=\"tool\"]');if(t){t.click();}},100)">
-        <span class="ai-asst-nav-icon">📁</span><span>其他</span>
-      </div>
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();setTimeout(function(){var t=document.querySelector('[data-filter=\"other\"]');if(t){t.click();}},100)">
-        <span class="ai-asst-nav-icon">📋</span><span>系统文件</span>
-      </div>
-      <div class="ai-asst-nav-divider"></div>
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();openAboutModal()">
-        <span class="ai-asst-nav-icon">ℹ️</span><span>关于</span>
-      </div>
-      <div class="ai-asst-nav-item" onclick="closeAIAssistant();openMindmapModal()">
-        <span class="ai-asst-nav-icon">🧠</span><span>思维导图</span>
-      </div>
-      <div class="ai-asst-nav-item active">
-        <span class="ai-asst-nav-icon">✨</span><span>AI 助手</span>
-      </div>
-    </div>
-    <!-- 中间对话列表 -->
+    <!-- 左侧导航（已删除，与主左侧栏共用）-->
+    <!-- 左侧对话列表 -->
     <div class="ai-asst-conversations">
       <div class="ai-asst-conv-header">最近对话</div>
       <div class="ai-asst-conv-list" id="aiAsstConvList"></div>
