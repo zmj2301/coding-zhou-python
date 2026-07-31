@@ -13,6 +13,12 @@ import base64
 import tempfile
 import urllib.request
 import re
+import threading
+import uuid
+import shutil
+import ast
+import signal
+import queue
 from pathlib import Path
 from http.cookies import SimpleCookie
 
@@ -33,42 +39,71 @@ if os.environ.get('PROJECTS_ROOT'):
     if _pr.exists():
         PROJECTS_ROOT = _pr
 
+def _count_python_project_dirs(d):
+    """统计目录下包含 .py 文件的子目录数量（排除一些特殊目录）"""
+    count = 0
+    skip_names = {'public', '__pycache__', '.git', 'node_modules', '.venv', 'venv',
+                  'data', 'comments', 'uploads', 'functions', 'images', 'project-trees'}
+    try:
+        for entry in d.iterdir():
+            if not entry.is_dir():
+                continue
+            if entry.name.startswith('.') or entry.name in skip_names:
+                continue
+            if any(entry.glob('*.py')):
+                count += 1
+    except Exception:
+        pass
+    return count
+
 def _find_projects_root():
-    """自动探测项目根目录：优先查找 BASE_DIR 同级/父级中是否存在项目文件夹"""
+    """自动探测项目根目录：查找包含实际 Python 项目子目录的根目录"""
     global PROJECTS_ROOT
     if PROJECTS_ROOT is not None:
         return PROJECTS_ROOT
-    # 候选路径：ECS 常见部署结构
+    # 候选路径：ECS 常见部署结构（优先级：先父目录，再public）
     candidates = [
-        BASE_DIR,                                # public 本身
-        BASE_DIR.parent,                         # code-explorer/
+        BASE_DIR.parent,                         # code-explorer/ (实际项目所在)
         BASE_DIR.parent.parent,                  # repo 根目录
-        Path('/home/code-explorer/public'),      # 常见 ECS 绝对路径
-        Path('/home/code-explorer'),
-        Path('/opt/code-explorer/public'),
+        Path('/home/code-explorer'),             # 常见 ECS 绝对路径（项目目录）
         Path('/opt/code-explorer'),
-        Path('/var/www/code-explorer/public'),
         Path('/var/www/code-explorer'),
-        Path('/www/code-explorer/public'),
         Path('/www/code-explorer'),
-        Path('/root/code-explorer/public'),
         Path('/root/code-explorer'),
+        BASE_DIR,                                # public 本身（静态文件兜底）
+        Path('/home/code-explorer/public'),
+        Path('/opt/code-explorer/public'),
+        Path('/var/www/code-explorer/public'),
+        Path('/www/code-explorer/public'),
+        Path('/root/code-explorer/public'),
     ]
+    best = None
+    best_score = -1
     for c in candidates:
         try:
             c = c.resolve()
-            if c.exists() and c.is_dir():
-                # 如果包含 project-list.json 或 project-trees 目录，认为是项目根
-                if (c / 'project-list.json').exists() or (c / 'project-trees').exists():
-                    PROJECTS_ROOT = c
-                    return c
-                # 或者包含若干 Python 项目目录（以.py 文件为特征）
-                for entry in c.iterdir():
-                    if entry.is_dir() and any(entry.glob('*.py')):
-                        PROJECTS_ROOT = c
-                        return c
+            if not c.exists() or not c.is_dir():
+                continue
+            py_dir_count = _count_python_project_dirs(c)
+            has_list = (c / 'project-list.json').exists()
+            has_trees = (c / 'project-trees').exists()
+            # 评分：Python项目目录数量权重最高
+            score = py_dir_count * 10
+            if has_list:
+                score += 2
+            if has_trees:
+                score += 1
+            # public 目录降权（即使有project-list.json，它也是静态资源目录）
+            if c.name == 'public':
+                score -= 5
+            if score > best_score:
+                best_score = score
+                best = c
         except Exception:
             continue
+    if best is not None:
+        PROJECTS_ROOT = best
+        return best
     # 兜底：使用 BASE_DIR
     PROJECTS_ROOT = BASE_DIR
     return PROJECTS_ROOT
@@ -78,16 +113,688 @@ _find_projects_root()
 USER_PASSWORD = os.environ.get('USER_PASSWORD', '')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'default-secret-change-me')
-ZHIPU_API_KEY = os.environ.get('ZHIPU_API_KEY', '')
-ZHIPU_API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions'
-ZHIPU_MODEL = 'glm-4.7-flash'
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
 OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 AGNES_AI_API_KEY = os.environ.get('AGNES_AI_API_KEY', '')
 AGNES_AI_API_URL = 'https://apihub.agnes-ai.com/v1/images/generations'
 
+# 代码执行相关配置
+RUNS_DIR = Path('/tmp/code-explorer-runs')
+VENV_CACHE_DIR = Path('/tmp/code-explorer-venvs')
+RUN_AS_USER = os.environ.get('RUN_AS_USER', '')
+DEFAULT_TIMEOUT = 60
+MAX_TIMEOUT = 300
+MAX_CONCURRENT_RUNS = 10
+MAX_OUTPUT_SIZE = 1024 * 1024  # 1MB
+
 DATA_DIR.mkdir(exist_ok=True)
 COMMENTS_DIR.mkdir(exist_ok=True)
+RUNS_DIR.mkdir(exist_ok=True, parents=True)
+VENV_CACHE_DIR.mkdir(exist_ok=True, parents=True)
+
+# ==================== 代码执行：进程管理 ====================
+active_processes = {}
+processes_lock = threading.Lock()
+
+# Python 标准库模块集合（3.8+常见）
+STDLIB_MODULES = {
+    'abc', 'aifc', 'argparse', 'array', 'ast', 'asynchat', 'asyncio',
+    'asyncore', 'atexit', 'audioop', 'base64', 'bdb', 'binascii',
+    'binhex', 'bisect', 'builtins', 'bz2', 'calendar', 'cgi', 'cgitb',
+    'chunk', 'cmath', 'cmd', 'code', 'codecs', 'codeop', 'collections',
+    'colorsys', 'compileall', 'concurrent', 'configparser', 'contextlib',
+    'contextvars', 'copy', 'copyreg', 'cProfile', 'crypt', 'csv',
+    'ctypes', 'curses', 'dataclasses', 'datetime', 'dbm', 'decimal',
+    'difflib', 'dis', 'distutils', 'doctest', 'email', 'encodings',
+    'enum', 'errno', 'faulthandler', 'fcntl', 'filecmp', 'fileinput',
+    'fnmatch', 'formatter', 'fractions', 'ftplib', 'functools', 'gc',
+    'getopt', 'getpass', 'gettext', 'glob', 'grp', 'gzip', 'hashlib',
+    'heapq', 'hmac', 'html', 'http', 'idlelib', 'imaplib', 'imghdr',
+    'imp', 'importlib', 'inspect', 'io', 'ipaddress', 'itertools',
+    'json', 'keyword', 'lib2to3', 'linecache', 'locale', 'logging',
+    'lzma', 'mailbox', 'mailcap', 'marshal', 'math', 'mimetypes',
+    'mmap', 'modulefinder', 'multiprocessing', 'netrc', 'nis', 'nntplib',
+    'numbers', 'operator', 'optparse', 'os', 'ossaudiodev', 'parser',
+    'pathlib', 'pdb', 'pickle', 'pickletools', 'pipes', 'pkgutil',
+    'platform', 'plistlib', 'poplib', 'posix', 'posixpath', 'pprint',
+    'profile', 'pstats', 'pty', 'pwd', 'py_compile', 'pyclbr',
+    'pydoc', 'queue', 'quopri', 'random', 're', 'readline', 'reprlib',
+    'resource', 'rlcompleter', 'runpy', 'sched', 'secrets', 'select',
+    'selectors', 'shelve', 'shlex', 'shutil', 'signal', 'site',
+    'smtpd', 'smtplib', 'sndhdr', 'socket', 'socketserver', 'spwd',
+    'sqlite3', 'sre_compile', 'sre_constants', 'sre_parse', 'ssl',
+    'stat', 'statistics', 'string', 'stringprep', 'struct', 'subprocess',
+    'sunau', 'symtable', 'sys', 'sysconfig', 'syslog', 'tabnanny',
+    'tarfile', 'telnetlib', 'tempfile', 'termios', 'test', 'textwrap',
+    'threading', 'time', 'timeit', 'tkinter', 'token', 'tokenize',
+    'trace', 'traceback', 'tracemalloc', 'tty', 'turtle', 'turtledemo',
+    'types', 'typing', 'unicodedata', 'unittest', 'urllib', 'uu',
+    'uuid', 'venv', 'warnings', 'wave', 'weakref', 'webbrowser',
+    'winreg', 'winsound', 'wsgiref', 'xdrlib', 'xml', 'xmlrpc',
+    'zipapp', 'zipfile', 'zipimport', 'zlib', '_thread',
+    '__future__', 'pkg_resources', 'setuptools', 'pip',
+}
+
+# 需要图形界面（显示器）的模块 - 在无头服务器上无法正常运行
+GUI_MODULES = {
+    'turtle', 'tkinter', 'turtledemo',  # 标准库 GUI
+    'pygame', 'pyglet', 'arcade',  # 游戏/图形库
+    'PyQt5', 'PyQt6', 'PySide2', 'PySide6', 'PyQt4', 'pyside',  # Qt GUI
+    'wx', 'wxPython', 'wxasync',  # wxPython
+    'kivy', 'tkinter',  # 其他 GUI 框架
+    'gtk', 'gi',  # GTK
+    'Tkinter',  # Python 2 风格
+    'pygame',  # 游戏开发
+    'pyautogui',  # GUI 自动化（需要显示器）
+    'pynput',  # 输入监控（在无头环境可能失败）
+    'pyscreeze', 'pygetwindow', 'PyRect', 'PyScreeze',  # pyautogui 依赖
+    'mouse', 'keyboard',  # 输入模拟
+    'matplotlib',  # 注意：matplotlib 可以使用 Agg 后端非交互式运行，只警告不阻止
+}
+
+# 在无头环境中完全无法运行的 GUI 模块（检测到直接提示无法运行）
+GUI_MODULES_BLOCKING = {
+    'turtle', 'tkinter', 'turtledemo', 'Tkinter',
+    'pygame', 'pyglet', 'arcade',
+    'PyQt5', 'PyQt6', 'PySide2', 'PySide6', 'PyQt4', 'pyside',
+    'wx', 'wxPython', 'kivy',
+    'pyautogui', 'pyscreeze', 'pygetwindow',
+}
+
+IMPORT_TO_PIP = {
+    'cv2': 'opencv-python',
+    'PIL': 'Pillow',
+    'yaml': 'pyyaml',
+    'sklearn': 'scikit-learn',
+    'bs4': 'beautifulsoup4',
+    'requests': 'requests',
+    'numpy': 'numpy',
+    'pandas': 'pandas',
+    'matplotlib': 'matplotlib',
+    'flask': 'flask',
+    'django': 'django',
+    'pygame': 'pygame',
+    'torch': 'torch',
+    'tensorflow': 'tensorflow',
+    'openai': 'openai',
+    'wx': 'wxPython',
+    'win32api': 'pywin32',
+    'win32con': 'pywin32',
+    'win32gui': 'pywin32',
+    'serial': 'pyserial',
+    'dotenv': 'python-dotenv',
+    'jwt': 'pyjwt',
+    'bcrypt': 'bcrypt',
+    'Crypto': 'pycryptodome',
+    'telegram': 'python-telegram-bot',
+    'discord': 'discord.py',
+    'svgwrite': 'svgwrite',
+    'cairosvg': 'cairosvg',
+    'imageio': 'imageio',
+    'scipy': 'scipy',
+    'seaborn': 'seaborn',
+    'plotly': 'plotly',
+    'bokeh': 'bokeh',
+    'alive_progress': 'alive-progress',
+    'tqdm': 'tqdm',
+    'colorama': 'colorama',
+    'termcolor': 'termcolor',
+    'rich': 'rich',
+    'click': 'click',
+    'typer': 'typer',
+    'fastapi': 'fastapi',
+    'uvicorn': 'uvicorn',
+    'aiohttp': 'aiohttp',
+    'httpx': 'httpx',
+    'pymongo': 'pymongo',
+    'redis': 'redis',
+    'psycopg2': 'psycopg2-binary',
+    'pymysql': 'pymysql',
+    'sqlalchemy': 'sqlalchemy',
+    'jinja2': 'jinja2',
+    'markdown': 'markdown',
+    'bleach': 'bleach',
+    'feedparser': 'feedparser',
+    'praw': 'praw',
+    'twilio': 'twilio',
+    'stripe': 'stripe',
+    'paypalrestsdk': 'paypalrestsdk',
+    'pdfplumber': 'pdfplumber',
+    'PyPDF2': 'pypdf2',
+    'fitz': 'pymupdf',
+    'docx': 'python-docx',
+    'openpyxl': 'openpyxl',
+    'xlrd': 'xlrd',
+    'xlwt': 'xlwt',
+    'csv': None,  # 标准库
+}
+
+
+def detect_imports(code):
+    imports = set()
+    try:
+        tree = ast.parse(code)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    top_level = alias.name.split('.')[0]
+                    imports.add(top_level)
+            elif isinstance(node, ast.ImportFrom):
+                if node.module and node.level == 0:
+                    top_level = node.module.split('.')[0]
+                    imports.add(top_level)
+    except SyntaxError:
+        pass
+    third_party = set()
+    for imp in imports:
+        if imp not in STDLIB_MODULES and not imp.startswith('_'):
+            pip_name = IMPORT_TO_PIP.get(imp)
+            if pip_name is not None:
+                third_party.add(pip_name)
+            else:
+                third_party.add(imp)
+    return third_party
+
+
+def get_all_imports(code):
+    """获取代码中所有顶层导入的模块名（包括标准库和第三方）"""
+    imports = set()
+    try:
+        tree = ast.parse(code)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    top_level = alias.name.split('.')[0]
+                    imports.add(top_level)
+            elif isinstance(node, ast.ImportFrom):
+                if node.module and node.level == 0:
+                    top_level = node.module.split('.')[0]
+                    imports.add(top_level)
+    except SyntaxError:
+        pass
+    return imports
+
+
+def detect_gui_modules(code):
+    """检测代码中是否使用了需要图形界面的模块
+    返回 (blocking_modules, warning_modules) 元组：
+    - blocking_modules: 完全无法在无头环境运行的模块（如 turtle, tkinter）
+    - warning_modules: 可以安装但可能无法显示图形的模块（如 pygame, matplotlib）
+    """
+    imports = get_all_imports(code)
+    blocking = set()
+    warning = set()
+    for imp in imports:
+        if imp in GUI_MODULES_BLOCKING:
+            blocking.add(imp)
+        elif imp in GUI_MODULES:
+            warning.add(imp)
+    return blocking, warning
+
+
+def find_gui_import_locations(code, file_label='<unknown>'):
+    """扫描代码，定位 GUI 模块的 import 语句所在行号
+    返回 dict: {模块名: [(file_label, line_no, line_text), ...]}
+    """
+    locations = {}
+    # 匹配 import xxx / from xxx import yyy
+    import re
+    # 形式1: import turtle / import turtle, tkinter
+    pat1 = re.compile(r'^\s*import\s+([\w\.,\s]+?)(?:\s+as\s+\w+)?\s*(?:#.*)?$')
+    # 形式2: from turtle import position
+    pat2 = re.compile(r'^\s*from\s+([\w\.]+)\s+import\s+.*?(?:\s+as\s+\w+)?\s*(?:#.*)?$')
+
+    all_gui = GUI_MODULES_BLOCKING | GUI_MODULES
+
+    for lineno, raw_line in enumerate(code.splitlines(), start=1):
+        line = raw_line
+        # 检查 import xxx 形式
+        m1 = pat1.match(line)
+        if m1:
+            names = [n.strip().split('.')[0] for n in m1.group(1).split(',')]
+            for n in names:
+                if n in all_gui:
+                    locations.setdefault(n, []).append((file_label, lineno, raw_line.strip()))
+        # 检查 from xxx import yyy 形式
+        m2 = pat2.match(line)
+        if m2:
+            n = m2.group(1).strip().split('.')[0]
+            if n in all_gui:
+                locations.setdefault(n, []).append((file_label, lineno, raw_line.strip()))
+    return locations
+
+
+def format_gui_locations_report(gui_locations, file_count=0, total_files=0):
+    """格式化 GUI 模块位置信息为可读的报告"""
+    if not gui_locations:
+        return ''
+    lines = ['\n\n【具体位置】:']
+    for mod, locs in sorted(gui_locations.items()):
+        # 合并同一文件中的多行
+        files_seen = set()
+        for file_label, lineno, line_text in locs:
+            unique = (file_label, lineno)
+            if unique in files_seen:
+                continue
+            files_seen.add(unique)
+            lines.append(f'  • {file_label} 第 {lineno} 行: {line_text}')
+    if total_files > 1:
+        lines.append(f'\n（共扫描了 {total_files} 个 .py 文件）')
+    return '\n'.join(lines)
+
+
+def check_stl_module_available(python_bin, module_name):
+    """检查标准库模块是否可用（某些模块如 tkinter/turtle 在编译 Python 时可能未包含）"""
+    try:
+        result = subprocess.run(
+            [str(python_bin), '-c', f'import {module_name}'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10
+        )
+        return result.returncode == 0
+    except Exception:
+        return False
+
+
+def _find_system_python_for_venv():
+    """为新建 venv 寻找一个可用的系统 Python 解释器。
+
+    优先级：
+    1. /usr/local/bin/python3.{9..13} / python3.{9..13}（编译安装的新版）
+    2. /usr/bin/python3.{9..13}
+    3. 兜底：当前进程用的 Python（sys.executable），保证 ecs-server 仍能工作
+
+    返回 (python_executable_str, version_tag)
+    version_tag 是形如 'py310'/'py36' 的标识，用于把 venv 缓存按版本隔离
+    """
+    candidates = []
+    # 优先看 /usr/local/bin（源码/altinstall 通常装这里），再 /usr/bin
+    for base in ('/usr/local/bin', '/usr/bin'):
+        for minor in (13, 12, 11, 10, 9):
+            candidates.append(f'{base}/python3.{minor}')
+    for c in candidates:
+        if os.path.isfile(c) and os.access(c, os.X_OK):
+            try:
+                r = subprocess.run(
+                    [c, '-c', 'import sys; print("%d.%d" % sys.version_info[:2])'],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    universal_newlines=True, timeout=5
+                )
+                if r.returncode == 0:
+                    ver = r.stdout.strip()
+                    major, minor = ver.split('.')
+                    tag = f'py{major}{minor}'
+                    return c, tag
+            except Exception:
+                continue
+    # 兜底
+    fallback = sys.executable
+    try:
+        r = subprocess.run(
+            [fallback, '-c', 'import sys; print("%d.%d" % sys.version_info[:2])'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            universal_newlines=True, timeout=5
+        )
+        ver = (r.stdout.strip() if r.returncode == 0 else '0.0')
+    except Exception:
+        ver = '0.0'
+    try:
+        major, minor = ver.split('.')
+        tag = f'py{major}{minor}'
+    except Exception:
+        tag = 'pyXX'
+    return fallback, tag
+
+
+def get_venv_path(project_key):
+    """生成 venv 目录路径。按 project_key + Python 版本 tag 隔离缓存。
+
+    这样在服务器升级 Python（比如从 3.6 升到 3.10）后：
+    - 旧 venv（用 3.6 创建的）继续存在，但不会被误用
+    - 新 venv 用新 Python 创建，避免老 venv 里 pip/wheel 不兼容
+    """
+    venv_hash = hashlib.md5(project_key.encode()).hexdigest()[:12]
+    return VENV_CACHE_DIR / f'venv-{venv_hash}'
+
+
+def _find_python_bin(venv_path):
+    """在虚拟环境中查找 Python 可执行文件，兼容不同系统"""
+    if os.name == 'nt':
+        candidates = [venv_path / 'Scripts' / 'python.exe', venv_path / 'python.exe']
+    else:
+        candidates = [
+            venv_path / 'bin' / 'python3',
+            venv_path / 'bin' / 'python',
+        ]
+    for c in candidates:
+        if c.exists():
+            return c
+    # 兜底：返回最可能的路径
+    return candidates[0]
+
+
+def ensure_venv(project_key, sse_callback=None, heartbeat_callback=None):
+    """为指定项目键创建（或复用）虚拟环境。
+
+    关键变化：用更高版本的系统 Python（如 3.10）创建 venv，
+    以支持 Python 3.9+ 的 PEP 585 内置泛型、3.10+ 的 TypeAlias 等新语法。
+    """
+    # 选 Python 时把版本 tag 混进 key，让不同 Python 版本的 venv 缓存隔离
+    system_python, py_tag = _find_system_python_for_venv()
+    scoped_key = f'{py_tag}::{project_key}'
+    venv_path = get_venv_path(scoped_key)
+    python_bin = _find_python_bin(venv_path)
+    if python_bin.exists():
+        if sse_callback:
+            try:
+                r = subprocess.run(
+                    [str(python_bin), '-c', 'import sys; print("%d.%d" % sys.version_info[:2])'],
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    universal_newlines=True, timeout=5
+                )
+                ver = r.stdout.strip() if r.returncode == 0 else '?'
+            except Exception:
+                ver = '?'
+            sse_callback('status', {'phase': 'venv', 'message': f'复用虚拟环境（Python {ver}）'})
+        return python_bin
+    if sse_callback:
+        sse_callback('status', {'phase': 'venv', 'message': f'创建虚拟环境（Python {py_tag[2:]}.x）...'})
+    if heartbeat_callback:
+        heartbeat_callback()
+    result = subprocess.run(
+        [system_python, '-m', 'venv', str(venv_path)],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, timeout=180
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f'创建虚拟环境失败: {result.stderr}')
+    # 重新定位 python 可执行文件
+    python_bin = _find_python_bin(venv_path)
+    if sse_callback:
+        sse_callback('status', {'phase': 'venv', 'message': '升级 pip...'})
+    if heartbeat_callback:
+        heartbeat_callback()
+    # 流式升级pip，避免长时间无输出
+    process = subprocess.Popen(
+        [str(python_bin), '-m', 'pip', 'install', '--upgrade', 'pip'],
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        universal_newlines=True, bufsize=1
+    )
+    last_hb = time.time()
+    while True:
+        line = process.stdout.readline()
+        if not line:
+            if process.poll() is not None:
+                break
+            if heartbeat_callback and time.time() - last_hb > 5:
+                heartbeat_callback()
+                last_hb = time.time()
+            time.sleep(0.1)
+            continue
+        if heartbeat_callback:
+            heartbeat_callback()
+    process.wait()
+    return python_bin
+
+
+# 已安装包缓存（每个venv缓存一次）
+_installed_packages_cache = {}
+
+def get_installed_packages(python_bin):
+    """获取虚拟环境中已安装的包列表（使用pip list，更可靠）"""
+    key = str(python_bin)
+    if key in _installed_packages_cache:
+        # 缓存5分钟
+        cache_time, pkgs = _installed_packages_cache[key]
+        if time.time() - cache_time < 300:
+            return pkgs
+    try:
+        result = subprocess.run(
+            [str(python_bin), '-m', 'pip', 'list', '--format=json'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, timeout=30
+        )
+        if result.returncode == 0:
+            import json as _json
+            try:
+                pkg_list = _json.loads(result.stdout)
+                # key 是包名的规范化形式（小写，下划线转横线）
+                installed = set()
+                for p in pkg_list:
+                    name = p.get('name', '').lower().replace('_', '-')
+                    installed.add(name)
+                _installed_packages_cache[key] = (time.time(), installed)
+                return installed
+            except Exception:
+                pass
+    except Exception:
+        pass
+    _installed_packages_cache[key] = (time.time(), set())
+    return set()
+
+
+def _normalize_pkg_name(name):
+    """规范化包名：pip 比较时忽略大小写和横线/下划线差异"""
+    return name.lower().replace('_', '-')
+
+
+def check_package_installed(python_bin, package_name):
+    """检查包是否已安装（优先用pip list，import作为后备）"""
+    installed = get_installed_packages(python_bin)
+    norm_name = _normalize_pkg_name(package_name)
+    if norm_name in installed:
+        return True
+    # 检查 IMPORT_TO_PIP 中的反向映射
+    for imp, pip_name in IMPORT_TO_PIP.items():
+        if pip_name and _normalize_pkg_name(pip_name) == norm_name:
+            if _normalize_pkg_name(pip_name) in installed:
+                return True
+    # 后备：用 import 测试（处理 pip list 未列出但可导入的情况，如 editable install）
+    import_name = package_name
+    for imp, pip in IMPORT_TO_PIP.items():
+        if pip == package_name:
+            import_name = imp
+            break
+    try:
+        result = subprocess.run(
+            [str(python_bin), '-c', f'import {import_name}'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10
+        )
+        return result.returncode == 0
+    except Exception:
+        return False
+
+
+def install_dependencies(python_bin, packages, sse_callback=None, heartbeat_callback=None, total=0, installed_count=None):
+    """安装依赖包，流式输出pip进度，单个包失败不中断执行"""
+    if not packages:
+        return 0, 0
+    packages = list(packages)
+    if installed_count is None:
+        installed_count = [0]
+    installed = []
+    failed = []
+    total_count = total if total else len(packages)
+
+    for idx, pkg in enumerate(packages, 1):
+        if heartbeat_callback:
+            heartbeat_callback()
+        if sse_callback:
+            current = installed_count[0]
+            sse_callback('deps', {
+                'phase': 'installing_package',
+                'package': pkg,
+                'index': current + 1,
+                'total': total_count,
+                'message': f'[{current + 1}/{total_count}] 正在安装 {pkg}...'
+            })
+        try:
+            # 优先尝试国内镜像（阿里云），加速 pip 下载
+            pip_index = os.environ.get('PIP_INDEX_URL', '')
+            if pip_index:
+                pip_cmd = [str(python_bin), '-m', 'pip', 'install', pkg, '-i', pip_index, '--timeout', '30']
+            else:
+                # 默认使用阿里云镜像
+                pip_cmd = [str(python_bin), '-m', 'pip', 'install', pkg, '-i', 'https://mirrors.aliyun.com/pypi/simple/', '--timeout', '30']
+            process = subprocess.Popen(
+                pip_cmd,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                universal_newlines=True, bufsize=1
+            )
+            last_hb = time.time()
+            while True:
+                line = process.stdout.readline()
+                if not line:
+                    if process.poll() is not None:
+                        break
+                    if heartbeat_callback and time.time() - last_hb > 5:
+                        heartbeat_callback()
+                        last_hb = time.time()
+                    time.sleep(0.1)
+                    continue
+                line = line.strip()
+                if line:
+                    if heartbeat_callback:
+                        heartbeat_callback()
+                    # 过滤pip的冗余输出，只显示关键信息
+                    if any(key in line.lower() for key in ['error', 'successfully installed', 'already satisfied', 'collecting', 'downloading', 'installing', 'warning']):
+                        if sse_callback:
+                            sse_callback('deps', {
+                                'phase': 'pip_output',
+                                'package': pkg,
+                                'line': line[:200]
+                            })
+            process.wait()
+            if process.returncode == 0:
+                installed.append(pkg)
+                installed_count[0] += 1
+                if sse_callback:
+                    sse_callback('deps', {
+                        'phase': 'package_installed',
+                        'package': pkg,
+                        'message': f'已安装: {pkg}'
+                    })
+            else:
+                # 镜像源失败时，回退到 PyPI 官方源
+                if not pip_index:
+                    if sse_callback:
+                        sse_callback('deps', {
+                            'phase': 'retry_official',
+                            'package': pkg,
+                            'message': f'{pkg} 国内镜像失败，回退到 PyPI 官方源...'
+                        })
+                    retry_proc = subprocess.Popen(
+                        [str(python_bin), '-m', 'pip', 'install', pkg, '--timeout', '60'],
+                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                        universal_newlines=True, bufsize=1
+                    )
+                    while True:
+                        line = retry_proc.stdout.readline()
+                        if not line:
+                            if retry_proc.poll() is not None:
+                                break
+                            if heartbeat_callback:
+                                heartbeat_callback()
+                            time.sleep(0.1)
+                            continue
+                        line = line.strip()
+                        if line and any(key in line.lower() for key in ['error', 'successfully installed', 'already satisfied']):
+                            if sse_callback:
+                                sse_callback('deps', {
+                                    'phase': 'pip_output',
+                                    'package': pkg,
+                                    'line': line[:200]
+                                })
+                        if heartbeat_callback:
+                            heartbeat_callback()
+                    retry_proc.wait()
+                    if retry_proc.returncode == 0:
+                        installed.append(pkg)
+                        installed_count[0] += 1
+                        if sse_callback:
+                            sse_callback('deps', {
+                                'phase': 'package_installed',
+                                'package': pkg,
+                                'message': f'已安装: {pkg}（使用 PyPI 官方源）'
+                            })
+                        continue
+                failed.append(pkg)
+                if sse_callback:
+                    sse_callback('deps', {
+                        'phase': 'package_failed',
+                        'package': pkg,
+                        'message': f'跳过无法安装的包: {pkg}（可能是本地模块或不存在）'
+                    })
+        except subprocess.TimeoutExpired:
+            failed.append(pkg)
+            if process:
+                try: process.kill()
+                except: pass
+            if sse_callback:
+                sse_callback('deps', {
+                    'phase': 'package_timeout',
+                    'package': pkg,
+                    'message': f'安装超时，跳过: {pkg}'
+                })
+        except Exception as e:
+            failed.append(pkg)
+            if sse_callback:
+                sse_callback('deps', {
+                    'phase': 'package_error',
+                    'package': pkg,
+                    'message': f'安装出错，跳过: {pkg}'
+                })
+    if sse_callback:
+        msg = f'{len(installed)} 个依赖包安装完成'
+        if failed:
+            msg += f'，{len(failed)} 个已跳过'
+        sse_callback('deps', {
+            'phase': 'installed',
+            'installed': installed,
+            'failed': failed,
+            'message': msg
+        })
+    # 清除已安装包缓存，下次重新获取
+    _installed_packages_cache.pop(str(python_bin), None)
+    return len(installed), len(failed)
+
+
+def parse_requirements_file(req_path):
+    """解析 requirements.txt，返回包名列表"""
+    packages = []
+    try:
+        with open(req_path, 'r', encoding='utf-8', errors='replace') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#') or line.startswith('-') or line.startswith('--'):
+                    continue
+                # 去除版本限定符：package>=1.0 -> package
+                pkg_name = re.split(r'[<>=!~;\[]', line)[0].strip()
+                if pkg_name:
+                    packages.append(pkg_name)
+    except Exception:
+        pass
+    return packages
+
+
+def cleanup_old_runs():
+    while True:
+        time.sleep(300)
+        try:
+            cutoff = time.time() - 3600
+            if RUNS_DIR.exists():
+                for d in RUNS_DIR.iterdir():
+                    try:
+                        if d.is_dir() and d.stat().st_mtime < cutoff:
+                            shutil.rmtree(str(d), ignore_errors=True)
+                    except Exception:
+                        pass
+            with processes_lock:
+                for run_id, info in list(active_processes.items()):
+                    if info['process'].poll() is not None:
+                        active_processes.pop(run_id, None)
+        except Exception:
+            pass
+
+
+threading.Thread(target=cleanup_old_runs, daemon=True).start()
 
 def hmac_sha256(key, msg):
     return hmac.new(key.encode(), msg.encode(), hashlib.sha256).digest()
@@ -215,8 +922,10 @@ def _load_all_comment_counts():
     return counts
 
 
-def scan_directory(dir_path, base_path=''):
-    """扫描目录，返回文件树结构（与 generate_filetree.py 一致）"""
+def scan_directory(dir_path, base_path='', max_depth=0, current_depth=0):
+    """扫描目录，返回文件树结构（与 generate_filetree.py 一致）
+    max_depth=0 表示不限制深度，max_depth=1 表示只扫描第一层
+    """
     items = []
     try:
         for entry in sorted(dir_path.iterdir(), key=lambda x: (not x.is_dir(), x.name.lower())):
@@ -226,14 +935,24 @@ def scan_directory(dir_path, base_path=''):
             if entry.is_dir():
                 if name in ('__pycache__', 'node_modules', '.git', '.venv', 'venv'):
                     continue
-                children = scan_directory(entry, f"{base_path}/{name}" if base_path else name)
-                if children:
+                # 深度限制：达到最大深度时，目录标记为可展开但不递归
+                if max_depth > 0 and current_depth + 1 >= max_depth:
                     items.append({
                         'name': name,
                         'type': 'directory',
                         'path': f"{base_path}/{name}" if base_path else name,
-                        'children': children,
+                        'children': [],
+                        'hasChildren': True,
                     })
+                else:
+                    children = scan_directory(entry, f"{base_path}/{name}" if base_path else name, max_depth, current_depth + 1)
+                    if children:
+                        items.append({
+                            'name': name,
+                            'type': 'directory',
+                            'path': f"{base_path}/{name}" if base_path else name,
+                            'children': children,
+                        })
             elif entry.is_file():
                 ext = os.path.splitext(name)[1].lower()
                 items.append({
@@ -248,12 +967,16 @@ def scan_directory(dir_path, base_path=''):
     return items
 
 
-def get_project_tree(project_path):
-    """获取项目文件树：优先 JSON 文件，fallback 到文件系统扫描"""
-    safe_name = project_path.replace('/', '__').replace('\\', '__')
-    data = read_json_file(BASE_DIR / 'project-trees' / f'{safe_name}.json')
-    if data is not None:
-        return data
+def get_project_tree(project_path, max_depth=0):
+    """获取项目文件树：优先 JSON 文件，fallback 到文件系统扫描
+    max_depth > 0 时只扫描指定深度（懒加载模式，跳过 JSON 缓存）
+    """
+    # 懒加载模式：直接扫描文件系统，不使用 JSON 缓存
+    if max_depth <= 0:
+        safe_name = project_path.replace('/', '__').replace('\\', '__')
+        data = read_json_file(BASE_DIR / 'project-trees' / f'{safe_name}.json')
+        if data is not None:
+            return data
 
     # Fallback：尝试多种可能的文件系统路径（包括自动探测的项目根目录）
     root = _find_projects_root()
@@ -267,7 +990,7 @@ def get_project_tree(project_path):
         try:
             full_path = full_path.resolve()
             if full_path.exists() and full_path.is_dir():
-                return scan_directory(full_path)
+                return scan_directory(full_path, max_depth=max_depth)
         except Exception:
             continue
 
@@ -352,8 +1075,44 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             project_path = qs.get('path', [''])[0]
             if not project_path:
                 return self.send_json([])
-            data = get_project_tree(project_path)
+            # 支持深度参数：depth=1 只加载第一层目录，实现懒加载
+            depth_str = qs.get('depth', ['0'])[0]
+            try:
+                depth = int(depth_str)
+            except ValueError:
+                depth = 0
+            data = get_project_tree(project_path, max_depth=depth)
             return self.send_json(data)
+
+        if path == '/api/files/subtree':
+            # 懒加载：获取项目内某个子目录的子节点
+            project_path = qs.get('project', [''])[0]
+            dir_path = qs.get('dir', [''])[0]
+            depth_str = qs.get('depth', ['1'])[0]
+            if not project_path or not dir_path:
+                return self.send_json([])
+            try:
+                depth = int(depth_str)
+            except ValueError:
+                depth = 1
+            root = _find_projects_root()
+            candidates = [
+                root / project_path,
+                BASE_DIR.parent.parent / project_path,
+                BASE_DIR.parent / project_path,
+                BASE_DIR / project_path,
+            ]
+            for full_path in candidates:
+                try:
+                    target = (full_path / dir_path).resolve()
+                    # 安全检查：确保 target 在 project_path 下
+                    project_full = full_path.resolve()
+                    if str(target).startswith(str(project_full)) and target.exists() and target.is_dir():
+                        children = scan_directory(target, dir_path, max_depth=depth)
+                        return self.send_json(children)
+                except Exception:
+                    continue
+            return self.send_json([])
 
         if path == '/api/files/tree':
             project = qs.get('project', [''])[0]
@@ -440,15 +1199,27 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             query = qs.get('q', [''])[0].lower()
             if not query:
                 return self.send_json([])
-            tree = read_json_file(BASE_DIR / 'file-tree.json') or []
+            # 直接扫描文件系统搜索，不再依赖 24.5MB 的 file-tree.json
             results = []
-            def search_tree(items):
-                for item in items:
-                    if item.get('type') == 'file' and query in item.get('name', '').lower():
-                        results.append({'name': item['name'], 'path': item['path'], 'ext': item.get('ext', '')})
-                    elif item.get('type') == 'directory' and item.get('children'):
-                        search_tree(item['children'])
-            search_tree(tree)
+            root = _find_projects_root()
+            skip_dirs = {'__pycache__', '.git', 'node_modules', '.venv', 'venv', '.idea', '.vscode', '.code-explorer'}
+            try:
+                for entry in root.iterdir():
+                    if not entry.is_dir() or entry.name.startswith('.') or entry.name in skip_dirs:
+                        continue
+                    for dirpath, dirnames, filenames in os.walk(str(entry)):
+                        # 过滤不需要遍历的目录
+                        dirnames[:] = [d for d in dirnames if d not in skip_dirs and not d.startswith('.')]
+                        for fname in filenames:
+                            if query in fname.lower():
+                                full_path = os.path.relpath(os.path.join(dirpath, fname), str(root))
+                                full_path = full_path.replace('\\', '/')
+                                ext = os.path.splitext(fname)[1].lower()
+                                results.append({'name': fname, 'path': full_path, 'ext': ext})
+                                if len(results) >= 100:
+                                    return self.send_json(results)
+            except Exception:
+                pass
             return self.send_json(results[:100])
 
         if path == '/api/files/preview':
@@ -633,7 +1404,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
         if path == '/api/recommend':
             messages = body.get('messages', [])
-            model = body.get('model', 'glm-4.7-flash')
+            model = body.get('model', 'openrouter/free')
             if not messages:
                 return self.send_error_json('请输入消息', 400)
             try:
@@ -649,6 +1420,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 - 推荐项目时要说明推荐理由，让人觉得有说服力
 - 如果用户问了具体需求，就帮他匹配最合适的项目
 - 如果只是聊天，就轻松愉快地聊，不用每次都推荐项目
+- 所有回答必须使用中文，除非用户明确要求使用其他语言
 
 可用的项目列表：
 {project_list}
@@ -659,39 +1431,24 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 ---END---
 没有推荐需求时正常聊天，不要强行推荐。"""
 
-                is_openrouter = '/' in model and not model.startswith('glm')
-
-                if is_openrouter:
-                    if not OPENROUTER_API_KEY:
-                        return self.send_error_json('AI 功能未配置 OPENROUTER_API_KEY', 503)
-                    api_url = OPENROUTER_API_URL
-                    api_key = OPENROUTER_API_KEY
-                    payload = {
-                        'model': model,
-                        'messages': [{'role': 'system', 'content': system_prompt}, *messages],
-                        'temperature': 0.7,
-                        'max_tokens': 800,
-                        'reasoning': {'enabled': True},
-                    }
-                else:
-                    if not ZHIPU_API_KEY:
-                        return self.send_error_json('AI 功能未配置 ZHIPU_API_KEY', 503)
-                    api_url = ZHIPU_API_URL
-                    api_key = ZHIPU_API_KEY
-                    payload = {
-                        'model': ZHIPU_MODEL,
-                        'messages': [{'role': 'system', 'content': system_prompt}, *messages],
-                        'temperature': 0.7,
-                        'max_tokens': 800,
-                    }
+                if not OPENROUTER_API_KEY:
+                    return self.send_error_json('AI 功能未配置 OPENROUTER_API_KEY', 503)
+                api_url = OPENROUTER_API_URL
+                api_key = OPENROUTER_API_KEY
+                payload = {
+                    'model': model,
+                    'messages': [{'role': 'system', 'content': system_prompt}, *messages],
+                    'temperature': 0.7,
+                    'max_tokens': 800,
+                    'reasoning': {'enabled': True},
+                }
 
                 headers = {
                     'Authorization': f'Bearer {api_key}',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://codingzhou.dpdns.org',
+                    'X-Title': 'Code Explorer',
                 }
-                if is_openrouter:
-                    headers['HTTP-Referer'] = 'https://codingzhou.dpdns.org'
-                    headers['X-Title'] = 'Code Explorer'
 
                 req = urllib.request.Request(api_url, data=json.dumps(payload).encode(), headers=headers)
                 with urllib.request.urlopen(req, timeout=60) as resp:
@@ -752,30 +1509,548 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 print(f'Image Gen Error: {traceback.format_exc()}', file=sys.stderr)
                 return self.send_error_json(f'图像生成失败: {e}', 500)
 
-        if path == '/api/run':
-            code = body.get('code', '')
-            result = self.run_python_code(code)
-            return self.send_json(result)
+        if path == '/api/run/start':
+            if not check_auth(self):
+                return self.send_error_json('请先登录', 401)
+            self.handle_run_start(body)
+            return
+
+        if path == '/api/run/stop':
+            if not check_auth(self):
+                return self.send_error_json('请先登录', 401)
+            self.handle_run_stop(body)
+            return
 
         self.send_error(404)
 
-    def run_python_code(self, code, timeout=30):
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
-            f.write(code)
-            temp_file = f.name
+    class SSEStreamer:
+        def __init__(self, handler):
+            self.handler = handler
+            self.started = False
+            self.closed = False
+            self._last_send = 0
+
+        def start(self):
+            if self.started:
+                return
+            self.handler.send_response(200)
+            self.handler.send_header('Content-Type', 'text/event-stream; charset=utf-8')
+            self.handler.send_header('Cache-Control', 'no-cache, no-transform')
+            self.handler.send_header('Connection', 'keep-alive')
+            self.handler.send_header('X-Accel-Buffering', 'no')
+            self.handler.send_header('Access-Control-Allow-Origin', '*')
+            self.handler.end_headers()
+            self.started = True
+            self._last_send = time.time()
+
+        def send(self, event, data):
+            if self.closed:
+                return
+            try:
+                payload = f'event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n'
+                self.handler.wfile.write(payload.encode('utf-8'))
+                self.handler.wfile.flush()
+                self._last_send = time.time()
+            except (BrokenPipeError, ConnectionResetError):
+                self.closed = True
+
+        def heartbeat(self):
+            """发送SSE注释心跳，保持连接活跃（防止代理超时）"""
+            if self.closed:
+                return
+            now = time.time()
+            if now - self._last_send < 10:
+                return  # 10秒内有数据就不发送
+            try:
+                self.handler.wfile.write(b': heartbeat\n\n')
+                self.handler.wfile.flush()
+                self._last_send = now
+            except (BrokenPipeError, ConnectionResetError):
+                self.closed = True
+
+        def close(self):
+            self.closed = True
+
+    def handle_run_start(self, body):
+        mode = body.get('mode', 'single')
+        timeout = min(int(body.get('timeout', DEFAULT_TIMEOUT)), MAX_TIMEOUT)
+        run_id = uuid.uuid4().hex[:12]
+
+        sse = self.SSEStreamer(self)
+        sse.start()
+
+        def emit(event, data):
+            sse.send(event, data)
+
+        def heartbeat():
+            sse.heartbeat()
+
+        temp_dir = None
+        process = None
+
         try:
-            result = subprocess.run(
-                ['python3', temp_file],
-                capture_output=True, text=True, timeout=timeout,
-                cwd=str(BASE_DIR)
+            with processes_lock:
+                if len(active_processes) >= MAX_CONCURRENT_RUNS:
+                    emit('error', {'message': '服务器繁忙，请稍后重试'})
+                    return
+
+            emit('status', {'phase': 'preparing', 'runId': run_id, 'message': '准备执行环境...'})
+
+            temp_dir = Path(tempfile.mkdtemp(prefix=f'run-{run_id}-', dir=str(RUNS_DIR)))
+
+            python_bin = None
+            entry_file = 'main.py'
+
+            if mode == 'single':
+                code = body.get('code', '')
+                if not code.strip():
+                    emit('error', {'message': '代码为空'})
+                    return
+
+                imports = detect_imports(code)
+                emit('status', {'phase': 'analyzing', 'message': f'检测到 {len(imports)} 个第三方依赖'})
+                heartbeat()
+
+                # 单文件使用与项目不同的虚拟环境 key（避免污染项目环境）
+                file_name = body.get('fileName', 'script.py')
+                venv_key = '__single_file__::' + (file_name or 'script.py')
+                python_bin = ensure_venv(venv_key, emit, heartbeat)
+
+                if imports:
+                    # 使用 pip list 改进的检测方法
+                    missing = []
+                    for pkg in imports:
+                        if not check_package_installed(python_bin, pkg):
+                            missing.append(pkg)
+                    if missing:
+                        install_dependencies(python_bin, missing, emit, heartbeat)
+                    else:
+                        emit('deps', {'phase': 'installed', 'message': '所有依赖已就绪'})
+
+                entry_file = 'script.py'
+                (temp_dir / entry_file).write_text(code, encoding='utf-8')
+
+            elif mode == 'project':
+                project_path = body.get('projectPath', '')
+                entry_file = body.get('entryFile', 'main.py')
+                file_overrides = body.get('files', {})
+
+                if not project_path:
+                    emit('error', {'message': '缺少项目路径'})
+                    return
+
+                root = _find_projects_root()
+                project_dir = None
+                for sp in [root / project_path, BASE_DIR.parent.parent / project_path,
+                           BASE_DIR.parent / project_path, BASE_DIR / project_path]:
+                    try:
+                        if sp.exists() and sp.is_dir():
+                            project_dir = sp.resolve()
+                            break
+                    except Exception:
+                        continue
+
+                if not project_dir:
+                    emit('error', {'message': f'项目不存在: {project_path}'})
+                    return
+
+                emit('status', {'phase': 'copying', 'message': '复制项目文件...'})
+                heartbeat()
+
+                skip_dirs = {'__pycache__', '.git', 'node_modules', '.venv', 'venv', '.idea', '.vscode'}
+                file_count = 0
+                for item in project_dir.rglob('*'):
+                    if any(part in skip_dirs for part in item.parts):
+                        continue
+                    rel = item.relative_to(project_dir)
+                    dest = temp_dir / rel
+                    if item.is_dir():
+                        dest.mkdir(exist_ok=True)
+                    elif item.is_file():
+                        dest.parent.mkdir(parents=True, exist_ok=True)
+                        rel_str = str(rel).replace('\\', '/')
+                        if rel_str in file_overrides:
+                            dest.write_text(file_overrides[rel_str], encoding='utf-8')
+                        else:
+                            shutil.copy2(str(item), str(dest))
+                        file_count += 1
+                        if file_count % 20 == 0:
+                            heartbeat()
+
+                for rel_path, content in file_overrides.items():
+                    dest = temp_dir / rel_path
+                    dest.parent.mkdir(parents=True, exist_ok=True)
+                    dest.write_text(content, encoding='utf-8')
+
+                req_file = temp_dir / 'requirements.txt'
+
+                emit('status', {'phase': 'venv', 'message': '准备项目虚拟环境...'})
+                heartbeat()
+                python_bin = ensure_venv(project_path, emit, heartbeat)
+
+                heartbeat()
+                emit('status', {'phase': 'analyzing', 'message': '分析项目依赖...'})
+
+                # 收集所有 .py 文件以分析 imports
+                all_imports = set()
+                py_file_count = 0
+                for py_file in temp_dir.rglob('*.py'):
+                    try:
+                        code_content = py_file.read_text(encoding='utf-8', errors='replace')
+                        all_imports.update(detect_imports(code_content))
+                        py_file_count += 1
+                    except Exception:
+                        pass
+                if py_file_count == 0:
+                    emit('error', {'message': '项目中没有找到任何 .py 文件'})
+                    return
+
+                # 收集本地模块名（排除这些不安装）
+                # 更精确的检测：所有目录名（包）和所有 .py 文件名（顶层模块）
+                local_modules = set()
+                for py_file in temp_dir.rglob('*.py'):
+                    rel = py_file.relative_to(temp_dir)
+                    parts = rel.parts
+                    # 顶层 .py 文件是模块
+                    if len(parts) == 1:
+                        local_modules.add(py_file.stem)
+                    # 路径中的所有目录都是潜在的包
+                    for i in range(len(parts) - 1):
+                        local_modules.add(parts[i])
+                    # __init__.py 确认该目录是包
+                    if py_file.name == '__init__.py':
+                        local_modules.add(py_file.parent.name)
+                # 额外：扫描所有目录作为包
+                for d in temp_dir.rglob('*'):
+                    if d.is_dir() and not any(part in skip_dirs for part in d.relative_to(temp_dir).parts):
+                        rel = d.relative_to(temp_dir)
+                        for part in rel.parts:
+                            local_modules.add(part)
+
+                # 过滤掉本地模块和标准库模块
+                third_party_imports = set()
+                for imp in all_imports:
+                    # 本地模块
+                    if imp in local_modules:
+                        continue
+                    # 标准库
+                    if imp in STDLIB_MODULES:
+                        continue
+                    # 以 _ 开头的内部模块
+                    if imp.startswith('_'):
+                        continue
+                    third_party_imports.add(imp)
+                all_imports = third_party_imports
+
+                # 合并 requirements.txt 和检测到的依赖
+                req_packages = []
+                if req_file.exists():
+                    req_packages = parse_requirements_file(req_file)
+                    emit('deps', {'phase': 'requirements_found', 'count': len(req_packages), 'message': f'发现 requirements.txt，包含 {len(req_packages)} 个依赖'})
+
+                # 去重合并所有需要安装的包（用规范化名称去重）
+                all_packages = {}
+                for pkg in req_packages:
+                    all_packages[_normalize_pkg_name(pkg)] = pkg
+                for pkg in all_imports:
+                    norm = _normalize_pkg_name(pkg)
+                    if norm not in all_packages:
+                        all_packages[norm] = pkg
+
+                # 使用改进的 check_package_installed 检查哪些真正缺失
+                missing = []
+                for norm_name, pkg_name in all_packages.items():
+                    if not check_package_installed(python_bin, pkg_name):
+                        missing.append(pkg_name)
+                # 去重（保留顺序）
+                seen = set()
+                missing_unique = []
+                for p in missing:
+                    if p not in seen:
+                        seen.add(p)
+                        missing_unique.append(p)
+
+                if missing_unique:
+                    emit('deps', {'phase': 'installing', 'count': len(missing_unique), 'message': f'需要安装 {len(missing_unique)} 个依赖包'})
+                    install_dependencies(python_bin, missing_unique, emit, heartbeat)
+                else:
+                    emit('deps', {'phase': 'installed', 'message': '所有依赖已就绪'})
+
+            else:
+                emit('error', {'message': f'不支持的模式: {mode}'})
+                return
+
+            if not (temp_dir / entry_file).exists():
+                py_files = list(temp_dir.rglob('*.py'))
+                if py_files:
+                    entry_file = str(py_files[0].relative_to(temp_dir)).replace('\\', '/')
+                    emit('status', {'phase': 'running', 'message': f'入口文件不存在，自动选择: {entry_file}'})
+                else:
+                    emit('error', {'message': f'入口文件不存在: {entry_file}'})
+                    return
+
+            # 检测 GUI 模块（在无头服务器环境中无法显示图形界面）
+            all_gui_blocking = set()
+            all_gui_warning = set()
+            # 收集每个 GUI 模块的 import 位置（文件名 + 行号 + 代码行）
+            gui_locations = {}  # {模块名: [(file_label, line_no, line_text), ...]}
+            all_py_files_count = 0
+            try:
+                # 读取所有 Python 文件检测 GUI 模块
+                for py_file in temp_dir.rglob('*.py'):
+                    try:
+                        all_py_files_count += 1
+                        code_content = py_file.read_text(encoding='utf-8', errors='replace')
+                        blocking, warning = detect_gui_modules(code_content)
+                        all_gui_blocking.update(blocking)
+                        all_gui_warning.update(warning)
+                        # 定位 GUI import 的具体行号
+                        rel_label = str(py_file.relative_to(temp_dir)).replace('\\', '/')
+                        locs = find_gui_import_locations(code_content, rel_label)
+                        for mod, loc_list in locs.items():
+                            gui_locations.setdefault(mod, []).extend(loc_list)
+                    except Exception:
+                        pass
+
+                # 额外检查：标准库 GUI 模块（如 turtle/tkinter）是否真的可用
+                stl_gui_modules = {'turtle', 'tkinter', 'turtledemo', 'Tkinter'}
+                for mod in list(all_gui_blocking):
+                    if mod in stl_gui_modules:
+                        if not check_stl_module_available(python_bin, mod):
+                            # 标准库 GUI 模块不可用（Python 编译时未包含 Tk 支持）
+                            loc_report = format_gui_locations_report(
+                                {mod: gui_locations.get(mod, [])},
+                                total_files=all_py_files_count
+                            )
+                            err_msg = (
+                                '检测到使用了 ' + mod + ' 模块，但当前服务器环境不支持图形界面。\n\n'
+                                '原因：服务器是无图形界面的 Linux 环境，Python 未包含 Tkinter 支持。\n'
+                                'turtle、tkinter 等 GUI 程序需要在本地电脑上运行才能显示窗口。\n\n'
+                                '建议：请在本地安装 Python 后运行此代码。'
+                                + loc_report
+                            )
+                            emit('error', {
+                                'message': err_msg
+                            })
+                            return
+                        else:
+                            # 模块可导入但仍无显示器，给出警告
+                            all_gui_warning.add(mod)
+                            all_gui_blocking.discard(mod)
+
+                # 阻塞型 GUI 模块提示（即使能 import 也无法显示窗口）
+                if all_gui_blocking:
+                    modules_list = ', '.join(sorted(all_gui_blocking))
+                    loc_report = format_gui_locations_report(
+                        {m: gui_locations.get(m, []) for m in all_gui_blocking},
+                        total_files=all_py_files_count
+                    )
+                    err_msg = (
+                        '检测到使用了图形界面模块: ' + modules_list + '\n\n'
+                        '当前服务器是无显示器的 Linux 环境，无法运行需要图形窗口的程序。\n'
+                        '这类程序（如 pygame、PyQt、turtle 绘图等）需要在本地电脑上运行，\n'
+                        '才能正常弹出窗口和显示画面。\n\n'
+                        '非图形部分（如计算逻辑）仍可尝试执行，但图形界面功能将不可用。\n'
+                        '如果程序不依赖图形界面显示结果，可以修改代码移除 GUI 相关 import 后重试。'
+                        + loc_report
+                    )
+                    emit('error', {
+                        'message': err_msg
+                    })
+                    return
+
+                # 警告型 GUI 模块（可以运行但可能报错或不显示图形）
+                if all_gui_warning:
+                    modules_list = ', '.join(sorted(all_gui_warning))
+                    loc_report = format_gui_locations_report(
+                        {m: gui_locations.get(m, []) for m in all_gui_warning},
+                        total_files=all_py_files_count
+                    )
+                    emit('stderr', {
+                        'text': '[警告] 检测到图形相关模块: ' + modules_list + '。服务器无显示器，图形界面可能无法正常显示。'
+                                + loc_report + '\n'
+                    })
+            except Exception as e:
+                # GUI 检测失败不影响正常执行
+                pass
+
+            def set_resource_limits():
+                try:
+                    import resource
+                    resource.setrlimit(resource.RLIMIT_CPU, (timeout, timeout))
+                    mem_limit = 512 * 1024 * 1024
+                    resource.setrlimit(resource.RLIMIT_AS, (mem_limit, mem_limit))
+                    fsize_limit = 64 * 1024 * 1024
+                    resource.setrlimit(resource.RLIMIT_FSIZE, (fsize_limit, fsize_limit))
+                    resource.setrlimit(resource.RLIMIT_NPROC, (32, 32))
+                except Exception:
+                    pass
+
+            preexec_fn = set_resource_limits
+            if RUN_AS_USER and os.name != 'nt':
+                try:
+                    import pwd
+                    pw = pwd.getpwnam(RUN_AS_USER)
+                    run_uid, run_gid = pw.pw_uid, pw.pw_gid
+                    def switch_user():
+                        set_resource_limits()
+                        os.setgid(run_gid)
+                        os.setuid(run_uid)
+                    preexec_fn = switch_user
+                except Exception:
+                    pass
+
+            emit('status', {'phase': 'running', 'message': '开始执行...'})
+
+            env = os.environ.copy()
+            env['PYTHONUNBUFFERED'] = '1'
+            env['PYTHONIOENCODING'] = 'utf-8'
+            venv_bin = python_bin.parent
+            env['PATH'] = f'{venv_bin}:{env.get("PATH", "")}'
+            env['VIRTUAL_ENV'] = str(python_bin.parent.parent)
+
+            process = subprocess.Popen(
+                [str(python_bin), '-u', entry_file],
+                cwd=str(temp_dir),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+                bufsize=1,
+                env=env,
+                preexec_fn=preexec_fn if os.name != 'nt' else None,
             )
-            return {'success': result.returncode == 0, 'output': result.stdout, 'error': result.stderr}
-        except subprocess.TimeoutExpired:
-            return {'success': False, 'output': '', 'error': f'执行超时（超过{timeout}秒）'}
+
+            with processes_lock:
+                active_processes[run_id] = {
+                    'process': process,
+                    'temp_dir': temp_dir,
+                    'start_time': time.time(),
+                    'mode': mode
+                }
+
+            output_size = [0]
+            timed_out = [False]
+            start_time = time.time()
+
+            def reader_thread(stream, event_type):
+                try:
+                    for line in iter(stream.readline, ''):
+                        output_queue.put((event_type, line))
+                        if process.poll() is not None:
+                            remaining = output_queue.qsize()
+                            for _ in range(remaining):
+                                pass
+                            break
+                except Exception:
+                    pass
+                finally:
+                    output_queue.put(('done', event_type))
+
+            output_queue = queue.Queue()
+            t_stdout = threading.Thread(target=reader_thread, args=(process.stdout, 'stdout'), daemon=True)
+            t_stderr = threading.Thread(target=reader_thread, args=(process.stderr, 'stderr'), daemon=True)
+            t_stdout.start()
+            t_stderr.start()
+
+            done_count = 0
+            last_hb = time.time()
+            while done_count < 2:
+                elapsed = time.time() - start_time
+                remaining = timeout - elapsed
+
+                if remaining <= 0:
+                    timed_out[0] = True
+                    process.kill()
+                    emit('stderr', {'text': f'\n[执行超时：超过{timeout}秒]\n'})
+                    break
+
+                try:
+                    event_type, line = output_queue.get(timeout=min(remaining, 0.5))
+                    if event_type == 'done':
+                        done_count += 1
+                        continue
+                    output_size[0] += len(line)
+                    if output_size[0] > MAX_OUTPUT_SIZE:
+                        emit(event_type, {'text': '\n[输出被截断：超过最大限制]\n'})
+                        process.kill()
+                        break
+                    emit(event_type, {'text': line})
+                except queue.Empty:
+                    if process.poll() is not None:
+                        continue
+                    # 定期发送心跳保持连接
+                    if time.time() - last_hb > 5:
+                        heartbeat()
+                        last_hb = time.time()
+
+            t_stdout.join(timeout=2)
+            t_stderr.join(timeout=2)
+
+            returncode = process.poll()
+            if timed_out[0]:
+                emit('exit', {'code': -1, 'timedOut': True, 'message': f'执行超时（{timeout}秒）'})
+            else:
+                msg = '执行完成' if returncode == 0 else f'执行出错（退出码: {returncode}）'
+                emit('exit', {'code': returncode, 'timedOut': False, 'message': msg})
+
         except Exception as e:
-            return {'success': False, 'output': '', 'error': str(e)}
+            import traceback
+            traceback.print_exc()
+            emit('error', {'message': f'执行失败: {str(e)}'})
+
         finally:
-            os.unlink(temp_file)
+            if process and process.poll() is None:
+                try:
+                    process.kill()
+                    process.wait(timeout=3)
+                except Exception:
+                    pass
+
+            with processes_lock:
+                active_processes.pop(run_id, None)
+
+            # 关闭 SSE 连接，防止客户端一直等待
+            sse.close()
+            try:
+                self.wfile.flush()
+            except Exception:
+                pass
+            self.close_connection = True
+
+            if temp_dir:
+                def cleanup_temp():
+                    time.sleep(5)
+                    try:
+                        shutil.rmtree(str(temp_dir), ignore_errors=True)
+                    except Exception:
+                        pass
+                threading.Thread(target=cleanup_temp, daemon=True).start()
+
+    def handle_run_stop(self, body):
+        run_id = body.get('runId', '')
+        with processes_lock:
+            proc_info = active_processes.get(run_id)
+
+        if not proc_info:
+            return self.send_json({'success': False, 'message': '未找到运行中的进程'}, 404)
+
+        process = proc_info['process']
+        try:
+            if process.poll() is None:
+                if os.name != 'nt':
+                    try:
+                        os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+                        time.sleep(1)
+                        if process.poll() is None:
+                            os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+                    except Exception:
+                        process.kill()
+                else:
+                    process.kill()
+                process.wait(timeout=3)
+            self.send_json({'success': True, 'message': '进程已终止'})
+        except Exception as e:
+            self.send_json({'success': False, 'message': f'终止失败: {e}'}, 500)
 
     def log_message(self, format, *args):
         pass
@@ -787,6 +2062,6 @@ if __name__ == '__main__':
     print(f'PROJECTS_ROOT: {_find_projects_root()}')
     print(f'USER_PASSWORD: {"已设置" if USER_PASSWORD else "未设置"}')
     print(f'ADMIN_PASSWORD: {"已设置" if ADMIN_PASSWORD else "未设置"}')
-    print(f'ZHIPU_API_KEY: {"已设置" if ZHIPU_API_KEY else "未设置"}')
+    print(f'OPENROUTER_API_KEY: {"已设置" if OPENROUTER_API_KEY else "未设置"}')
     with http.server.HTTPServer((HOST, PORT), MyHandler) as httpd:
         httpd.serve_forever()

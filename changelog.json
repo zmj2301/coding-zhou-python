@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.9.5",
+    "date": "2026-08-01",
+    "title": "移除 GLM 大模型，AI 输出区分思考过程与回答，系统提示词要求中文回答",
+    "changes": [
+      "移除前端 AI 模型选择下拉框中的 GLM-4.7-Flash 选项，默认模型改为 OpenRouter Free Auto-Route",
+      "移除后端 ecs-server.py 中所有 ZHIPU_API_KEY / ZHIPU_API_URL / ZHIPU_MODEL 相关代码，仅保留 OpenRouter",
+      "系统提示词增加约束：所有回答必须使用中文，除非用户明确要求使用其他语言",
+      "后端 AI 请求启用 reasoning 参数，响应中提取 reasoning_content 返回前端",
+      "前端已有 reasoning 折叠展示（<details> 可收起/展开），显示 '🤔 思考过程'，下方为回答内容"
+    ]
+  },
+  {
     "version": "1.9.4",
     "date": "2026-07-31",
     "title": "AI 助手移至项目卡片位置：点击 AI 助手时直接替换项目列表区域，不再出现在下方",
