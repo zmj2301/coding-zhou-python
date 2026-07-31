@@ -46,6 +46,8 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+ecs-env.sh
+code-explorer/ecs-env.sh
 
 # 图片文件
 *.png
