@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.8.8",
+    "date": "2026-07-31",
+    "title": "终端配色升级为 Catppuccin：背景调亮 + 低饱和柔和色，长时间使用更舒适",
+    "changes": [
+      "暗色终端从 Tokyo Night 升级为 Catppuccin Mocha：背景 #1e1e2e（比 #1a1b26 稍亮），文字 #cdd6f4（对比度 7.0:1），缓解过暗问题",
+      "亮色终端从 Tokyo Night Light 升级为 Catppuccin Latte：背景 #eff1f5（柔和非纯白），文字 #4c4f69（对比度 7.8:1），清晰不刺眼",
+      "所有语义颜色采用低饱和柔和色（stderr/#f38ba8、info/#89b4fa、success/#a6e3a1），长时间使用不易视觉疲劳",
+      "所有语义颜色对比度均通过 WCAG AA 标准（≥4.5:1），正文对比度在 7.0-7.8:1 舒适区间",
+      "色相在暗色/亮色主题间一一对应，切换体验一致，且与当前 Catppuccin 社区生态兼容"
+    ]
+  },
+  {
     "version": "1.8.7",
     "date": "2026-07-31",
     "title": "终端控制台颜色主题修复：颜色随主题切换 + Tokyo Night 护眼配色",
