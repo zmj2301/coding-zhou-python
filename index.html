@@ -393,6 +393,13 @@ body::before {
   background: var(--bg-tertiary);
   color: var(--text-primary);
 }
+.filter-tab.ai-tab {
+  color: var(--accent-purple);
+}
+.filter-tab.ai-tab.active {
+  background: var(--accent-purple);
+  color: #fff;
+}
 .view-toggle {
   display: flex;
   align-items: center;
@@ -3411,6 +3418,7 @@ body::before {
         <button class="filter-tab" data-filter="ai">AI</button>
         <button class="filter-tab" data-filter="tool">工具</button>
         <button class="filter-tab" data-filter="other">其他</button>
+        <button class="filter-tab ai-tab" id="aiFilterTab" data-filter="__ai_asst__">✨ AI 助手</button>
       </div>
     </div>
   </div>
@@ -5244,6 +5252,11 @@ document.getElementById('heroSearch').addEventListener('click', () => $('#heroSe
 
 $('#filterTabs').addEventListener('click', e => {
   if (!e.target.classList.contains('filter-tab')) return;
+  // 点击 AI 助手标签
+  if (e.target.dataset.filter === '__ai_asst__') {
+    openAIAssistant();
+    return;
+  }
   // 关闭 AI 助手页面
   closeAIAssistant();
   $('#filterTabs').querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -5469,10 +5482,12 @@ function openAIAssistant() {
   document.querySelectorAll('.category-index-item').forEach(function(i) { i.classList.remove('active'); });
   var entry = document.getElementById('aiAssistantEntry');
   if (entry) entry.classList.add('active');
-  // 更新顶部 filter tabs
+  // 更新顶部 filter tabs：高亮 AI 助手按钮
   var tabs = document.getElementById('filterTabs');
   if (tabs) {
     tabs.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+    var aiTab = document.getElementById('aiFilterTab');
+    if (aiTab) aiTab.classList.add('active');
   }
   aiAsstInitModel();
   aiAsstLoadConvs();
@@ -5485,7 +5500,11 @@ function closeAIAssistant() {
   var page = document.getElementById('aiAsstPage');
   if (page) page.classList.remove('active');
   if (AI_ASST.abortCtrl) { AI_ASST.abortCtrl.abort(); AI_ASST.abortCtrl = null; }
-  // 恢复全部 filter 高亮
+  // 恢复全部 filter 高亮，取消 AI 助手高亮
+  var tabs = document.getElementById('filterTabs');
+  if (tabs) {
+    tabs.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+  }
   var allTab = document.querySelector('.filter-tab[data-filter="all"]');
   if (allTab) allTab.classList.add('active');
   var allItem = document.querySelector('.category-index-item[data-filter="all"]');
