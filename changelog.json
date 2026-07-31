@@ -1,5 +1,110 @@
 [
   {
+    "version": "1.8.7",
+    "date": "2026-07-31",
+    "title": "终端控制台颜色主题修复：颜色随主题切换 + Tokyo Night 护眼配色",
+    "changes": [
+      "修复终端背景色硬编码 #0d1117 不随主题切换的问题：亮色主题下深字深底完全不可读",
+      "引入专属 --term-* CSS 变量，在 :root（暗色）和 [data-theme=light]（亮色）中分别定义终端配色",
+      "暗色主题采用 Tokyo Night 风格：背景 #1a1b26（蓝调暖色），文字 #c0caf5（蓝白色），比原 #0d1117 更柔和",
+      "亮色主题终端采用 Tokyo Night Light 官方配色：背景 #e6e7ed，文字 #343b58（对比度 8.7:1），info 色 #0f4b6e（7.6:1）",
+      "所有语义颜色（stdout/stderr/info/error/success）对比度均 ≥ 4.5:1（WCAG AA 标准）",
+      "正文对比度在 7-12:1 区间（长时间阅读舒适区），减少视觉疲劳",
+      "终端面板、终端头、终端体、滚动条、输出类型全部使用 --term-* 变量，主题切换时实时生效"
+    ]
+  },
+  {
+    "date": "2026-07-31",
+    "version": "v1.8.6 / v1.8.5 / v1.8.4 / v1.8.3",
+    "entries": [
+      {
+        "version": "1.8.6",
+        "title": "服务器升级 Python 3.10，ecs-server 自动用新版创建 venv，支持 Python 3.9+/3.10+ 新语法",
+        "changes": [
+          "ECS 服务器源码安装 Python 3.10.18（/usr/local/bin/python3.10），含 zlib/ssl/ensurepip 全套模块",
+          "ecs-server 新增 _find_system_python_for_venv()：按优先级查找 python3.13/12/11/10/9，无新版时回退到当前 Python",
+          "ensure_venv() 现在用找到的高版本 Python 创建 venv（而非 sys.executable 即 Python 3.6）",
+          "venv 缓存按 Python 版本 tag 隔离（py310::xxx），避免新老 venv 混用导致依赖问题",
+          "支持 Python 3.10+ 特性：TypeAlias、PEP 585 内置泛型（set[str]/tuple[str,int]）、match-case 等",
+          "支持 Python 3.9+ 特性：PEP 614 星号解包、zoneinfo 标准库等",
+          "前端 SSE 状态消息现在显示 venv 使用的 Python 版本（如'创建虚拟环境（Python 310.x）...'）",
+          "已验证：'Python 单词纠错' 项目（用 TypeAlias + set[str]）可正常执行并输出结果"
+        ]
+      },
+      {
+        "version": "1.8.5",
+        "title": "GUI 模块错误提示增强：显示具体的文件路径、行号和代码行",
+        "changes": [
+          "新增 find_gui_import_locations() 函数：扫描代码定位 GUI 模块的 import 语句位置",
+          "新增 format_gui_locations_report() 函数：格式化输出文件路径+行号+代码行",
+          "GUI 模块错误提示现在显示具体位置，例如：【具体位置】:  • script.py 第 1 行: from turtle import position",
+          "扫描项目所有 .py 文件（不只入口文件），多文件项目也能定位到具体出问题的文件",
+          "项目模式下显示相对路径（如 maze/main.py 第 5 行: import tkinter），便于排查"
+        ]
+      },
+      {
+        "version": "1.8.4",
+        "title": "修复 GUI 模块执行错误：添加 turtle/tkinter/pygame 等图形程序检测提示",
+        "changes": [
+          "新增 GUI_MODULES 和 GUI_MODULES_BLOCKING 集合，标记需要图形界面的模块",
+          "新增 get_all_imports() 和 detect_gui_modules() 函数检测代码中的 GUI 模块",
+          "新增 check_stl_module_available() 检查标准库模块（如 turtle/tkinter）是否真的可用",
+          "执行前检测所有 .py 文件中的 GUI 模块导入，提前给出友好提示而非运行时报错",
+          "对于 turtle/tkinter：先检查 Python 是否包含 Tkinter 支持，不可用时明确提示服务器环境限制",
+          "对于 pygame/PyQt 等阻塞型 GUI 模块：提示用户需在本地电脑运行以显示图形窗口",
+          "对于 matplotlib 等可选 GUI 模块：输出警告信息但不阻止执行"
+        ]
+      },
+      {
+        "version": "1.8.3",
+        "title": "移动端性能优化：文件树懒加载与搜索服务端化",
+        "changes": [
+          "文件搜索改为 ECS 服务器端执行，不再加载 24.5MB 的 file-tree.json 到 Worker 内存",
+          "Worker 代理 /api/files/tree 和 /api/files/search 到 ECS 服务器，ECS 直接扫描文件系统",
+          "项目文件树懒加载：打开项目时只加载第一层目录（depth=1），展开子目录时按需加载",
+          "新增 /api/files/subtree 端点支持目录懒加载，Worker 添加对应代理",
+          "前端 buildTreeHTML 支持 hasChildren 标记，toggleDir 异步加载子节点并显示加载状态",
+          "修复 treeFilter 引用 bug（state.currentProject.treeNode → state.currentProjectTreeNode）",
+          "flattenTree 跳过未加载的子目录，文件计数随目录展开动态更新"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-07-30",
+    "version": "v1.8.2 / v1.8.1",
+    "entries": [
+      {
+        "version": "1.8.2",
+        "title": "修复 SSE 连接未关闭导致客户端超时",
+        "changes": [
+          "修复代码执行完成后 SSE 连接未正确关闭的问题，导致前端等待 180 秒超时",
+          "在 handle_run_start 的 finally 块中添加 sse.close() 和 close_connection=True",
+          "确保 wfile.flush() 在连接关闭前刷新缓冲区",
+          "端到端测试验证：单文件（纯标准库）、单文件（含依赖）、项目模式（多文件+本地模块+依赖）全部通过"
+        ]
+      },
+      {
+        "version": "1.8.1",
+        "title": "优化代码执行功能：单文件/项目运行、虚拟环境与自动依赖管理",
+        "changes": [
+          "单文件运行支持独立的虚拟环境（按文件名区分），避免不同文件依赖冲突",
+          "项目运行支持：自动复制整个项目、识别本地模块（不重复安装）、解析 requirements.txt",
+          "优化虚拟环境检测：自动查找 python3/python/python.exe，兼容不同系统",
+          "依赖检测优化：使用 pip list 缓存机制（5分钟），避免重复 import 测试，检测更可靠",
+          "pip 镜像源加速：默认使用阿里云镜像，国内下载更快；镜像失败时自动回退到 PyPI 官方源",
+          "依赖安装时显示进度（1/N、M/N）和每个包的实时状态，包含重试提示",
+          "项目运行入口文件下拉框：自动列出项目内所有 .py 文件，切换标签时自动定位",
+          "单文件/项目模式切换：模式选择框、入口文件下拉框只在打开项目时显示",
+          "切换/关闭代码标签时自动更新运行按钮可见性（单文件模式仅 .py 文件可运行）",
+          "Worker 端 /api/run/start 使用 TransformStream 透传 ECS 响应，确保 SSE 流式不缓冲",
+          "nginx 配 location /api/run/ 关闭 proxy_buffering，开启 X-Accel-Buffering no",
+          "SSE 心跳机制：10秒无数据自动发送 : heartbeat 注释，防止 Cloudflare/代理超时"
+        ]
+      }
+    ]
+  },
+  {
     "version": "1.8.6",
     "date": "2026-07-31",
     "title": "服务器升级 Python 3.10，ecs-server 自动用新版创建 venv，支持 Python 3.9+/3.10+ 新语法",
@@ -12,6 +117,32 @@
       "支持 Python 3.9+ 特性：PEP 614 星号解包、zoneinfo 标准库等",
       "前端 SSE 状态消息现在显示 venv 使用的 Python 版本（如'创建虚拟环境（Python 310.x）...'）",
       "已验证：'Python 单词纠错' 项目（用 TypeAlias + set[str]）可正常执行并输出结果"
+    ]
+  },
+  {
+    "version": "1.8.5",
+    "date": "2026-07-31",
+    "title": "GUI 模块错误提示增强：显示具体的文件路径、行号和代码行",
+    "changes": [
+      "新增 find_gui_import_locations() 函数：扫描代码定位 GUI 模块的 import 语句位置",
+      "新增 format_gui_locations_report() 函数：格式化输出文件路径+行号+代码行",
+      "GUI 模块错误提示现在显示具体位置，例如：【具体位置】:  • script.py 第 1 行: from turtle import position",
+      "扫描项目所有 .py 文件（不只入口文件），多文件项目也能定位到具体出问题的文件",
+      "项目模式下显示相对路径（如 maze/main.py 第 5 行: import tkinter），便于排查"
+    ]
+  },
+  {
+    "version": "1.8.4",
+    "date": "2026-07-31",
+    "title": "修复 GUI 模块执行错误：添加 turtle/tkinter/pygame 等图形程序检测提示",
+    "changes": [
+      "新增 GUI_MODULES 和 GUI_MODULES_BLOCKING 集合，标记需要图形界面的模块",
+      "新增 get_all_imports() 和 detect_gui_modules() 函数检测代码中的 GUI 模块",
+      "新增 check_stl_module_available() 检查标准库模块（如 turtle/tkinter）是否真的可用",
+      "执行前检测所有 .py 文件中的 GUI 模块导入，提前给出友好提示而非运行时报错",
+      "对于 turtle/tkinter：先检查 Python 是否包含 Tkinter 支持，不可用时明确提示服务器环境限制",
+      "对于 pygame/PyQt 等阻塞型 GUI 模块：提示用户需在本地电脑运行以显示图形窗口",
+      "对于 matplotlib 等可选 GUI 模块：输出警告信息但不阻止执行"
     ]
   },
   {

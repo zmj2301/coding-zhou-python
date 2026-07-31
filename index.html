@@ -34,6 +34,16 @@ require.config({
   --accent-orange: #f0883e;
   --accent-pink: #db61a2;
   --accent-cyan: #39d353;
+  /* Terminal colors - 暗色（Tokyo Night 风格，降低视觉疲劳） */
+  --term-bg: #1a1b26;
+  --term-header-bg: #1f2335;
+  --term-text: #c0caf5;
+  --term-stdout: #c0caf5;
+  --term-stderr: #f7768e;
+  --term-info: #7dcfff;
+  --term-success: #9ece6a;
+  --term-error: #f7768e;
+  --term-border: #292e42;
   --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace;
   --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   --transition: 150ms ease;
@@ -61,6 +71,16 @@ require.config({
   --accent-orange: #bf5612;
   --accent-pink: #bf3c5b;
   --accent-cyan: #1a7f37;
+  /* Terminal colors - 亮色（Tokyo Night Light 官方配色） */
+  --term-bg: #e6e7ed;
+  --term-header-bg: #d5d6e0;
+  --term-text: #343b58;
+  --term-stdout: #343b58;
+  --term-stderr: #8c4351;
+  --term-info: #0f4b6e;
+  --term-success: #33635c;
+  --term-error: #8c4351;
+  --term-border: #c8c9d3;
 }
 
 [data-theme="light"] body::before {
@@ -2013,8 +2033,8 @@ body::before {
   height: 200px;
   display: flex;
   flex-direction: column;
-  background: #0d1117;
-  border-top: 1px solid var(--border-color);
+  background: var(--term-bg);
+  border-top: 1px solid var(--term-border);
   overflow: hidden;
 }
 .terminal-header {
@@ -2022,8 +2042,8 @@ body::before {
   align-items: center;
   justify-content: space-between;
   padding: 6px 12px;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
+  background: var(--term-header-bg);
+  border-bottom: 1px solid var(--term-border);
   font-size: 11px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -2043,9 +2063,9 @@ body::before {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.5;
-  color: var(--text-primary);
+  color: var(--term-text);
   overflow-y: auto;
-  background: #0d1117;
+  background: var(--term-bg);
 }
 .terminal-body::-webkit-scrollbar {
   width: 8px;
@@ -2054,7 +2074,7 @@ body::before {
   background: transparent;
 }
 .terminal-body::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: var(--term-border);
   border-radius: 4px;
 }
 .terminal-body::-webkit-scrollbar-thumb:hover {
@@ -2065,21 +2085,21 @@ body::before {
   word-break: break-all;
 }
 .terminal-output .stdout {
-  color: var(--text-primary);
+  color: var(--term-stdout);
 }
 .terminal-output .stderr {
-  color: var(--accent-red);
+  color: var(--term-stderr);
 }
 .terminal-output .prompt {
-  color: var(--accent-green);
+  color: var(--term-success);
   margin-right: 8px;
 }
 .terminal-output .error {
-  color: var(--accent-red);
+  color: var(--term-error);
   font-weight: 500;
 }
 .terminal-output .info {
-  color: var(--accent-blue);
+  color: var(--term-info);
 }
 .terminal-input-line {
   display: flex;
@@ -2096,7 +2116,7 @@ body::before {
   outline: none;
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--term-text);
 }
 .terminal-close-btn {
   background: transparent;
