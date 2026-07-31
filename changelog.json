@@ -1,0 +1,510 @@
+[
+  {
+    "version": "1.9.0",
+    "date": "2026-07-31",
+    "title": "AI 助手从弹窗改版为页面嵌入：点击 '✨ AI 助手' 直接在项目列表右侧切换，不再弹出浮层",
+    "changes": [
+      "移除 AI 助手全屏弹窗 Overlay 模式，改为嵌入首页 project-list-layout 右侧区域",
+      "点击 '✨ AI 助手' 时隐藏项目卡片网格，显示 AI 助手页面（三栏布局：导航/对话/聊天）",
+      "点击分类标签（全部/网页游戏/游戏等）或搜索时自动关闭 AI 助手页面，恢复项目列表",
+      "AI 助手页面右上角 × 按钮功能改为'返回项目列表'，点击后恢复项目卡片显示",
+      "保留 AI 助手所有功能：智能问答、图像生成、对话历史、模型切换等不变"
+    ]
+  },
+  {
+    "version": "1.8.9",
+    "date": "2026-07-31",
+    "title": "修复首页三张封面图不显示：ECS 服务器部署的 index.html 仍引用已损坏的 doubaocdn 图片链接",
+    "changes": [
+      "修复 ECS 服务器上部署的 index.html 仍引用 3 个已损坏的 doubaocdn.com 图片链接的问题",
+      "将 hero-gallery 三张封面图引用从 doubaocdn 外链替换为本地路径 /images/covers/*.jpg",
+      "上传更新的 index.html 到 ECS 服务器，确保图片引用正确"
+    ]
+  },
+  {
+    "version": "1.8.8",
+    "date": "2026-07-31",
+    "title": "终端配色升级为 Catppuccin：背景调亮 + 低饱和柔和色，长时间使用更舒适",
+    "changes": [
+      "暗色终端从 Tokyo Night 升级为 Catppuccin Mocha：背景 #1e1e2e（比 #1a1b26 稍亮），文字 #cdd6f4（对比度 7.0:1），缓解过暗问题",
+      "亮色终端从 Tokyo Night Light 升级为 Catppuccin Latte：背景 #eff1f5（柔和非纯白），文字 #4c4f69（对比度 7.8:1），清晰不刺眼",
+      "所有语义颜色采用低饱和柔和色（stderr/#f38ba8、info/#89b4fa、success/#a6e3a1），长时间使用不易视觉疲劳",
+      "所有语义颜色对比度均通过 WCAG AA 标准（≥4.5:1），正文对比度在 7.0-7.8:1 舒适区间",
+      "色相在暗色/亮色主题间一一对应，切换体验一致，且与当前 Catppuccin 社区生态兼容"
+    ]
+  },
+  {
+    "version": "1.8.7",
+    "date": "2026-07-31",
+    "title": "终端控制台颜色主题修复：颜色随主题切换 + Tokyo Night 护眼配色",
+    "changes": [
+      "修复终端背景色硬编码 #0d1117 不随主题切换的问题：亮色主题下深字深底完全不可读",
+      "引入专属 --term-* CSS 变量，在 :root（暗色）和 [data-theme=light]（亮色）中分别定义终端配色",
+      "暗色主题采用 Tokyo Night 风格：背景 #1a1b26（蓝调暖色），文字 #c0caf5（蓝白色），比原 #0d1117 更柔和",
+      "亮色主题终端采用 Tokyo Night Light 官方配色：背景 #e6e7ed，文字 #343b58（对比度 8.7:1），info 色 #0f4b6e（7.6:1）",
+      "所有语义颜色（stdout/stderr/info/error/success）对比度均 ≥ 4.5:1（WCAG AA 标准）",
+      "正文对比度在 7-12:1 区间（长时间阅读舒适区），减少视觉疲劳",
+      "终端面板、终端头、终端体、滚动条、输出类型全部使用 --term-* 变量，主题切换时实时生效"
+    ]
+  },
+  {
+    "date": "2026-07-31",
+    "version": "v1.8.6 / v1.8.5 / v1.8.4 / v1.8.3",
+    "entries": [
+      {
+        "version": "1.8.6",
+        "title": "服务器升级 Python 3.10，ecs-server 自动用新版创建 venv，支持 Python 3.9+/3.10+ 新语法",
+        "changes": [
+          "ECS 服务器源码安装 Python 3.10.18（/usr/local/bin/python3.10），含 zlib/ssl/ensurepip 全套模块",
+          "ecs-server 新增 _find_system_python_for_venv()：按优先级查找 python3.13/12/11/10/9，无新版时回退到当前 Python",
+          "ensure_venv() 现在用找到的高版本 Python 创建 venv（而非 sys.executable 即 Python 3.6）",
+          "venv 缓存按 Python 版本 tag 隔离（py310::xxx），避免新老 venv 混用导致依赖问题",
+          "支持 Python 3.10+ 特性：TypeAlias、PEP 585 内置泛型（set[str]/tuple[str,int]）、match-case 等",
+          "支持 Python 3.9+ 特性：PEP 614 星号解包、zoneinfo 标准库等",
+          "前端 SSE 状态消息现在显示 venv 使用的 Python 版本（如'创建虚拟环境（Python 310.x）...'）",
+          "已验证：'Python 单词纠错' 项目（用 TypeAlias + set[str]）可正常执行并输出结果"
+        ]
+      },
+      {
+        "version": "1.8.5",
+        "title": "GUI 模块错误提示增强：显示具体的文件路径、行号和代码行",
+        "changes": [
+          "新增 find_gui_import_locations() 函数：扫描代码定位 GUI 模块的 import 语句位置",
+          "新增 format_gui_locations_report() 函数：格式化输出文件路径+行号+代码行",
+          "GUI 模块错误提示现在显示具体位置，例如：【具体位置】:  • script.py 第 1 行: from turtle import position",
+          "扫描项目所有 .py 文件（不只入口文件），多文件项目也能定位到具体出问题的文件",
+          "项目模式下显示相对路径（如 maze/main.py 第 5 行: import tkinter），便于排查"
+        ]
+      },
+      {
+        "version": "1.8.4",
+        "title": "修复 GUI 模块执行错误：添加 turtle/tkinter/pygame 等图形程序检测提示",
+        "changes": [
+          "新增 GUI_MODULES 和 GUI_MODULES_BLOCKING 集合，标记需要图形界面的模块",
+          "新增 get_all_imports() 和 detect_gui_modules() 函数检测代码中的 GUI 模块",
+          "新增 check_stl_module_available() 检查标准库模块（如 turtle/tkinter）是否真的可用",
+          "执行前检测所有 .py 文件中的 GUI 模块导入，提前给出友好提示而非运行时报错",
+          "对于 turtle/tkinter：先检查 Python 是否包含 Tkinter 支持，不可用时明确提示服务器环境限制",
+          "对于 pygame/PyQt 等阻塞型 GUI 模块：提示用户需在本地电脑运行以显示图形窗口",
+          "对于 matplotlib 等可选 GUI 模块：输出警告信息但不阻止执行"
+        ]
+      },
+      {
+        "version": "1.8.3",
+        "title": "移动端性能优化：文件树懒加载与搜索服务端化",
+        "changes": [
+          "文件搜索改为 ECS 服务器端执行，不再加载 24.5MB 的 file-tree.json 到 Worker 内存",
+          "Worker 代理 /api/files/tree 和 /api/files/search 到 ECS 服务器，ECS 直接扫描文件系统",
+          "项目文件树懒加载：打开项目时只加载第一层目录（depth=1），展开子目录时按需加载",
+          "新增 /api/files/subtree 端点支持目录懒加载，Worker 添加对应代理",
+          "前端 buildTreeHTML 支持 hasChildren 标记，toggleDir 异步加载子节点并显示加载状态",
+          "修复 treeFilter 引用 bug（state.currentProject.treeNode → state.currentProjectTreeNode）",
+          "flattenTree 跳过未加载的子目录，文件计数随目录展开动态更新"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-07-30",
+    "version": "v1.8.2 / v1.8.1",
+    "entries": [
+      {
+        "version": "1.8.2",
+        "title": "修复 SSE 连接未关闭导致客户端超时",
+        "changes": [
+          "修复代码执行完成后 SSE 连接未正确关闭的问题，导致前端等待 180 秒超时",
+          "在 handle_run_start 的 finally 块中添加 sse.close() 和 close_connection=True",
+          "确保 wfile.flush() 在连接关闭前刷新缓冲区",
+          "端到端测试验证：单文件（纯标准库）、单文件（含依赖）、项目模式（多文件+本地模块+依赖）全部通过"
+        ]
+      },
+      {
+        "version": "1.8.1",
+        "title": "优化代码执行功能：单文件/项目运行、虚拟环境与自动依赖管理",
+        "changes": [
+          "单文件运行支持独立的虚拟环境（按文件名区分），避免不同文件依赖冲突",
+          "项目运行支持：自动复制整个项目、识别本地模块（不重复安装）、解析 requirements.txt",
+          "优化虚拟环境检测：自动查找 python3/python/python.exe，兼容不同系统",
+          "依赖检测优化：使用 pip list 缓存机制（5分钟），避免重复 import 测试，检测更可靠",
+          "pip 镜像源加速：默认使用阿里云镜像，国内下载更快；镜像失败时自动回退到 PyPI 官方源",
+          "依赖安装时显示进度（1/N、M/N）和每个包的实时状态，包含重试提示",
+          "项目运行入口文件下拉框：自动列出项目内所有 .py 文件，切换标签时自动定位",
+          "单文件/项目模式切换：模式选择框、入口文件下拉框只在打开项目时显示",
+          "切换/关闭代码标签时自动更新运行按钮可见性（单文件模式仅 .py 文件可运行）",
+          "Worker 端 /api/run/start 使用 TransformStream 透传 ECS 响应，确保 SSE 流式不缓冲",
+          "nginx 配 location /api/run/ 关闭 proxy_buffering，开启 X-Accel-Buffering no",
+          "SSE 心跳机制：10秒无数据自动发送 : heartbeat 注释，防止 Cloudflare/代理超时"
+        ]
+      }
+    ]
+  },
+  {
+    "version": "1.8.6",
+    "date": "2026-07-31",
+    "title": "服务器升级 Python 3.10，ecs-server 自动用新版创建 venv，支持 Python 3.9+/3.10+ 新语法",
+    "changes": [
+      "ECS 服务器源码安装 Python 3.10.18（/usr/local/bin/python3.10），含 zlib/ssl/ensurepip 全套模块",
+      "ecs-server 新增 _find_system_python_for_venv()：按优先级查找 python3.13/12/11/10/9，无新版时回退到当前 Python",
+      "ensure_venv() 现在用找到的高版本 Python 创建 venv（而非 sys.executable 即 Python 3.6）",
+      "venv 缓存按 Python 版本 tag 隔离（py310::xxx），避免新老 venv 混用导致依赖问题",
+      "支持 Python 3.10+ 特性：TypeAlias、PEP 585 内置泛型（set[str]/tuple[str,int]）、match-case 等",
+      "支持 Python 3.9+ 特性：PEP 614 星号解包、zoneinfo 标准库等",
+      "前端 SSE 状态消息现在显示 venv 使用的 Python 版本（如'创建虚拟环境（Python 310.x）...'）",
+      "已验证：'Python 单词纠错' 项目（用 TypeAlias + set[str]）可正常执行并输出结果"
+    ]
+  },
+  {
+    "version": "1.8.5",
+    "date": "2026-07-31",
+    "title": "GUI 模块错误提示增强：显示具体的文件路径、行号和代码行",
+    "changes": [
+      "新增 find_gui_import_locations() 函数：扫描代码定位 GUI 模块的 import 语句位置",
+      "新增 format_gui_locations_report() 函数：格式化输出文件路径+行号+代码行",
+      "GUI 模块错误提示现在显示具体位置，例如：【具体位置】:  • script.py 第 1 行: from turtle import position",
+      "扫描项目所有 .py 文件（不只入口文件），多文件项目也能定位到具体出问题的文件",
+      "项目模式下显示相对路径（如 maze/main.py 第 5 行: import tkinter），便于排查"
+    ]
+  },
+  {
+    "version": "1.8.4",
+    "date": "2026-07-31",
+    "title": "修复 GUI 模块执行错误：添加 turtle/tkinter/pygame 等图形程序检测提示",
+    "changes": [
+      "新增 GUI_MODULES 和 GUI_MODULES_BLOCKING 集合，标记需要图形界面的模块",
+      "新增 get_all_imports() 和 detect_gui_modules() 函数检测代码中的 GUI 模块",
+      "新增 check_stl_module_available() 检查标准库模块（如 turtle/tkinter）是否真的可用",
+      "执行前检测所有 .py 文件中的 GUI 模块导入，提前给出友好提示而非运行时报错",
+      "对于 turtle/tkinter：先检查 Python 是否包含 Tkinter 支持，不可用时明确提示服务器环境限制",
+      "对于 pygame/PyQt 等阻塞型 GUI 模块：提示用户需在本地电脑运行以显示图形窗口",
+      "对于 matplotlib 等可选 GUI 模块：输出警告信息但不阻止执行"
+    ]
+  },
+  {
+    "version": "1.8.3",
+    "date": "2026-07-31",
+    "title": "移动端性能优化：文件树懒加载与搜索服务端化",
+    "changes": [
+      "文件搜索改为 ECS 服务器端执行，不再加载 24.5MB 的 file-tree.json 到 Worker 内存",
+      "Worker 代理 /api/files/tree 和 /api/files/search 到 ECS 服务器，ECS 直接扫描文件系统",
+      "项目文件树懒加载：打开项目时只加载第一层目录（depth=1），展开子目录时按需加载",
+      "新增 /api/files/subtree 端点支持目录懒加载，Worker 添加对应代理",
+      "前端 buildTreeHTML 支持 hasChildren 标记，toggleDir 异步加载子节点并显示加载状态",
+      "修复 treeFilter 引用 bug（state.currentProject.treeNode → state.currentProjectTreeNode）",
+      "flattenTree 跳过未加载的子目录，文件计数随目录展开动态更新"
+    ]
+  },
+  {
+    "version": "1.8.2",
+    "date": "2026-07-30",
+    "title": "修复 SSE 连接未关闭导致客户端超时",
+    "changes": [
+      "修复代码执行完成后 SSE 连接未正确关闭的问题，导致前端等待 180 秒超时",
+      "在 handle_run_start 的 finally 块中添加 sse.close() 和 close_connection=True",
+      "确保 wfile.flush() 在连接关闭前刷新缓冲区",
+      "端到端测试验证：单文件（纯标准库）、单文件（含依赖）、项目模式（多文件+本地模块+依赖）全部通过"
+    ]
+  },
+  {
+    "version": "1.8.1",
+    "date": "2026-07-30",
+    "title": "优化代码执行功能：单文件/项目运行、虚拟环境与自动依赖管理",
+    "changes": [
+      "单文件运行支持独立的虚拟环境（按文件名区分），避免不同文件依赖冲突",
+      "项目运行支持：自动复制整个项目、识别本地模块（不重复安装）、解析 requirements.txt",
+      "优化虚拟环境检测：自动查找 python3/python/python.exe，兼容不同系统",
+      "依赖检测优化：使用 pip list 缓存机制（5分钟），避免重复 import 测试，检测更可靠",
+      "pip 镜像源加速：默认使用阿里云镜像，国内下载更快；镜像失败时自动回退到 PyPI 官方源",
+      "依赖安装时显示进度（1/N、M/N）和每个包的实时状态，包含重试提示",
+      "项目运行入口文件下拉框：自动列出项目内所有 .py 文件，切换标签时自动定位",
+      "单文件/项目模式切换：模式选择框、入口文件下拉框只在打开项目时显示",
+      "切换/关闭代码标签时自动更新运行按钮可见性（单文件模式仅 .py 文件可运行）",
+      "Worker 端 /api/run/start 使用 TransformStream 透传 ECS 响应，确保 SSE 流式不缓冲",
+      "nginx 配 location /api/run/ 关闭 proxy_buffering，开启 X-Accel-Buffering no",
+      "SSE 心跳机制：10秒无数据自动发送 : heartbeat 注释，防止 Cloudflare/代理超时"
+    ]
+  },
+  {
+    "version": "1.8.0",
+    "date": "2026-07-29",
+    "title": "代码编辑器升级：CodeMirror 6 替换为 Monaco Editor（VS Code 内核）",
+    "changes": [
+      "用 Monaco Editor 替换 CodeMirror 6，提供与 VS Code 相同的专业代码编辑体验",
+      "支持 100+ 语言语法高亮、智能代码补全、错误提示、括号配对着色",
+      "内置小地图（minimap）、行号、代码折叠、自动换行、平滑滚动",
+      "支持自定义字体连字（font ligatures）、光标平滑动画、多种光标样式",
+      "暗色主题使用 vs-dark，亮色主题使用 vs，切换时即时生效无需重新渲染",
+      "通过 CDN 加载 Monaco Editor 0.52.2，自动布局适配容器大小变化",
+      "CDN 加载失败时自动降级为纯文本显示"
+    ]
+  },
+  {
+    "version": "1.7.3",
+    "date": "2026-07-29",
+    "title": "修复 Ctrl+P 快捷键报错：openFileSearch 未定义改为 openSearchGlobal",
+    "changes": [
+      "修复编辑器视图中按 Ctrl+P 触发 ReferenceError: openFileSearch is not defined",
+      "将 openFileSearch() 改为 openSearchGlobal()，正确打开文件搜索对话框"
+    ]
+  },
+  {
+    "version": "1.7.2",
+    "date": "2026-07-29",
+    "title": "修复 CodeMirror 6 编辑器未显示：getLanguageExtension 取错导出函数名",
+    "changes": [
+      "修复点击文件后 CodeMirror 6 未显示、降级为纯文本显示的问题",
+      "getLanguageExtension() 使用 exportNames 映射指定正确导出函数名（如 python 而非 globalCompletion）",
+      "renderCode() 创建新 EditorView 前先 destroy() 旧的 cmView，防止内存泄漏"
+    ]
+  },
+  {
+    "version": "1.7.1",
+    "date": "2026-07-29",
+    "title": "修复文件树展开时 TypeError 错误：加强 flattenTree/buildTreeHTML 空值检查",
+    "changes": [
+      "修复展开文件夹时控制台报错 'Cannot read properties of undefined (reading type)'",
+      "flattenTree() 增加 null 检查和 Array.isArray 验证，过滤无效节点",
+      "buildTreeHTML() 增加 null 检查和 typeof 验证，防止 n.path 读取 undefined",
+      "filterTreeNodes() 完善空值保护，确保递归调用安全"
+    ]
+  },
+  {
+    "version": "1.7.0",
+    "date": "2026-07-28",
+    "title": "代码查看器升级：highlight.js 替换为 CodeMirror 6",
+    "changes": [
+      "用 CodeMirror 6 替代 highlight.js，提供专业代码编辑体验",
+      "内置行号、当前行高亮、代码折叠、搜索（Ctrl+F）、自动换行等功能",
+      "支持 Python、JavaScript、HTML、CSS、JSON、Markdown 等 100+ 语言语法高亮",
+      "通过 esm.sh CDN + import map 加载，零框架依赖、轻量模块化",
+      "Python 运行和 HTML 预览从 CodeMirror 实例获取最新内容",
+      "暗色主题使用 one-dark，亮色主题使用默认主题，切换时自动刷新",
+      "CDN 加载失败时自动降级为纯文本显示"
+    ]
+  },
+  {
+    "version": "1.6.11",
+    "date": "2026-07-28",
+    "title": "重新构建 public/index.html 修复文件内容不显示的问题",
+    "changes": [
+      "v1.6.10 修复后未运行 build.py 重新构建，导致 public/index.html 缺少 state.openTabs.push()",
+      "重新构建 public 目录，确保部署版本包含 openFile 修复代码"
+    ]
+  },
+  {
+    "version": "1.6.10",
+    "date": "2026-07-28",
+    "title": "修复点击文件后右侧不显示内容的问题",
+    "changes": [
+      "index.html: openFile() 函数缺少 state.openTabs.push() 导致获取内容后未添加到标签页",
+      "fetchContent 成功获取文件数据后，添加 state.openTabs.push({path, name, content, language})",
+      "修复 switchTab(-1) 导致 renderCode() 直接显示空状态的问题"
+    ]
+  },
+  {
+    "version": "1.6.9",
+    "date": "2026-07-28",
+    "title": "修复 ECS 服务器端口 8765 被屏蔽导致文件不显示和图片加载失败",
+    "changes": [
+      "wrangler.toml: ECS_SERVER_URL 从 :8765 改为默认 80 端口，通过 nginx 反向代理访问",
+      "worker.ts: fetchFromEcs() 默认回退 URL 同步改为 80 端口",
+      "ECS 服务器 8765 端口被安全组防火墙屏蔽，Worker 无法连接，改为通过 nginx(80端口)代理正常通信"
+    ]
+  },
+  {
+    "version": "1.6.8",
+    "date": "2026-07-28",
+    "title": "修复文件内容 API 报'文件不存在'的问题：Worker 代理到 ECS 服务器",
+    "changes": [
+      "worker.ts 新增 ECS_SERVER_URL 环境变量和 fetchFromEcs() 代理函数",
+      "/api/files/content 和 /api/files/preview 优先代理到 ECS 服务器获取文件内容",
+      "ECS 代理失败时回退到 GitHub raw 获取，增加容错性",
+      "build.py 修复构建时 images 目录被删除的问题，构建时自动保留并恢复封面图",
+      "wrangler.toml 新增 ECS_SERVER_URL 配置"
+    ]
+  },
+  {
+    "version": "1.6.7",
+    "date": "2026-07-28",
+    "title": "修复封面图不显示和文件路径错误：添加图片到构建 + 同步 ECS 服务器",
+    "changes": [
+      "build.py 新增复制 images 目录到 public/，确保封面图随 Worker 部署",
+      "从 ECS 服务器下载 50 张封面图到本地 public/images/covers/",
+      "修复 ECS 服务器 public/ 目录未更新导致 index.html 为旧版本的问题",
+      "上传最新构建结果到 ECS 服务器，同步 index.html 和项目文件"
+    ]
+  },
+  {
+    "version": "1.6.6",
+    "date": "2026-07-28",
+    "title": "修复图片加载失败和点击文件显示不存在的问题",
+    "changes": [
+      "封面图从 raw.githubusercontent.com 改为 ECS 服务器本地路径，避免 Chrome ORB 跨域拦截",
+      "worker.ts 新增 ECS 服务器代理函数 fetchFromEcs()，代理文件内容 API 到 ECS 服务器",
+      "index.html 新增 openFile 自动补全项目路径前缀，修复文件路径拼接错误",
+      "ecs-server.py 增强 _find_projects_root() 探测更多 ECS 部署路径"
+    ]
+  },
+  {
+    "version": "1.6.5",
+    "date": "2026-07-28",
+    "title": "修复点赞/评论数据未正确加载，添加 ECS 服务器健康检查与缓存清理",
+    "changes": [
+      "修复 ECS 服务器代理导致点赞/评论数据加载失败的问题",
+      "ECS 服务器健康检查后自动获取最新点赞/评论数据",
+      "清除 KV 缓存确保首页和项目数据从 ECS 刷新"
+    ]
+  },
+  {
+    "version": "1.6.4",
+    "date": "2026-07-28",
+    "title": "修复点赞/评论数据加载失败：ECS 服务器代理和 KV 缓存清理",
+    "changes": [
+      "修复 ECS 服务器代理点赞/评论 API 时数据加载失败的问题",
+      "优化 __INITIAL_PROJECTS__ 注入逻辑，确保点赞/评论数正确显示",
+      "清除 KV 缓存确保首页数据从 ECS 服务器刷新"
+    ]
+  },
+  {
+    "version": "1.6.3",
+    "date": "2026-07-28",
+    "title": "修复点赞/评论数据初始显示为 0 的问题",
+    "changes": [
+      "修复点赞/评论数据初始显示为 0 的问题：ECS 服务器 API 优先获取点赞/评论数据",
+      "优化 __INITIAL_PROJECTS__ 注入逻辑，确保点赞和评论数正确显示",
+      "清除 KV 缓存确保首页数据从 ECS 服务器刷新",
+      "修复 ECS 服务器代理导致点赞/评论数据加载失败的问题"
+    ]
+  },
+  {
+    "version": "1.6.2",
+    "date": "2026-07-28",
+    "title": "修复封面图不显示问题：Worker 优先从 Asset 获取静态文件",
+    "changes": [
+      "修复封面图不显示问题：Worker 优先从 Asset 获取静态文件，GitHub 为 fallback",
+      "修复 build.py 构建时 images 目录被删除的问题，构建时自动保留并恢复封面图",
+      "从 ECS 服务器下载 50 张封面图到本地 public/images/covers/"
+    ]
+  },
+  {
+    "version": "1.6.1",
+    "date": "2026-07-28",
+    "title": "修复图片和文件不显示问题",
+    "changes": [
+      "修复封面图不显示：封面图从 raw.githubusercontent.com 改为本地相对路径",
+      "修复文件内容不显示：index.html openFile 中未正确拼接项目路径前缀",
+      "修复 ECS 服务器文件路径错误：ecs-server.py 中 _find_projects_root() 新增更多 ECS 部署路径",
+      "重新构建 public 目录并提交文件"
+    ]
+  },
+  {
+    "version": "1.5.5",
+    "date": "2026-07-22",
+    "title": "完成 ECS 服务器部署与配置，修复文件访问和图像路径问题",
+    "changes": [
+      "修复 ECS 服务器文件访问路径问题，确保文件内容正确显示",
+      "修复封面图路径问题，确保图片在 ECS 服务器上正确加载",
+      "完成 ECS 服务器部署与配置，包括 nginx 反向代理设置",
+      "更新 index.html 中的图片路径，移除 GitHub raw 引用",
+      "修复 ECS 服务器端口 8765 无法从外网访问的问题"
+    ]
+  },
+  {
+    "version": "1.5.4",
+    "date": "2026-07-28",
+    "title": "修复文件内容显示问题：Worker 请求 ECS 服务器获取文件内容",
+    "changes": [
+      "修复点击文件后不显示内容的问题：Worker 新增 ECS 服务器代理",
+      "ECS 服务器优先响应文件内容请求，提高性能和实时性",
+      "增强文件路径搜索逻辑，添加更多 ECS 部署路径探测"
+    ]
+  },
+  {
+    "version": "1.5.3",
+    "date": "2026-07-28",
+    "title": "修复首页不显示内容和文件内容空白的问题",
+    "changes": [
+      "修复首页不显示问题：Cloudflare Worker 中 __INITIAL_PROJECTS__ 注入逻辑回退到 GitHub raw",
+      "修复文件内容空白问题：打开文件时自动补全项目路径前缀，并确保正确加载",
+      "修复 file-tree.json 路径问题：确保文件树数据正确加载",
+      "修复 changelog 文件路径问题：确保版本更新日志正常显示"
+    ]
+  },
+  {
+    "version": "1.5.2",
+    "date": "2026-07-28",
+    "title": "修复图片加载失败和点击文件显示不存在的问题",
+    "changes": [
+      "将封面图引用从 raw.githubusercontent.com 改为 ECS 服务器本地路径，解决 Chrome ORB 跨域拦截问题",
+      "修复点击文件显示不存在的路径越界问题：增强文件路径搜索逻辑",
+      "重新构建 public 目录并提交到 GitHub",
+      "清除 KV 缓存确保新代码生效"
+    ]
+  },
+  {
+    "version": "1.5.1",
+    "date": "2026-07-24",
+    "title": "修复图片路径错误，新增 ECS 服务器代理功能",
+    "changes": [
+      "修复封面图路径错误：图片路径从相对路径改为绝对路径 /images/covers/...",
+      "新增 ECS 服务器代理功能：Worker 将 API 请求转发到 ECS 服务器",
+      "新增 changelog.json 页面版本更新日志入口",
+      "修复文件内容显示空白问题"
+    ]
+  },
+  {
+    "version": "1.4.1",
+    "date": "2026-07-22",
+    "title": "修复图片路径错误，优化封面图显示",
+    "changes": [
+      "修复封面图路径错误：图片路径改为相对路径，避免跨域问题",
+      "优化封面图显示：添加加载状态和错误处理",
+      "修复封面图不显示的问题"
+    ]
+  },
+  {
+    "version": "1.4.0",
+    "date": "2026-07-22",
+    "title": "新增封面图显示功能",
+    "changes": [
+      "新增封面图显示功能：为每个项目添加封面图",
+      "新增封面图数据：添加 50 张项目封面图"
+    ]
+  },
+  {
+    "version": "1.3.0",
+    "date": "2026-07-14",
+    "title": "新增项目展示页面",
+    "changes": [
+      "新增项目展示页面，展示所有项目列表",
+      "新增项目分类功能，按类型分类展示项目"
+    ]
+  },
+  {
+    "version": "1.2.0",
+    "date": "2026-07-10",
+    "title": "新增文件浏览功能",
+    "changes": [
+      "新增文件浏览功能，可以浏览项目文件",
+      "新增文件搜索功能，支持文件搜索"
+    ]
+  },
+  {
+    "version": "1.1.0",
+    "date": "2026-07-08",
+    "title": "新增用户登录功能",
+    "changes": [
+      "新增用户登录功能，支持密码登录",
+      "新增 JWT 认证，支持会话管理"
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "date": "2026-07-06",
+    "title": "初始版本",
+    "changes": [
+      "初始版本发布",
+      "支持 Cloudflare Worker 部署",
+      "支持 GitHub 文件同步"
+    ]
+  }
+]
