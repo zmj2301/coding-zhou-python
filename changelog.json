@@ -1,5 +1,14 @@
 [
   {
+    "version": "1.9.6",
+    "date": "2026-08-01",
+    "title": "修复 Bearer 认证头错误 + 精简模型列表只保留默认模型",
+    "changes": [
+      "修复 OPENROUTER_API_KEY 读取时携带 \\r 字符导致 'Invalid header value b\\'Bearer \\r\\'' 错误，添加 .strip() 去除首尾空白",
+      "精简前端 AI 模型下拉框：移除所有具体模型选项（Nemotron/Gemma/GPT-OSS/Qwen），仅保留 openrouter/free 默认路由"
+    ]
+  },
+  {
     "version": "1.9.5",
     "date": "2026-08-01",
     "title": "移除 GLM 大模型，AI 输出区分思考过程与回答，系统提示词要求中文回答",

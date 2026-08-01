@@ -113,7 +113,7 @@ _find_projects_root()
 USER_PASSWORD = os.environ.get('USER_PASSWORD', '')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'default-secret-change-me')
-OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '').strip()
 OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 AGNES_AI_API_KEY = os.environ.get('AGNES_AI_API_KEY', '')
 AGNES_AI_API_URL = 'https://apihub.agnes-ai.com/v1/images/generations'
