@@ -115,8 +115,7 @@ ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'default-secret-change-me')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '').strip()
 OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
-AGNES_AI_API_KEY = os.environ.get('AGNES_AI_API_KEY', '')
-AGNES_AI_API_URL = 'https://apihub.agnes-ai.com/v1/images/generations'
+
 
 # 代码执行相关配置
 RUNS_DIR = Path('/tmp/code-explorer-runs')
@@ -1476,38 +1475,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 import traceback
                 print(f'AI Error: {traceback.format_exc()}', file=sys.stderr)
                 return self.send_error_json(f'AI 请求失败: {e}', 500)
-
-        if path == '/api/generate-image':
-            prompt = body.get('prompt', '')
-            size = body.get('size', '1024x768')
-            if not prompt:
-                return self.send_error_json('请输入图片描述', 400)
-            if not AGNES_AI_API_KEY:
-                return self.send_error_json('图像生成功能未配置 AGNES_AI_API_KEY', 503)
-            try:
-                payload = {
-                    'model': 'agnes-image-2.0-flash',
-                    'prompt': prompt,
-                    'size': size,
-                    'extra_body': {'response_format': 'url'}
-                }
-                headers = {
-                    'Authorization': f'Bearer {AGNES_AI_API_KEY}',
-                    'Content-Type': 'application/json'
-                }
-                req = urllib.request.Request(AGNES_AI_API_URL, data=json.dumps(payload).encode(), headers=headers)
-                with urllib.request.urlopen(req, timeout=120) as resp:
-                    result = json.loads(resp.read())
-                    data = result.get('data', [])
-                    if data and len(data) > 0:
-                        url = data[0].get('url', '')
-                        if url:
-                            return self.send_json({'success': True, 'url': url})
-                    return self.send_error_json('图片生成失败，未返回图片 URL', 500)
-            except Exception as e:
-                import traceback
-                print(f'Image Gen Error: {traceback.format_exc()}', file=sys.stderr)
-                return self.send_error_json(f'图像生成失败: {e}', 500)
 
         if path == '/api/run/start':
             if not check_auth(self):

@@ -780,6 +780,7 @@ body::before {
   overflow: hidden;
   flex: 1;
   min-height: 500px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .ai-asst-page.active { display: flex; }
 /* AI 助手顶部 Header */
@@ -789,6 +790,8 @@ body::before {
   border-bottom: 1px solid var(--border-color);
   display: flex; align-items: center; justify-content: space-between;
   background: var(--bg-secondary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  position: relative; z-index: 2;
 }
 .ai-asst-header-left { display: flex; align-items: center; gap: 16px; }
 .ai-asst-title {
@@ -826,7 +829,7 @@ body::before {
 .ai-asst-main { flex: 1; display: flex; overflow: hidden; }
 /* 左侧对话列表 */
 .ai-asst-conversations {
-  width: 300px; flex-shrink: 0;
+  width: 260px; flex-shrink: 0;
   border-right: 1px solid var(--border-color);
   background: var(--bg-secondary);
   display: flex; flex-direction: column;
@@ -871,17 +874,18 @@ body::before {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   height: 100%; text-align: center; padding: 40px;
 }
-.ai-asst-welcome h2 { font-size: 24px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary); }
-.ai-asst-welcome p { font-size: 14px; color: var(--text-tertiary); margin-bottom: 32px; max-width: 440px; line-height: 1.6; }
-.ai-asst-feature-cards { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
+.ai-asst-welcome h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary); }
+.ai-asst-welcome p { font-size: 14px; color: var(--text-tertiary); margin-bottom: 28px; max-width: 400px; line-height: 1.6; }
+.ai-asst-feature-cards { display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; justify-content: center; }
 .ai-asst-feature-card {
-  width: 150px; padding: 18px 14px;
+  width: 160px; padding: 20px 16px;
   border: 1px solid var(--border-color); border-radius: 12px;
-  background: var(--bg-secondary); cursor: pointer;
-  transition: all 0.2s;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: var(--bg-primary); cursor: pointer;
+  transition: all 0.25s;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
 }
-.ai-asst-feature-card:hover { border-color: var(--accent-purple); transform: translateY(-2px); }
+.ai-asst-feature-card:hover { border-color: var(--accent-purple); transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .ai-asst-feature-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: var(--bg-tertiary); }
 .ai-asst-feature-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
 .ai-asst-feature-desc { font-size: 11px; color: var(--text-tertiary); text-align: center; }
@@ -904,7 +908,7 @@ body::before {
 .ai-asst-msg.assistant .ai-asst-msg-avatar { background: var(--bg-tertiary); border: 1px solid var(--border-color); }
 .ai-asst-msg-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6; word-break: break-word; }
 .ai-asst-msg.user .ai-asst-msg-bubble { background: var(--accent-purple); color: #fff; border-bottom-right-radius: 4px; }
-.ai-asst-msg.assistant .ai-asst-msg-bubble { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-bottom-left-radius: 4px; }
+.ai-asst-msg.assistant .ai-asst-msg-bubble { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
 .ai-asst-msg-bubble p { margin: 0 0 8px 0; }
 .ai-asst-msg-bubble p:last-child { margin-bottom: 0; }
 .ai-asst-msg-bubble pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; font-size: 13px; font-family: var(--font-mono); }
@@ -922,7 +926,6 @@ body::before {
 .ai-asst-msg-card-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
 .ai-asst-msg-card-reason { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ai-asst-msg-card-type { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--bg-tertiary); color: var(--text-tertiary); flex-shrink: 0; }
-.ai-asst-msg-image { max-width: 400px; border-radius: 8px; margin-top: 8px; cursor: pointer; display: block; }
 /* 打字指示器 */
 .ai-asst-typing { display: flex; gap: 4px; padding: 4px 0; }
 .ai-asst-typing span { width: 8px; height: 8px; background: var(--text-tertiary); border-radius: 50%; animation: aiAsstBounce 1.4s infinite ease-in-out; }
@@ -930,29 +933,15 @@ body::before {
 .ai-asst-typing span:nth-child(2) { animation-delay: -0.16s; }
 @keyframes aiAsstBounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
 @keyframes aiAsstFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-/* 图片生成面板 */
-.ai-asst-img-gen { display: none; padding: 14px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-secondary); }
-.ai-asst-img-gen.active { display: block; }
-.ai-asst-img-gen-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-.ai-asst-img-gen-row { display: flex; gap: 10px; align-items: flex-end; }
-.ai-asst-img-gen-input { flex: 1; }
-.ai-asst-img-gen-input label { display: block; font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; }
-.ai-asst-img-gen-input input, .ai-asst-img-gen-input select {
-  width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px;
-  font-size: 13px; background: var(--bg-primary); color: var(--text-primary);
-}
-.ai-asst-img-gen-input input:focus, .ai-asst-img-gen-input select:focus { outline: none; border-color: var(--accent-purple); }
-.ai-asst-img-gen-btn {
-  padding: 8px 16px; background: var(--accent-purple); color: #fff;
-  border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
-}
-.ai-asst-img-gen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
 /* 底部输入区 */
 .ai-asst-input-area {
   height: 64px; flex-shrink: 0;
   padding: 0 24px; border-top: 1px solid var(--border-color);
   background: var(--bg-secondary);
   display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 -1px 4px rgba(0,0,0,0.04);
+  position: relative; z-index: 2;
 }
 .ai-asst-model-select {
   padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px;
@@ -980,8 +969,8 @@ body::before {
 .ai-asst-send:disabled { opacity: 0.5; cursor: not-allowed; }
 .ai-asst-send svg { width: 16px; height: 16px; }
 /* 响应式 */
-@media (max-width: 1024px) { .ai-asst-conversations { width: 220px; } }
-@media (max-width: 768px) { .ai-asst-conversations { display: none; } .ai-asst-feature-cards { flex-direction: column; } }
+@media (max-width: 1024px) { .ai-asst-conversations { width: 200px; } }
+@media (max-width: 768px) { .ai-asst-conversations { display: none; } .ai-asst-feature-cards { flex-direction: column; } .ai-asst-welcome { padding: 28px 20px; } }
 
 /* Category section */
 .mm-category {
@@ -3487,10 +3476,7 @@ body::before {
           <span class="ai-asst-quota" id="aiAsstQuota">今日剩余 100 次</span>
         </div>
         <div class="ai-asst-header-right">
-          <button class="ai-asst-btn" onclick="aiAsstToggleImgGen()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            生成图片
-          </button>
+          
           <button class="ai-asst-btn" onclick="aiAsstClear()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             清除
@@ -3513,40 +3499,17 @@ body::before {
         </div>
         <!-- 右侧聊天区 -->
         <div class="ai-asst-chat">
-          <!-- 图片生成面板 -->
-          <div class="ai-asst-img-gen" id="aiAsstImgGen">
-            <div class="ai-asst-img-gen-title"><span>🎨</span><span>图片生成</span></div>
-            <div class="ai-asst-img-gen-row">
-              <div class="ai-asst-img-gen-input" style="flex:2">
-                <label>图片描述</label>
-                <input type="text" id="aiAsstImgPrompt" placeholder="描述你想生成的图片内容..." />
-              </div>
-              <div class="ai-asst-img-gen-input" style="flex:0 0 120px">
-                <label>尺寸</label>
-                <select id="aiAsstImgSize">
-                  <option value="1024x1024">1024x1024</option>
-                  <option value="1024x768" selected>1024x768</option>
-                  <option value="768x1024">768x1024</option>
-                </select>
-              </div>
-              <button class="ai-asst-img-gen-btn" id="aiAsstImgBtn" onclick="aiAsstGenImage()">生成图片</button>
-            </div>
-          </div>
+          
           <!-- 消息区域 -->
           <div class="ai-asst-messages" id="aiAsstMessages">
             <div class="ai-asst-welcome" id="aiAsstWelcome">
               <h2>今天想让 AI 帮你做什么？</h2>
-              <p>我可以帮你推荐项目、回答代码问题、生成图片，或者和你聊天。</p>
+              <p>我可以帮你推荐项目、回答代码问题，或者和你聊天。</p>
               <div class="ai-asst-feature-cards">
                 <div class="ai-asst-feature-card" onclick="aiAsstSend('推荐几个游戏项目')">
                   <div class="ai-asst-feature-icon">🤖</div>
                   <div class="ai-asst-feature-name">智能问答</div>
                   <div class="ai-asst-feature-desc">推荐项目、解答问题</div>
-                </div>
-                <div class="ai-asst-feature-card" onclick="aiAsstToggleImgGen()">
-                  <div class="ai-asst-feature-icon">🖼️</div>
-                  <div class="ai-asst-feature-name">图像生成</div>
-                  <div class="ai-asst-feature-desc">描述需求生成图片</div>
                 </div>
               </div>
               <div class="ai-asst-suggestions">
@@ -5502,8 +5465,7 @@ const AI_ASST = {
   currentConv: null,
   model: 'openrouter/free',
   awaiting: false,
-  abortCtrl: null,
-  imgGenOpen: false
+  abortCtrl: null
 };
 
 function openAIAssistant() {
@@ -5566,10 +5528,6 @@ function aiAsstSetupInput() {
   const input = document.getElementById('aiAsstInput');
   if (input) {
     input.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsstSend(); } };
-  }
-  const imgInput = document.getElementById('aiAsstImgPrompt');
-  if (imgInput) {
-    imgInput.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); aiAsstGenImage(); } };
   }
 }
 
@@ -5767,10 +5725,9 @@ function aiAsstRenderMsgs() {
   if (AI_ASST.messages.length === 0) {
     container.innerHTML = '<div class="ai-asst-welcome" id="aiAsstWelcome">' +
       '<h2>今天想让 AI 帮你做什么？</h2>' +
-      '<p>我可以帮你推荐项目、回答代码问题、生成图片，或者和你聊天。</p>' +
+      '<p>我可以帮你推荐项目、回答代码问题，或者和你聊天。</p>' +
       '<div class="ai-asst-feature-cards">' +
       '<div class="ai-asst-feature-card" onclick="aiAsstSend(\'推荐几个游戏项目\')"><div class="ai-asst-feature-icon">🤖</div><div class="ai-asst-feature-name">智能问答</div><div class="ai-asst-feature-desc">推荐项目、解答问题</div></div>' +
-      '<div class="ai-asst-feature-card" onclick="aiAsstToggleImgGen()"><div class="ai-asst-feature-icon">🖼️</div><div class="ai-asst-feature-name">图像生成</div><div class="ai-asst-feature-desc">描述需求生成图片</div></div>' +
       '</div>' +
       '<div class="ai-asst-suggestions">' +
       '<span class="ai-asst-suggestion" onclick="aiAsstSend(\'推荐几个游戏项目\')">推荐几个游戏项目</span>' +
@@ -5792,42 +5749,7 @@ function aiAsstClear() {
   aiAsstRenderConvs();
 }
 
-function aiAsstToggleImgGen() {
-  AI_ASST.imgGenOpen = !AI_ASST.imgGenOpen;
-  const panel = document.getElementById('aiAsstImgGen');
-  if (panel) panel.classList.toggle('active', AI_ASST.imgGenOpen);
-  if (AI_ASST.imgGenOpen) { const input = document.getElementById('aiAsstImgPrompt'); if (input) setTimeout(() => input.focus(), 100); }
-}
 
-async function aiAsstGenImage() {
-  const prompt = document.getElementById('aiAsstImgPrompt') && document.getElementById('aiAsstImgPrompt').value.trim();
-  const size = document.getElementById('aiAsstImgSize') && document.getElementById('aiAsstImgSize').value;
-  const btn = document.getElementById('aiAsstImgBtn');
-  if (!prompt || !btn) return;
-  btn.disabled = true; btn.textContent = '生成中...';
-  aiAsstAddMsg('user', '[生成图片] ' + prompt);
-  aiAsstShowTyping();
-  try {
-    const resp = await fetch('/api/generate-image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt, size }) });
-    aiAsstRemoveTyping();
-    const data = await resp.json();
-    if (data.url) {
-      const container = document.getElementById('aiAsstMessages');
-      const msg = document.createElement('div');
-      msg.className = 'ai-asst-msg assistant';
-      msg.innerHTML = '<div class="ai-asst-msg-avatar">✨</div><div class="ai-asst-msg-bubble"><p>图片生成完成：</p><img class="ai-asst-msg-image" src="' + aiAsstEsc(data.url) + '" alt="生成的图片" onclick="window.open(\'' + aiAsstEsc(data.url) + '\',\'_blank\')" /></div>';
-      container.appendChild(msg);
-      container.scrollTop = container.scrollHeight;
-    } else {
-      aiAsstAddMsg('assistant', data.error || '图片生成失败，请稍后再试。');
-    }
-  } catch (e) {
-    aiAsstRemoveTyping();
-    aiAsstAddMsg('assistant', '图片生成请求失败，请检查网络连接。');
-  } finally {
-    btn.disabled = false; btn.textContent = '生成图片';
-  }
-}
 
 function aiAsstVoice() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert('当前浏览器不支持语音输入'); return; }

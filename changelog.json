@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.9.7",
+    "date": "2026-08-01",
+    "title": "移除生图功能 + 优化 AI 助手窗口比例",
+    "changes": [
+      "前端：移除 AI 助手中的生图按钮、图片生成面板、图像生成功能卡片、相关 CSS 样式和 JS 函数（aiAsstToggleImgGen/aiAsstGenImage）",
+      "后端：移除 ecs-server.py 中的 AGNES_AI_API_KEY/AGNES_AI_API_URL 配置和 /api/generate-image 路由",
+      "配置：注释 ecs-env.sh 中的 AGNES_AI_API_KEY，移除 restart_ecs.py 中的 AGNES 导出",
+      "优化 AI 助手窗口比例：左侧对话栏宽度从 300px 收窄至 260px，面板/头部/输入区添加阴影增加层次感，功能卡片加大并添加悬停阴影效果，欢迎页间距微调，移动端适配优化"
+    ]
+  },
+  {
     "version": "1.9.6",
     "date": "2026-08-01",
     "title": "修复 Bearer 认证头错误 + 精简模型列表只保留默认模型",
