@@ -6642,6 +6642,7 @@ async function doUserLogin() {
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
       if (document.getElementById('userMenuName')) document.getElementById('userMenuName').textContent = d.user.username;
+      openAdminFromMenu.style.display = d.user.role === 'admin' ? '' : 'none';
       loginUsernameInput.value = '';
       loginPasswordInput.value = '';
       loginError.textContent = '';
@@ -7263,6 +7264,9 @@ function copyCode(btn) {
         userMenuBtn.classList.remove('hidden');
         if (state.currentUser && document.getElementById('userMenuName')) {
           document.getElementById('userMenuName').textContent = state.currentUser.username;
+        }
+        if (state.currentUser) {
+          openAdminFromMenu.style.display = state.currentUser.role === 'admin' ? '' : 'none';
         }
       }
       state.isAuthenticated = authed;
