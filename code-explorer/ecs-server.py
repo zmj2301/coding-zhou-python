@@ -20,6 +20,7 @@ import ast
 import signal
 import queue
 from pathlib import Path
+import sqlite3
 from http.cookies import SimpleCookie
 
 PORT = int(os.environ.get('PORT', 8765))
@@ -115,6 +116,105 @@ ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'default-secret-change-me')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '').strip()
 OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+
+
+def init_db():
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    db = sqlite3.connect(str(DATA_DIR / 'users.db'))
+    db.row_factory = sqlite3.Row
+    db.execute('''CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        salt TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'user',
+        created_at INTEGER NOT NULL,
+        last_login INTEGER
+    )''')
+    db.execute('''CREATE TABLE IF NOT EXISTS conversations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        title TEXT NOT NULL DEFAULT '',
+        messages TEXT NOT NULL DEFAULT '[]',
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )''')
+    db.execute('''CREATE TABLE IF NOT EXISTS bookmarks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        project_path TEXT NOT NULL,
+        project_name TEXT NOT NULL,
+        project_icon TEXT DEFAULT '',
+        created_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        UNIQUE(user_id, project_path)
+    )''')
+    db.execute('''CREATE TABLE IF NOT EXISTS recent_visits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        project_path TEXT NOT NULL,
+        project_name TEXT NOT NULL,
+        project_icon TEXT DEFAULT '',
+        visited_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        UNIQUE(user_id, project_path)
+    )''')
+    db.execute('''CREATE TABLE IF NOT EXISTS likes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        project_path TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        UNIQUE(user_id, project_path)
+    )''')
+    db.commit()
+    # 检查是否已存在预置管理员
+    cur = db.execute("SELECT id FROM users WHERE username = ?", ('zmj2013',))
+    if not cur.fetchone():
+        h, s = hash_password('ZHOUmj32842510')
+        db.execute("INSERT INTO users (username, password_hash, salt, role, created_at) VALUES (?, ?, ?, 'admin', ?)",
+                   ('zmj2013', h, s, int(time.time())))
+        db.commit()
+    db.close()
+
+
+def hash_password(password, salt=None):
+    if salt is None:
+        salt = os.urandom(16).hex()
+    h = hashlib.sha256((salt + password).encode()).hexdigest()
+    return h, salt
+
+
+def verify_password(password, password_hash, salt):
+    h, _ = hash_password(password, salt)
+    return h == password_hash
+
+
+def get_db():
+    db = sqlite3.connect(str(DATA_DIR / 'users.db'))
+    db.row_factory = sqlite3.Row
+    return db
+
+
+def get_user_by_username(username):
+    db = get_db()
+    try:
+        cur = db.execute("SELECT * FROM users WHERE username = ?", (username,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+    finally:
+        db.close()
+
+
+def get_user_by_id(user_id):
+    db = get_db()
+    try:
+        cur = db.execute("SELECT id, username, role, created_at, last_login FROM users WHERE id = ?", (user_id,))
+        row = cur.fetchone()
+        return dict(row) if row else None
+    finally:
+        db.close()
 
 
 # 代码执行相关配置
@@ -851,21 +951,34 @@ def get_token_from_request(handler):
     return cookies.get('wg_token')
 
 def check_auth(handler):
-    if not USER_PASSWORD:
-        return True
-    token = get_token_from_request(handler)
-    if not token:
-        return False
-    return verify_jwt(token, JWT_SECRET) is not None
-
-def check_admin(handler):
-    if not ADMIN_PASSWORD:
-        return False
     token = get_token_from_request(handler)
     if not token:
         return False
     payload = verify_jwt(token, JWT_SECRET)
-    return payload is not None and payload.get('is_admin') is True
+    return payload is not None
+
+def check_admin(handler):
+    token = get_token_from_request(handler)
+    if not token:
+        return False
+    payload = verify_jwt(token, JWT_SECRET)
+    if not payload:
+        return False
+    # 兼容新旧 JWT 格式
+    is_admin = payload.get('role') == 'admin' or payload.get('is_admin') is True
+    return is_admin
+
+def get_current_user(handler):
+    token = get_token_from_request(handler)
+    if not token:
+        return None
+    payload = verify_jwt(token, JWT_SECRET)
+    if not payload:
+        return None
+    user_id = payload.get('user_id')
+    if user_id:
+        return get_user_by_id(user_id)
+    return None
 
 def read_json_file(filepath):
     if filepath.exists():
@@ -1035,8 +1148,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         qs = urllib.parse.parse_qs(parsed.query)
 
         if path == '/api/auth-check':
-            authenticated = check_auth(self)
-            return self.send_json({'authenticated': authenticated, 'passwordSet': bool(USER_PASSWORD)})
+            user = get_current_user(self)
+            if user:
+                return self.send_json({'authenticated': True, 'user': {'id': user['id'], 'username': user['username'], 'role': user['role']}})
+            return self.send_json({'authenticated': False})
 
         if path == '/api/projects/list':
             data = read_json_file(BASE_DIR / 'project-list.json')
@@ -1123,6 +1238,46 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         if path == '/api/ai-quota':
             return self.send_json({'usage': 0, 'remaining': 10000, 'limit': 10000, 'neuronsPerRequest': 100})
 
+        if path == '/api/user/conversations':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT id, title, messages, created_at, updated_at FROM conversations WHERE user_id = ? ORDER BY updated_at DESC", (user['id'],))
+                convs = []
+                for row in cur.fetchall():
+                    c = dict(row)
+                    c['messages'] = json.loads(c['messages'])
+                    convs.append(c)
+                return self.send_json({'conversations': convs})
+            finally:
+                db.close()
+
+        if path == '/api/user/bookmarks':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT project_path, project_name, project_icon, created_at FROM bookmarks WHERE user_id = ? ORDER BY created_at DESC", (user['id'],))
+                bookmarks = [dict(row) for row in cur.fetchall()]
+                return self.send_json({'bookmarks': bookmarks})
+            finally:
+                db.close()
+
+        if path == '/api/user/recent':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT project_path, project_name, project_icon, visited_at FROM recent_visits WHERE user_id = ? ORDER BY visited_at DESC LIMIT 10", (user['id'],))
+                recent = [dict(row) for row in cur.fetchall()]
+                return self.send_json({'recent': recent})
+            finally:
+                db.close()
+
         if path == '/api/comments':
             project = qs.get('project', [''])[0]
             if not project:
@@ -1135,8 +1290,18 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             return self.send_json(counts)
 
         if path == '/api/likes':
-            likes_data = _load_likes()
-            return self.send_json(likes_data)
+            likes_data = _load_likes()  # 保持兼容旧数据
+            # 同时从 SQLite 获取按用户去重的点赞数据
+            user = get_current_user(self)
+            user_liked = []
+            if user:
+                db = get_db()
+                try:
+                    cur = db.execute("SELECT project_path FROM likes WHERE user_id = ?", (user['id'],))
+                    user_liked = [row['project_path'] for row in cur.fetchall()]
+                finally:
+                    db.close()
+            return self.send_json({'likes': likes_data, 'userLiked': user_liked})
 
         if path == '/api/admin/dashboard':
             if not check_admin(self):
@@ -1154,6 +1319,17 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     'uploaded_files_count': 0,
                 }
             })
+
+        if path == '/api/admin/users':
+            if not check_admin(self):
+                return self.send_error_json('需要管理员权限', 401)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT id, username, role, created_at, last_login FROM users ORDER BY id")
+                users = [dict(row) for row in cur.fetchall()]
+                return self.send_json({'users': users})
+            finally:
+                db.close()
 
         if path == '/api/health':
             return self.send_json({'status': 'ok'})
@@ -1297,19 +1473,58 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             body = {}
 
         if path == '/api/login':
+            username = body.get('username', '')
             password = body.get('password', '')
-            if not USER_PASSWORD:
-                return self.send_error_json('服务器未设置密码', 500)
-            if password != USER_PASSWORD:
-                return self.send_error_json('密码错误', 401)
-            token = sign_jwt({'sub': 'user', 'is_admin': False}, JWT_SECRET)
+            if not username or not password:
+                return self.send_error_json('请输入用户名和密码', 400)
+            user = get_user_by_username(username)
+            if not user:
+                return self.send_error_json('用户名或密码错误', 401)
+            if not verify_password(password, user['password_hash'], user['salt']):
+                return self.send_error_json('用户名或密码错误', 401)
+            # 更新 last_login
+            db = get_db()
+            try:
+                db.execute("UPDATE users SET last_login = ? WHERE id = ?", (int(time.time()), user['id']))
+                db.commit()
+            finally:
+                db.close()
+            token = sign_jwt({'sub': user['username'], 'user_id': user['id'], 'username': user['username'], 'role': user['role']}, JWT_SECRET)
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
             self.send_header('Access-Control-Allow-Origin', '*')
             self.set_cookie('wg_token', token)
             self.end_headers()
-            self.wfile.write(json.dumps({'token': token}).encode('utf-8'))
+            self.wfile.write(json.dumps({'token': token, 'user': {'id': user['id'], 'username': user['username'], 'role': user['role']}}).encode('utf-8'))
             return
+
+        if path == '/api/register':
+            username = body.get('username', '')
+            password = body.get('password', '')
+            if not username or not password:
+                return self.send_error_json('请输入用户名和密码', 400)
+            if not re.match(r'^[a-zA-Z0-9_]{3,20}$', username):
+                return self.send_error_json('用户名需为3-20位字母、数字或下划线', 400)
+            if len(password) < 6:
+                return self.send_error_json('密码长度至少6位', 400)
+            db = get_db()
+            try:
+                # 检查用户上限（普通用户最多4人）
+                cur = db.execute("SELECT COUNT(*) as cnt FROM users WHERE role = 'user'")
+                count = cur.fetchone()['cnt']
+                if count >= 4:
+                    return self.send_error_json('用户已达上限，无法注册', 400)
+                # 检查用户名是否已存在
+                cur = db.execute("SELECT id FROM users WHERE username = ?", (username,))
+                if cur.fetchone():
+                    return self.send_error_json('用户名已存在', 400)
+                h, s = hash_password(password)
+                db.execute("INSERT INTO users (username, password_hash, salt, role, created_at) VALUES (?, ?, ?, 'user', ?)",
+                           (username, h, s, int(time.time())))
+                db.commit()
+                return self.send_json({'success': True, 'message': '注册成功'})
+            finally:
+                db.close()
 
         if path == '/api/logout':
             self.send_response(200)
@@ -1321,19 +1536,37 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             return
 
         if path == '/api/admin/login':
-            password = body.get('password', '')
-            if not ADMIN_PASSWORD:
-                return self.send_error_json('服务器未设置管理员密码', 500)
-            if password != ADMIN_PASSWORD:
-                return self.send_error_json('管理员密码错误', 401)
-            token = sign_jwt({'sub': 'admin', 'is_admin': True}, JWT_SECRET)
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json; charset=utf-8')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.set_cookie('wg_token', token)
-            self.end_headers()
-            self.wfile.write(json.dumps({'token': token}).encode('utf-8'))
-            return
+            return self.send_error_json('管理员登录已废弃，请使用普通登录', 410)
+
+        if path == '/api/user/profile':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            return self.send_json({'user': user})
+
+        if path == '/api/user/change-password':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            old_password = body.get('old_password', '')
+            new_password = body.get('new_password', '')
+            if not old_password or not new_password:
+                return self.send_error_json('请提供旧密码和新密码', 400)
+            if len(new_password) < 6:
+                return self.send_error_json('新密码长度至少6位', 400)
+            # 验证旧密码
+            db = get_db()
+            try:
+                cur = db.execute("SELECT password_hash, salt FROM users WHERE id = ?", (user['id'],))
+                row = cur.fetchone()
+                if not row or not verify_password(old_password, row['password_hash'], row['salt']):
+                    return self.send_error_json('旧密码错误', 401)
+                h, s = hash_password(new_password)
+                db.execute("UPDATE users SET password_hash = ?, salt = ? WHERE id = ?", (h, s, user['id']))
+                db.commit()
+                return self.send_json({'success': True, 'message': '密码修改成功'})
+            finally:
+                db.close()
 
         if path == '/api/admin/dashboard':
             if not check_admin(self):
@@ -1352,6 +1585,48 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 }
             })
 
+        if path == '/api/admin/users':
+            if not check_admin(self):
+                return self.send_error_json('需要管理员权限', 401)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT id, username, role, created_at, last_login FROM users ORDER BY id")
+                users = [dict(row) for row in cur.fetchall()]
+                return self.send_json({'users': users})
+            finally:
+                db.close()
+
+        if path == '/api/admin/users/delete':
+            if not check_admin(self):
+                return self.send_error_json('需要管理员权限', 401)
+            user_id = body.get('user_id')
+            if not user_id:
+                return self.send_error_json('缺少 user_id 参数', 400)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT role FROM users WHERE id = ?", (user_id,))
+                row = cur.fetchone()
+                if not row:
+                    return self.send_error_json('用户不存在', 404)
+                # 不能删除管理员
+                if row['role'] == 'admin':
+                    return self.send_error_json('不能删除管理员', 400)
+                # 获取当前用户 ID
+                token = get_token_from_request(self)
+                payload = verify_jwt(token, JWT_SECRET)
+                if payload and payload.get('user_id') == user_id:
+                    return self.send_error_json('不能删除自己', 400)
+                # 删除用户相关数据
+                db.execute("DELETE FROM conversations WHERE user_id = ?", (user_id,))
+                db.execute("DELETE FROM bookmarks WHERE user_id = ?", (user_id,))
+                db.execute("DELETE FROM recent_visits WHERE user_id = ?", (user_id,))
+                db.execute("DELETE FROM likes WHERE user_id = ?", (user_id,))
+                db.execute("DELETE FROM users WHERE id = ?", (user_id,))
+                db.commit()
+                return self.send_json({'success': True, 'message': '用户已删除'})
+            finally:
+                db.close()
+
         if path == '/api/comments' and self.command == 'POST':
             project = body.get('project', '')
             text = (body.get('text', '') or '').strip()
@@ -1359,9 +1634,12 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 return self.send_error_json('缺少 project 或 text 参数')
             project_data = _load_comments(project)
             comment_id = hashlib.md5(f'{time.time()}{text}'.encode()).hexdigest()[:8]
+            user = get_current_user(self)
             comment = {
                 'id': comment_id, 'project': project, 'text': text,
-                'timestamp': int(time.time() * 1000), 'image': None, 'likes': 0
+                'timestamp': int(time.time() * 1000), 'image': None, 'likes': 0,
+                'user_id': user['id'] if user else None,
+                'username': user['username'] if user else '匿名'
             }
             project_data['comments'].append(comment)
             _save_comments(project, project_data)
@@ -1391,15 +1669,144 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             project = body.get('project', '')
             if not project:
                 return self.send_error_json('缺少 project 参数')
-            likes_data = _load_likes()
-            likes_data[project] = likes_data.get(project, 0) + 1
-            write_json_file(LIKES_FILE, likes_data)
-            return self.send_json({'project': project, 'likes': likes_data[project]})
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT id FROM likes WHERE user_id = ? AND project_path = ?", (user['id'], project))
+                existing = cur.fetchone()
+                if existing:
+                    # 取消点赞
+                    db.execute("DELETE FROM likes WHERE id = ?", (existing['id'],))
+                    db.commit()
+                    # 更新全局计数
+                    likes_data = _load_likes()
+                    likes_data[project] = max(0, likes_data.get(project, 0) - 1)
+                    write_json_file(LIKES_FILE, likes_data)
+                    return self.send_json({'project': project, 'likes': likes_data.get(project, 0), 'liked': False})
+                else:
+                    # 点赞
+                    db.execute("INSERT INTO likes (user_id, project_path, created_at) VALUES (?, ?, ?)",
+                               (user['id'], project, int(time.time())))
+                    db.commit()
+                    likes_data = _load_likes()
+                    likes_data[project] = likes_data.get(project, 0) + 1
+                    write_json_file(LIKES_FILE, likes_data)
+                    return self.send_json({'project': project, 'likes': likes_data.get(project, 0), 'liked': True})
+            finally:
+                db.close()
 
         if path == '/api/admin/clear-cache' and self.command == 'POST':
             if not check_admin(self):
                 return self.send_error_json('需要管理员权限', 401)
             return self.send_json({'success': True, 'message': '缓存已清除'})
+
+        if path == '/api/user/conversations':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            conv_id = body.get('id')
+            title = body.get('title', '')
+            messages = body.get('messages', [])
+            now = int(time.time())
+            db = get_db()
+            try:
+                if conv_id:
+                    db.execute("UPDATE conversations SET title = ?, messages = ?, updated_at = ? WHERE id = ? AND user_id = ?",
+                               (title, json.dumps(messages, ensure_ascii=False), now, conv_id, user['id']))
+                else:
+                    cur = db.execute("INSERT INTO conversations (user_id, title, messages, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+                                   (user['id'], title, json.dumps(messages, ensure_ascii=False), now, now))
+                    conv_id = cur.lastrowid
+                db.commit()
+                return self.send_json({'success': True, 'id': conv_id})
+            finally:
+                db.close()
+
+        if path == '/api/user/conversations/delete':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            conv_id = body.get('id')
+            if conv_id:
+                db = get_db()
+                try:
+                    db.execute("DELETE FROM conversations WHERE id = ? AND user_id = ?", (conv_id, user['id']))
+                    db.commit()
+                finally:
+                    db.close()
+            return self.send_json({'success': True})
+
+        if path == '/api/user/conversations/clear':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            db = get_db()
+            try:
+                db.execute("DELETE FROM conversations WHERE user_id = ?", (user['id'],))
+                db.commit()
+            finally:
+                db.close()
+            return self.send_json({'success': True})
+
+        if path == '/api/user/bookmarks':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            project_path = body.get('project_path', '')
+            project_name = body.get('project_name', '')
+            project_icon = body.get('project_icon', '')
+            if not project_path:
+                return self.send_error_json('缺少 project_path 参数', 400)
+            db = get_db()
+            try:
+                # Toggle 逻辑
+                cur = db.execute("SELECT id FROM bookmarks WHERE user_id = ? AND project_path = ?", (user['id'], project_path))
+                existing = cur.fetchone()
+                if existing:
+                    db.execute("DELETE FROM bookmarks WHERE id = ?", (existing['id'],))
+                    db.commit()
+                    return self.send_json({'bookmarked': False})
+                else:
+                    db.execute("INSERT INTO bookmarks (user_id, project_path, project_name, project_icon, created_at) VALUES (?, ?, ?, ?, ?)",
+                               (user['id'], project_path, project_name, project_icon, int(time.time())))
+                    db.commit()
+                    return self.send_json({'bookmarked': True})
+            finally:
+                db.close()
+
+        if path == '/api/user/recent':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            project_path = body.get('project_path', '')
+            project_name = body.get('project_name', '')
+            project_icon = body.get('project_icon', '')
+            if not project_path:
+                return self.send_error_json('缺少 project_path 参数', 400)
+            db = get_db()
+            try:
+                # 如果已存在，更新 visited_at
+                cur = db.execute("SELECT id FROM recent_visits WHERE user_id = ? AND project_path = ?", (user['id'], project_path))
+                existing = cur.fetchone()
+                now = int(time.time())
+                if existing:
+                    db.execute("UPDATE recent_visits SET visited_at = ?, project_name = ?, project_icon = ? WHERE id = ?",
+                               (now, project_name, project_icon, existing['id']))
+                else:
+                    # 检查数量，超过10条删除最旧的
+                    cur = db.execute("SELECT COUNT(*) as cnt FROM recent_visits WHERE user_id = ?", (user['id'],))
+                    count = cur.fetchone()['cnt']
+                    if count >= 10:
+                        db.execute("DELETE FROM recent_visits WHERE user_id = ? AND id NOT IN (SELECT id FROM recent_visits WHERE user_id = ? ORDER BY visited_at DESC LIMIT 9)",
+                                   (user['id'], user['id']))
+                    db.execute("INSERT INTO recent_visits (user_id, project_path, project_name, project_icon, visited_at) VALUES (?, ?, ?, ?, ?)",
+                               (user['id'], project_path, project_name, project_icon, now))
+                db.commit()
+                return self.send_json({'success': True})
+            finally:
+                db.close()
 
         if path == '/api/recommend':
             messages = body.get('messages', [])
@@ -2022,6 +2429,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
 
+
+init_db()
 
 if __name__ == '__main__':
     print(f'Code Explorer 服务器启动: http://{HOST}:{PORT}')
