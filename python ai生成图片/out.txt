@@ -1,5 +1,0 @@
-start
-tf 5.2.0
-CLIP OK
-diffusers OK
-ALL OK

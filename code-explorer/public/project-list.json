@@ -108,18 +108,6 @@
     "popupUrl": null
   },
   {
-    "name": "python ai生成图片",
-    "path": "python ai生成图片",
-    "type": "ai",
-    "label": "AI",
-    "desc": "",
-    "mainFile": "main.py",
-    "fileCount": 18,
-    "lastModified": 1784382123662,
-    "themeColor": "hsl(193, 33%, 61%)",
-    "popupUrl": null
-  },
-  {
     "name": "Python AI象棋对战",
     "path": "Python AI象棋对战",
     "type": "ai",
@@ -414,7 +402,7 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 140,
+    "fileCount": 145,
     "lastModified": 1785156831032,
     "themeColor": "hsl(222, 42%, 65%)",
     "popupUrl": null

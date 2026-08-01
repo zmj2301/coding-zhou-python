@@ -87,7 +87,6 @@ cat > /home/code-explorer/public/project-list.json << 'PLIST_EOF'
   {"name":"计算机","path":"python 计算机","type":"tool","description":"简易计算器"},
   {"name":"日程表","path":"python 日程表","type":"tool","description":"日程管理工具"},
   {"name":"摄像头连接","path":"python连接摄像头","type":"tool","description":"摄像头连接工具"},
-  {"name":"AI生成图片","path":"python ai生成图片","type":"ai","description":"AI图片生成"},
   {"name":"mc农场","path":"Python mc农场","type":"game","description":"MC风格农场游戏"},
   {"name":"逗神文化管理","path":"逗神文化管理","type":"tool","description":"逗神文化管理系统"},
   {"name":"每日励志语句","path":"每日励志语句","type":"tool","description":"每日励志语句推送"},
