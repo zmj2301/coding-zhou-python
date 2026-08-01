@@ -11,9 +11,9 @@ account_id = "d6b8ca32610afe0fd9407736b9266cb3"
 
 [[kv_namespaces]]
 binding = "CODE_EXPLORER_KV"
-id = "70cb2749fafd40fdb5b8e3140d65a414"
-preview_id = "70cb2749fafd40fdb5b8e3140d65a414"
+id = "8dea9684a12b4e1f8bd41348644dbd8e"
+preview_id = "8dea9684a12b4e1f8bd41348644dbd8e"
 
 [assets]
 binding = "ASSETS"
-directory = "code-explorer/public"
+directory = "public"

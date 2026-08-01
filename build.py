@@ -101,6 +101,14 @@ def main():
         print('  跳过: fathers-day 目录不存在')
 
     print()
+    print('步骤 5: 清理大文件（超过 5MB 的 JSON 文件，Worker 不支持）...')
+    for f in PUBLIC_DIR.rglob('*.json'):
+        size = f.stat().st_size
+        if size > 5 * 1024 * 1024:
+            f.unlink()
+            print(f'  删除: {f.relative_to(BASE_DIR)} ({size / 1024 / 1024:.1f} MB)')
+
+    print()
     print('=' * 50)
     print('  构建完成！')
     print(f'  输出目录: {PUBLIC_DIR}')
