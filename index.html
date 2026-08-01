@@ -2743,6 +2743,31 @@ body::before {
     text-decoration: none; font-weight: 500;
   }
   .auth-switch a:hover { text-decoration: underline; }
+  .auth-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    background: var(--bg-secondary, #f0f0f0);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary, #666);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .auth-tab.active {
+    background: var(--accent, #6366f1);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
 
   /* ========== 管理员仪表板 ========== */
   .admin-page {
@@ -2943,12 +2968,13 @@ body::before {
   .user-menu-btn {
     position: fixed; top: 12px; right: 12px;
     z-index: 99997;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #58a6ff, #a371f7);
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 600; font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    color: var(--text-primary);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: transform 0.15s;
   }
@@ -3359,33 +3385,44 @@ body::before {
   </div>
   <div class="auth-right">
     <div class="auth-card">
-      <!-- 用户登录 -->
+      <!-- 登录/注册切换标签 -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="authTabLogin" onclick="showAuthForm('login')">登录</button>
+        <button class="auth-tab" id="authTabRegister" onclick="showAuthForm('register')">注册</button>
+      </div>
+      <!-- 登录表单 -->
       <div id="userLoginForm">
         <h2>欢迎回来</h2>
-        <p class="auth-subtitle">输入访问密码以继续</p>
+        <p class="auth-subtitle">输入账号密码以继续</p>
         <div class="auth-field">
-          <label for="loginPasswordInput">访问密码</label>
+          <label for="loginUsernameInput">用户名</label>
+          <input type="text" id="loginUsernameInput" placeholder="请输入用户名" autocomplete="off">
+        </div>
+        <div class="auth-field">
+          <label for="loginPasswordInput">密码</label>
           <input type="password" id="loginPasswordInput" placeholder="请输入密码" autocomplete="off">
         </div>
         <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
         <div class="auth-error" id="loginError"></div>
-        <div class="auth-switch">
-          使用 <a id="switchToAdmin">管理员身份</a> 登录
-        </div>
       </div>
-      <!-- 管理员登录 -->
-      <div id="adminLoginForm" style="display:none">
-        <h2>管理员登录</h2>
-        <p class="auth-subtitle">输入管理员密码以访问后台</p>
+      <!-- 注册表单 -->
+      <div id="registerForm" style="display:none">
+        <h2>创建账号</h2>
+        <p class="auth-subtitle">注册新账号以访问平台</p>
         <div class="auth-field">
-          <label for="adminPasswordInput">管理员密码</label>
-          <input type="password" id="adminPasswordInput" placeholder="请输入管理员密码" autocomplete="off">
+          <label for="registerUsernameInput">用户名</label>
+          <input type="text" id="registerUsernameInput" placeholder="3-20位字母、数字或下划线" autocomplete="off">
         </div>
-        <button class="auth-btn-primary auth-btn-admin" id="adminLoginSubmitBtn">进入后台</button>
-        <div class="auth-error" id="adminLoginError"></div>
-        <div class="auth-switch">
-          返回 <a id="switchToUser">用户登录</a>
+        <div class="auth-field">
+          <label for="registerPasswordInput">密码</label>
+          <input type="password" id="registerPasswordInput" placeholder="至少6位密码" autocomplete="off">
         </div>
+        <div class="auth-field">
+          <label for="registerConfirmInput">确认密码</label>
+          <input type="password" id="registerConfirmInput" placeholder="再次输入密码" autocomplete="off">
+        </div>
+        <button class="auth-btn-primary" id="registerSubmitBtn">注册</button>
+        <div class="auth-error" id="registerError"></div>
       </div>
     </div>
   </div>
@@ -3432,8 +3469,16 @@ body::before {
 <button class="changelog-btn" id="changelogBtn" title="更新日志">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
 </button>
-<button class="user-menu-btn hidden" id="userMenuBtn">U</button>
+<button class="user-menu-btn hidden" id="userMenuBtn" title="用户菜单">
+  <span id="userMenuName" style="font-size:13px;font-weight:500;color:var(--text-primary)">用户</span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+</button>
 <div class="user-dropdown" id="userDropdown">
+  <button class="user-dropdown-item" id="profileFromMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    个人资料
+  </button>
+  <div class="user-dropdown-divider"></div>
   <button class="user-dropdown-item" id="openAdminFromMenu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
     管理员后台
@@ -3918,6 +3963,8 @@ const state = {
   flatFiles: [],
   projects: [],        // 项目卡片数据
   currentProject: null,
+  currentUser: null,
+  isAuthenticated: false,
   openTabs: [],
   activeTabIdx: -1,
   expandedDirs: new Set(),
@@ -3935,12 +3982,13 @@ async function api(url, opts = {}) {
     const res = await fetch(url, opts);
     if (res.status === 401) {
       delCookie('wg_token');
+      state.currentUser = null;
       if (userMenuBtn) userMenuBtn.classList.add('hidden');
       if (userDropdown) userDropdown.classList.remove('show');
       hideAdminDashboard();
       const hasProjects = state.projects && state.projects.length > 0;
       if (!hasProjects) {
-        showLoginPage(false);
+        showLoginPage();
         const grid = document.getElementById('cardsGrid');
         if (grid) grid.innerHTML = '';
       } else {
@@ -6107,7 +6155,7 @@ function closeAuthPromptModal() {
 
 function goToLoginFromPrompt() {
   closeAuthPromptModal();
-  showLoginPage(false);
+  showLoginPage();
 }
 
 // ==================== COMMENT FUNCTIONS ====================
@@ -6507,15 +6555,16 @@ function getProjectCardClass(type) {
 const authPage = document.getElementById('authPage');
 const adminPage = document.getElementById('adminPage');
 const userLoginForm = document.getElementById('userLoginForm');
-const adminLoginForm = document.getElementById('adminLoginForm');
+const registerForm = document.getElementById('registerForm');
+const loginUsernameInput = document.getElementById('loginUsernameInput');
 const loginPasswordInput = document.getElementById('loginPasswordInput');
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginError = document.getElementById('loginError');
-const adminPasswordInput = document.getElementById('adminPasswordInput');
-const adminLoginSubmitBtn = document.getElementById('adminLoginSubmitBtn');
-const adminLoginError = document.getElementById('adminLoginError');
-const switchToAdmin = document.getElementById('switchToAdmin');
-const switchToUser = document.getElementById('switchToUser');
+const registerUsernameInput = document.getElementById('registerUsernameInput');
+const registerPasswordInput = document.getElementById('registerPasswordInput');
+const registerConfirmInput = document.getElementById('registerConfirmInput');
+const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+const registerError = document.getElementById('registerError');
 const userMenuBtn = document.getElementById('userMenuBtn');
 const userDropdown = document.getElementById('userDropdown');
 const openAdminFromMenu = document.getElementById('openAdminFromMenu');
@@ -6535,23 +6584,31 @@ function delCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
 }
 
-function showLoginPage(isAdmin) {
-  authPage.classList.add('active');
-  if (isAdmin) {
-    userLoginForm.style.display = 'none';
-    adminLoginForm.style.display = 'block';
-    adminLoginError.classList.remove('show');
-    adminLoginError.textContent = '';
-    adminPasswordInput.value = '';
-    setTimeout(() => adminPasswordInput.focus(), 50);
-  } else {
+function showAuthForm(type) {
+  const loginTab = document.getElementById('authTabLogin');
+  const regTab = document.getElementById('authTabRegister');
+  if (type === 'login') {
     userLoginForm.style.display = 'block';
-    adminLoginForm.style.display = 'none';
+    registerForm.style.display = 'none';
+    loginTab.classList.add('active');
+    regTab.classList.remove('active');
     loginError.classList.remove('show');
     loginError.textContent = '';
-    loginPasswordInput.value = '';
-    setTimeout(() => loginPasswordInput.focus(), 50);
+    setTimeout(() => loginUsernameInput.focus(), 50);
+  } else {
+    userLoginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    loginTab.classList.remove('active');
+    regTab.classList.add('active');
+    registerError.classList.remove('show');
+    registerError.textContent = '';
+    setTimeout(() => registerUsernameInput.focus(), 50);
   }
+}
+
+function showLoginPage() {
+  authPage.classList.add('active');
+  showAuthForm('login');
 }
 
 function hideLoginPage() {
@@ -6559,53 +6616,74 @@ function hideLoginPage() {
 }
 
 async function checkAuth() {
-  try { const r = await fetch('/api/auth-check'); const d = await r.json(); return d.authenticated; }
+  try {
+    const r = await fetch('/api/auth-check');
+    const d = await r.json();
+    if (d.authenticated && d.user) {
+      state.currentUser = d.user;
+    }
+    return d.authenticated;
+  }
   catch(e) { return false; }
 }
 
 async function doUserLogin() {
+  const username = loginUsernameInput.value.trim();
   const pw = loginPasswordInput.value.trim();
-  if (!pw) { loginError.textContent = '请输入密码'; loginError.classList.add('show'); return; }
+  if (!username || !pw) { loginError.textContent = '请输入用户名和密码'; loginError.classList.add('show'); return; }
   loginSubmitBtn.disabled = true; loginSubmitBtn.textContent = '登录中...';
   loginError.classList.remove('show'); loginError.textContent = '';
   try {
-    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
+    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
     const d = await r.json();
     if (r.ok && d.token) {
       setCookie('wg_token', d.token, 7);
+      state.currentUser = d.user;
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
+      if (document.getElementById('userMenuName')) document.getElementById('userMenuName').textContent = d.user.username;
+      loginUsernameInput.value = '';
       loginPasswordInput.value = '';
       loginError.textContent = '';
       init();
     } else {
-      loginError.textContent = d.error || '密码错误';
+      loginError.textContent = d.error || '用户名或密码错误';
       loginError.classList.add('show');
     }
   } catch(e) { loginError.textContent = '网络错误，请重试'; loginError.classList.add('show'); }
   loginSubmitBtn.disabled = false; loginSubmitBtn.textContent = '登录';
 }
 
-async function doAdminLogin() {
-  const pw = adminPasswordInput.value.trim();
-  if (!pw) { adminLoginError.textContent = '请输入管理员密码'; adminLoginError.classList.add('show'); return; }
-  adminLoginSubmitBtn.disabled = true; adminLoginSubmitBtn.textContent = '验证中...';
-  adminLoginError.classList.remove('show'); adminLoginError.textContent = '';
+async function doRegister() {
+  const username = registerUsernameInput.value.trim();
+  const pw = registerPasswordInput.value.trim();
+  const confirm = registerConfirmInput.value.trim();
+  if (!username || !pw || !confirm) { registerError.textContent = '请填写所有字段'; registerError.classList.add('show'); return; }
+  if (pw !== confirm) { registerError.textContent = '两次密码不一致'; registerError.classList.add('show'); return; }
+  if (pw.length < 6) { registerError.textContent = '密码长度至少6位'; registerError.classList.add('show'); return; }
+  registerSubmitBtn.disabled = true; registerSubmitBtn.textContent = '注册中...';
+  registerError.classList.remove('show'); registerError.textContent = '';
   try {
-    const r = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
+    const r = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
     const d = await r.json();
-    if (r.ok && d.token) {
-      setCookie('wg_token', d.token, 7);
-      authPage.classList.remove('active');
-      showAdminDashboard();
-      adminPasswordInput.value = '';
-      adminLoginError.textContent = '';
+    if (r.ok) {
+      // 注册成功，自动登录
+      registerError.textContent = '注册成功，正在登录...';
+      registerError.classList.add('show');
+      registerError.style.color = 'var(--success, #22c55e)';
+      registerError.style.borderColor = 'var(--success, #22c55e)';
+      // 自动填充登录表单并登录
+      loginUsernameInput.value = username;
+      loginPasswordInput.value = pw;
+      setTimeout(() => doUserLogin(), 500);
     } else {
-      adminLoginError.textContent = d.error || '密码错误';
-      adminLoginError.classList.add('show');
+      registerError.textContent = d.error || '注册失败';
+      registerError.classList.add('show');
+      registerError.style.color = '';
+      registerError.style.borderColor = '';
     }
-  } catch(e) { adminLoginError.textContent = '网络错误，请重试'; adminLoginError.classList.add('show'); }
-  adminLoginSubmitBtn.disabled = false; adminLoginSubmitBtn.textContent = '进入后台';
+  } catch(e) { registerError.textContent = '网络错误，请重试'; registerError.classList.add('show'); }
+  registerSubmitBtn.disabled = false; registerSubmitBtn.textContent = '注册';
 }
 
 function showAdminDashboard() {
@@ -6621,6 +6699,7 @@ function hideAdminDashboard() {
 async function doLogout() {
   try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
   delCookie('wg_token');
+  state.currentUser = null;
   hideAdminDashboard();
   hideLoginPage();
   userMenuBtn.classList.add('hidden');
@@ -6628,7 +6707,60 @@ async function doLogout() {
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
   document.getElementById('homePage').classList.add('active');
-  showLoginPage(false);
+  showLoginPage();
+}
+
+function showProfileModal() {
+  if (!state.currentUser) return;
+  const overlay = document.getElementById('profileOverlay');
+  overlay.style.display = 'flex';
+  document.getElementById('profileUsername').textContent = state.currentUser.username;
+  document.getElementById('profileRole').textContent = state.currentUser.role === 'admin' ? '管理员' : '普通用户';
+  // 获取用户详细信息
+  fetch('/api/user/profile').then(r => r.json()).then(d => {
+    if (d.user) {
+      document.getElementById('profileCreatedAt').textContent = d.user.created_at ? new Date(d.user.created_at * 1000).toLocaleString('zh-CN') : '未知';
+      document.getElementById('profileLastLogin').textContent = d.user.last_login ? new Date(d.user.last_login * 1000).toLocaleString('zh-CN') : '首次登录';
+    }
+  }).catch(() => {});
+  document.getElementById('profileOldPw').value = '';
+  document.getElementById('profileNewPw').value = '';
+  document.getElementById('profileConfirmPw').value = '';
+  document.getElementById('profileError').classList.remove('show');
+  document.getElementById('profileError').textContent = '';
+  document.getElementById('profileSuccess').style.display = 'none';
+  userDropdown.classList.remove('show');
+}
+
+function closeProfileModal() {
+  document.getElementById('profileOverlay').style.display = 'none';
+}
+
+async function doChangePassword() {
+  const oldPw = document.getElementById('profileOldPw').value.trim();
+  const newPw = document.getElementById('profileNewPw').value.trim();
+  const confirmPw = document.getElementById('profileConfirmPw').value.trim();
+  const errorEl = document.getElementById('profileError');
+  const successEl = document.getElementById('profileSuccess');
+  errorEl.classList.remove('show');
+  errorEl.textContent = '';
+  successEl.style.display = 'none';
+  if (!oldPw || !newPw || !confirmPw) { errorEl.textContent = '请填写所有字段'; errorEl.classList.add('show'); return; }
+  if (newPw !== confirmPw) { errorEl.textContent = '两次密码不一致'; errorEl.classList.add('show'); return; }
+  if (newPw.length < 6) { errorEl.textContent = '新密码长度至少6位'; errorEl.classList.add('show'); return; }
+  try {
+    const r = await fetch('/api/user/change-password', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({old_password:oldPw, new_password:newPw}) });
+    const d = await r.json();
+    if (r.ok) {
+      successEl.style.display = 'block';
+      document.getElementById('profileOldPw').value = '';
+      document.getElementById('profileNewPw').value = '';
+      document.getElementById('profileConfirmPw').value = '';
+    } else {
+      errorEl.textContent = d.error || '修改失败';
+      errorEl.classList.add('show');
+    }
+  } catch(e) { errorEl.textContent = '网络错误'; errorEl.classList.add('show'); }
 }
 
 function renderDashboard(data) {
@@ -6757,6 +6889,13 @@ function renderDashboard(data) {
         </div>
       </div>
     </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">用户管理</div>
+      <div id="adminUserList" style="background:var(--bg-secondary,#2a2a3e);border-radius:8px;overflow:hidden">
+        <div style="padding:16px;text-align:center;color:var(--text-secondary)">加载中...</div>
+      </div>
+    </div>
   `;
 }
 
@@ -6767,23 +6906,56 @@ async function loadDashboard() {
     if (!res.ok) throw new Error((await res.json()).error || '请求失败');
     const data = await res.json();
     renderDashboard(data);
+    // 加载用户列表
+    loadAdminUsers();
   } catch(e) {
     adminDashboardContent.innerHTML = '<div style="text-align:center;padding:40px;color:var(--accent-red)">加载失败: ' + e.message + '</div>';
     if (e.message.includes('管理员未登录')) {
       hideAdminDashboard();
-      showLoginPage(true);
+      showLoginPage();
     }
   }
+}
+
+async function loadAdminUsers() {
+  try {
+    const r = await fetch('/api/admin/users');
+    if (!r.ok) return;
+    const d = await r.json();
+    const container = document.getElementById('adminUserList');
+    if (!d.users || d.users.length === 0) {
+      container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-secondary)">暂无用户</div>';
+      return;
+    }
+    const escape = (s) => { const el=document.createElement('div'); el.textContent=s; return el.innerHTML; };
+    container.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--bg-primary,#1e1e2e)"><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">ID</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">用户名</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">角色</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">注册时间</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">最后登录</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">操作</th></tr></thead><tbody>' +
+      d.users.map(u => '<tr style="border-bottom:1px solid var(--border-color,#333)"><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + u.id + '</td><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + escape(u.username) + '</td><td style="padding:10px 12px;font-size:13px"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:' + (u.role === 'admin' ? 'var(--accent,#6366f1)' : 'var(--bg-tertiary,#3a3a4e)') + ';color:#fff">' + (u.role === 'admin' ? '管理员' : '用户') + '</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.created_at ? new Date(u.created_at * 1000).toLocaleString('zh-CN') : '-') + '</td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.last_login ? new Date(u.last_login * 1000).toLocaleString('zh-CN') : '从未登录') + '</td><td style="padding:10px 12px">' +
+        (u.role !== 'admin' ? '<button onclick="deleteUser(' + u.id + ',\'' + escape(u.username) + '\')" style="padding:4px 10px;border:none;border-radius:4px;background:#ef4444;color:#fff;font-size:11px;cursor:pointer">删除</button>' : '<span style="font-size:11px;color:var(--text-tertiary)">-</span>') +
+      '</td></tr>').join('') +
+      '</tbody></table>';
+  } catch(e) {}
+}
+
+async function deleteUser(userId, username) {
+  if (!confirm('确定要删除用户 "' + username + '" 吗？\n此操作不可恢复，该用户的所有数据将被清除。')) return;
+  try {
+    const r = await fetch('/api/admin/users/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({user_id: userId}) });
+    const d = await r.json();
+    if (r.ok) {
+      toast('用户已删除');
+      loadAdminUsers();
+    } else {
+      toast(d.error || '删除失败');
+    }
+  } catch(e) { toast('网络错误'); }
 }
 
 // ===== 事件绑定 =====
 loginSubmitBtn.addEventListener('click', doUserLogin);
 loginPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
-adminLoginSubmitBtn.addEventListener('click', doAdminLogin);
-adminPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doAdminLogin(); });
-
-switchToAdmin.addEventListener('click', function(e) { e.preventDefault(); showLoginPage(true); });
-switchToUser.addEventListener('click', function(e) { e.preventDefault(); showLoginPage(false); });
+loginUsernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
+registerSubmitBtn.addEventListener('click', doRegister);
+registerConfirmInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doRegister(); });
 
 userMenuBtn.addEventListener('click', function(e) {
   e.stopPropagation();
@@ -6793,6 +6965,7 @@ document.addEventListener('click', function() {
   userDropdown.classList.remove('show');
 });
 
+document.getElementById('profileFromMenu').addEventListener('click', showProfileModal);
 openAdminFromMenu.addEventListener('click', function() {
   showAdminDashboard();
 });
@@ -7086,7 +7259,12 @@ function copyCode(btn) {
     }
     // 后台检查 auth 状态（不阻塞渲染）
     checkAuth().then(authed => {
-      if (authed && userMenuBtn) userMenuBtn.classList.remove('hidden');
+      if (authed && userMenuBtn) {
+        userMenuBtn.classList.remove('hidden');
+        if (state.currentUser && document.getElementById('userMenuName')) {
+          document.getElementById('userMenuName').textContent = state.currentUser.username;
+        }
+      }
       state.isAuthenticated = authed;
     }).catch(() => {});
     return;
@@ -7103,7 +7281,7 @@ function copyCode(btn) {
         <div style="color:var(--accent-red);font-size:16px;margin-bottom:12px">加载耗时较长</div>
         <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px">请尝试刷新页面或登录后访问</div>
         <button onclick="location.reload()" style="padding:10px 20px;background:var(--accent-blue);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-right:10px">刷新页面</button>
-        <button onclick="showLoginPage(false)" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
+        <button onclick="showLoginPage()" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
       </div>
     `;
   }, LOADING_TIMEOUT);
@@ -7123,17 +7301,62 @@ function copyCode(btn) {
 
     if (authed) {
       if (userMenuBtn) userMenuBtn.classList.remove('hidden');
+      if (state.currentUser && document.getElementById('userMenuName')) {
+        document.getElementById('userMenuName').textContent = state.currentUser.username;
+      }
       init();
     } else {
-      showLoginPage(false);
+      showLoginPage();
     }
   } catch(e) {
     clearTimeout(timeoutTimer);
     console.error('启动失败:', e);
-    showLoginPage(false);
+    showLoginPage();
   }
 })();
 </script>
+<!-- 个人资料弹窗 -->
+<div class="profile-overlay" id="profileOverlay" onclick="if(event.target===this) closeProfileModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100000;align-items:center;justify-content:center">
+  <div class="profile-modal" style="background:var(--bg-primary,#1e1e2e);border-radius:12px;padding:28px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="margin:0;font-size:18px;color:var(--text-primary)">个人资料</h3>
+      <button onclick="closeProfileModal()" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:20px">&times;</button>
+    </div>
+    <div id="profileContent">
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">用户名</label>
+        <div id="profileUsername" style="font-size:15px;color:var(--text-primary);font-weight:500"></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">角色</label>
+        <div id="profileRole" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">注册时间</label>
+        <div id="profileCreatedAt" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">最后登录</label>
+        <div id="profileLastLogin" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="border-top:1px solid var(--border-color,#333);padding-top:16px">
+        <h4 style="margin:0 0 12px;font-size:14px;color:var(--text-primary)">修改密码</h4>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileOldPw" placeholder="旧密码" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileNewPw" placeholder="新密码（至少6位）" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileConfirmPw" placeholder="确认新密码" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <button onclick="doChangePassword()" style="width:100%;padding:10px;border:none;border-radius:8px;background:var(--accent,#6366f1);color:#fff;font-size:14px;cursor:pointer">修改密码</button>
+        <div class="auth-error" id="profileError" style="margin-top:8px"></div>
+        <div style="color:var(--success,#22c55e);font-size:13px;margin-top:8px;display:none" id="profileSuccess">密码修改成功</div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 <!-- force-refresh: 1785070272 -->
