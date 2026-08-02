@@ -95,6 +95,23 @@ def main():
         print('  跳过: changelog.json 不存在')
 
     print()
+    print('步骤 2.6: 复制 project-list.json...')
+    gen_src = CODE_EXPLORER_DIR / 'code-explorer' / 'public'
+    project_list_src = gen_src / 'project-list.json'
+    if project_list_src.exists():
+        copy_file(project_list_src, PUBLIC_DIR / 'project-list.json')
+    else:
+        print('  跳过: project-list.json 不存在')
+
+    print()
+    print('步骤 2.7: 复制 project-trees 目录...')
+    project_trees_src = gen_src / 'project-trees'
+    if project_trees_src.exists():
+        copy_dir(project_trees_src, PUBLIC_DIR / 'project-trees')
+    else:
+        print('  跳过: project-trees 目录不存在')
+
+    print()
     print('步骤 3: 复制 web-games 目录...')
     if WEB_GAMES_DIR.exists():
         copy_dir(WEB_GAMES_DIR, PUBLIC_DIR / 'web-games')
@@ -109,8 +126,10 @@ def main():
         print('  跳过: fathers-day 目录不存在')
 
     print()
-    print('步骤 5: 清理大文件（超过 5MB 的 JSON 文件，Worker 不支持）...')
-    for f in PUBLIC_DIR.rglob('*.json'):
+    print('步骤 5: 清理大文件（超过 5MB 的文件，Worker 不支持）...')
+    for f in PUBLIC_DIR.rglob('*'):
+        if not f.is_file():
+            continue
         size = f.stat().st_size
         if size > 5 * 1024 * 1024:
             f.unlink()
