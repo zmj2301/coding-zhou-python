@@ -626,5 +626,17 @@
       "在 web-games/images/ 目录中创建缺失的封面图（从 images/covers/ 复制并重命名）",
       "同步更新 index.html、project-list.json、changelog.json 到 ECS 服务器"
     ]
+  },
+  {
+    "version": "2.2.3",
+    "date": "2026-08-02",
+    "title": "修复非管理员用户能看到管理员后台按钮的 bug",
+    "changes": [
+      "Worker /api/auth-check 端点现在返回 user 对象（含 role 字段），前端可正确判断管理员身份",
+      "Worker /api/login 端点返回 user 信息（含 role），登录后前端自动根据角色显示/隐藏管理员入口",
+      "Worker /api/admin/login 端点返回 user 信息（含 admin role）",
+      "index.html openAdminFromMenu 按钮默认 display:none，仅管理员登录后显示",
+      "根因：Cloudflare Worker 的 auth-check/login 不返回 user 对象，导致前端 state.currentUser 为 undefined，role 检查失效，按钮默认可见"
+    ]
   }
 ]

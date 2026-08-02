@@ -2,7 +2,7 @@ from http.server import SimpleHTTPRequestHandler
 from socketserver import TCPServer
 import webbrowser
 
-POST = 8800
+POST = 8880
 
 handler = SimpleHTTPRequestHandler
 with TCPServer(("", POST),handler) as httpd:

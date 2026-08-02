@@ -4,11 +4,17 @@
 构建脚本：生成文件树、复制静态文件到 public 目录
 """
 
+import io
 import os
 import shutil
 import json
 import sys
 from pathlib import Path
+
+# 修复 Windows 控制台 GBK 编码问题
+if sys.platform == 'win32':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 PUBLIC_DIR = Path(__file__).resolve().parent / 'public'
@@ -17,10 +23,17 @@ WEB_GAMES_DIR = CODE_EXPLORER_DIR / 'web-games'
 FATHERS_DAY_DIR = CODE_EXPLORER_DIR / 'fathers-day'
 
 
+def safe_print(msg: str):
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        print(msg.encode('utf-8', errors='replace').decode('utf-8'))
+
+
 def copy_file(src: Path, dst: Path):
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
-    print(f'  复制: {src.relative_to(BASE_DIR)} -> {dst.relative_to(BASE_DIR)}')
+    safe_print(f'  复制: {src.name} -> {dst.parent.name}/{dst.name}')
 
 
 def copy_dir(src: Path, dst: Path, exclude_dirs=None, exclude_exts=None):

@@ -90,12 +90,12 @@ class AIAssistant:
         return self.chat(prompt, model="deepseek/deepseek-3.2")
 
     def qwen_chat(self, prompt):
-        return self.chat(prompt, model="qwen/qwen3-coder-480b-a35b-instruct")
+        return self.chat(prompt, model="stepfun-ai/step-3.5-flash")
 
     def chat_fast(self, prompt):
         return self.chat(prompt, model="stepfun-ai/step-3.5-flash", temperature=1, top_p=0.9, max_tokens=16384)
 
-    def chat_stream(self, prompt, model="qwen/qwen3-coder-480b-a35b-instruct", temperature=1, top_p=0.9, max_tokens=16384):
+    def chat_stream(self, prompt, model="stepfun-ai/step-3.5-flash", temperature=1, top_p=0.9, max_tokens=16384):
         for attempt in range(self.max_retries):
             try:
                 print(f"尝试连接AI服务器... ({attempt + 1}/{self.max_retries})")
@@ -128,10 +128,11 @@ class Game:
         self.BROWN = (165, 105, 0)
         pygame.display.set_caption("中国棋")
         
-        self.checkerboard = pygame.image.load(os.path.join('img', '棋盘.png'))
-        self.checkerboard = pygame.transform.scale(self.checkerboard,(self.checkerboard.get_width()*1.02-25, self.checkerboard.get_height()*1.02+20))
+        img_dir = os.path.join(os.path.dirname(__file__), 'img')
+        self.board_img_orig = pygame.image.load(os.path.join(img_dir, '棋盘.png'))
+        self.checkerboard = pygame.transform.scale(self.board_img_orig,(510, 633))
         self.image_names = ['红_仕.png', '红_兵.png', '红_帥.png', '红_炮.png', '红_相.png', '红_車.png', '红_馬.png', '黑_卒.png', '黑_士.png', '黑_将.png', '黑_炮.png', '黑_象.png', '黑_車.png', '黑_馬.png']
-        self.images = [pygame.transform.scale(pygame.image.load(os.path.join('img', name)), (50, 50)) for name in self.image_names]
+        self.images = [pygame.transform.scale(pygame.image.load(os.path.join(img_dir, name)), (50, 50)) for name in self.image_names]
         
         self.font_32 = pygame.font.Font(os.path.join(os.path.dirname(__file__), 'font.ttf'), 32)
         self.font_24 = pygame.font.Font(os.path.join(os.path.dirname(__file__), 'font.ttf'), 24)
@@ -144,6 +145,11 @@ class Game:
         self.cell_height = 60
         self.board_offset_x = 30
         self.board_offset_y = 30
+        self.board_debug_step = 5
+        # 背景图独立的偏移与缩放（仅影响背景绘制，不影响棋子位置/点击）
+        self.bg_offset_x = 22
+        self.bg_offset_y = 13
+        self.bg_scale_w, self.bg_scale_h = self.checkerboard.get_size()
         
         self.init_pieces()
         
@@ -562,7 +568,7 @@ class Game:
 
     def gui(self):
         self.screen.fill(self.BROWN)
-        self.screen.blit(self.checkerboard, (self.board_offset_x+20, self.board_offset_y+27))
+        self.screen.blit(self.checkerboard, (self.bg_offset_x, self.bg_offset_y))
         self.draw_chessman()
         self.draw_valid_moves()
         
@@ -578,7 +584,15 @@ class Game:
         
         player_text = self.font_24.render(f"当前玩家：{'红方' if self.current_player == 'red' else '黑方'}", True, text_color)
         self.screen.blit(player_text, (10, 10))
-        
+
+        # 背景调试信息（仅背景图，不影响棋子）
+        dbg = self.font_20.render(
+            f"背景 offset=({self.bg_offset_x},{self.bg_offset_y}) "
+            f"scale=({self.bg_scale_w},{self.bg_scale_h}) "
+            f"step={getattr(self, 'board_debug_step', 5)}",
+            True, (255, 255, 0))
+        self.screen.blit(dbg, (10, 640))
+
         self.draw_ai_panel()
 
     def ai_think_thread(self, prompt, result_queue):
@@ -776,6 +790,45 @@ class Game:
                             else:
                                 self.selected_piece = None
                                 self.valid_moves = []
+                
+                elif event.type == pygame.KEYDOWN:
+                    # 仅调整背景图的位置/尺寸，不影响棋子坐标与点击检测
+                    step = getattr(self, 'board_debug_step', 5)
+                    if event.key == pygame.K_LEFTBRACKET:
+                        self.board_debug_step = max(1, step - 1)
+                    elif event.key == pygame.K_RIGHTBRACKET:
+                        self.board_debug_step = step + 1
+                    elif event.key in (pygame.K_LEFT,):
+                        self.bg_offset_x -= step
+                    elif event.key in (pygame.K_RIGHT,):
+                        self.bg_offset_x += step
+                    elif event.key in (pygame.K_UP,):
+                        self.bg_offset_y -= step
+                    elif event.key in (pygame.K_DOWN,):
+                        self.bg_offset_y += step
+                    elif event.key in (pygame.K_MINUS, pygame.K_0):
+                        self.bg_scale_w = max(50, self.bg_scale_w - step)
+                        self.bg_scale_h = int(round(self.board_img_orig.get_height() * (self.bg_scale_w / self.board_img_orig.get_width())))
+                        self.checkerboard = pygame.transform.scale(self.board_img_orig, (self.bg_scale_w, self.bg_scale_h))
+                    elif event.key in (pygame.K_EQUALS, pygame.K_9):
+                        self.bg_scale_w += step
+                        self.bg_scale_h = int(round(self.board_img_orig.get_height() * (self.bg_scale_w / self.board_img_orig.get_width())))
+                        self.checkerboard = pygame.transform.scale(self.board_img_orig, (self.bg_scale_w, self.bg_scale_h))
+                    elif event.key == pygame.K_COMMA:
+                        self.bg_scale_h = max(50, self.bg_scale_h - step)
+                        self.checkerboard = pygame.transform.scale(self.board_img_orig, (self.bg_scale_w, self.bg_scale_h))
+                    elif event.key == pygame.K_PERIOD:
+                        self.bg_scale_h += step
+                        self.checkerboard = pygame.transform.scale(self.board_img_orig, (self.bg_scale_w, self.bg_scale_h))
+                    elif event.key == pygame.K_r:
+                        self.bg_offset_x = self.board_offset_x + 20
+                        self.bg_offset_y = self.board_offset_y - 10
+                        self.bg_scale_w = int(self.board_img_orig.get_width() * 1.02)
+                        self.bg_scale_h = int(self.board_img_orig.get_height() * 1 + 33)
+                        self.checkerboard = pygame.transform.scale(self.board_img_orig, (self.bg_scale_w, self.bg_scale_h))
+                    elif event.key == pygame.K_s:
+                        print(f"[背景调试] offset=({self.bg_offset_x},{self.bg_offset_y}) "
+                              f"scale=({self.bg_scale_w},{self.bg_scale_h})")
             
             if ai_queue is not None:
                 try:

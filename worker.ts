@@ -423,7 +423,21 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- 认证相关（公开） ----
   if (path === '/api/auth-check') {
     const authenticated = await checkAuth(request, env);
-    return jsonResponse({ authenticated, passwordSet: Boolean(env.USER_PASSWORD) });
+    let user = null;
+    if (authenticated) {
+      const token = getTokenFromRequest(request);
+      if (token) {
+        const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+        if (payload) {
+          user = {
+            id: 1,
+            username: payload.sub || 'user',
+            role: payload.is_admin ? 'admin' : 'user'
+          };
+        }
+      }
+    }
+    return jsonResponse({ authenticated, passwordSet: Boolean(env.USER_PASSWORD), user });
   }
 
   if (path === '/api/login' && request.method === 'POST') {
@@ -433,11 +447,14 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!env.USER_PASSWORD) return errorResponse('服务器未设置密码', 500);
       if (password !== env.USER_PASSWORD) return errorResponse('密码错误', 401);
       const token = await signJwt(
-        { sub: 'user', is_admin: false },
+        { sub: data.username || 'user', is_admin: false },
         env.JWT_SECRET || 'default-secret-change-me',
         604800
       );
-      const resp = jsonResponse({ token });
+      const resp = jsonResponse({
+        token,
+        user: { id: 1, username: data.username || 'user', role: 'user' }
+      });
       return setCookie(resp, 'wg_token', token, 604800);
     } catch {
       return errorResponse('无效的请求', 400);
@@ -460,7 +477,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         env.JWT_SECRET || 'default-secret-change-me',
         604800
       );
-      const resp = jsonResponse({ token });
+      const resp = jsonResponse({
+        token,
+        user: { id: 0, username: 'admin', role: 'admin' }
+      });
       return setCookie(resp, 'wg_token', token, 604800);
     } catch {
       return errorResponse('无效的请求', 400);

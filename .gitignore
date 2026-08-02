@@ -58,6 +58,7 @@ code-explorer/ecs-env.sh
 *.webp
 *.bmp
 !code-explorer/public/images/covers/*.jpg
+!Python AI象棋对战 - 副本/img/*.png
 
 # 视频文件
 *.mp4
