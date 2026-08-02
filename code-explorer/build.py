@@ -107,6 +107,14 @@ def main():
         print(f'  跳过: index.html 不存在 ({INDEX_HTML_SRC})')
 
     print()
+    print('步骤 2.1: 复制控制台 console.html...')
+    console_src = PROJECT_ROOT / 'console.html'
+    if console_src.exists():
+        copy_file(console_src, PUBLIC_DIR / 'console.html')
+    else:
+        print('  跳过: console.html 不存在')
+
+    print()
     print('步骤 2.5: 确保 changelog.json 存在...')
     changelog_src = PROJECT_ROOT / 'changelog.json'
     changelog_dst = PUBLIC_DIR / 'changelog.json'

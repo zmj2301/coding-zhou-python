@@ -22,7 +22,6 @@ functions
 portfolio
 python 3D射击
 python AI实战
-python ai生成图片
 python 天气可视化
 python 成语接龙
 python 我的世界

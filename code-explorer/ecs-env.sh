@@ -13,8 +13,8 @@ ZHIPU_API_KEY=
 # OpenRouter API Key（留空则禁用 OpenRouter 模型）
 OPENROUTER_API_KEY=
 
-# Agnes AI API Key（留空则禁用图像生成功能）
-AGNES_AI_API_KEY=sk-F4k5qlPq7FC6a4Ad4T2kBtbUKe7x8yC9xlsyeI20XD1qW0wS
+# Agnes AI API Key（已移除，不再使用）
+# AGNES_AI_API_KEY=sk-F4k5qlPq7FC6a4Ad4T2kBtbUKe7x8yC9xlsyeI20XD1qW0wS
 
 # JWT 密钥（建议修改）
 JWT_SECRET=default-secret-change-me

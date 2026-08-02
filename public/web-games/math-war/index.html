@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>口算战争 - Math War</title>
+<link rel="stylesheet" href="../shared/style.css">
+</head>
+<body>
+
+<div class="game-header">
+  <h1>🔢 口算战争</h1>
+  <p class="subtitle">答对题目射击敌人 · 答错扣生命 · 提升心算能力</p>
+</div>
+
+<div class="game-container" id="gameContainer">
+  <div class="game-stats">
+    <div class="stat-item"><span class="label">得分</span><span class="value" id="score">0</span></div>
+    <div class="stat-item"><span class="label">连击</span><span class="value yellow" id="combo">0</span></div>
+    <div class="stat-item"><span class="label">生命</span><span class="value red" id="lives">❤❤❤</span></div>
+    <div class="stat-item"><span class="label">难度</span><span class="value purple" id="level">初级</span></div>
+  </div>
+
+  <canvas id="game" width="720" height="420"></canvas>
+
+  <div style="display: flex; gap: 12px; align-items: center; justify-content: center; margin: 16px 0;">
+    <div id="question" style="font-size: 28px; font-weight: bold; color: #f0f6fc; font-family: 'Courier New', monospace;">准备开始</div>
+  </div>
+
+  <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+    <input type="number" id="answer" class="input-box" style="width: 140px; text-align: center; font-size: 20px; font-weight: bold;" placeholder="答案">
+    <button class="btn" id="submitBtn">提交 (Enter)</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn secondary" id="startBtn">开始游戏</button>
+    <button class="btn secondary" id="easyBtn">初级</button>
+    <button class="btn secondary" id="midBtn">中级</button>
+    <button class="btn secondary" id="hardBtn">高级</button>
+    <button class="btn secondary" onclick="location.href='../index.html'">返回</button>
+  </div>
+  <div class="game-info">
+    输入答案后按 <kbd>Enter</kbd> 提交 · 连续答对获得连击加分 · 答错或超时会让敌人攻击你
+  </div>
+
+  <div class="game-overlay" id="overlay">
+    <div class="overlay-content">
+      <div class="overlay-title" id="overlayTitle">游戏结束</div>
+      <div class="overlay-text" id="overlayText">再接再厉！</div>
+      <div class="overlay-stats">
+        <div class="stat"><span class="num" id="finalScore">0</span><span class="lbl">得分</span></div>
+        <div class="stat"><span class="num" id="finalCorrect">0</span><span class="lbl">答对</span></div>
+        <div class="stat"><span class="num" id="finalCombo">0</span><span class="lbl">最高连击</span></div>
+      </div>
+      <button class="btn" id="restartBtn">重新开始</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+const DIFFICULTY = {
+  easy:   { name: '初级', max: 20, ops: ['+', '-'], time: 12 },
+  mid:    { name: '中级', max: 50, ops: ['+', '-', '×'], time: 10 },
+  hard:   { name: '高级', max: 99, ops: ['+', '-', '×', '÷'], time: 8 },
+};
+
+let level = 'easy';
+let score = 0, combo = 0, maxCombo = 0, lives = 3, correct = 0;
+let playing = false;
+let question = null;
+let timeLeft = 0;
+let enemies = [];
+let bullets = [];
+let particles = [];
+let spawnTimer = 2;
+let animTime = 0;
+
+const playerX = 80;
+const playerY = canvas.height / 2;
+
+function genQuestion() {
+  const d = DIFFICULTY[level];
+  const op = d.ops[Math.floor(Math.random() * d.ops.length)];
+  let a, b, ans;
+  if (op === '+') {
+    a = Math.floor(Math.random() * d.max) + 1;
+    b = Math.floor(Math.random() * d.max) + 1;
+    ans = a + b;
+  } else if (op === '-') {
+    a = Math.floor(Math.random() * d.max) + 1;
+    b = Math.floor(Math.random() * a) + 1;
+    ans = a - b;
+  } else if (op === '×') {
+    a = Math.floor(Math.random() * 12) + 1;
+    b = Math.floor(Math.random() * 12) + 1;
+    ans = a * b;
+  } else {
+    b = Math.floor(Math.random() * 11) + 2;
+    ans = Math.floor(Math.random() * 11) + 1;
+    a = b * ans;
+  }
+  return { a, b, op, ans, text: `${a} ${op} ${b} = ?` };
+}
+
+function setLevel(l) {
+  level = l;
+  document.getElementById('level').textContent = DIFFICULTY[l].name;
+}
+document.getElementById('easyBtn').onclick = () => setLevel('easy');
+document.getElementById('midBtn').onclick = () => setLevel('mid');
+document.getElementById('hardBtn').onclick = () => setLevel('hard');
+
+function startGame() {
+  score = 0; combo = 0; maxCombo = 0; lives = 3; correct = 0;
+  playing = true; enemies = []; bullets = []; particles = [];
+  spawnTimer = 2;
+  nextQuestion();
+  updateUI();
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('answer').focus();
+}
+document.getElementById('startBtn').onclick = startGame;
+document.getElementById('restartBtn').onclick = startGame;
+
+function nextQuestion() {
+  question = genQuestion();
+  timeLeft = DIFFICULTY[level].time;
+  document.getElementById('question').textContent = question.text;
+  document.getElementById('answer').value = '';
+  document.getElementById('answer').focus();
+}
+
+function updateUI() {
+  document.getElementById('score').textContent = score;
+  document.getElementById('combo').textContent = combo + 'x';
+  document.getElementById('lives').textContent = '❤'.repeat(lives) || '💀';
+  document.getElementById('level').textContent = DIFFICULTY[level].name;
+}
+
+function submitAnswer() {
+  if (!playing || !question) return;
+  const input = document.getElementById('answer');
+  const val = parseInt(input.value);
+  if (isNaN(val)) return;
+  if (val === question.ans) {
+    correct++;
+    combo++;
+    maxCombo = Math.max(maxCombo, combo);
+    const gain = 10 + combo * 2;
+    score += gain;
+    // Shoot nearest enemy
+    if (enemies.length > 0) {
+      enemies.sort((a, b) => a.x - b.x);
+      const target = enemies[0];
+      bullets.push({ x: playerX + 30, y: playerY, tx: target.x, ty: target.y, kill: target });
+      GameUtils.playShoot();
+    } else {
+      GameUtils.playPickup();
+    }
+    particles.push({ x: canvas.width / 2, y: 60, text: `+${gain}`, life: 1, color: '#3fb950' });
+    nextQuestion();
+  } else {
+    combo = 0;
+    lives--;
+    // Enemy attacks
+    if (enemies.length > 0) {
+      const e = enemies[0];
+      bullets.push({ x: e.x, y: e.y, tx: playerX, ty: playerY, toPlayer: true });
+    }
+    particles.push({ x: canvas.width / 2, y: 60, text: `✗ 正确答案:${question.ans}`, life: 1.5, color: '#f85149' });
+    GameUtils.playLose();
+    if (lives <= 0) {
+      gameOver();
+    } else {
+      nextQuestion();
+    }
+  }
+  updateUI();
+}
+
+document.getElementById('submitBtn').onclick = submitAnswer;
+document.getElementById('answer').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') submitAnswer();
+});
+
+function gameOver() {
+  playing = false;
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalCorrect').textContent = correct;
+  document.getElementById('finalCombo').textContent = maxCombo;
+  document.getElementById('overlay').classList.add('active');
+}
+
+function spawnEnemy() {
+  const y = 80 + Math.random() * (canvas.height - 160);
+  enemies.push({
+    x: canvas.width + 40,
+    y,
+    speed: 30 + Math.random() * 30,
+    size: 28,
+    hp: 1,
+    kind: Math.floor(Math.random() * 3),
+  });
+}
+
+function render() {
+  animTime += 0.05;
+  ctx.fillStyle = '#0a1628';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Stars
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  for (let i = 0; i < 40; i++) {
+    const x = (i * 137 + animTime * 20) % canvas.width;
+    const y = (i * 73) % canvas.height;
+    ctx.fillRect(x, y, 2, 2);
+  }
+
+  // Ground line
+  ctx.strokeStyle = 'rgba(88,166,255,0.2)';
+  ctx.beginPath();
+  ctx.moveTo(0, playerY + 30);
+  ctx.lineTo(canvas.width, playerY + 30);
+  ctx.stroke();
+
+  // Player - a turret
+  ctx.fillStyle = '#58a6ff';
+  ctx.fillRect(playerX - 15, playerY - 10, 30, 20);
+  ctx.fillStyle = '#1f6feb';
+  ctx.fillRect(playerX - 20, playerY + 8, 40, 15);
+  ctx.fillStyle = '#f85149';
+  ctx.fillRect(playerX + 15, playerY - 4, 25, 8);
+
+  // Enemies
+  for (const e of enemies) {
+    ctx.save();
+    ctx.translate(e.x, e.y);
+    // Body
+    if (e.kind === 0) {
+      ctx.fillStyle = '#c0392b';
+      ctx.beginPath();
+      ctx.arc(0, 0, e.size / 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#000';
+      ctx.fillRect(-6, -4, 4, 4);
+      ctx.fillRect(2, -4, 4, 4);
+    } else if (e.kind === 1) {
+      ctx.fillStyle = '#8e44ad';
+      ctx.fillRect(-e.size / 2, -e.size / 2, e.size, e.size);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(-8, -6, 4, 6);
+      ctx.fillRect(4, -6, 4, 6);
+    } else {
+      ctx.fillStyle = '#e67e22';
+      ctx.beginPath();
+      ctx.moveTo(0, -e.size / 2);
+      ctx.lineTo(e.size / 2, e.size / 2);
+      ctx.lineTo(-e.size / 2, e.size / 2);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Bullets
+  for (const b of bullets) {
+    if (b.toPlayer) {
+      ctx.fillStyle = '#f85149';
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillStyle = '#ffcc00';
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Particles (floating text)
+  for (const p of particles) {
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.text, p.x, p.y - (1 - p.life) * 30);
+    ctx.globalAlpha = 1;
+  }
+
+  // Timer bar
+  if (playing && question) {
+    const totalT = DIFFICULTY[level].time;
+    const pct = timeLeft / totalT;
+    ctx.fillStyle = '#21262d';
+    ctx.fillRect(50, 20, canvas.width - 100, 10);
+    ctx.fillStyle = pct > 0.4 ? '#3fb950' : (pct > 0.2 ? '#d29922' : '#f85149');
+    ctx.fillRect(50, 20, (canvas.width - 100) * pct, 10);
+  }
+
+  requestAnimationFrame(render);
+}
+
+function update(dt) {
+  if (!playing) return;
+
+  // Time for question
+  timeLeft -= dt;
+  if (timeLeft <= 0) {
+    combo = 0;
+    lives--;
+    particles.push({ x: canvas.width / 2, y: 60, text: `⏱ 超时！答案:${question.ans}`, life: 1.5, color: '#f85149' });
+    GameUtils.playLose();
+    if (lives <= 0) { gameOver(); return; }
+    nextQuestion();
+    updateUI();
+  }
+
+  // Spawn enemies
+  spawnTimer -= dt;
+  if (spawnTimer <= 0) {
+    spawnEnemy();
+    spawnTimer = 2.5 + Math.random() * 2;
+  }
+
+  // Move enemies
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    const e = enemies[i];
+    e.x -= e.speed * dt;
+    if (e.x < playerX + 50) {
+      // Enemy reaches player
+      enemies.splice(i, 1);
+      lives--;
+      combo = 0;
+      particles.push({ x: playerX + 30, y: playerY - 30, text: '-1❤', life: 1, color: '#f85149' });
+      GameUtils.playLose();
+      if (lives <= 0) { gameOver(); return; }
+      updateUI();
+    }
+  }
+
+  // Move bullets
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    const b = bullets[i];
+    const dx = b.tx - b.x, dy = b.ty - b.y;
+    const d = Math.hypot(dx, dy);
+    if (d < 10) {
+      // Hit
+      if (b.kill && enemies.includes(b.kill)) {
+        const idx = enemies.indexOf(b.kill);
+        enemies.splice(idx, 1);
+        score += 5;
+        particles.push({ x: b.kill.x, y: b.kill.y, text: '+5', life: 0.8, color: '#ffcc00' });
+      }
+      bullets.splice(i, 1);
+    } else {
+      const speed = 600 * dt;
+      b.x += (dx / d) * speed;
+      b.y += (dy / d) * speed;
+    }
+  }
+
+  // Particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    particles[i].life -= dt * 1.2;
+    if (particles[i].life <= 0) particles.splice(i, 1);
+  }
+
+  updateUI();
+}
+
+let lastT = performance.now();
+function loop() {
+  const now = performance.now();
+  const dt = Math.min(0.05, (now - lastT) / 1000);
+  lastT = now;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+
+// Provide GameUtils.playShoot etc. if shared JS not loaded
+if (typeof GameUtils === 'undefined') {
+  window.GameUtils = {
+    playShoot: () => {},
+    playHit: () => {},
+    playPickup: () => {},
+    playLose: () => {},
+    playWin: () => {},
+  };
+}
+
+setLevel('easy');
+loop();
+</script>
+</body>
+</html>

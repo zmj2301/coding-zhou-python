@@ -4,7 +4,7 @@
     "type": "directory",
     "path": "codinghou",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382122776,
+    "lastModified": 1785552362454,
     "children": [
       {
         "name": "AI扑克牌",
@@ -52,6 +52,13 @@
             "path": "codinghou/AI扑克牌/independent_test.py",
             "ext": ".py",
             "lastModified": 1781010957729
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "codinghou/AI扑克牌/README.md",
+            "ext": ".md",
+            "lastModified": 1785552349160
           },
           {
             "name": "run_test.py",
@@ -213,6 +220,13 @@
             "path": "codinghou/python 五子棋/five_in_a_row.py",
             "ext": ".py",
             "lastModified": 1773559010367
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "codinghou/python 五子棋/README.md",
+            "ext": ".md",
+            "lastModified": 1785552360101
           }
         ]
       },
@@ -227,6 +241,13 @@
             "path": "codinghou/学习资料/create_pdf.py",
             "ext": ".py",
             "lastModified": 1769818126252
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "codinghou/学习资料/README.md",
+            "ext": ".md",
+            "lastModified": 1785552334429
           },
           {
             "name": "【人教版】七年级上册(2024秋版)地理电子课本.pdf",
@@ -425,6 +446,13 @@
             "lastModified": 1766152494504
           },
           {
+            "name": "README.md",
+            "type": "file",
+            "path": "codinghou/我的世界/README.md",
+            "ext": ".md",
+            "lastModified": 1785552332139
+          },
+          {
             "name": "test_texture.py",
             "type": "file",
             "path": "codinghou/我的世界/test_texture.py",
@@ -438,6 +466,13 @@
         "type": "directory",
         "path": "codinghou/点亮家乡",
         "children": [
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "codinghou/点亮家乡/README.md",
+            "ext": ".md",
+            "lastModified": 1785552329762
+          },
           {
             "name": "show.py",
             "type": "file",
@@ -549,6 +584,13 @@
             "path": "codinghou/羊了个羊/main.py",
             "ext": ".py",
             "lastModified": 1767271637573
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "codinghou/羊了个羊/README.md",
+            "ext": ".md",
+            "lastModified": 1785552342980
           }
         ]
       },
@@ -558,6 +600,13 @@
         "path": "codinghou/codinghou_password.txt",
         "ext": ".txt",
         "lastModified": 1763721267946
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "codinghou/README.md",
+        "ext": ".md",
+        "lastModified": 1785552362455
       }
     ]
   },
@@ -26951,7 +27000,7 @@
     "type": "directory",
     "path": "fathers-day",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1781879401871,
+    "lastModified": 1785552447329,
     "children": [
       {
         "name": "index.html",
@@ -26959,6 +27008,13 @@
         "path": "fathers-day/index.html",
         "ext": ".html",
         "lastModified": 1781960027418
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "fathers-day/README.md",
+        "ext": ".md",
+        "lastModified": 1785552447329
       }
     ]
   },
@@ -27167,7 +27223,7 @@
     "type": "directory",
     "path": "portfolio",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1781953762194,
+    "lastModified": 1785552449812,
     "children": [
       {
         "name": "index.html",
@@ -27175,6 +27231,13 @@
         "path": "portfolio/index.html",
         "ext": ".html",
         "lastModified": 1781954000140
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "portfolio/README.md",
+        "ext": ".md",
+        "lastModified": 1785552449812
       }
     ]
   },
@@ -27183,7 +27246,7 @@
     "type": "directory",
     "path": "python 3D射击",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382123438,
+    "lastModified": 1785552070048,
     "children": [
       {
         "name": "release",
@@ -27235,6 +27298,13 @@
         "lastModified": 1774153167501
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "python 3D射击/README.md",
+        "ext": ".md",
+        "lastModified": 1785552070049
+      },
+      {
         "name": "requirements.txt",
         "type": "file",
         "path": "python 3D射击/requirements.txt",
@@ -27269,7 +27339,7 @@
     "type": "directory",
     "path": "python AI实战",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382123662,
+    "lastModified": 1785552161208,
     "children": [
       {
         "name": "back-end",
@@ -27531,6 +27601,13 @@
         "lastModified": 1777510669582
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "python AI实战/README.md",
+        "ext": ".md",
+        "lastModified": 1785552161209
+      },
+      {
         "name": "SKILL.md",
         "type": "file",
         "path": "python AI实战/SKILL.md",
@@ -27781,141 +27858,6 @@
         "path": "python AI实战/设计灵感说明.md",
         "ext": ".md",
         "lastModified": 1777031520849
-      }
-    ]
-  },
-  {
-    "name": "python ai生成图片",
-    "type": "directory",
-    "path": "python ai生成图片",
-    "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382123662,
-    "children": [
-      {
-        "name": "dxdiag.txt",
-        "type": "file",
-        "path": "python ai生成图片/dxdiag.txt",
-        "ext": ".txt",
-        "lastModified": 1781656012033
-      },
-      {
-        "name": "error_log.txt",
-        "type": "file",
-        "path": "python ai生成图片/error_log.txt",
-        "ext": ".txt",
-        "lastModified": 1781657368852
-      },
-      {
-        "name": "final_log.txt",
-        "type": "file",
-        "path": "python ai生成图片/final_log.txt",
-        "ext": ".txt",
-        "lastModified": 1781657344703
-      },
-      {
-        "name": "import_log.txt",
-        "type": "file",
-        "path": "python ai生成图片/import_log.txt",
-        "ext": ".txt",
-        "lastModified": 1781657122166
-      },
-      {
-        "name": "main.py",
-        "type": "file",
-        "path": "python ai生成图片/main.py",
-        "ext": ".py",
-        "lastModified": 1781657420635
-      },
-      {
-        "name": "main_light.py",
-        "type": "file",
-        "path": "python ai生成图片/main_light.py",
-        "ext": ".py",
-        "lastModified": 1781657637185
-      },
-      {
-        "name": "out.txt",
-        "type": "file",
-        "path": "python ai生成图片/out.txt",
-        "ext": ".txt",
-        "lastModified": 1781411429599
-      },
-      {
-        "name": "output_log.txt",
-        "type": "file",
-        "path": "python ai生成图片/output_log.txt",
-        "ext": ".txt",
-        "lastModified": 1781656817924
-      },
-      {
-        "name": "pipeline_log.txt",
-        "type": "file",
-        "path": "python ai生成图片/pipeline_log.txt",
-        "ext": ".txt",
-        "lastModified": 1781657307188
-      },
-      {
-        "name": "simple_log.txt",
-        "type": "file",
-        "path": "python ai生成图片/simple_log.txt",
-        "ext": ".txt",
-        "lastModified": 1781657176399
-      },
-      {
-        "name": "test_cpu.py",
-        "type": "file",
-        "path": "python ai生成图片/test_cpu.py",
-        "ext": ".py",
-        "lastModified": 1781657637208
-      },
-      {
-        "name": "test_error.py",
-        "type": "file",
-        "path": "python ai生成图片/test_error.py",
-        "ext": ".py",
-        "lastModified": 1781657637252
-      },
-      {
-        "name": "test_final.py",
-        "type": "file",
-        "path": "python ai生成图片/test_final.py",
-        "ext": ".py",
-        "lastModified": 1781657637348
-      },
-      {
-        "name": "test_import.py",
-        "type": "file",
-        "path": "python ai生成图片/test_import.py",
-        "ext": ".py",
-        "lastModified": 1781657637417
-      },
-      {
-        "name": "test_imports.py",
-        "type": "file",
-        "path": "python ai生成图片/test_imports.py",
-        "ext": ".py",
-        "lastModified": 1781410871678
-      },
-      {
-        "name": "test_pipeline.py",
-        "type": "file",
-        "path": "python ai生成图片/test_pipeline.py",
-        "ext": ".py",
-        "lastModified": 1781657638382
-      },
-      {
-        "name": "test_simple.py",
-        "type": "file",
-        "path": "python ai生成图片/test_simple.py",
-        "ext": ".py",
-        "lastModified": 1781657639138
-      },
-      {
-        "name": "test_tf.py",
-        "type": "file",
-        "path": "python ai生成图片/test_tf.py",
-        "ext": ".py",
-        "lastModified": 1781655699219
       }
     ]
   },
@@ -28467,7 +28409,7 @@
     "type": "directory",
     "path": "Python github项目查询",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382041816,
+    "lastModified": 1785552175313,
     "children": [
       {
         "name": "chat_ai.py",
@@ -28512,6 +28454,13 @@
         "lastModified": 1777939146817
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python github项目查询/README.md",
+        "ext": ".md",
+        "lastModified": 1785552175313
+      },
+      {
         "name": "search_chess.py",
         "type": "file",
         "path": "Python github项目查询/search_chess.py",
@@ -28539,7 +28488,7 @@
     "type": "directory",
     "path": "Python mc农场",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1782530332878,
+    "lastModified": 1785552180527,
     "children": [
       {
         "name": "img",
@@ -28575,6 +28524,13 @@
         "path": "Python mc农场/mc_farmer.py",
         "ext": ".py",
         "lastModified": 1772426536308
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python mc农场/README.md",
+        "ext": ".md",
+        "lastModified": 1785552180527
       },
       {
         "name": "text.py",
@@ -28648,7 +28604,7 @@
     "type": "directory",
     "path": "Python 单词纠错",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1781832722379,
+    "lastModified": 1785552080524,
     "children": [
       {
         "name": "english-words-master",
@@ -28756,6 +28712,13 @@
         "lastModified": 1772423894618
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python 单词纠错/README.md",
+        "ext": ".md",
+        "lastModified": 1785552080524
+      },
+      {
         "name": "test_performance.py",
         "type": "file",
         "path": "Python 单词纠错/test_performance.py",
@@ -28790,8 +28753,15 @@
     "type": "directory",
     "path": "Python 塔防游戏",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382121205,
+    "lastModified": 1785552130213,
     "children": [
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python 塔防游戏/README.md",
+        "ext": ".md",
+        "lastModified": 1785552130213
+      },
       {
         "name": "tafang.py",
         "type": "file",
@@ -28834,7 +28804,7 @@
     "type": "directory",
     "path": "python 天气可视化",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382123662,
+    "lastModified": 1785552134266,
     "children": [
       {
         "name": "html.html",
@@ -28865,6 +28835,13 @@
         "lastModified": 1766887035801
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "python 天气可视化/README.md",
+        "ext": ".md",
+        "lastModified": 1785552134266
+      },
+      {
         "name": "test.py",
         "type": "file",
         "path": "python 天气可视化/test.py",
@@ -28885,7 +28862,7 @@
     "type": "directory",
     "path": "Python 微信自动回复AI",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382121204,
+    "lastModified": 1785552139151,
     "children": [
       {
         "name": "main.py",
@@ -28893,6 +28870,13 @@
         "path": "Python 微信自动回复AI/main.py",
         "ext": ".py",
         "lastModified": 1785199351664
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python 微信自动回复AI/README.md",
+        "ext": ".md",
+        "lastModified": 1785552139151
       },
       {
         "name": "text.py",
@@ -28908,7 +28892,7 @@
     "type": "directory",
     "path": "python 成语接龙",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382123663,
+    "lastModified": 1785552074927,
     "children": [
       {
         "name": "data",
@@ -28965,6 +28949,13 @@
         "path": "python 成语接龙/my_idiom_book.txt",
         "ext": ".txt",
         "lastModified": 1767242593263
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "python 成语接龙/README.md",
+        "ext": ".md",
+        "lastModified": 1785552074927
       },
       {
         "name": "text copy.py",
@@ -29043,7 +29034,7 @@
     "type": "directory",
     "path": "python 我的世界",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1773997183247,
+    "lastModified": 1785552152826,
     "children": [
       {
         "name": "assets",
@@ -29170,6 +29161,13 @@
         "path": "python 我的世界/mc_mock.py",
         "ext": ".py",
         "lastModified": 1773997171084
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "python 我的世界/README.md",
+        "ext": ".md",
+        "lastModified": 1785552152827
       }
     ]
   },
@@ -29178,7 +29176,7 @@
     "type": "directory",
     "path": "Python 手写识别",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1777962920504,
+    "lastModified": 1785552108274,
     "children": [
       {
         "name": "dataset",
@@ -29272,6 +29270,13 @@
         "lastModified": 1777964201839
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python 手写识别/README.md",
+        "ext": ".md",
+        "lastModified": 1785552108274
+      },
+      {
         "name": "手写识别.py",
         "type": "file",
         "path": "Python 手写识别/手写识别.py",
@@ -29285,7 +29290,7 @@
     "type": "directory",
     "path": "python 日程表",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382124359,
+    "lastModified": 1785552103099,
     "children": [
       {
         "name": "456.xlsx",
@@ -29321,6 +29326,13 @@
         "path": "python 日程表/build_exe.py",
         "ext": ".py",
         "lastModified": 1780097517381
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "python 日程表/README.md",
+        "ext": ".md",
+        "lastModified": 1785552103100
       },
       {
         "name": "requirements.txt",
@@ -29385,7 +29397,7 @@
     "type": "directory",
     "path": "python 计算机",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382124359,
+    "lastModified": 1785552085038,
     "children": [
       {
         "name": "python 2026马年魔术揭秘",
@@ -29414,6 +29426,13 @@
         "path": "python 计算机/main.py",
         "ext": ".py",
         "lastModified": 1772196103070
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "python 计算机/README.md",
+        "ext": ".md",
+        "lastModified": 1785552085038
       },
       {
         "name": "text.py",
@@ -29501,8 +29520,15 @@
     "type": "directory",
     "path": "python-stroop训练",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1782530332910,
+    "lastModified": 1785552197110,
     "children": [
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "python-stroop训练/README.md",
+        "ext": ".md",
+        "lastModified": 1785552197110
+      },
       {
         "name": "stroop_comparison.html",
         "type": "file",
@@ -29862,7 +29888,7 @@
     "type": "directory",
     "path": "Python人生重开模拟器",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382126778,
+    "lastModified": 1785552232505,
     "children": [
       {
         "name": "__pycache__",
@@ -29914,6 +29940,13 @@
         "lastModified": 1784382126777
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python人生重开模拟器/README.md",
+        "ext": ".md",
+        "lastModified": 1785552232505
+      },
+      {
         "name": "test_auto_play.py",
         "type": "file",
         "path": "Python人生重开模拟器/test_auto_play.py",
@@ -29934,7 +29967,7 @@
     "type": "directory",
     "path": "Python冰火两重天",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382121209,
+    "lastModified": 1785552202212,
     "children": [
       {
         "name": "img",
@@ -29970,6 +30003,13 @@
         "path": "Python冰火两重天/main.py",
         "ext": ".py",
         "lastModified": 1780196485466
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python冰火两重天/README.md",
+        "ext": ".md",
+        "lastModified": 1785552202213
       }
     ]
   },
@@ -29978,7 +30018,7 @@
     "type": "directory",
     "path": "Python图像识别",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382121267,
+    "lastModified": 1785552260533,
     "children": [
       {
         "name": "image.py",
@@ -29986,6 +30026,13 @@
         "path": "Python图像识别/image.py",
         "ext": ".py",
         "lastModified": 1785199351883
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python图像识别/README.md",
+        "ext": ".md",
+        "lastModified": 1785552260533
       },
       {
         "name": "test.py",
@@ -30015,7 +30062,7 @@
     "type": "directory",
     "path": "Python实践",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1770617952227,
+    "lastModified": 1785552249731,
     "children": [
       {
         "name": "a.txt",
@@ -30023,6 +30070,13 @@
         "path": "Python实践/a.txt",
         "ext": ".txt",
         "lastModified": 1767230554099
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python实践/README.md",
+        "ext": ".md",
+        "lastModified": 1785552249731
       },
       {
         "name": "判断字符串是否是数字.py",
@@ -30045,7 +30099,7 @@
     "type": "directory",
     "path": "Python射击游戏",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382121290,
+    "lastModified": 1785552247892,
     "children": [
       {
         "name": "img",
@@ -30081,6 +30135,13 @@
         "path": "Python射击游戏/main.py",
         "ext": ".py",
         "lastModified": 1768699161397
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python射击游戏/README.md",
+        "ext": ".md",
+        "lastModified": 1785552247892
       },
       {
         "name": "text.py",
@@ -30308,8 +30369,15 @@
     "type": "directory",
     "path": "Python文字转语音无AI版",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1777974967259,
+    "lastModified": 1785552267551,
     "children": [
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python文字转语音无AI版/README.md",
+        "ext": ".md",
+        "lastModified": 1785552267551
+      },
       {
         "name": "test.txt",
         "type": "file",
@@ -30331,7 +30399,7 @@
     "type": "directory",
     "path": "Python桌面宠物",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1785156831032,
+    "lastModified": 1785552289471,
     "children": [
       {
         "name": "deskpet",
@@ -30355,35 +30423,35 @@
                 "type": "file",
                 "path": "Python桌面宠物/deskpet/__pycache__/auto_start.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376323
+                "lastModified": 1785414680999
               },
               {
                 "name": "config.cpython-312.pyc",
                 "type": "file",
                 "path": "Python桌面宠物/deskpet/__pycache__/config.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376251
+                "lastModified": 1785414680937
               },
               {
                 "name": "pet_window.cpython-312.pyc",
                 "type": "file",
                 "path": "Python桌面宠物/deskpet/__pycache__/pet_window.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1785199014385
+                "lastModified": 1785414680950
               },
               {
                 "name": "size_settings_dialog.cpython-312.pyc",
                 "type": "file",
                 "path": "Python桌面宠物/deskpet/__pycache__/size_settings_dialog.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376336
+                "lastModified": 1785414681011
               },
               {
                 "name": "sync_manager.cpython-312.pyc",
                 "type": "file",
                 "path": "Python桌面宠物/deskpet/__pycache__/sync_manager.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376343
+                "lastModified": 1785414681019
               }
             ]
           },
@@ -30399,35 +30467,35 @@
             "type": "file",
             "path": "Python桌面宠物/deskpet/auto_start.py",
             "ext": ".py",
-            "lastModified": 1780187629800
+            "lastModified": 1785414663730
           },
           {
             "name": "config.py",
             "type": "file",
             "path": "Python桌面宠物/deskpet/config.py",
             "ext": ".py",
-            "lastModified": 1780187629848
+            "lastModified": 1785414663941
           },
           {
             "name": "pet_window.py",
             "type": "file",
             "path": "Python桌面宠物/deskpet/pet_window.py",
             "ext": ".py",
-            "lastModified": 1785156831026
+            "lastModified": 1785414664222
           },
           {
             "name": "size_settings_dialog.py",
             "type": "file",
             "path": "Python桌面宠物/deskpet/size_settings_dialog.py",
             "ext": ".py",
-            "lastModified": 1780192431783
+            "lastModified": 1785414664229
           },
           {
             "name": "sync_manager.py",
             "type": "file",
             "path": "Python桌面宠物/deskpet/sync_manager.py",
             "ext": ".py",
-            "lastModified": 1780187629947
+            "lastModified": 1785414664241
           }
         ]
       },
@@ -30446,7 +30514,7 @@
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/__pycache__/app.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1785199014463
+                "lastModified": 1785414681025
               }
             ]
           },
@@ -30479,7 +30547,7 @@
                     "type": "file",
                     "path": "Python桌面宠物/relax_exe/core/__pycache__/timer_manager.cpython-312.pyc",
                     "ext": ".pyc",
-                    "lastModified": 1784423841489
+                    "lastModified": 1785414681036
                   }
                 ]
               },
@@ -30502,7 +30570,7 @@
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/core/timer_manager.py",
                 "ext": ".py",
-                "lastModified": 1784423775146
+                "lastModified": 1785414664529
               }
             ]
           },
@@ -31287,6 +31355,62 @@
                 "path": "Python桌面宠物/relax_exe/logs/app_20260729_075343.log",
                 "ext": ".log",
                 "lastModified": 1785286794120
+              },
+              {
+                "name": "app_20260730_100649.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260730_100649.log",
+                "ext": ".log",
+                "lastModified": 1785378404269
+              },
+              {
+                "name": "app_20260730_203121.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260730_203121.log",
+                "ext": ".log",
+                "lastModified": 1785420460985
+              },
+              {
+                "name": "app_20260731_093029.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260731_093029.log",
+                "ext": ".log",
+                "lastModified": 1785465438005
+              },
+              {
+                "name": "app_20260731_193651.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260731_193651.log",
+                "ext": ".log",
+                "lastModified": 1785500205766
+              },
+              {
+                "name": "app_20260801_085904.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260801_085904.log",
+                "ext": ".log",
+                "lastModified": 1785546493402
+              },
+              {
+                "name": "app_20260801_104344.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260801_104344.log",
+                "ext": ".log",
+                "lastModified": 1785552767817
+              },
+              {
+                "name": "app_20260801_105658.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260801_105658.log",
+                "ext": ".log",
+                "lastModified": 1785589973808
+              },
+              {
+                "name": "app_20260802_095556.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260802_095556.log",
+                "ext": ".log",
+                "lastModified": 1785636046468
               }
             ]
           },
@@ -31319,7 +31443,7 @@
                     "type": "file",
                     "path": "Python桌面宠物/relax_exe/ui/__pycache__/countdown_widget.cpython-312.pyc",
                     "ext": ".pyc",
-                    "lastModified": 1784424907213
+                    "lastModified": 1785414681042
                   },
                   {
                     "name": "flip_clock_widget.cpython-312.pyc",
@@ -31356,7 +31480,7 @@
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/ui/countdown_widget.py",
                 "ext": ".py",
-                "lastModified": 1784424759869
+                "lastModified": 1785414664644
               },
               {
                 "name": "flip_clock.html",
@@ -31386,7 +31510,7 @@
             "type": "file",
             "path": "Python桌面宠物/relax_exe/app.py",
             "ext": ".py",
-            "lastModified": 1785156831029
+            "lastModified": 1785414664500
           },
           {
             "name": "main.py",
@@ -31430,7 +31554,7 @@
         "type": "file",
         "path": "Python桌面宠物/config.json",
         "ext": ".json",
-        "lastModified": 1785156830998
+        "lastModified": 1785635847448
       },
       {
         "name": "flip_countdown_preview.html",
@@ -31458,7 +31582,14 @@
         "type": "file",
         "path": "Python桌面宠物/main_log.log",
         "ext": ".log",
-        "lastModified": 1784594642860
+        "lastModified": 1785589973808
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python桌面宠物/README.md",
+        "ext": ".md",
+        "lastModified": 1785552289472
       },
       {
         "name": "split_flap_preview.html",
@@ -31472,7 +31603,7 @@
         "type": "file",
         "path": "Python桌面宠物/test_auto_start.py",
         "ext": ".py",
-        "lastModified": 1780187630854
+        "lastModified": 1785414664656
       },
       {
         "name": "test_flip_clock.py",
@@ -31488,7 +31619,7 @@
     "type": "directory",
     "path": "python植物大战僵尸",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382125458,
+    "lastModified": 1785552273246,
     "children": [
       {
         "name": "bug.txt",
@@ -31526,6 +31657,13 @@
         "lastModified": 1772803684103
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "python植物大战僵尸/README.md",
+        "ext": ".md",
+        "lastModified": 1785552273247
+      },
+      {
         "name": "text.py",
         "type": "file",
         "path": "python植物大战僵尸/text.py",
@@ -31553,7 +31691,7 @@
     "type": "directory",
     "path": "Python水果忍者",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382121298,
+    "lastModified": 1785552254919,
     "children": [
       {
         "name": "main.py",
@@ -31561,6 +31699,13 @@
         "path": "Python水果忍者/main.py",
         "ext": ".py",
         "lastModified": 1783086927695
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python水果忍者/README.md",
+        "ext": ".md",
+        "lastModified": 1785552254920
       },
       {
         "name": "插入排序.cpp",
@@ -31583,7 +31728,7 @@
     "type": "directory",
     "path": "python海龟汤",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382125460,
+    "lastModified": 1785552211643,
     "children": [
       {
         "name": "found_ask_root.py",
@@ -31612,6 +31757,13 @@
         "path": "python海龟汤/output.json",
         "ext": ".json",
         "lastModified": 1751086156138
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "python海龟汤/README.md",
+        "ext": ".md",
+        "lastModified": 1785552211644
       },
       {
         "name": "requests_p.py",
@@ -31711,7 +31863,7 @@
     "type": "directory",
     "path": "python父亲节祝福",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382125462,
+    "lastModified": 1785552205996,
     "children": [
       {
         "name": "app.cpp",
@@ -31726,6 +31878,13 @@
         "path": "python父亲节祝福/index.html",
         "ext": ".html",
         "lastModified": 1782010156770
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "python父亲节祝福/README.md",
+        "ext": ".md",
+        "lastModified": 1785552205996
       }
     ]
   },
@@ -31792,7 +31951,7 @@
     "type": "directory",
     "path": "python黑神话悟空",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382125477,
+    "lastModified": 1785552227403,
     "children": [
       {
         "name": "Scratch黑神话悟空像素版-素材",
@@ -31879,6 +32038,13 @@
         "lastModified": 1777023681209
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "python黑神话悟空/README.md",
+        "ext": ".md",
+        "lastModified": 1785552227403
+      },
+      {
         "name": "staff_attack_animation.md",
         "type": "file",
         "path": "python黑神话悟空/staff_attack_animation.md",
@@ -31906,7 +32072,7 @@
     "type": "directory",
     "path": "web-games",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382126604,
+    "lastModified": 1785552416827,
     "children": [
       {
         "name": "chinese-chess",
@@ -31919,6 +32085,13 @@
             "path": "web-games/chinese-chess/index.html",
             "ext": ".html",
             "lastModified": 1781658355868
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "web-games/chinese-chess/README.md",
+            "ext": ".md",
+            "lastModified": 1785552387169
           }
         ]
       },
@@ -31933,6 +32106,13 @@
             "path": "web-games/idiom-chain/index.html",
             "ext": ".html",
             "lastModified": 1781953446045
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "web-games/idiom-chain/README.md",
+            "ext": ".md",
+            "lastModified": 1785552391251
           }
         ]
       },
@@ -31947,6 +32127,13 @@
             "path": "web-games/math-war/index.html",
             "ext": ".html",
             "lastModified": 1781651307572
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "web-games/math-war/README.md",
+            "ext": ".md",
+            "lastModified": 1785552399463
           }
         ]
       },
@@ -31961,6 +32148,13 @@
             "path": "web-games/my-world/index.html",
             "ext": ".html",
             "lastModified": 1781651204530
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "web-games/my-world/README.md",
+            "ext": ".md",
+            "lastModified": 1785552401962
           }
         ]
       },
@@ -31975,6 +32169,13 @@
             "path": "web-games/plane-war/index.html",
             "ext": ".html",
             "lastModified": 1781960029316
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "web-games/plane-war/README.md",
+            "ext": ".md",
+            "lastModified": 1785552405590
           }
         ]
       },
@@ -34756,6 +34957,13 @@
         "path": "web-games/index.html",
         "ext": ".html",
         "lastModified": 1783122091938
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "web-games/README.md",
+        "ext": ".md",
+        "lastModified": 1785552416827
       }
     ]
   },
@@ -34764,7 +34972,7 @@
     "type": "directory",
     "path": "workbody",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382126605,
+    "lastModified": 1785552295876,
     "children": [
       {
         "name": "2026年信息素养大赛Python复赛卷(一)_完整.txt",
@@ -35005,6 +35213,13 @@
         "lastModified": 1783073771657
       },
       {
+        "name": "README.md",
+        "type": "file",
+        "path": "workbody/README.md",
+        "ext": ".md",
+        "lastModified": 1785552295876
+      },
+      {
         "name": "simple_auto_scraper.py",
         "type": "file",
         "path": "workbody/simple_auto_scraper.py",
@@ -35137,8 +35352,15 @@
     "type": "directory",
     "path": "动物消消乐",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382126898,
+    "lastModified": 1785552044400,
     "children": [
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "动物消消乐/README.md",
+        "ext": ".md",
+        "lastModified": 1785552044403
+      },
       {
         "name": "server.py",
         "type": "file",
@@ -35153,7 +35375,7 @@
     "type": "directory",
     "path": "口算战争",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1784382126646,
+    "lastModified": 1785552054219,
     "children": [
       {
         "name": "svg-img",
@@ -35294,6 +35516,13 @@
         "path": "口算战争/plane_war.py",
         "ext": ".py",
         "lastModified": 1756090019355
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "口算战争/README.md",
+        "ext": ".md",
+        "lastModified": 1785552054219
       },
       {
         "name": "resource_manager.py",
@@ -35756,7 +35985,7 @@
     "type": "directory",
     "path": "每日励志语句",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1785285998053,
+    "lastModified": 1785552060139,
     "children": [
       {
         "name": "dynamic.html",
@@ -35785,6 +36014,13 @@
         "path": "每日励志语句/get_videos.py",
         "ext": ".py",
         "lastModified": 1778850557897
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "每日励志语句/README.md",
+        "ext": ".md",
+        "lastModified": 1785552060139
       },
       {
         "name": "videos.json",
@@ -35935,7 +36171,7 @@
     "type": "directory",
     "path": "逗神文化管理",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1780150661743,
+    "lastModified": 1785552047526,
     "children": [
       {
         "name": "github-style.html",
@@ -35957,6 +36193,13 @@
         "path": "逗神文化管理/index.html",
         "ext": ".html",
         "lastModified": 1780150402447
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "逗神文化管理/README.md",
+        "ext": ".md",
+        "lastModified": 1785552047527
       },
       {
         "name": "启动服务器.bat",

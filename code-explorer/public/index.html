@@ -4,23 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Code Explorer - 代码浏览与执行平台</title>
-<script type="importmap">
-{
-  "imports": {
-    "@codemirror/state": "https://esm.sh/@codemirror/state@6",
-    "@codemirror/view": "https://esm.sh/@codemirror/view@6",
-    "@codemirror/language": "https://esm.sh/@codemirror/language@6",
-    "@codemirror/commands": "https://esm.sh/@codemirror/commands@6",
-    "@codemirror/search": "https://esm.sh/@codemirror/search@6",
-    "@codemirror/lang-python": "https://esm.sh/@codemirror/lang-python@6",
-    "@codemirror/lang-javascript": "https://esm.sh/@codemirror/lang-javascript@6",
-    "@codemirror/lang-html": "https://esm.sh/@codemirror/lang-html@6",
-    "@codemirror/lang-css": "https://esm.sh/@codemirror/lang-css@6",
-    "@codemirror/lang-json": "https://esm.sh/@codemirror/lang-json@6",
-    "@codemirror/lang-markdown": "https://esm.sh/@codemirror/lang-markdown@6",
-    "@codemirror/theme-one-dark": "https://esm.sh/@codemirror/theme-one-dark@6"
-  }
-}
+<!-- Monaco Editor loader -->
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<script>
+// 配置 Monaco 加载路径
+require.config({
+  paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' }
+});
 </script>
 <style>
 /* ========== CSS Reset & Variables ========== */
@@ -44,6 +34,16 @@
   --accent-orange: #f0883e;
   --accent-pink: #db61a2;
   --accent-cyan: #39d353;
+  /* Terminal colors - 暗色（Catppuccin Mocha 风格，低饱和柔和护眼） */
+  --term-bg: #1e1e2e;
+  --term-header-bg: #181825;
+  --term-text: #cdd6f4;
+  --term-stdout: #cdd6f4;
+  --term-stderr: #f38ba8;
+  --term-info: #89b4fa;
+  --term-success: #a6e3a1;
+  --term-error: #f38ba8;
+  --term-border: #313244;
   --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace;
   --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   --transition: 150ms ease;
@@ -71,6 +71,16 @@
   --accent-orange: #bf5612;
   --accent-pink: #bf3c5b;
   --accent-cyan: #1a7f37;
+  /* Terminal colors - 亮色（Catppuccin Latte 官方配色） */
+  --term-bg: #eff1f5;
+  --term-header-bg: #e6e9ef;
+  --term-text: #4c4f69;
+  --term-stdout: #4c4f69;
+  --term-stderr: #d20f39;
+  --term-info: #1e66f5;
+  --term-success: #40a02b;
+  --term-error: #d20f39;
+  --term-border: #bcc0cc;
 }
 
 [data-theme="light"] body::before {
@@ -382,6 +392,13 @@ body::before {
 .filter-tab.active {
   background: var(--bg-tertiary);
   color: var(--text-primary);
+}
+.filter-tab.ai-tab {
+  color: var(--accent-purple);
+}
+.filter-tab.ai-tab.active {
+  background: var(--accent-purple);
+  color: #fff;
 }
 .view-toggle {
   display: flex;
@@ -753,33 +770,34 @@ body::before {
 }
 .mindmap-body::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* ===== AI 助手全屏 Overlay ===== */
-.ai-assistant-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.75);
-  display: none; align-items: center; justify-content: center;
-  z-index: 100006;
-  backdrop-filter: blur(8px);
-}
-.ai-assistant-overlay.active { display: flex; }
-.ai-assistant-container {
-  position: relative;
+/* ===== AI 助手页面（嵌入首页，非弹窗） ===== */
+.ai-asst-page {
+  display: none;
+  flex-direction: column;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  width: 96vw; max-width: 1400px;
-  height: 92vh; max-height: 860px;
-  display: flex; flex-direction: column;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  border-radius: 14px;
   overflow: hidden;
+  flex: 1;
+  min-height: 520px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  position: relative;
 }
+.ai-asst-page.active { display: flex; }
 /* AI 助手顶部 Header */
 .ai-asst-header {
-  height: 56px; flex-shrink: 0;
+  height: 60px; flex-shrink: 0;
   padding: 0 24px;
   border-bottom: 1px solid var(--border-color);
   display: flex; align-items: center; justify-content: space-between;
-  background: var(--bg-secondary);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 50%, var(--bg-secondary) 100%);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);
+  position: relative; z-index: 3;
+}
+.ai-asst-header::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+  opacity: 0.15;
 }
 .ai-asst-header-left { display: flex; align-items: center; gap: 16px; }
 .ai-asst-title {
@@ -803,7 +821,7 @@ body::before {
   display: flex; align-items: center; gap: 6px;
   transition: all 0.15s;
 }
-.ai-asst-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
+.ai-asst-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); box-shadow: 0 2px 8px rgba(163,113,247,0.12); }
 .ai-asst-btn svg { width: 14px; height: 14px; }
 .ai-asst-close {
   background: var(--bg-tertiary); border: none;
@@ -813,188 +831,220 @@ body::before {
   transition: all 0.15s; flex-shrink: 0;
 }
 .ai-asst-close:hover { background: var(--accent-red); color: #fff; }
-/* AI 助手主体三栏 */
-.ai-asst-main { flex: 1; display: flex; overflow: hidden; }
-/* 左侧导航 */
-.ai-asst-nav {
-  width: 160px; flex-shrink: 0;
-  border-right: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-  padding: 8px 0; overflow-y: auto;
-}
-.ai-asst-nav-item {
-  padding: 10px 16px; font-size: 13px;
-  color: var(--text-secondary); cursor: pointer;
-  display: flex; align-items: center; gap: 8px;
-  border-left: 3px solid transparent;
-  transition: all 0.15s; user-select: none;
-}
-.ai-asst-nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
-.ai-asst-nav-item.active {
-  background: rgba(163,113,247,0.12);
-  border-left-color: var(--accent-purple);
-  color: var(--accent-purple); font-weight: 500;
-}
-.ai-asst-nav-icon { font-size: 15px; width: 18px; text-align: center; }
-.ai-asst-nav-divider { height: 1px; background: var(--border-color); margin: 8px 12px; }
-/* 中间对话列表 */
+/* AI 助手主体两栏 */
+.ai-asst-main { flex: 1; display: flex; overflow: hidden; position: relative; }
+/* 左侧对话列表 */
 .ai-asst-conversations {
-  width: 300px; flex-shrink: 0;
+  width: 280px; flex-shrink: 0;
   border-right: 1px solid var(--border-color);
-  background: var(--bg-secondary);
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
   display: flex; flex-direction: column;
+  position: relative; z-index: 1;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.05);
 }
 .ai-asst-conv-header {
-  padding: 14px 18px; font-size: 14px; font-weight: 600;
+  padding: 16px 20px; font-size: 14px; font-weight: 600;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-primary); flex-shrink: 0;
+  letter-spacing: 0.3px;
 }
-.ai-asst-conv-list { flex: 1; overflow-y: auto; padding: 4px 0; }
+.ai-asst-conv-list { flex: 1; overflow-y: auto; padding: 6px 0; }
 .ai-asst-conv-item {
-  padding: 11px 18px; cursor: pointer;
-  display: flex; align-items: center; justify-content: space-between;
-  transition: background 0.15s;
+  padding: 12px 20px; cursor: pointer;
+  display: flex; align-items: center;
+  transition: all 0.18s;
   border-left: 3px solid transparent;
+  margin: 1px 0;
 }
 .ai-asst-conv-item:hover { background: var(--bg-tertiary); }
 .ai-asst-conv-item.active {
-  background: rgba(163,113,247,0.10);
+  background: linear-gradient(90deg, rgba(163,113,247,0.12) 0%, rgba(163,113,247,0.04) 100%);
   border-left-color: var(--accent-purple);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.03), 0 0 12px rgba(163,113,247,0.05);
 }
 .ai-asst-conv-title {
   font-size: 13px; color: var(--text-primary);
   flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .ai-asst-conv-time { font-size: 11px; color: var(--text-tertiary); margin-left: 8px; flex-shrink: 0; }
-.ai-asst-conv-footer { padding: 12px 14px; border-top: 1px solid var(--border-color); flex-shrink: 0; }
+.ai-asst-conv-item-main { flex: 1; display: flex; align-items: center; overflow: hidden; cursor: pointer; min-width: 0; }
+.ai-asst-conv-del {
+  width: 28px; height: 28px; flex-shrink: 0;
+  display: none; align-items: center; justify-content: center;
+  border: none; background: transparent; color: var(--text-tertiary);
+  border-radius: 6px; cursor: pointer; transition: all 0.15s;
+  margin-left: 4px; padding: 0;
+}
+.ai-asst-conv-item:hover .ai-asst-conv-del { display: flex; }
+.ai-asst-conv-del:hover { background: rgba(248,81,73,0.15); color: var(--accent-red); }
+.ai-asst-conv-footer { padding: 14px 16px; border-top: 1px solid var(--border-color); flex-shrink: 0; }
 .ai-asst-new-chat {
-  width: 100%; padding: 10px;
-  background: var(--accent-purple); color: #fff;
-  border: none; border-radius: 8px;
+  width: 100%; padding: 11px;
+  background: linear-gradient(135deg, var(--accent-purple), #8b5cf6);
+  color: #fff;
+  border: none; border-radius: 10px;
   font-size: 13px; font-weight: 500; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: opacity 0.2s;
+  transition: all 0.2s; box-shadow: 0 2px 8px rgba(139,92,246,0.25);
 }
-.ai-asst-new-chat:hover { opacity: 0.88; }
+.ai-asst-new-chat:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(139,92,246,0.35); }
 /* 右侧聊天区 */
-.ai-asst-chat { flex: 1; display: flex; flex-direction: column; background: var(--bg-primary); min-width: 0; }
-.ai-asst-messages { flex: 1; overflow-y: auto; padding: 24px 32px; }
+.ai-asst-chat {
+  flex: 1; display: flex; flex-direction: column;
+  background: var(--bg-secondary);
+  min-width: 0; position: relative;
+}
+.ai-asst-chat-inner {
+  flex: 1; display: flex; flex-direction: column;
+  position: relative; z-index: 1;
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  border-radius: 0 0 14px 0;
+}
+.ai-asst-chat::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(163,113,247,0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+.ai-asst-messages { flex: 1; overflow-y: auto; padding: 28px 36px; position: relative; z-index: 1; }
 /* 欢迎页 */
 .ai-asst-welcome {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  height: 100%; text-align: center; padding: 40px;
+  height: 100%; text-align: center; padding: 48px 32px;
 }
-.ai-asst-welcome h2 { font-size: 24px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary); }
-.ai-asst-welcome p { font-size: 14px; color: var(--text-tertiary); margin-bottom: 32px; max-width: 440px; line-height: 1.6; }
+.ai-asst-welcome h2 {
+  font-size: 24px; font-weight: 700;
+  margin-bottom: 10px; color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+.ai-asst-welcome p {
+  font-size: 14px; color: var(--text-tertiary);
+  margin-bottom: 32px; max-width: 420px; line-height: 1.7;
+}
 .ai-asst-feature-cards { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; justify-content: center; }
 .ai-asst-feature-card {
-  width: 150px; padding: 18px 14px;
-  border: 1px solid var(--border-color); border-radius: 12px;
-  background: var(--bg-secondary); cursor: pointer;
-  transition: all 0.2s;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: 172px; padding: 24px 18px;
+  border: 1px solid var(--border-color); border-radius: 14px;
+  background: linear-gradient(145deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
 }
-.ai-asst-feature-card:hover { border-color: var(--accent-purple); transform: translateY(-2px); }
-.ai-asst-feature-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: var(--bg-tertiary); }
-.ai-asst-feature-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-.ai-asst-feature-desc { font-size: 11px; color: var(--text-tertiary); text-align: center; }
+.ai-asst-feature-card:hover {
+  border-color: var(--accent-purple); transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(163,113,247,0.15), 0 4px 12px rgba(0,0,0,0.08);
+}
+.ai-asst-feature-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; background: var(--bg-tertiary);
+  transition: transform 0.3s;
+}
+.ai-asst-feature-card:hover .ai-asst-feature-icon { transform: scale(1.1); }
+.ai-asst-feature-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.ai-asst-feature-desc { font-size: 12px; color: var(--text-tertiary); text-align: center; line-height: 1.4; }
 .ai-asst-suggestions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 560px; }
 .ai-asst-suggestion {
-  padding: 9px 16px; border: 1px solid var(--border-color); border-radius: 20px;
+  padding: 10px 18px; border: 1px solid var(--border-color); border-radius: 20px;
   font-size: 13px; color: var(--text-secondary); cursor: pointer;
   background: var(--bg-secondary); transition: all 0.2s;
 }
-.ai-asst-suggestion:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
+.ai-asst-suggestion:hover {
+  border-color: var(--accent-purple); color: var(--accent-purple);
+  box-shadow: 0 2px 8px rgba(163,113,247,0.10);
+}
 /* 消息气泡 */
-.ai-asst-msg { display: flex; gap: 12px; margin-bottom: 20px; max-width: 80%; animation: aiAsstFadeIn 0.25s ease; }
+.ai-asst-msg { display: flex; gap: 12px; margin-bottom: 24px; max-width: 85%; animation: aiAsstFadeIn 0.3s ease; }
 .ai-asst-msg.user { flex-direction: row-reverse; margin-left: auto; }
 .ai-asst-msg-avatar {
-  width: 34px; height: 34px; border-radius: 50%;
+  width: 36px; height: 36px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 15px; flex-shrink: 0;
 }
-.ai-asst-msg.user .ai-asst-msg-avatar { background: var(--accent-purple); color: #fff; font-size: 12px; font-weight: 600; }
-.ai-asst-msg.assistant .ai-asst-msg-avatar { background: var(--bg-tertiary); border: 1px solid var(--border-color); }
-.ai-asst-msg-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6; word-break: break-word; }
-.ai-asst-msg.user .ai-asst-msg-bubble { background: var(--accent-purple); color: #fff; border-bottom-right-radius: 4px; }
-.ai-asst-msg.assistant .ai-asst-msg-bubble { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-bottom-left-radius: 4px; }
+.ai-asst-msg.user .ai-asst-msg-avatar { background: linear-gradient(135deg, var(--accent-purple), #8b5cf6); color: #fff; font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(139,92,246,0.25); }
+.ai-asst-msg.assistant .ai-asst-msg-avatar { background: var(--bg-tertiary); border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+.ai-asst-msg-bubble { padding: 14px 18px; border-radius: 14px; font-size: 14px; line-height: 1.65; word-break: break-word; }
+.ai-asst-msg.user .ai-asst-msg-bubble { background: linear-gradient(135deg, #8b5cf6 0%, var(--accent-purple) 50%, #7c3aed 100%); color: #fff; border-bottom-right-radius: 4px; box-shadow: 0 3px 12px rgba(139,92,246,0.25), 0 1px 3px rgba(0,0,0,0.08); }
+.ai-asst-msg.assistant .ai-asst-msg-bubble {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color); border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.03);
+}
 .ai-asst-msg-bubble p { margin: 0 0 8px 0; }
 .ai-asst-msg-bubble p:last-child { margin-bottom: 0; }
-.ai-asst-msg-bubble pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; font-size: 13px; font-family: var(--font-mono); }
+.ai-asst-msg-bubble pre { background: #1e1e1e; color: #d4d4d4; padding: 14px; border-radius: 10px; overflow-x: auto; margin: 10px 0; font-size: 13px; font-family: var(--font-mono); border: 1px solid rgba(255,255,255,0.06); }
 .ai-asst-msg-bubble code { background: rgba(0,0,0,0.08); padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: var(--font-mono); }
 .ai-asst-msg.user .ai-asst-msg-bubble code { background: rgba(255,255,255,0.2); }
 .ai-asst-msg-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .ai-asst-msg-card {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px;
+  padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 10px;
   background: var(--bg-primary); cursor: pointer; transition: all 0.2s;
 }
-.ai-asst-msg-card:hover { border-color: var(--accent-purple); background: var(--bg-tertiary); }
+.ai-asst-msg-card:hover { border-color: var(--accent-purple); background: var(--bg-tertiary); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
 .ai-asst-msg-card-icon { font-size: 20px; flex-shrink: 0; }
 .ai-asst-msg-card-info { flex: 1; min-width: 0; }
 .ai-asst-msg-card-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
 .ai-asst-msg-card-reason { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ai-asst-msg-card-type { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--bg-tertiary); color: var(--text-tertiary); flex-shrink: 0; }
-.ai-asst-msg-image { max-width: 400px; border-radius: 8px; margin-top: 8px; cursor: pointer; display: block; }
 /* 打字指示器 */
-.ai-asst-typing { display: flex; gap: 4px; padding: 4px 0; }
+.ai-asst-typing { display: flex; gap: 5px; padding: 4px 0; }
 .ai-asst-typing span { width: 8px; height: 8px; background: var(--text-tertiary); border-radius: 50%; animation: aiAsstBounce 1.4s infinite ease-in-out; }
 .ai-asst-typing span:nth-child(1) { animation-delay: -0.32s; }
 .ai-asst-typing span:nth-child(2) { animation-delay: -0.16s; }
 @keyframes aiAsstBounce { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1); } }
 @keyframes aiAsstFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-/* 图片生成面板 */
-.ai-asst-img-gen { display: none; padding: 14px 24px; border-bottom: 1px solid var(--border-color); background: var(--bg-secondary); }
-.ai-asst-img-gen.active { display: block; }
-.ai-asst-img-gen-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-.ai-asst-img-gen-row { display: flex; gap: 10px; align-items: flex-end; }
-.ai-asst-img-gen-input { flex: 1; }
-.ai-asst-img-gen-input label { display: block; font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; }
-.ai-asst-img-gen-input input, .ai-asst-img-gen-input select {
-  width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px;
-  font-size: 13px; background: var(--bg-primary); color: var(--text-primary);
-}
-.ai-asst-img-gen-input input:focus, .ai-asst-img-gen-input select:focus { outline: none; border-color: var(--accent-purple); }
-.ai-asst-img-gen-btn {
-  padding: 8px 16px; background: var(--accent-purple); color: #fff;
-  border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
-}
-.ai-asst-img-gen-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
 /* 底部输入区 */
 .ai-asst-input-area {
-  height: 64px; flex-shrink: 0;
+  height: 72px; flex-shrink: 0;
   padding: 0 24px; border-top: 1px solid var(--border-color);
-  background: var(--bg-secondary);
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.08), 0 -1px 4px rgba(0,0,0,0.04);
+  position: relative; z-index: 2;
+}
+.ai-asst-input-area::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 1px; background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+  opacity: 0.10;
 }
 .ai-asst-model-select {
-  padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px;
+  padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 10px;
   font-size: 13px; color: var(--text-primary); background: var(--bg-primary); cursor: pointer;
-  min-width: 155px; flex-shrink: 0;
+  min-width: 160px; flex-shrink: 0;
+  transition: border-color 0.15s;
 }
-.ai-asst-model-select:focus { outline: none; border-color: var(--accent-purple); }
-.ai-asst-input { flex: 1; padding: 10px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; color: var(--text-primary); background: var(--bg-primary); }
-.ai-asst-input:focus { outline: none; border-color: var(--accent-purple); }
+.ai-asst-model-select:focus { outline: none; border-color: var(--accent-purple); box-shadow: 0 0 0 3px rgba(163,113,247,0.10); }
+.ai-asst-input {
+  flex: 1; padding: 12px 18px;
+  border: 1px solid var(--border-color); border-radius: 10px;
+  font-size: 14px; color: var(--text-primary); background: var(--bg-primary);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ai-asst-input:focus { outline: none; border-color: var(--accent-purple); box-shadow: 0 0 0 3px rgba(163,113,247,0.10); }
 .ai-asst-input::placeholder { color: var(--text-tertiary); }
-.ai-asst-input-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.ai-asst-input-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .ai-asst-icon-btn {
-  width: 34px; height: 34px; border: none; background: transparent;
+  width: 36px; height: 36px; border: none; background: transparent;
   color: var(--text-tertiary); border-radius: 8px; cursor: pointer;
   display: flex; align-items: center; justify-content: center; transition: all 0.2s;
 }
 .ai-asst-icon-btn:hover { background: var(--bg-tertiary); color: var(--text-primary); }
 .ai-asst-icon-btn svg { width: 17px; height: 17px; }
 .ai-asst-send {
-  padding: 10px 20px; background: var(--accent-purple); color: #fff;
-  border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;
-  display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; flex-shrink: 0;
+  padding: 10px 22px; background: linear-gradient(135deg, var(--accent-purple), #8b5cf6);
+  color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(139,92,246,0.25);
 }
-.ai-asst-send:hover { opacity: 0.88; }
-.ai-asst-send:disabled { opacity: 0.5; cursor: not-allowed; }
+.ai-asst-send:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(139,92,246,0.35); }
+.ai-asst-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 .ai-asst-send svg { width: 16px; height: 16px; }
 /* 响应式 */
-@media (max-width: 1024px) { .ai-asst-conversations { width: 250px; } .ai-asst-nav { width: 130px; } }
-@media (max-width: 768px) { .ai-asst-nav { display: none; } .ai-asst-conversations { display: none; } .ai-asst-feature-cards { flex-direction: column; } }
+@media (max-width: 1024px) { .ai-asst-conversations { width: 200px; } }
+@media (max-width: 768px) { .ai-asst-conversations { display: none; } .ai-asst-feature-cards { flex-direction: column; align-items: center; } .ai-asst-feature-card { width: 200px; } .ai-asst-welcome { padding: 32px 20px; } .ai-asst-messages { padding: 20px 16px; } .ai-asst-input-area { height: 64px; padding: 0 16px; } .ai-asst-chat-inner { border-radius: 0; } .ai-asst-header-right .ai-asst-btn { padding: 6px 10px; font-size: 12px; } .ai-asst-header-right .ai-asst-btn svg { width: 12px; height: 12px; } }
 
 /* Category section */
 .mm-category {
@@ -2023,8 +2073,8 @@ body::before {
   height: 200px;
   display: flex;
   flex-direction: column;
-  background: #0d1117;
-  border-top: 1px solid var(--border-color);
+  background: var(--term-bg);
+  border-top: 1px solid var(--term-border);
   overflow: hidden;
 }
 .terminal-header {
@@ -2032,8 +2082,8 @@ body::before {
   align-items: center;
   justify-content: space-between;
   padding: 6px 12px;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
+  background: var(--term-header-bg);
+  border-bottom: 1px solid var(--term-border);
   font-size: 11px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -2053,9 +2103,9 @@ body::before {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.5;
-  color: var(--text-primary);
+  color: var(--term-text);
   overflow-y: auto;
-  background: #0d1117;
+  background: var(--term-bg);
 }
 .terminal-body::-webkit-scrollbar {
   width: 8px;
@@ -2064,7 +2114,7 @@ body::before {
   background: transparent;
 }
 .terminal-body::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: var(--term-border);
   border-radius: 4px;
 }
 .terminal-body::-webkit-scrollbar-thumb:hover {
@@ -2075,21 +2125,21 @@ body::before {
   word-break: break-all;
 }
 .terminal-output .stdout {
-  color: var(--text-primary);
+  color: var(--term-stdout);
 }
 .terminal-output .stderr {
-  color: var(--accent-red);
+  color: var(--term-stderr);
 }
 .terminal-output .prompt {
-  color: var(--accent-green);
+  color: var(--term-success);
   margin-right: 8px;
 }
 .terminal-output .error {
-  color: var(--accent-red);
+  color: var(--term-error);
   font-weight: 500;
 }
 .terminal-output .info {
-  color: var(--accent-blue);
+  color: var(--term-info);
 }
 .terminal-input-line {
   display: flex;
@@ -2106,7 +2156,7 @@ body::before {
   outline: none;
   font-family: var(--font-mono);
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--term-text);
 }
 .terminal-close-btn {
   background: transparent;
@@ -2125,6 +2175,80 @@ body::before {
 .terminal-close-btn svg {
   width: 14px;
   height: 14px;
+}
+.run-mode-select, .entry-file-select {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  margin-right: 4px;
+  max-width: 120px;
+}
+.run-mode-select:hover, .entry-file-select:hover {
+  border-color: var(--accent-blue);
+}
+.entry-file-select {
+  max-width: 160px;
+}
+.code-action-btn.btn-run.running {
+  background: var(--accent-green);
+  color: #fff;
+  pointer-events: none;
+}
+.code-action-btn.btn-stop {
+  background: var(--accent-red);
+  color: #fff;
+}
+.code-action-btn.btn-stop:hover {
+  background: #d63031;
+}
+.run-status {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--accent-blue);
+  color: #fff;
+  margin-left: 8px;
+}
+.run-status.running {
+  background: var(--accent-green);
+  animation: pulse-run 1.5s infinite;
+}
+.run-status.error {
+  background: var(--accent-red);
+}
+@keyframes pulse-run {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.deps-progress {
+  background: var(--bg-secondary);
+  padding: 6px 12px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+.deps-progress-bar {
+  height: 4px;
+  background: var(--accent-blue);
+  border-radius: 2px;
+  width: 100px;
+  min-width: 100px;
+  transition: width 0.3s;
+}
+.deps-progress-text {
+  color: var(--text-secondary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .code-header {
   display: flex;
@@ -2197,6 +2321,11 @@ body::before {
 .code-viewer {
   font-family: var(--font-mono);
   font-size: 13px;
+  position: relative;
+  overflow: hidden;
+}
+.code-viewer .monaco-editor {
+  border-radius: 4px;
 }
 .code-preview {
   width: 100%;
@@ -2209,7 +2338,7 @@ body::before {
   border: none;
   background: #fff;
 }
-/* line-numbers and code-content now handled by CodeMirror 6 */
+/* code viewer handled by Monaco Editor */
 
 /* Search overlay */
 .search-overlay {
@@ -2342,22 +2471,13 @@ body::before {
   .hero-search input { font-size: 14px; padding: 12px 14px; }
   .hero-search kbd { display: none; }
   .hero-quick-btn { font-size: 13px; padding: 7px 14px; }
-  .hero-gallery {
-    justify-content: center;
-    padding: 0;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .gallery-item-1 { width: 130px; height: 92px; transform: rotate(-1deg) translateY(-3px); }
-  .gallery-item-2 { width: 150px; height: 105px; transform: rotate(1deg) translateY(-6px); }
-  .gallery-item-3 { width: 115px; height: 80px; transform: rotate(-1.5deg) translateY(0); margin-left: 0; }
-  .gallery-item-1:hover { transform: rotate(0deg) translateY(-6px) scale(1.03); }
-  .gallery-item-2:hover { transform: rotate(0deg) translateY(-12px) scale(1.03); }
-  .gallery-item-3:hover { transform: rotate(0deg) translateY(-3px) scale(1.03); }
+  /* 移动端隐藏封面图，减少加载量 */
+  .hero-gallery { display: none; }
   .section-header { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 16px; }
   .section-header h2 { font-size: 16px; }
-  .filter-tabs { gap: 4px; flex-wrap: wrap; }
-  .filter-tab { font-size: 12px; padding: 6px 12px; }
+  .filter-tabs { gap: 4px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .filter-tab { font-size: 12px; padding: 6px 12px; white-space: nowrap; flex-shrink: 0; }
   .home-stats { padding: 8px 16px; flex-wrap: wrap; gap: 12px; font-size: 13px; }
 
   /* ===== 项目卡片 ===== */
@@ -2368,6 +2488,26 @@ body::before {
   .project-card .card-desc { font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .project-card .card-meta { font-size: 11px; gap: 8px; }
   .project-card .card-badge { font-size: 10px; padding: 3px 8px; }
+
+  /* ===== 底部导航栏 ===== */
+  .mobile-bottom-nav { display: flex; }
+  .project-list-layout { padding-bottom: 64px; }
+  .home-stats { padding-bottom: 56px; }
+
+  /* ===== 登录页单栏布局 ===== */
+  .auth-page.active { flex-direction: column; }
+  .auth-left { flex: none; padding: 32px 24px 24px; }
+  .auth-left::before { display: none; }
+  .auth-brand p { display: none; }
+  .auth-brand-icon { width: 48px; height: 48px; margin: 0 auto 12px; }
+  .auth-brand-icon svg { width: 28px; height: 28px; }
+  .auth-brand h1 { font-size: 24px; }
+  .auth-features { display: none; }
+  .auth-right { flex: none; padding: 24px; border-left: none; }
+  .auth-card { max-width: 100%; }
+  .auth-card h2 { font-size: 20px; }
+  .auth-card .auth-subtitle { margin-bottom: 20px; }
+  .auth-field input { font-size: 16px; padding: 12px 14px; }
 
   /* ===== 编辑器页面 ===== */
   .editor-page { min-height: 100dvh; }
@@ -2389,7 +2529,7 @@ body::before {
   .code-action-btn { font-size: 11px; padding: 6px 8px; }
   .code-action-btn svg { width: 14px; height: 14px; }
   .code-body { font-size: 12px; }
-  #codeViewer .cm-editor .cm-scroller { font-size: 12px; }
+  #codeViewer .monaco-editor { font-size: 12px; }
 
   /* ===== 留言弹窗 ===== */
   .comment-modal { width: 92vw; margin: 10px auto; border-radius: 12px; }
@@ -2433,25 +2573,51 @@ body::before {
   .cards-grid { gap: 8px; }
 }
 
-/* CodeMirror 6 container */
+/* ===== 移动端底部导航栏 ===== */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 9999;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 4px 0 env(safe-area-inset-bottom, 4px);
+  justify-content: space-around;
+  align-items: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.mobile-bottom-nav .mb-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.mobile-bottom-nav .mb-nav-item svg {
+  width: 22px; height: 22px;
+}
+.mobile-bottom-nav .mb-nav-item span {
+  font-size: 10px;
+  font-weight: 500;
+}
+.mobile-bottom-nav .mb-nav-item.active {
+  color: var(--accent-blue);
+}
+.mobile-bottom-nav .mb-nav-item:active {
+  opacity: 0.7;
+}
+
+/* Monaco Editor container */
 #codeViewer { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-#codeViewer .cm-editor { flex: 1; outline: none; }
-#codeViewer .cm-editor .cm-scroller {
-  overflow: auto;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.6;
-}
-#codeViewer .cm-editor .cm-gutters { border-right: 1px solid var(--border-color); }
-#codeViewer .cm-editor .cm-content {
-  white-space: pre-wrap;
-  word-break: normal;
-  padding: 8px 0;
-  caret-color: transparent;
-}
-#codeViewer .cm-editor .cm-line {
-  padding: 0 8px;
-}
+#codeViewer .monaco-editor { border-radius: 4px; }
 
   /* ========== 登录页面（独立全屏） ========== */
   .auth-page {
@@ -2577,6 +2743,31 @@ body::before {
     text-decoration: none; font-weight: 500;
   }
   .auth-switch a:hover { text-decoration: underline; }
+  .auth-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    background: var(--bg-secondary, #f0f0f0);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary, #666);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .auth-tab.active {
+    background: var(--accent, #6366f1);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
 
   /* ========== 管理员仪表板 ========== */
   .admin-page {
@@ -2777,14 +2968,22 @@ body::before {
   .user-menu-btn {
     position: fixed; top: 12px; right: 12px;
     z-index: 99997;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #58a6ff, #a371f7);
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 600; font-size: 14px;
+    padding: 6px 12px;
+    max-width: 200px;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    color: var(--text-primary);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: transform 0.15s;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .user-menu-btn span {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .user-menu-btn:hover { transform: scale(1.05); }
   .user-menu-btn.hidden { display: none; }
@@ -2848,7 +3047,7 @@ body::before {
 
   /* ===== 更新日志按钮 ===== */
   .changelog-btn {
-    position: fixed; top: 12px; right: 100px;
+    position: fixed; top: 12px; right: 35px;
     z-index: 99997;
     width: 36px; height: 36px;
     border-radius: 50%;
@@ -2858,6 +3057,8 @@ body::before {
     display: flex; align-items: center; justify-content: center;
     color: var(--text-secondary);
     transition: all 0.15s;
+    margin-left: 90px;
+    margin-right: 90px;
   }
   .changelog-btn:hover {
     background: var(--bg-tertiary);
@@ -3193,33 +3394,44 @@ body::before {
   </div>
   <div class="auth-right">
     <div class="auth-card">
-      <!-- 用户登录 -->
+      <!-- 登录/注册切换标签 -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="authTabLogin" onclick="showAuthForm('login')">登录</button>
+        <button class="auth-tab" id="authTabRegister" onclick="showAuthForm('register')">注册</button>
+      </div>
+      <!-- 登录表单 -->
       <div id="userLoginForm">
         <h2>欢迎回来</h2>
-        <p class="auth-subtitle">输入访问密码以继续</p>
+        <p class="auth-subtitle">输入账号密码以继续</p>
         <div class="auth-field">
-          <label for="loginPasswordInput">访问密码</label>
+          <label for="loginUsernameInput">用户名</label>
+          <input type="text" id="loginUsernameInput" placeholder="请输入用户名" autocomplete="off">
+        </div>
+        <div class="auth-field">
+          <label for="loginPasswordInput">密码</label>
           <input type="password" id="loginPasswordInput" placeholder="请输入密码" autocomplete="off">
         </div>
         <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
         <div class="auth-error" id="loginError"></div>
-        <div class="auth-switch">
-          使用 <a id="switchToAdmin">管理员身份</a> 登录
-        </div>
       </div>
-      <!-- 管理员登录 -->
-      <div id="adminLoginForm" style="display:none">
-        <h2>管理员登录</h2>
-        <p class="auth-subtitle">输入管理员密码以访问后台</p>
+      <!-- 注册表单 -->
+      <div id="registerForm" style="display:none">
+        <h2>创建账号</h2>
+        <p class="auth-subtitle">注册新账号以访问平台</p>
         <div class="auth-field">
-          <label for="adminPasswordInput">管理员密码</label>
-          <input type="password" id="adminPasswordInput" placeholder="请输入管理员密码" autocomplete="off">
+          <label for="registerUsernameInput">用户名</label>
+          <input type="text" id="registerUsernameInput" placeholder="3-20位字母、数字或下划线" autocomplete="off">
         </div>
-        <button class="auth-btn-primary auth-btn-admin" id="adminLoginSubmitBtn">进入后台</button>
-        <div class="auth-error" id="adminLoginError"></div>
-        <div class="auth-switch">
-          返回 <a id="switchToUser">用户登录</a>
+        <div class="auth-field">
+          <label for="registerPasswordInput">密码</label>
+          <input type="password" id="registerPasswordInput" placeholder="至少6位密码" autocomplete="off">
         </div>
+        <div class="auth-field">
+          <label for="registerConfirmInput">确认密码</label>
+          <input type="password" id="registerConfirmInput" placeholder="再次输入密码" autocomplete="off">
+        </div>
+        <button class="auth-btn-primary" id="registerSubmitBtn">注册</button>
+        <div class="auth-error" id="registerError"></div>
       </div>
     </div>
   </div>
@@ -3266,8 +3478,16 @@ body::before {
 <button class="changelog-btn" id="changelogBtn" title="更新日志">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
 </button>
-<button class="user-menu-btn hidden" id="userMenuBtn">U</button>
+<button class="user-menu-btn hidden" id="userMenuBtn" title="用户菜单">
+  <span id="userMenuName" style="font-size:13px;font-weight:500;color:var(--text-primary)">用户</span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+</button>
 <div class="user-dropdown" id="userDropdown">
+  <button class="user-dropdown-item" id="profileFromMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    个人资料
+  </button>
+  <div class="user-dropdown-divider"></div>
   <button class="user-dropdown-item" id="openAdminFromMenu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
     管理员后台
@@ -3297,19 +3517,19 @@ body::before {
     </div>
     <div class="hero-gallery">
       <div class="gallery-item gallery-item-1">
-        <img src="https://aka.doubaocdn.com/s/m5sx1wljga" alt="父亲节快乐" loading="lazy">
+        <img src="/images/covers/fathers_day.jpg" alt="父亲节快乐" loading="lazy">
         <div class="gallery-overlay">
           <span class="gallery-label">❤️ 父亲节</span>
         </div>
       </div>
       <div class="gallery-item gallery-item-2">
-        <img src="https://aka.doubaocdn.com/s/eRKL1wljgY" alt="编程之夜" loading="lazy">
+        <img src="/images/covers/code_explorer.jpg" alt="编程之夜" loading="lazy">
         <div class="gallery-overlay">
           <span class="gallery-label">💻 编程创作</span>
         </div>
       </div>
       <div class="gallery-item gallery-item-3">
-        <img src="https://aka.doubaocdn.com/s/QoO01wljgb" alt="科技未来" loading="lazy">
+        <img src="/images/covers/python_ai_practice.jpg" alt="科技未来" loading="lazy">
         <div class="gallery-overlay">
           <span class="gallery-label">🚀 科技未来</span>
         </div>
@@ -3346,6 +3566,7 @@ body::before {
         <button class="filter-tab" data-filter="ai">AI</button>
         <button class="filter-tab" data-filter="tool">工具</button>
         <button class="filter-tab" data-filter="other">其他</button>
+        <button class="filter-tab ai-tab" id="aiFilterTab" data-filter="__ai_asst__">✨ AI 助手</button>
       </div>
     </div>
   </div>
@@ -3371,6 +3592,109 @@ body::before {
         <span>加载项目中...</span>
       </div>
     </div>
+    <!-- AI 助手页面（替换项目卡片位置，与 cardsGrid 同级） -->
+    <div class="ai-asst-page" id="aiAsstPage">
+      <!-- Header -->
+      <div class="ai-asst-header">
+        <div class="ai-asst-header-left">
+          <div class="ai-asst-title">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="#a371f7"/><path d="M19 14L19.7 16.3L22 17L19.7 17.7L19 20L18.3 17.7L16 17L18.3 16.3L19 14Z" fill="#8250df"/></svg>
+            <span>AI 助手</span>
+          </div>
+          <span class="ai-asst-quota" id="aiAsstQuota">今日剩余 100 次</span>
+        </div>
+        <div class="ai-asst-header-right">
+          
+          <button class="ai-asst-btn" onclick="aiAsstExportConv()" title="导出当前对话">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            导出
+          </button>
+          <button class="ai-asst-btn" onclick="aiAsstClearAll()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            清除
+          </button>
+          <button class="ai-asst-close" onclick="closeAIAssistant()" title="返回项目列表">&times;</button>
+        </div>
+      </div>
+      <!-- Main: 两栏 -->
+      <div class="ai-asst-main">
+        <!-- 左侧对话列表 -->
+        <div class="ai-asst-conversations">
+          <div class="ai-asst-conv-header">最近对话</div>
+          <div class="ai-asst-conv-list" id="aiAsstConvList"></div>
+          <div class="ai-asst-conv-footer">
+            <button class="ai-asst-new-chat" onclick="aiAsstNewChat()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              新建对话
+            </button>
+          </div>
+        </div>
+        <!-- 右侧聊天区 -->
+        <div class="ai-asst-chat">
+          <div class="ai-asst-chat-inner">
+          <!-- 消息区域 -->
+          <div class="ai-asst-messages" id="aiAsstMessages">
+            <div class="ai-asst-welcome" id="aiAsstWelcome">
+              <h2>今天想让 AI 帮你做什么？</h2>
+              <p>我可以帮你推荐项目、回答代码问题，或者和你聊天。</p>
+              <div class="ai-asst-feature-cards">
+                <div class="ai-asst-feature-card" onclick="aiAsstSend('推荐几个游戏项目')">
+                  <div class="ai-asst-feature-icon">🤖</div>
+                  <div class="ai-asst-feature-name">智能问答</div>
+                  <div class="ai-asst-feature-desc">推荐项目、解答问题</div>
+                </div>
+              </div>
+              <div class="ai-asst-suggestions">
+                <span class="ai-asst-suggestion" onclick="aiAsstSend('推荐几个游戏项目')">推荐几个游戏项目</span>
+                <span class="ai-asst-suggestion" onclick="aiAsstSend('有哪些 AI 相关的项目？')">有哪些 AI 相关的项目？</span>
+                <span class="ai-asst-suggestion" onclick="aiAsstSend('我想做一个工具类项目')">我想做一个工具类项目</span>
+                <span class="ai-asst-suggestion" onclick="aiAsstSend('给我推荐热门项目')">给我推荐热门项目</span>
+              </div>
+            </div>
+          </div>
+          <!-- 底部输入区 -->
+          <div class="ai-asst-input-area">
+            <select class="ai-asst-model-select" id="aiAsstModel" onchange="aiAsstSetModel(this.value)">
+              <option value="openrouter/free">🌐 Free Auto-Route</option>
+            </select>
+            <input type="text" class="ai-asst-input" id="aiAsstInput" placeholder="输入你的问题或需求..." autocomplete="off" />
+            <div class="ai-asst-input-actions">
+              <button class="ai-asst-icon-btn" title="语音输入" onclick="aiAsstVoice()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              </button>
+              <button class="ai-asst-icon-btn" title="附件" onclick="aiAsstAttach()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+            </div>
+            <button class="ai-asst-send" id="aiAsstSendBtn" onclick="aiAsstSend()">
+              发送
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 移动端底部导航栏 -->
+<div class="mobile-bottom-nav" id="mobileBottomNav">
+  <div class="mb-nav-item active" data-page="home" onclick="mbNavClick('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>首页</span>
+  </div>
+  <div class="mb-nav-item" data-page="about" onclick="mbNavClick('about')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <span>关于</span>
+  </div>
+  <div class="mb-nav-item" data-page="mindmap" onclick="mbNavClick('mindmap')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+    <span>思维导图</span>
+  </div>
+  <div class="mb-nav-item" data-page="ai" onclick="mbNavClick('ai')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/></svg>
+    <span>AI 助手</span>
   </div>
 </div>
 
@@ -3447,9 +3771,18 @@ body::before {
         <div class="code-header">
           <div class="code-tabs" id="codeTabs"></div>
           <div class="code-actions">
-            <button class="code-action-btn" id="btnRun" title="运行 Python 代码" style="display:none">
+            <select id="runModeSelect" class="run-mode-select" title="运行模式" style="display:none">
+              <option value="single">单文件</option>
+              <option value="project">整个项目</option>
+            </select>
+            <select id="entryFileSelect" class="entry-file-select" title="入口文件" style="display:none"></select>
+            <button class="code-action-btn btn-run" id="btnRun" title="运行 Python 代码" style="display:none">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              运行
+              <span id="btnRunLabel">运行</span>
+            </button>
+            <button class="code-action-btn btn-stop" id="btnStop" title="停止运行" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+              停止
             </button>
             <button class="code-action-btn" id="btnCopy" title="复制代码">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
@@ -3477,13 +3810,18 @@ body::before {
         <div class="terminal-header">
           <div class="terminal-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            <span>Python 终端</span>
+            <span id="terminalTitle">Python 终端</span>
+            <span id="runStatus" class="run-status" style="display:none"></span>
           </div>
           <div>
             <button class="terminal-close-btn" id="btnTerminalClose" title="关闭终端">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
+        </div>
+        <div id="depsProgress" class="deps-progress" style="display:none">
+          <div class="deps-progress-bar" id="depsProgressBar"></div>
+          <span class="deps-progress-text" id="depsProgressText">准备中...</span>
         </div>
         <div class="terminal-body" id="terminalBody">
           <div class="terminal-output" id="terminalOutput"></div>
@@ -3507,8 +3845,7 @@ body::before {
   </div>
 </div>
 
-<!-- CodeMirror 6 loaded via import map + dynamic import() -->
-<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<!-- Monaco Editor loaded via CDN -->
 
 <!-- ========== 更新日志弹窗 ========== -->
 <div class="changelog-modal-overlay" id="changelogModalOverlay" onclick="if(event.target===this)closeChangelogModal()">
@@ -3569,154 +3906,7 @@ body::before {
   </div>
 </div>
 
-<!-- ========== AI 助手全屏 Overlay ========== -->
-<div class="ai-assistant-overlay" id="aiAssistantOverlay" onclick="if(event.target===this)closeAIAssistant()">
-  <div class="ai-assistant-container">
-    <!-- Header -->
-    <div class="ai-asst-header">
-      <div class="ai-asst-header-left">
-        <div class="ai-asst-title">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="#a371f7"/><path d="M19 14L19.7 16.3L22 17L19.7 17.7L19 20L18.3 17.7L16 17L18.3 16.3L19 14Z" fill="#8250df"/></svg>
-          <span>AI 助手</span>
-        </div>
-        <span class="ai-asst-quota" id="aiAsstQuota">今日剩余 100 次</span>
-      </div>
-      <div class="ai-asst-header-right">
-        <button class="ai-asst-btn" onclick="aiAsstToggleImgGen()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-          生成图片
-        </button>
-        <button class="ai-asst-btn" onclick="aiAsstClear()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-          清除
-        </button>
-        <button class="ai-asst-close" onclick="closeAIAssistant()">&times;</button>
-      </div>
-    </div>
-    <!-- Main: 三栏 -->
-    <div class="ai-asst-main">
-      <!-- 左侧导航 -->
-      <div class="ai-asst-nav">
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();document.getElementById('aiAssistantEntry')&&window.scrollTo({top:0})">
-          <span class="ai-asst-nav-icon">📁</span><span>全部</span>
-        </div>
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();filterProjects('web-game')">
-          <span class="ai-asst-nav-icon">🌐</span><span>网页游戏</span>
-        </div>
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();filterProjects('game')">
-          <span class="ai-asst-nav-icon">🎮</span><span>游戏</span>
-        </div>
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();filterProjects('ai')">
-          <span class="ai-asst-nav-icon">🤖</span><span>AI</span>
-        </div>
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();filterProjects('tool')">
-          <span class="ai-asst-nav-icon">🔧</span><span>工具</span>
-        </div>
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();filterProjects('other')">
-          <span class="ai-asst-nav-icon">📁</span><span>其他</span>
-        </div>
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();filterProjects('system-file')">
-          <span class="ai-asst-nav-icon">📋</span><span>系统文件</span>
-        </div>
-        <div class="ai-asst-nav-divider"></div>
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();openAboutModal()">
-          <span class="ai-asst-nav-icon">ℹ️</span><span>关于</span>
-        </div>
-        <div class="ai-asst-nav-item" onclick="closeAIAssistant();openMindmapModal()">
-          <span class="ai-asst-nav-icon">🧠</span><span>思维导图</span>
-        </div>
-        <div class="ai-asst-nav-item active">
-          <span class="ai-asst-nav-icon">✨</span><span>AI 助手</span>
-        </div>
-      </div>
-      <!-- 中间对话列表 -->
-      <div class="ai-asst-conversations">
-        <div class="ai-asst-conv-header">最近对话</div>
-        <div class="ai-asst-conv-list" id="aiAsstConvList"></div>
-        <div class="ai-asst-conv-footer">
-          <button class="ai-asst-new-chat" onclick="aiAsstNewChat()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            新建对话
-          </button>
-        </div>
-      </div>
-      <!-- 右侧聊天区 -->
-      <div class="ai-asst-chat">
-        <!-- 图片生成面板 -->
-        <div class="ai-asst-img-gen" id="aiAsstImgGen">
-          <div class="ai-asst-img-gen-title"><span>🎨</span><span>图片生成</span></div>
-          <div class="ai-asst-img-gen-row">
-            <div class="ai-asst-img-gen-input" style="flex:2">
-              <label>图片描述</label>
-              <input type="text" id="aiAsstImgPrompt" placeholder="描述你想生成的图片内容..." />
-            </div>
-            <div class="ai-asst-img-gen-input" style="flex:0 0 120px">
-              <label>尺寸</label>
-              <select id="aiAsstImgSize">
-                <option value="1024x1024">1024x1024</option>
-                <option value="1024x768" selected>1024x768</option>
-                <option value="768x1024">768x1024</option>
-              </select>
-            </div>
-            <button class="ai-asst-img-gen-btn" id="aiAsstImgBtn" onclick="aiAsstGenImage()">生成图片</button>
-          </div>
-        </div>
-        <!-- 消息区域 -->
-        <div class="ai-asst-messages" id="aiAsstMessages">
-          <div class="ai-asst-welcome" id="aiAsstWelcome">
-            <h2>今天想让 AI 帮你做什么？</h2>
-            <p>我可以帮你推荐项目、回答代码问题、生成图片，或者和你聊天。</p>
-            <div class="ai-asst-feature-cards">
-              <div class="ai-asst-feature-card" onclick="aiAsstSend('推荐几个游戏项目')">
-                <div class="ai-asst-feature-icon">🤖</div>
-                <div class="ai-asst-feature-name">智能问答</div>
-                <div class="ai-asst-feature-desc">推荐项目、解答问题</div>
-              </div>
-              <div class="ai-asst-feature-card" onclick="aiAsstToggleImgGen()">
-                <div class="ai-asst-feature-icon">🖼️</div>
-                <div class="ai-asst-feature-name">图像生成</div>
-                <div class="ai-asst-feature-desc">描述需求生成图片</div>
-              </div>
-            </div>
-            <div class="ai-asst-suggestions">
-              <span class="ai-asst-suggestion" onclick="aiAsstSend('推荐几个游戏项目')">推荐几个游戏项目</span>
-              <span class="ai-asst-suggestion" onclick="aiAsstSend('有哪些 AI 相关的项目？')">有哪些 AI 相关的项目？</span>
-              <span class="ai-asst-suggestion" onclick="aiAsstSend('我想做一个工具类项目')">我想做一个工具类项目</span>
-              <span class="ai-asst-suggestion" onclick="aiAsstSend('给我推荐热门项目')">给我推荐热门项目</span>
-            </div>
-          </div>
-        </div>
-        <!-- 底部输入区 -->
-        <div class="ai-asst-input-area">
-          <select class="ai-asst-model-select" id="aiAsstModel" onchange="aiAsstSetModel(this.value)">
-            <option value="glm-4.7-flash">🧠 GLM-4.7-Flash</option>
-            <optgroup label="OpenRouter (免费)">
-              <option value="openrouter/free">🌐 Free Auto-Route</option>
-              <option value="nvidia/nemotron-3-super-120b-a12b:free">🟢 Nemotron 3 Super 120B</option>
-              <option value="nvidia/nemotron-3-ultra:free">🟢 Nemotron 3 Ultra</option>
-              <option value="google/gemma-4-31b:free">🔵 Gemma 4 31B</option>
-              <option value="openai/gpt-oss-20b:free">⚪ GPT-OSS 20B</option>
-              <option value="qwen/qwen3-8b:free">🟠 Qwen3 8B</option>
-            </optgroup>
-          </select>
-          <input type="text" class="ai-asst-input" id="aiAsstInput" placeholder="输入你的问题或需求..." autocomplete="off" />
-          <div class="ai-asst-input-actions">
-            <button class="ai-asst-icon-btn" title="语音输入" onclick="aiAsstVoice()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-            </button>
-            <button class="ai-asst-icon-btn" title="附件" onclick="aiAsstAttach()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-            </button>
-          </div>
-          <button class="ai-asst-send" id="aiAsstSendBtn" onclick="aiAsstSend()">
-            发送
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- AI 助手页面已移至 project-list-layout 内部（cardsGrid 之后）-->
 
 <!-- ========== 登录提示弹窗 ========== -->
 <div class="auth-prompt-overlay" id="authPromptOverlay" onclick="if(event.target===this)closeAuthPromptModal()">
@@ -3782,6 +3972,8 @@ const state = {
   flatFiles: [],
   projects: [],        // 项目卡片数据
   currentProject: null,
+  currentUser: null,
+  isAuthenticated: false,
   openTabs: [],
   activeTabIdx: -1,
   expandedDirs: new Set(),
@@ -3791,6 +3983,10 @@ const state = {
   view: 'home',        // 当前视图: home | editor
 };
 
+function isLoggedIn() {
+  return !!state.currentUser && !!getCookie('wg_token');
+}
+
 const $ = (sel) => document.querySelector(sel);
 
 // ==================== API ====================
@@ -3799,12 +3995,13 @@ async function api(url, opts = {}) {
     const res = await fetch(url, opts);
     if (res.status === 401) {
       delCookie('wg_token');
+      state.currentUser = null;
       if (userMenuBtn) userMenuBtn.classList.add('hidden');
       if (userDropdown) userDropdown.classList.remove('show');
       hideAdminDashboard();
       const hasProjects = state.projects && state.projects.length > 0;
       if (!hasProjects) {
-        showLoginPage(false);
+        showLoginPage();
         const grid = document.getElementById('cardsGrid');
         if (grid) grid.innerHTML = '';
       } else {
@@ -3826,7 +4023,8 @@ async function fetchProjectList() {
   const res = await api('/api/projects/list', { cache: 'no-store' });
   return res.json();
 }
-async function fetchProjectTree(path) { return (await api(`/api/projects/tree?path=${encodeURIComponent(path)}`)).json(); }
+async function fetchProjectTree(path) { return (await api(`/api/projects/tree?path=${encodeURIComponent(path)}&depth=1`)).json(); }
+async function fetchSubtree(project, dir) { return (await api(`/api/files/subtree?project=${encodeURIComponent(project)}&dir=${encodeURIComponent(dir)}&depth=1`)).json(); }
 async function fetchContent(path) { return (await api(`/api/files/content?path=${encodeURIComponent(path)}`)).json(); }
 async function fetchSearch(q) { return (await api(`/api/files/search?q=${encodeURIComponent(q)}`)).json(); }
 
@@ -3845,7 +4043,7 @@ const PROJECT_TYPES = {
     cls: 'card-game', label: '游戏'
   },
   ai: {
-    keywords: ['AI','人工智能','机器学习','模型训练','图像识别','手写识别','文字转语音','TTS','语音','识别','deepseek','ollama','LLM','微信自动回复','zhipu','agent','生成图片'],
+    keywords: ['AI','人工智能','机器学习','模型训练','图像识别','手写识别','文字转语音','TTS','语音','识别','deepseek','ollama','LLM','微信自动回复','zhipu','agent'],
     cls: 'card-ai', label: 'AI'
   },
   tool: {
@@ -3885,7 +4083,6 @@ const PROJECT_ICONS = {
   'python-stroop训练': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 12l9-3"/></svg>',
   'python-学习资料': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
   'python 逗神文化管理': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-  'python ai生成图片': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
   '奇奇怪怪的AI功能': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2"/><path d="M15 16a5 5 0 1 1-4.995-5.217L10 9.5V5"/><path d="M9 9h6"/><path d="M9 13h6"/></svg>',
   'Python实践': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
   '每日励志语句': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
@@ -3927,7 +4124,6 @@ const PROJECT_COVERS = {
   'python-stroop训练': '/images/covers/stroop_training.jpg',
   // ===== AI & 工具类 =====
   'python AI实战': '/images/covers/python_ai_practice.jpg',
-  'python ai生成图片': '/images/covers/python_ai_image_gen.jpg',
   'Python 微信自动回复AI': '/images/covers/python_wechat_ai.jpg',
   '奇奇怪怪的AI功能': '/images/covers/weird_ai_tools.jpg',
   'python 天气可视化': '/images/covers/python_weather.jpg',
@@ -4023,7 +4219,6 @@ function getProjectDesc(name) {
     '每日励志语句': '每日获取励志语录与正能量金句的小工具',
     '趣味小游戏': '多款趣味休闲小游戏合集，即开即玩',
     'Python 微信自动回复AI': '微信自动回复机器人，集成AI对话与智能应答',
-    'python ai生成图片': '基于AI模型的文本生成图像工具，文生图创作',
     'fathers-day': '父亲节爱心祝福动画，实时倒计时与互动点击特效',
   };
   return descs[name] || 'Python 项目集合';
@@ -4193,6 +4388,8 @@ function renderCategoryIndex(projects) {
 
   container.querySelectorAll('.category-index-item').forEach(item => {
     item.addEventListener('click', () => {
+      // 关闭 AI 助手页面
+      closeAIAssistant();
       const filter = item.dataset.filter;
       state.currentFilter = filter;
 
@@ -4384,6 +4581,7 @@ async function openProject(projectPath) {
     state.currentProjectTreeNode = projectTreeNode;
     state.flatFiles = flattenTree([projectTreeNode]);
     renderProjectFileTree([projectTreeNode]);
+    updateRunButtonVisibility();
   } catch(err) {
     $('#fileTree').innerHTML = `<div class="home-loading" style="padding:20px;color:var(--accent-red)">加载失败: ${esc(err.message)}</div>`;
   }
@@ -4393,11 +4591,16 @@ function goHome() {
   $('#editorPage').style.display = 'none';
   $('#homePage').style.display = 'flex';
   state.currentProject = null;
+  state.currentProjectTreeNode = null;
   state.openTabs = [];
   state.activeTabIdx = -1;
   state.view = 'home';
   $('#themeToggleBtn').style.display = '';
   $('#changelogBtn').style.display = '';
+  $('#runModeSelect').style.display = 'none';
+  $('#entryFileSelect').style.display = 'none';
+  $('#btnRun').style.display = 'none';
+  $('#btnStop').style.display = 'none';
   if (state.isAuthenticated) {
     $('#userMenuBtn').style.display = '';
     $('#userMenuBtn').classList.remove('hidden');
@@ -4444,7 +4647,8 @@ function flattenTree(nodes, base = '') {
     if (!n || typeof n !== 'object') continue;
     const fp = base ? `${base}/${n.name}` : n.name;
     if (n.type === 'file') r.push({...n, path: fp});
-    if (n.children) r.push(...flattenTree(n.children, fp));
+    // 懒加载：只有已加载的子节点才递归（跳过 hasChildren 但 children 为空的目录）
+    if (n.children && n.children.length > 0) r.push(...flattenTree(n.children, fp));
   }
   return r;
 }
@@ -4458,7 +4662,9 @@ function buildTreeHTML(nodes, depth = 0) {
     const nid = n.path.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '_');
     if (n.type === 'directory') {
       const exp = state.expandedDirs.has(n.path);
-      h += `<div><div class="tree-item" style="padding-left:${pad+12}px" data-dir="${esc(n.path)}">`;
+      // 懒加载：目录标记 hasChildren 但子节点未加载时，标记为 data-lazy
+      const isLazy = n.hasChildren && (!n.children || n.children.length === 0);
+      h += `<div><div class="tree-item" style="padding-left:${pad+12}px" data-dir="${esc(n.path)}"${isLazy?' data-lazy="1"':''}>`;
       h += `<svg class="chevron ${exp?'expanded':''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`;
       h += `<svg class="folder-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>`;
       h += `<span class="tree-item-name">${esc(n.name)}</span></div>`;
@@ -4503,13 +4709,59 @@ function filterTreeNodes(nodes, filter) {
   return r;
 }
 
-function toggleDir(dirPath) {
+// 懒加载：将加载好的子节点插入到树数据结构中
+function insertChildrenIntoTree(node, dirPath, children) {
+  if (!node) return false;
+  if (node.path === dirPath && node.type === 'directory') {
+    node.children = children;
+    return true;
+  }
+  if (node.children) {
+    for (const child of node.children) {
+      if (insertChildrenIntoTree(child, dirPath, children)) return true;
+    }
+  }
+  return false;
+}
+
+async function toggleDir(dirPath) {
+  const dirEl = $('#fileTree').querySelector(`[data-dir="${esc(dirPath)}"]`);
+  // 如果是展开操作且目录标记为懒加载，先获取子节点
+  if (!state.expandedDirs.has(dirPath) && dirEl && dirEl.dataset.lazy === '1') {
+    const nid = dirPath.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '_');
+    const c = document.getElementById('c_'+nid);
+    if (c) c.innerHTML = '<div style="padding:8px 12px;color:var(--text-tertiary);font-size:12px">加载中...</div>';
+    try {
+      const projectPath = state.currentProject ? state.currentProject.path : '';
+      const children = await fetchSubtree(projectPath, dirPath);
+      // 更新树数据结构
+      insertChildrenIntoTree(state.currentProjectTreeNode, dirPath, children);
+      // 渲染子节点
+      if (c) c.innerHTML = buildTreeHTML(children, 0);
+      // 绑定子节点事件
+      if (c) {
+        c.querySelectorAll('[data-dir]').forEach(el => {
+          el.addEventListener('click', e => { e.stopPropagation(); toggleDir(el.dataset.dir); });
+        });
+        c.querySelectorAll('[data-file]').forEach(el => {
+          el.addEventListener('click', e => { e.stopPropagation(); openFile(el.dataset.file); });
+        });
+      }
+      // 标记为已加载
+      dirEl.removeAttribute('data-lazy');
+      // 更新文件计数
+      state.flatFiles = flattenTree([state.currentProjectTreeNode]);
+      $('#fileCount').textContent = `${state.flatFiles.length} 个文件`;
+    } catch(err) {
+      if (c) c.innerHTML = '<div style="padding:8px 12px;color:var(--accent-red);font-size:12px">加载失败</div>';
+      return;
+    }
+  }
   if (state.expandedDirs.has(dirPath)) state.expandedDirs.delete(dirPath);
   else state.expandedDirs.add(dirPath);
   const nid = dirPath.replace(/[^a-zA-Z0-9\u4e00-\u9fff]/g, '_');
   const c = document.getElementById('c_'+nid);
   if (c) c.classList.toggle('collapsed');
-  const dirEl = $('#fileTree').querySelector(`[data-dir="${esc(dirPath)}"]`);
   if (dirEl) { const cv = dirEl.querySelector('.chevron'); if (cv) cv.classList.toggle('expanded'); }
 }
 
@@ -4530,7 +4782,7 @@ async function openFile(filePath) {
   } catch (err) { toast(`加载失败: ${err.message}`); }
 }
 
-function switchTab(idx) { state.activeTabIdx = idx; renderTabs(); renderCode(); }
+function switchTab(idx) { state.activeTabIdx = idx; renderTabs(); renderCode(); updateRunButtonVisibility(); }
 
 function closeTab(idx, e) {
   e.stopPropagation();
@@ -4540,6 +4792,7 @@ function closeTab(idx, e) {
   else if (was) switchTab(Math.min(idx, state.openTabs.length - 1));
   else if (state.activeTabIdx > idx) state.activeTabIdx--;
   renderTabs();
+  updateRunButtonVisibility();
 }
 
 function renderTabs() {
@@ -4589,55 +4842,69 @@ function togglePreview() {
   }
 }
 
-// ==================== CODEMIRROR 6 ====================
-let cmModules = null;
-let cmView = null;
-let cmLineWrapping = false;
+// ==================== MONACO EDITOR ====================
+let monacoEditor = null;
+let monacoReady = false;
+let monacoInitPromise = null;
 
-async function loadCodeMirror() {
-  if (cmModules) return cmModules;
-  const [view, state, search, language, commands, theme] = await Promise.all([
-    import("@codemirror/view"),
-    import("@codemirror/state"),
-    import("@codemirror/search"),
-    import("@codemirror/language"),
-    import("@codemirror/commands"),
-    import("@codemirror/theme-one-dark"),
-  ]);
-  cmModules = { view, state, search, language, commands, theme };
-  return cmModules;
+function initMonaco() {
+  if (monacoInitPromise) return monacoInitPromise;
+  monacoInitPromise = new Promise((resolve) => {
+    if (typeof monaco !== 'undefined' && monaco.editor && monaco.editor.create) {
+      monacoReady = true;
+      resolve();
+      return;
+    }
+    // 触发 AMD require 加载 Monaco Editor 主模块
+    try {
+      require(['vs/editor/editor.main'], function() {
+        monacoReady = true;
+        resolve();
+      });
+    } catch(e) {
+      // 备用：轮询等待
+      const check = setInterval(function() {
+        if (typeof monaco !== 'undefined' && monaco.editor && monaco.editor.create) {
+          clearInterval(check);
+          monacoReady = true;
+          resolve();
+        }
+      }, 100);
+    }
+  });
+  return monacoInitPromise;
 }
 
-async function getLanguageExtension(lang) {
+function getMonacoLanguage(lang) {
   const langMap = {
-    'python': '@codemirror/lang-python',
-    'javascript': '@codemirror/lang-javascript',
-    'html': '@codemirror/lang-html',
-    'css': '@codemirror/lang-css',
-    'json': '@codemirror/lang-json',
-    'markdown': '@codemirror/lang-markdown',
-  };
-  const exportNames = {
     'python': 'python',
     'javascript': 'javascript',
     'html': 'html',
     'css': 'css',
     'json': 'json',
     'markdown': 'markdown',
+    'typescript': 'typescript',
+    'jsx': 'javascript',
+    'tsx': 'typescript',
+    'xml': 'xml',
+    'yaml': 'yaml',
+    'shell': 'shell',
+    'sql': 'sql',
   };
-  const modulePath = langMap[lang];
-  if (!modulePath) return [];
-  try {
-    const mod = await import(modulePath);
-    const fn = mod[exportNames[lang]] || mod.default;
-    return typeof fn === 'function' ? [fn()] : [];
-  } catch { return []; }
+  return langMap[lang] || 'plaintext';
 }
 
-function getCmThemeExtension() {
-  const theme = getTheme();
-  if (theme === 'dark') return cmModules.theme.oneDark;
-  return [];
+function getMonacoTheme() {
+  return getTheme() === 'dark' ? 'vs-dark' : 'vs';
+}
+
+function ensureMonacoContainer() {
+  const container = document.getElementById('codeViewer');
+  // 如果容器内没有 monaco 编辑器实例，清空并创建 div
+  if (!container.querySelector('.monaco-editor')) {
+    container.innerHTML = '<div id="monacoContainer" style="width:100%;height:100%"></div>';
+  }
+  return document.getElementById('monacoContainer');
 }
 
 async function renderCode() {
@@ -4651,29 +4918,49 @@ async function renderCode() {
   document.getElementById('btnPreviewLabel').textContent = '预览';
 
   try {
-    const cm = await loadCodeMirror();
-    const langExt = await getLanguageExtension(tab.language);
+    // 显示加载状态
     const container = document.getElementById('codeViewer');
-    container.innerHTML = '<div style="padding:20px;color:var(--text-tertiary);font-size:14px">正在加载代码编辑器...</div>';
+    container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-tertiary);font-size:14px"><div class="spinner" style="margin-right:10px"></div>正在加载代码编辑器...</div>';
 
-    const extensions = [
-      cm.view.lineNumbers(),
-      cm.view.highlightActiveLine(),
-      cm.language.foldGutter(),
-      cm.search.search(),
-      cm.commands.defaultKeymap,
-      cm.view.highlightSpecialChars(),
-      cm.view.drawSelection(),
-    ];
+    await initMonaco();
+    const language = getMonacoLanguage(tab.language);
+    const theme = getMonacoTheme();
+    container.innerHTML = '<div id="monacoContainer" style="width:100%;height:100%"></div>';
 
-    if (cmLineWrapping) extensions.push(cm.view.EditorView.lineWrapping);
-    extensions.push(...langExt);
-    extensions.push(getCmThemeExtension());
+    if (monacoEditor) {
+      monacoEditor.dispose();
+      monacoEditor = null;
+    }
 
-    if (cmView) { cmView.destroy(); }
-    cmView = new cm.view.EditorView({
-      state: cm.state.EditorState.create({ doc: tab.content, extensions }),
-      parent: container
+    // 创建编辑器
+    monacoEditor = monaco.editor.create(document.getElementById('monacoContainer'), {
+      value: tab.content,
+      language: language,
+      theme: theme,
+      automaticLayout: true,
+      minimap: { enabled: true },
+      fontSize: 14,
+      tabSize: 4,
+      wordWrap: 'on',
+      lineNumbers: 'on',
+      readOnly: false,
+      scrollBeyondLastLine: false,
+      renderWhitespace: 'selection',
+      bracketPairColorization: { enabled: true },
+      fontFamily: "'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace",
+      fontLigatures: true,
+      smoothScrolling: true,
+      cursorBlinking: 'smooth',
+      cursorSmoothCaretAnimation: 'on',
+      padding: { top: 8 },
+    });
+
+    // 监听内容变化
+    monacoEditor.onDidChangeModelContent(function () {
+      // 更新 tab 内容
+      if (state.activeTabIdx >= 0 && state.openTabs[state.activeTabIdx]) {
+        state.openTabs[state.activeTabIdx].content = monacoEditor.getValue();
+      }
     });
   } catch(e) {
     // Fallback: 显示纯文本
@@ -4684,33 +4971,121 @@ async function renderCode() {
     `<span>${esc(p)}</span>${i<a.length-1?'<span class="sep">/</span>':''}`).join('');
   $('#btnCopy').style.display = '';
   $('#btnPreview').style.display = isPreviewable(tab.path) ? '' : 'none';
-  $('#btnRun').style.display = (tab.path || '').toLowerCase().endsWith('.py') ? '' : 'none';
+  updateRunButtonVisibility();
 }
 
-// ==================== PYTHON EXECUTION ====================
-let pyodide = null;
-let pyodideLoading = false;
+// ==================== PYTHON EXECUTION (SERVER-SIDE) ====================
+let currentRunId = null;
+let runAbortController = null;
+state.isRunning = false;
 
-async function initPyodide() {
-  if (pyodide) return pyodide;
-  if (pyodideLoading) {
-    return new Promise((resolve) => {
-      const check = setInterval(() => {
-        if (pyodide) { clearInterval(check); resolve(pyodide); }
-      }, 100);
-    });
+function setRunStatus(status, text) {
+  const el = $('#runStatus');
+  const btnRun = $('#btnRun');
+  const btnStop = $('#btnStop');
+  if (!status) {
+    el.style.display = 'none';
+    btnRun.classList.remove('running');
+    btnRun.querySelector('#btnRunLabel')?.remove();
+    btnRun.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span id="btnRunLabel">运行</span>';
+    btnStop.style.display = 'none';
+    return;
   }
-  pyodideLoading = true;
-  try {
-    pyodide = await loadPyodide({
-      indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/"
-    });
-    pyodideLoading = false;
-    return pyodide;
-  } catch(e) {
-    pyodideLoading = false;
-    throw e;
+  el.style.display = '';
+  el.className = 'run-status ' + status;
+  el.textContent = text;
+  if (status === 'running' || status === 'preparing' || status === 'installing' || status === 'copying' || status === 'venv' || status === 'analyzing') {
+    btnRun.classList.add('running');
+    const label = btnRun.querySelector('#btnRunLabel');
+    if (label) label.textContent = '运行中...';
+    btnStop.style.display = '';
+  } else {
+    btnRun.classList.remove('running');
+    const label = btnRun.querySelector('#btnRunLabel');
+    if (label) label.textContent = '运行';
+    btnStop.style.display = 'none';
   }
+}
+
+function showDepsProgress(text, progress) {
+  const bar = $('#depsProgress');
+  const barText = $('#depsProgressText');
+  const barFill = $('#depsProgressBar');
+  bar.style.display = 'flex';
+  barText.textContent = text;
+  if (typeof progress === 'number' && progress >= 0) {
+    barFill.style.width = Math.min(100, Math.max(0, progress)) + '%';
+  }
+}
+
+function hideDepsProgress() {
+  $('#depsProgress').style.display = 'none';
+  $('#depsProgressBar').style.width = '0%';
+}
+
+function collectProjectPyFiles(nodes, prefix = '') {
+  const files = [];
+  if (!nodes || !Array.isArray(nodes)) return files;
+  for (const item of nodes) {
+    if (!item) continue;
+    if (item.type === 'file' && item.name.endsWith('.py')) {
+      const fullPath = prefix ? prefix + '/' + item.name : item.name;
+      files.push(fullPath);
+    } else if ((item.type === 'directory' || item.children) && item.children) {
+      const newPrefix = prefix ? prefix + '/' + item.name : item.name;
+      files.push(...collectProjectPyFiles(item.children, newPrefix));
+    }
+  }
+  return files;
+}
+
+function updateEntryFileOptions() {
+  const select = $('#entryFileSelect');
+  const mode = $('#runModeSelect').value;
+  const treeNode = state.currentProjectTreeNode;
+  if (mode === 'project' && state.currentProject && treeNode) {
+    select.style.display = '';
+    const pyFiles = collectProjectPyFiles(treeNode.children || []);
+    select.innerHTML = pyFiles.map(f =>
+      `<option value="${esc(f)}"${f === 'main.py' ? ' selected' : ''}>${esc(f)}</option>`
+    ).join('');
+    if (state.activeTabIdx >= 0) {
+      const tab = state.openTabs[state.activeTabIdx];
+      if (tab.path && tab.path.endsWith('.py') && state.currentProject.path) {
+        const projPrefix = state.currentProject.path + '/';
+        if (tab.path.startsWith(projPrefix)) {
+          const relPath = tab.path.substring(projPrefix.length);
+          if (pyFiles.includes(relPath)) select.value = relPath;
+        }
+      }
+    }
+  } else {
+    select.style.display = 'none';
+  }
+}
+
+function updateRunButtonVisibility() {
+  const mode = $('#runModeSelect').value;
+  const runBtn = $('#btnRun');
+  const modeSelect = $('#runModeSelect');
+  if (state.currentProject) {
+    modeSelect.style.display = '';
+    if (mode === 'single') {
+      if (state.activeTabIdx >= 0 && state.openTabs[state.activeTabIdx]) {
+        const tab = state.openTabs[state.activeTabIdx];
+        runBtn.style.display = (tab.path || '').toLowerCase().endsWith('.py') ? '' : 'none';
+      } else {
+        runBtn.style.display = 'none';
+      }
+    } else {
+      runBtn.style.display = '';
+    }
+  } else {
+    modeSelect.style.display = 'none';
+    runBtn.style.display = 'none';
+    $('#entryFileSelect').style.display = 'none';
+  }
+  updateEntryFileOptions();
 }
 
 function appendToTerminal(text, className = 'stdout') {
@@ -4732,39 +5107,171 @@ function hideTerminal() {
   $('#codePanel').classList.remove('has-terminal');
 }
 
-async function runPythonCode() {
-  if (state.activeTabIdx < 0 || !state.openTabs.length) return;
-  const tab = state.openTabs[state.activeTabIdx];
-  if (!tab.path.toLowerCase().endsWith('.py')) return;
-  
+async function runPythonCodeSSE() {
+  if (state.isRunning) return;
+  const mode = $('#runModeSelect').value;
+
   showTerminal();
   const output = $('#terminalOutput');
   output.innerHTML = '';
-  appendToTerminal('正在启动 Python 运行环境...', 'info');
-  
-  try {
-    const py = await initPyodide();
-    appendToTerminal('Python 环境就绪！', 'info');
-    appendToTerminal('', 'stdout');
-    appendToTerminal('========== 运行结果 ==========', 'info');
-    
-    let stdout = '';
-    let stderr = '';
-    
-    py.setStdout({ batched: (text) => { stdout += text; } });
-    py.setStderr({ batched: (text) => { stderr += text; } });
-    
-    const code = cmView ? cmView.state.doc.toString() : tab.content;
-    await py.runPythonAsync(code);
-    
-    if (stdout) appendToTerminal(stdout, 'stdout');
-    if (stderr) appendToTerminal(stderr, 'stderr');
-    
-    appendToTerminal('', 'stdout');
-    appendToTerminal('========== 运行完成 ==========', 'info');
-  } catch(e) {
-    appendToTerminal('错误: ' + (e.message || e), 'error');
+  hideDepsProgress();
+
+  const body = { mode, timeout: 120 };
+
+  if (mode === 'single') {
+    if (state.activeTabIdx < 0 || !state.openTabs.length) return;
+    const tab = state.openTabs[state.activeTabIdx];
+    if (!tab.path.toLowerCase().endsWith('.py')) return;
+    const code = monacoEditor ? monacoEditor.getValue() : tab.content;
+    body.code = code;
+    // 传入 fileName 让后端为每个单文件创建独立虚拟环境，避免不同文件之间的依赖冲突
+    body.fileName = tab.name || 'script.py';
+    appendToTerminal('========== 单文件运行 ==========', 'info');
+  } else {
+    if (!state.currentProject) return;
+    body.projectPath = state.currentProject.path;
+    body.entryFile = $('#entryFileSelect').value || 'main.py';
+    body.files = {};
+    for (const tab of state.openTabs) {
+      if (tab.path && state.currentProject.path && tab.path.startsWith(state.currentProject.path + '/')) {
+        const relPath = tab.path.substring(state.currentProject.path.length + 1);
+        const isActive = state.activeTabIdx >= 0 && state.openTabs[state.activeTabIdx] === tab;
+        const content = isActive && monacoEditor ? monacoEditor.getValue() : tab.content;
+        body.files[relPath] = content;
+      }
+    }
+    appendToTerminal(`========== 项目运行 (入口: ${body.entryFile}) ==========`, 'info');
   }
+
+  setRunStatus('preparing', '准备中...');
+  state.isRunning = true;
+  runAbortController = new AbortController();
+  currentRunId = null;
+
+  try {
+    const res = await fetch('/api/run/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: runAbortController.signal,
+    });
+    if (!res.ok) {
+      let errMsg = `HTTP ${res.status}`;
+      try { errMsg = (await res.json()).error || errMsg; } catch {}
+      throw new Error(errMsg);
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let sseBuffer = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      sseBuffer += decoder.decode(value, { stream: true });
+      const parts = sseBuffer.split('\n\n');
+      sseBuffer = parts.pop() || '';
+      for (const part of parts) {
+        const lines = part.split('\n');
+        let eventType = 'message';
+        let dataStr = '';
+        for (const line of lines) {
+          if (line.startsWith('event: ')) eventType = line.substring(7).trim();
+          else if (line.startsWith('data: ')) dataStr += line.substring(6);
+        }
+        if (!dataStr) continue;
+        try {
+          const data = JSON.parse(dataStr);
+          switch (eventType) {
+            case 'status':
+              if (data.runId) currentRunId = data.runId;
+              setRunStatus(data.phase, data.message);
+              appendToTerminal('[系统] ' + data.message, 'info');
+              break;
+            case 'deps':
+              setRunStatus('installing', '安装依赖...');
+              if (data.phase === 'installing' || data.phase === 'requirements_found') {
+                showDepsProgress(data.message || '安装依赖中...', 5);
+                appendToTerminal('[依赖] ' + data.message, 'info');
+              } else if (data.phase === 'installing_package') {
+                const idx = data.index || 0;
+                const total = data.total || 1;
+                const pct = 10 + Math.round((idx / total) * 80);
+                showDepsProgress(data.message || '安装中...', pct);
+                appendToTerminal('[依赖] ' + data.message, 'info');
+              } else if (data.phase === 'package_installed') {
+                // 已安装，不重复打印
+              } else if (data.phase === 'installed') {
+                showDepsProgress(data.message || '依赖安装完成', 100);
+                appendToTerminal('[依赖] ' + data.message, 'info');
+                setTimeout(() => hideDepsProgress(), 1500);
+              } else if (data.phase === 'pip_output') {
+                if (data.line) appendToTerminal('  ' + data.line, 'stdout');
+              } else {
+                showDepsProgress(data.message || '安装依赖中...');
+                appendToTerminal('[依赖] ' + data.message, 'info');
+              }
+              if (data.error) appendToTerminal('[依赖警告] ' + data.error, 'stderr');
+              break;
+            case 'stdout':
+              appendToTerminal(data.text, 'stdout');
+              break;
+            case 'stderr':
+              appendToTerminal(data.text, 'stderr');
+              break;
+            case 'exit':
+              hideDepsProgress();
+              appendToTerminal('', 'stdout');
+              if (data.code === 0) {
+                appendToTerminal('========== ' + data.message + ' ==========', 'info');
+                setRunStatus(null);
+              } else if (data.timedOut) {
+                appendToTerminal('========== ' + data.message + ' ==========', 'error');
+                setRunStatus('error', '超时');
+              } else {
+                appendToTerminal('========== ' + data.message + ' ==========', 'error');
+                setRunStatus('error', '出错');
+              }
+              state.isRunning = false;
+              break;
+            case 'error':
+              hideDepsProgress();
+              appendToTerminal('[错误] ' + data.message, 'error');
+              setRunStatus('error', '失败');
+              state.isRunning = false;
+              break;
+          }
+        } catch (parseErr) {
+          console.error('SSE parse error:', parseErr, dataStr);
+        }
+      }
+    }
+  } catch (e) {
+    hideDepsProgress();
+    if (e.name === 'AbortError') {
+      appendToTerminal('[已被用户停止]', 'info');
+      setRunStatus(null);
+    } else {
+      appendToTerminal('错误: ' + (e.message || e), 'error');
+      setRunStatus('error', '失败');
+    }
+    state.isRunning = false;
+  }
+}
+
+async function stopPythonCode() {
+  if (!state.isRunning) return;
+  if (runAbortController) runAbortController.abort();
+  if (currentRunId) {
+    try {
+      await fetch('/api/run/stop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ runId: currentRunId }),
+      });
+    } catch {}
+  }
+  setRunStatus(null);
+  state.isRunning = false;
+  hideDepsProgress();
 }
 
 // ==================== SEARCH ====================
@@ -4854,6 +5361,13 @@ document.getElementById('heroSearch').addEventListener('click', () => $('#heroSe
 
 $('#filterTabs').addEventListener('click', e => {
   if (!e.target.classList.contains('filter-tab')) return;
+  // 点击 AI 助手标签
+  if (e.target.dataset.filter === '__ai_asst__') {
+    openAIAssistant();
+    return;
+  }
+  // 关闭 AI 助手页面
+  closeAIAssistant();
   $('#filterTabs').querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   e.target.classList.add('active');
   state.currentFilter = e.target.dataset.filter;
@@ -4881,7 +5395,9 @@ if ($('#viewToggle')) {
 }
 
 $('#btnCopy').addEventListener('click', copyCode);
-$('#btnRun').addEventListener('click', runPythonCode);
+$('#btnRun').addEventListener('click', runPythonCodeSSE);
+$('#btnStop').addEventListener('click', stopPythonCode);
+$('#runModeSelect').addEventListener('change', () => { updateRunButtonVisibility(); });
 document.getElementById('btnPreview').addEventListener('click', togglePreview);
 $('#btnTerminalClose').addEventListener('click', hideTerminal);
 $('#btnSearchFile').addEventListener('click', openSearchGlobal);
@@ -4891,7 +5407,7 @@ $('#searchInput').addEventListener('input', () => doSearch($('#searchInput').val
 $('#searchOverlay').addEventListener('click', e => { if (e.target === $('#searchOverlay')) closeSearch(); });
 $('#treeFilter').addEventListener('input', () => {
   if (state.currentProject) {
-    renderProjectFileTree([state.currentProject.treeNode], $('#treeFilter').value);
+    renderProjectFileTree([state.currentProjectTreeNode], $('#treeFilter').value);
   }
 });
 
@@ -5056,20 +5572,58 @@ async function fetchAIRecommend() {
   }
 }
 
+// ===== 移动端底部导航栏点击处理 =====
+function mbNavClick(page) {
+  // 更新导航项高亮
+  document.querySelectorAll('.mb-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  var target = document.querySelector('.mb-nav-item[data-page="' + page + '"]');
+  if (target) target.classList.add('active');
+  // 根据页面类型执行操作
+  if (page === 'home') {
+    // 关闭 AI 助手（如果打开）
+    if (document.getElementById('aiAsstPage').classList.contains('active')) {
+      closeAIAssistant();
+    }
+    document.getElementById('cardsGrid').style.display = 'grid';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (page === 'about') {
+    openAboutModal();
+  } else if (page === 'mindmap') {
+    openMindmapModal();
+  } else if (page === 'ai') {
+    openAIAssistant();
+  }
+}
+
 // ===== AI 助手全屏 Overlay 逻辑 =====
 const AI_ASST = {
   messages: [],
   conversations: [],
   currentConv: null,
-  model: 'glm-4.7-flash',
+  model: 'openrouter/free',
   awaiting: false,
-  abortCtrl: null,
-  imgGenOpen: false
+  abortCtrl: null
 };
 
 function openAIAssistant() {
-  const overlay = document.getElementById('aiAssistantOverlay');
-  if (overlay) overlay.classList.add('active');
+  document.getElementById('cardsGrid').style.display = 'none';
+  const page = document.getElementById('aiAsstPage');
+  if (page) page.classList.add('active');
+  // 更新左侧分类索引高亮
+  document.querySelectorAll('.category-index-item').forEach(function(i) { i.classList.remove('active'); });
+  var entry = document.getElementById('aiAssistantEntry');
+  if (entry) entry.classList.add('active');
+  // 更新顶部 filter tabs：高亮 AI 助手按钮
+  var tabs = document.getElementById('filterTabs');
+  if (tabs) {
+    tabs.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+    var aiTab = document.getElementById('aiFilterTab');
+    if (aiTab) aiTab.classList.add('active');
+  }
+  // 更新底部导航栏高亮
+  document.querySelectorAll('.mb-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  var mbAi = document.querySelector('.mb-nav-item[data-page="ai"]');
+  if (mbAi) mbAi.classList.add('active');
   aiAsstInitModel();
   aiAsstLoadConvs();
   aiAsstSetupInput();
@@ -5077,9 +5631,23 @@ function openAIAssistant() {
 }
 
 function closeAIAssistant() {
-  const overlay = document.getElementById('aiAssistantOverlay');
-  if (overlay) overlay.classList.remove('active');
+  document.getElementById('cardsGrid').style.display = 'grid';
+  var page = document.getElementById('aiAsstPage');
+  if (page) page.classList.remove('active');
   if (AI_ASST.abortCtrl) { AI_ASST.abortCtrl.abort(); AI_ASST.abortCtrl = null; }
+  // 恢复全部 filter 高亮，取消 AI 助手高亮
+  var tabs = document.getElementById('filterTabs');
+  if (tabs) {
+    tabs.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+  }
+  var allTab = document.querySelector('.filter-tab[data-filter="all"]');
+  if (allTab) allTab.classList.add('active');
+  var allItem = document.querySelector('.category-index-item[data-filter="all"]');
+  if (allItem) allItem.classList.add('active');
+  // 恢复底部导航栏到首页
+  document.querySelectorAll('.mb-nav-item').forEach(function(i) { i.classList.remove('active'); });
+  var mbHome = document.querySelector('.mb-nav-item[data-page="home"]');
+  if (mbHome) mbHome.classList.add('active');
 }
 
 function aiAsstInitModel() {
@@ -5098,10 +5666,6 @@ function aiAsstSetupInput() {
   if (input) {
     input.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); aiAsstSend(); } };
   }
-  const imgInput = document.getElementById('aiAsstImgPrompt');
-  if (imgInput) {
-    imgInput.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); aiAsstGenImage(); } };
-  }
 }
 
 async function aiAsstFetchQuota() {
@@ -5116,13 +5680,55 @@ async function aiAsstFetchQuota() {
   } catch {}
 }
 
-function aiAsstLoadConvs() {
-  try { const s = localStorage.getItem('ai-asst-convs'); if (s) AI_ASST.conversations = JSON.parse(s); } catch {}
+async function aiAsstLoadConvs() {
+  if (!isLoggedIn()) {
+    AI_ASST.conversations = [];
+    aiAsstRenderConvs();
+    return;
+  }
+  try {
+    const res = await fetch('/api/user/conversations');
+    if (res.ok) {
+      const data = await res.json();
+      AI_ASST.conversations = (data.conversations || []).map(c => {
+        const t = new Date((c.updated_at || c.created_at) * 1000);
+        return {
+          id: c.id,
+          title: c.title,
+          time: String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0'),
+          messages: c.messages || []
+        };
+      });
+    }
+  } catch(e) {}
   aiAsstRenderConvs();
 }
 
-function aiAsstSaveConvs() {
-  try { localStorage.setItem('ai-asst-convs', JSON.stringify(AI_ASST.conversations)); } catch {}
+async function aiAsstSaveConvs() {
+  if (!isLoggedIn()) return;
+  // 保存当前对话
+  if (AI_ASST.currentConv !== null) {
+    const conv = AI_ASST.conversations[AI_ASST.currentConv];
+    if (conv) {
+      try {
+        const res = await fetch('/api/user/conversations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: conv.id || null,
+            title: conv.title,
+            messages: conv.messages
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.id && !conv.id) {
+            conv.id = data.id;
+          }
+        }
+      } catch(e) {}
+    }
+  }
 }
 
 function aiAsstRenderConvs() {
@@ -5133,9 +5739,12 @@ function aiAsstRenderConvs() {
     return;
   }
   list.innerHTML = AI_ASST.conversations.map((c, i) =>
-    '<div class="ai-asst-conv-item ' + (AI_ASST.currentConv === i ? 'active' : '') + '" onclick="aiAsstSwitchConv(' + i + ')">' +
+    '<div class="ai-asst-conv-item ' + (AI_ASST.currentConv === i ? 'active' : '') + '">' +
+    '<div class="ai-asst-conv-item-main" onclick="aiAsstSwitchConv(' + i + ')">' +
     '<span class="ai-asst-conv-title">' + aiAsstEsc(c.title) + '</span>' +
-    '<span class="ai-asst-conv-time">' + (c.time || '') + '</span></div>'
+    '<span class="ai-asst-conv-time">' + (c.time || '') + '</span></div>' +
+    '<button class="ai-asst-conv-del" onclick="event.stopPropagation();aiAsstDeleteConv(' + i + ')" title="删除对话">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>'
   ).join('');
 }
 
@@ -5157,7 +5766,77 @@ function aiAsstSwitchConv(idx) {
   aiAsstRenderConvs();
 }
 
-function aiAsstSaveCurrentConv(firstUserMsg) {
+async function aiAsstDeleteConv(idx) {
+  if (!confirm('确定要删除该对话吗？')) return;
+  const conv = AI_ASST.conversations[idx];
+  const convId = conv ? conv.id : null;
+
+  AI_ASST.conversations.splice(idx, 1);
+  if (AI_ASST.currentConv === idx) {
+    AI_ASST.currentConv = null;
+    AI_ASST.messages = [];
+  } else if (AI_ASST.currentConv !== null && AI_ASST.currentConv > idx) {
+    AI_ASST.currentConv--;
+  }
+  AI_ASST.awaiting = false;
+  if (AI_ASST.abortCtrl) { AI_ASST.abortCtrl.abort(); AI_ASST.abortCtrl = null; }
+  aiAsstRenderConvs();
+  aiAsstRenderMsgs();
+
+  // 同步删除到服务端
+  if (isLoggedIn() && convId) {
+    try {
+      await fetch('/api/user/conversations/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: convId })
+      });
+    } catch(e) {}
+  }
+}
+
+function aiAsstExportConv() {
+  if (AI_ASST.messages.length === 0) {
+    alert('当前没有可导出的对话内容');
+    return;
+  }
+  const format = confirm('点击"确定"导出为 JSON 格式，点击"取消"导出为 TXT 格式');
+  const conv = AI_ASST.conversations[AI_ASST.currentConv];
+  const title = conv ? conv.title : '对话记录';
+  const safeTitle = title.replace(/[<>:"\/\\|?*]/g, '_').substring(0, 50);
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
+  const filename = safeTitle + '_' + timestamp;
+
+  if (format) {
+    const exportData = {
+      title: title,
+      exportTime: new Date().toISOString(),
+      messages: AI_ASST.messages.map(m => ({ role: m.role, content: m.content }))
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename + '.json';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } else {
+    const lines = AI_ASST.messages.map(m => {
+      const role = m.role === 'user' ? '你' : 'AI 助手';
+      return '[' + role + ']\n' + m.content + '\n';
+    });
+    const text = '对话：' + title + '\n导出时间：' + new Date().toLocaleString() + '\n' + '-'.repeat(40) + '\n\n' + lines.join('\n');
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename + '.txt';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+}
+
+async function aiAsstSaveCurrentConv(firstUserMsg) {
   const title = firstUserMsg.substring(0, 28) + (firstUserMsg.length > 28 ? '...' : '');
   const now = new Date();
   const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
@@ -5169,8 +5848,9 @@ function aiAsstSaveCurrentConv(firstUserMsg) {
     AI_ASST.conversations.unshift({ title, time, messages: [...AI_ASST.messages] });
     AI_ASST.currentConv = 0;
   }
-  aiAsstSaveConvs();
   aiAsstRenderConvs();
+  // 异步保存到服务端
+  aiAsstSaveConvs();
 }
 
 function aiAsstNeedsProjects(text) {
@@ -5240,7 +5920,7 @@ function aiAsstAddMsg(role, content, recommendations, reasoning) {
   bubble.className = 'ai-asst-msg-bubble';
   if (reasoning) {
     const rDiv = document.createElement('div');
-    rDiv.innerHTML = '<details style="margin-bottom:8px"><summary style="cursor:pointer;color:var(--text-tertiary);font-size:12px">🤔 推理过程</summary><div style="font-size:12px;color:var(--text-tertiary);margin-top:8px;white-space:pre-wrap">' + aiAsstEsc(reasoning) + '</div></details>';
+    rDiv.innerHTML = '<details style="margin-bottom:8px"><summary style="cursor:pointer;color:var(--text-tertiary);font-size:12px">🤔 思考过程</summary><div style="font-size:12px;color:var(--text-tertiary);margin-top:8px;white-space:pre-wrap">' + aiAsstEsc(reasoning) + '</div></details>';
     bubble.appendChild(rDiv);
   }
   if (content) {
@@ -5298,10 +5978,9 @@ function aiAsstRenderMsgs() {
   if (AI_ASST.messages.length === 0) {
     container.innerHTML = '<div class="ai-asst-welcome" id="aiAsstWelcome">' +
       '<h2>今天想让 AI 帮你做什么？</h2>' +
-      '<p>我可以帮你推荐项目、回答代码问题、生成图片，或者和你聊天。</p>' +
+      '<p>我可以帮你推荐项目、回答代码问题，或者和你聊天。</p>' +
       '<div class="ai-asst-feature-cards">' +
       '<div class="ai-asst-feature-card" onclick="aiAsstSend(\'推荐几个游戏项目\')"><div class="ai-asst-feature-icon">🤖</div><div class="ai-asst-feature-name">智能问答</div><div class="ai-asst-feature-desc">推荐项目、解答问题</div></div>' +
-      '<div class="ai-asst-feature-card" onclick="aiAsstToggleImgGen()"><div class="ai-asst-feature-icon">🖼️</div><div class="ai-asst-feature-name">图像生成</div><div class="ai-asst-feature-desc">描述需求生成图片</div></div>' +
       '</div>' +
       '<div class="ai-asst-suggestions">' +
       '<span class="ai-asst-suggestion" onclick="aiAsstSend(\'推荐几个游戏项目\')">推荐几个游戏项目</span>' +
@@ -5314,8 +5993,12 @@ function aiAsstRenderMsgs() {
   AI_ASST.messages.forEach(m => aiAsstAddMsg(m.role, m.content));
 }
 
-function aiAsstClear() {
+function aiAsstClearAll() {
+  if (!AI_ASST.conversations.length && !AI_ASST.messages.length) return;
+  if (!confirm('确定要清除所有对话记录吗？此操作不可撤销。')) return;
+  try { localStorage.removeItem('ai-asst-convs'); } catch {}
   if (AI_ASST.abortCtrl) { AI_ASST.abortCtrl.abort(); AI_ASST.abortCtrl = null; }
+  AI_ASST.conversations = [];
   AI_ASST.messages = [];
   AI_ASST.awaiting = false;
   AI_ASST.currentConv = null;
@@ -5323,42 +6006,7 @@ function aiAsstClear() {
   aiAsstRenderConvs();
 }
 
-function aiAsstToggleImgGen() {
-  AI_ASST.imgGenOpen = !AI_ASST.imgGenOpen;
-  const panel = document.getElementById('aiAsstImgGen');
-  if (panel) panel.classList.toggle('active', AI_ASST.imgGenOpen);
-  if (AI_ASST.imgGenOpen) { const input = document.getElementById('aiAsstImgPrompt'); if (input) setTimeout(() => input.focus(), 100); }
-}
 
-async function aiAsstGenImage() {
-  const prompt = document.getElementById('aiAsstImgPrompt') && document.getElementById('aiAsstImgPrompt').value.trim();
-  const size = document.getElementById('aiAsstImgSize') && document.getElementById('aiAsstImgSize').value;
-  const btn = document.getElementById('aiAsstImgBtn');
-  if (!prompt || !btn) return;
-  btn.disabled = true; btn.textContent = '生成中...';
-  aiAsstAddMsg('user', '[生成图片] ' + prompt);
-  aiAsstShowTyping();
-  try {
-    const resp = await fetch('/api/generate-image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt, size }) });
-    aiAsstRemoveTyping();
-    const data = await resp.json();
-    if (data.url) {
-      const container = document.getElementById('aiAsstMessages');
-      const msg = document.createElement('div');
-      msg.className = 'ai-asst-msg assistant';
-      msg.innerHTML = '<div class="ai-asst-msg-avatar">✨</div><div class="ai-asst-msg-bubble"><p>图片生成完成：</p><img class="ai-asst-msg-image" src="' + aiAsstEsc(data.url) + '" alt="生成的图片" onclick="window.open(\'' + aiAsstEsc(data.url) + '\',\'_blank\')" /></div>';
-      container.appendChild(msg);
-      container.scrollTop = container.scrollHeight;
-    } else {
-      aiAsstAddMsg('assistant', data.error || '图片生成失败，请稍后再试。');
-    }
-  } catch (e) {
-    aiAsstRemoveTyping();
-    aiAsstAddMsg('assistant', '图片生成请求失败，请检查网络连接。');
-  } finally {
-    btn.disabled = false; btn.textContent = '生成图片';
-  }
-}
 
 function aiAsstVoice() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { alert('当前浏览器不支持语音输入'); return; }
@@ -5576,7 +6224,7 @@ function closeAuthPromptModal() {
 
 function goToLoginFromPrompt() {
   closeAuthPromptModal();
-  showLoginPage(false);
+  showLoginPage();
 }
 
 // ==================== COMMENT FUNCTIONS ====================
@@ -5976,15 +6624,16 @@ function getProjectCardClass(type) {
 const authPage = document.getElementById('authPage');
 const adminPage = document.getElementById('adminPage');
 const userLoginForm = document.getElementById('userLoginForm');
-const adminLoginForm = document.getElementById('adminLoginForm');
+const registerForm = document.getElementById('registerForm');
+const loginUsernameInput = document.getElementById('loginUsernameInput');
 const loginPasswordInput = document.getElementById('loginPasswordInput');
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginError = document.getElementById('loginError');
-const adminPasswordInput = document.getElementById('adminPasswordInput');
-const adminLoginSubmitBtn = document.getElementById('adminLoginSubmitBtn');
-const adminLoginError = document.getElementById('adminLoginError');
-const switchToAdmin = document.getElementById('switchToAdmin');
-const switchToUser = document.getElementById('switchToUser');
+const registerUsernameInput = document.getElementById('registerUsernameInput');
+const registerPasswordInput = document.getElementById('registerPasswordInput');
+const registerConfirmInput = document.getElementById('registerConfirmInput');
+const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+const registerError = document.getElementById('registerError');
 const userMenuBtn = document.getElementById('userMenuBtn');
 const userDropdown = document.getElementById('userDropdown');
 const openAdminFromMenu = document.getElementById('openAdminFromMenu');
@@ -6004,23 +6653,36 @@ function delCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
 }
 
-function showLoginPage(isAdmin) {
-  authPage.classList.add('active');
-  if (isAdmin) {
-    userLoginForm.style.display = 'none';
-    adminLoginForm.style.display = 'block';
-    adminLoginError.classList.remove('show');
-    adminLoginError.textContent = '';
-    adminPasswordInput.value = '';
-    setTimeout(() => adminPasswordInput.focus(), 50);
-  } else {
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
+
+function showAuthForm(type) {
+  const loginTab = document.getElementById('authTabLogin');
+  const regTab = document.getElementById('authTabRegister');
+  if (type === 'login') {
     userLoginForm.style.display = 'block';
-    adminLoginForm.style.display = 'none';
+    registerForm.style.display = 'none';
+    loginTab.classList.add('active');
+    regTab.classList.remove('active');
     loginError.classList.remove('show');
     loginError.textContent = '';
-    loginPasswordInput.value = '';
-    setTimeout(() => loginPasswordInput.focus(), 50);
+    setTimeout(() => loginUsernameInput.focus(), 50);
+  } else {
+    userLoginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    loginTab.classList.remove('active');
+    regTab.classList.add('active');
+    registerError.classList.remove('show');
+    registerError.textContent = '';
+    setTimeout(() => registerUsernameInput.focus(), 50);
   }
+}
+
+function showLoginPage() {
+  authPage.classList.add('active');
+  showAuthForm('login');
 }
 
 function hideLoginPage() {
@@ -6028,59 +6690,92 @@ function hideLoginPage() {
 }
 
 async function checkAuth() {
-  try { const r = await fetch('/api/auth-check'); const d = await r.json(); return d.authenticated; }
+  try {
+    const r = await fetch('/api/auth-check');
+    const d = await r.json();
+    if (d.authenticated && d.user) {
+      state.currentUser = d.user;
+    }
+    return d.authenticated;
+  }
   catch(e) { return false; }
 }
 
 async function doUserLogin() {
+  const username = loginUsernameInput.value.trim();
   const pw = loginPasswordInput.value.trim();
-  if (!pw) { loginError.textContent = '请输入密码'; loginError.classList.add('show'); return; }
+  if (!username || !pw) { loginError.textContent = '请输入用户名和密码'; loginError.classList.add('show'); return; }
   loginSubmitBtn.disabled = true; loginSubmitBtn.textContent = '登录中...';
   loginError.classList.remove('show'); loginError.textContent = '';
   try {
-    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
+    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
     const d = await r.json();
     if (r.ok && d.token) {
       setCookie('wg_token', d.token, 7);
+      state.currentUser = d.user;
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
+      adjustThemeBtnPosition();
+      if (document.getElementById('userMenuName')) document.getElementById('userMenuName').textContent = d.user.username;
+      openAdminFromMenu.style.display = d.user.role === 'admin' ? '' : 'none';
+      loginUsernameInput.value = '';
       loginPasswordInput.value = '';
       loginError.textContent = '';
       init();
+      // 加载用户隔离数据（收藏、浏览记录、AI对话历史）
+      loadBookmarksFromServer();
+      loadRecentFromServer();
+      aiAsstLoadConvs();
     } else {
-      loginError.textContent = d.error || '密码错误';
+      loginError.textContent = d.error || '用户名或密码错误';
       loginError.classList.add('show');
     }
   } catch(e) { loginError.textContent = '网络错误，请重试'; loginError.classList.add('show'); }
   loginSubmitBtn.disabled = false; loginSubmitBtn.textContent = '登录';
 }
 
-async function doAdminLogin() {
-  const pw = adminPasswordInput.value.trim();
-  if (!pw) { adminLoginError.textContent = '请输入管理员密码'; adminLoginError.classList.add('show'); return; }
-  adminLoginSubmitBtn.disabled = true; adminLoginSubmitBtn.textContent = '验证中...';
-  adminLoginError.classList.remove('show'); adminLoginError.textContent = '';
+async function doRegister() {
+  const username = registerUsernameInput.value.trim();
+  const pw = registerPasswordInput.value.trim();
+  const confirm = registerConfirmInput.value.trim();
+  if (!username || !pw || !confirm) { registerError.textContent = '请填写所有字段'; registerError.classList.add('show'); return; }
+  if (pw !== confirm) { registerError.textContent = '两次密码不一致'; registerError.classList.add('show'); return; }
+  if (pw.length < 6) { registerError.textContent = '密码长度至少6位'; registerError.classList.add('show'); return; }
+  registerSubmitBtn.disabled = true; registerSubmitBtn.textContent = '注册中...';
+  registerError.classList.remove('show'); registerError.textContent = '';
   try {
-    const r = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
+    const r = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
     const d = await r.json();
-    if (r.ok && d.token) {
-      setCookie('wg_token', d.token, 7);
-      authPage.classList.remove('active');
-      showAdminDashboard();
-      adminPasswordInput.value = '';
-      adminLoginError.textContent = '';
+    if (r.ok) {
+      // 注册成功，自动登录
+      registerError.textContent = '注册成功，正在登录...';
+      registerError.classList.add('show');
+      registerError.style.color = 'var(--success, #22c55e)';
+      registerError.style.borderColor = 'var(--success, #22c55e)';
+      // 自动填充登录表单并登录
+      loginUsernameInput.value = username;
+      loginPasswordInput.value = pw;
+      setTimeout(() => doUserLogin(), 500);
     } else {
-      adminLoginError.textContent = d.error || '密码错误';
-      adminLoginError.classList.add('show');
+      registerError.textContent = d.error || '注册失败';
+      registerError.classList.add('show');
+      registerError.style.color = '';
+      registerError.style.borderColor = '';
     }
-  } catch(e) { adminLoginError.textContent = '网络错误，请重试'; adminLoginError.classList.add('show'); }
-  adminLoginSubmitBtn.disabled = false; adminLoginSubmitBtn.textContent = '进入后台';
+  } catch(e) { registerError.textContent = '网络错误，请重试'; registerError.classList.add('show'); }
+  registerSubmitBtn.disabled = false; registerSubmitBtn.textContent = '注册';
 }
 
 function showAdminDashboard() {
   adminPage.classList.add('active');
   userDropdown.classList.remove('show');
   loadDashboard();
+}
+
+function adjustThemeBtnPosition() {
+  const userW = userMenuBtn.offsetWidth;
+  const right = userW + 12;
+  if (themeToggleBtn) themeToggleBtn.style.right = right + 'px';
 }
 
 function hideAdminDashboard() {
@@ -6090,6 +6785,7 @@ function hideAdminDashboard() {
 async function doLogout() {
   try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
   delCookie('wg_token');
+  state.currentUser = null;
   hideAdminDashboard();
   hideLoginPage();
   userMenuBtn.classList.add('hidden');
@@ -6097,7 +6793,71 @@ async function doLogout() {
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
   document.getElementById('homePage').classList.add('active');
-  showLoginPage(false);
+  // 清空用户数据缓存
+  _bookmarksCache = [];
+  _recentCache = [];
+  AI_ASST.conversations = [];
+  AI_ASST.currentConv = null;
+  AI_ASST.messages = [];
+  renderBookmarks();
+  renderRecentProjects();
+  updateBookmarkButtons();
+  aiAsstRenderConvs();
+  aiAsstRenderMsgs();
+  showLoginPage();
+}
+
+function showProfileModal() {
+  if (!state.currentUser) return;
+  const overlay = document.getElementById('profileOverlay');
+  overlay.style.display = 'flex';
+  document.getElementById('profileUsername').textContent = state.currentUser.username;
+  document.getElementById('profileRole').textContent = state.currentUser.role === 'admin' ? '管理员' : '普通用户';
+  // 获取用户详细信息
+  fetch('/api/user/profile').then(r => r.json()).then(d => {
+    if (d.user) {
+      document.getElementById('profileCreatedAt').textContent = d.user.created_at ? new Date(d.user.created_at * 1000).toLocaleString('zh-CN') : '未知';
+      document.getElementById('profileLastLogin').textContent = d.user.last_login ? new Date(d.user.last_login * 1000).toLocaleString('zh-CN') : '首次登录';
+    }
+  }).catch(() => {});
+  document.getElementById('profileOldPw').value = '';
+  document.getElementById('profileNewPw').value = '';
+  document.getElementById('profileConfirmPw').value = '';
+  document.getElementById('profileError').classList.remove('show');
+  document.getElementById('profileError').textContent = '';
+  document.getElementById('profileSuccess').style.display = 'none';
+  userDropdown.classList.remove('show');
+}
+
+function closeProfileModal() {
+  document.getElementById('profileOverlay').style.display = 'none';
+}
+
+async function doChangePassword() {
+  const oldPw = document.getElementById('profileOldPw').value.trim();
+  const newPw = document.getElementById('profileNewPw').value.trim();
+  const confirmPw = document.getElementById('profileConfirmPw').value.trim();
+  const errorEl = document.getElementById('profileError');
+  const successEl = document.getElementById('profileSuccess');
+  errorEl.classList.remove('show');
+  errorEl.textContent = '';
+  successEl.style.display = 'none';
+  if (!oldPw || !newPw || !confirmPw) { errorEl.textContent = '请填写所有字段'; errorEl.classList.add('show'); return; }
+  if (newPw !== confirmPw) { errorEl.textContent = '两次密码不一致'; errorEl.classList.add('show'); return; }
+  if (newPw.length < 6) { errorEl.textContent = '新密码长度至少6位'; errorEl.classList.add('show'); return; }
+  try {
+    const r = await fetch('/api/user/change-password', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({old_password:oldPw, new_password:newPw}) });
+    const d = await r.json();
+    if (r.ok) {
+      successEl.style.display = 'block';
+      document.getElementById('profileOldPw').value = '';
+      document.getElementById('profileNewPw').value = '';
+      document.getElementById('profileConfirmPw').value = '';
+    } else {
+      errorEl.textContent = d.error || '修改失败';
+      errorEl.classList.add('show');
+    }
+  } catch(e) { errorEl.textContent = '网络错误'; errorEl.classList.add('show'); }
 }
 
 function renderDashboard(data) {
@@ -6226,6 +6986,13 @@ function renderDashboard(data) {
         </div>
       </div>
     </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">用户管理</div>
+      <div id="adminUserList" style="background:var(--bg-secondary,#2a2a3e);border-radius:8px;overflow:hidden">
+        <div style="padding:16px;text-align:center;color:var(--text-secondary)">加载中...</div>
+      </div>
+    </div>
   `;
 }
 
@@ -6236,23 +7003,56 @@ async function loadDashboard() {
     if (!res.ok) throw new Error((await res.json()).error || '请求失败');
     const data = await res.json();
     renderDashboard(data);
+    // 加载用户列表
+    loadAdminUsers();
   } catch(e) {
     adminDashboardContent.innerHTML = '<div style="text-align:center;padding:40px;color:var(--accent-red)">加载失败: ' + e.message + '</div>';
     if (e.message.includes('管理员未登录')) {
       hideAdminDashboard();
-      showLoginPage(true);
+      showLoginPage();
     }
   }
+}
+
+async function loadAdminUsers() {
+  try {
+    const r = await fetch('/api/admin/users');
+    if (!r.ok) return;
+    const d = await r.json();
+    const container = document.getElementById('adminUserList');
+    if (!d.users || d.users.length === 0) {
+      container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-secondary)">暂无用户</div>';
+      return;
+    }
+    const escape = (s) => { const el=document.createElement('div'); el.textContent=s; return el.innerHTML; };
+    container.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--bg-primary,#1e1e2e)"><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">ID</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">用户名</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">角色</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">注册时间</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">最后登录</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">操作</th></tr></thead><tbody>' +
+      d.users.map(u => '<tr style="border-bottom:1px solid var(--border-color,#333)"><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + u.id + '</td><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + escape(u.username) + '</td><td style="padding:10px 12px;font-size:13px"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:' + (u.role === 'admin' ? 'var(--accent,#6366f1)' : 'var(--bg-tertiary,#3a3a4e)') + ';color:#fff">' + (u.role === 'admin' ? '管理员' : '用户') + '</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.created_at ? new Date(u.created_at * 1000).toLocaleString('zh-CN') : '-') + '</td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.last_login ? new Date(u.last_login * 1000).toLocaleString('zh-CN') : '从未登录') + '</td><td style="padding:10px 12px">' +
+        (u.role !== 'admin' ? '<button onclick="deleteUser(' + u.id + ',\'' + escape(u.username) + '\')" style="padding:4px 10px;border:none;border-radius:4px;background:#ef4444;color:#fff;font-size:11px;cursor:pointer">删除</button>' : '<span style="font-size:11px;color:var(--text-tertiary)">-</span>') +
+      '</td></tr>').join('') +
+      '</tbody></table>';
+  } catch(e) {}
+}
+
+async function deleteUser(userId, username) {
+  if (!confirm('确定要删除用户 "' + username + '" 吗？\n此操作不可恢复，该用户的所有数据将被清除。')) return;
+  try {
+    const r = await fetch('/api/admin/users/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({user_id: userId}) });
+    const d = await r.json();
+    if (r.ok) {
+      toast('用户已删除');
+      loadAdminUsers();
+    } else {
+      toast(d.error || '删除失败');
+    }
+  } catch(e) { toast('网络错误'); }
 }
 
 // ===== 事件绑定 =====
 loginSubmitBtn.addEventListener('click', doUserLogin);
 loginPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
-adminLoginSubmitBtn.addEventListener('click', doAdminLogin);
-adminPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doAdminLogin(); });
-
-switchToAdmin.addEventListener('click', function(e) { e.preventDefault(); showLoginPage(true); });
-switchToUser.addEventListener('click', function(e) { e.preventDefault(); showLoginPage(false); });
+loginUsernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
+registerSubmitBtn.addEventListener('click', doRegister);
+registerConfirmInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doRegister(); });
 
 userMenuBtn.addEventListener('click', function(e) {
   e.stopPropagation();
@@ -6262,6 +7062,7 @@ document.addEventListener('click', function() {
   userDropdown.classList.remove('show');
 });
 
+document.getElementById('profileFromMenu').addEventListener('click', showProfileModal);
 openAdminFromMenu.addEventListener('click', function() {
   showAdminDashboard();
 });
@@ -6308,8 +7109,10 @@ function getTheme() {
 function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem(THEME_KEY, theme);
-  // 更新 CodeMirror 主题：重新渲染当前代码
-  if (cmView && cmModules) { renderCode(); }
+  // 更新 Monaco Editor 主题
+  if (monacoReady && monacoEditor) {
+    monaco.editor.setTheme(theme === 'dark' ? 'vs-dark' : 'vs');
+  }
 }
 
 function toggleTheme() {
@@ -6333,31 +7136,70 @@ if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (
 // 初始化主题
 setTheme(getTheme());
 
-// ===== A3: 最近访问记录 =====
-const RECENT_KEY = 'code_explorer_recent';
-const RECENT_MAX = 10;
+// ===== A3: 最近访问记录（服务端存储，按用户隔离） =====
+let _recentCache = [];
+let _recentLoaded = false;
+
+async function loadRecentFromServer() {
+  if (!isLoggedIn()) {
+    _recentCache = [];
+    _recentLoaded = true;
+    renderRecentProjects();
+    return;
+  }
+  try {
+    const res = await fetch('/api/user/recent');
+    if (res.ok) {
+      const data = await res.json();
+      _recentCache = (data.recent || []).map(r => ({
+        path: r.project_path,
+        name: r.project_name,
+        icon: r.project_icon,
+        time: r.visited_at * 1000
+      }));
+      _recentLoaded = true;
+      renderRecentProjects();
+    }
+  } catch(e) {
+    _recentLoaded = true;
+  }
+}
 
 function getRecentProjects() {
-  try {
-    return JSON.parse(localStorage.getItem(RECENT_KEY)) || [];
-  } catch { return []; }
+  return _recentCache;
 }
 
-function addRecentProject(project) {
-  let recent = getRecentProjects();
-  // 移除已存在的同名项目
+async function addRecentProject(project) {
+  // 先更新本地缓存
+  let recent = [..._recentCache];
   recent = recent.filter(r => r.path !== project.path);
-  // 添加到开头
   recent.unshift({ path: project.path, name: project.name, icon: project.icon, time: Date.now() });
-  // 限制数量
-  if (recent.length > RECENT_MAX) recent = recent.slice(0, RECENT_MAX);
-  localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+  if (recent.length > 10) recent = recent.slice(0, 10);
+  _recentCache = recent;
   renderRecentProjects();
+
+  // 同步到服务端
+  if (isLoggedIn()) {
+    try {
+      await fetch('/api/user/recent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project_path: project.path,
+          project_name: project.name,
+          project_icon: project.icon
+        })
+      });
+    } catch(e) {}
+  }
 }
 
-function clearRecentProjects() {
-  localStorage.removeItem(RECENT_KEY);
+async function clearRecentProjects() {
+  if (!isLoggedIn() || !confirm('确定要清空浏览记录吗？')) return;
+  // 后端暂无批量删除API，先清空本地
+  _recentCache = [];
   renderRecentProjects();
+  toast('浏览记录已清空');
 }
 
 function renderRecentProjects() {
@@ -6385,35 +7227,96 @@ function renderRecentProjects() {
 
 document.getElementById('clearRecentBtn').addEventListener('click', clearRecentProjects);
 
-// ===== A4: 项目收藏 =====
-const BOOKMARK_KEY = 'code_explorer_bookmarks';
+// ===== A4: 项目收藏（服务端存储，按用户隔离） =====
+let _bookmarksCache = [];
+let _bookmarksLoaded = false;
+
+async function loadBookmarksFromServer() {
+  if (!isLoggedIn()) {
+    _bookmarksCache = [];
+    _bookmarksLoaded = true;
+    renderBookmarks();
+    updateBookmarkButtons();
+    return;
+  }
+  try {
+    const res = await fetch('/api/user/bookmarks');
+    if (res.ok) {
+      const data = await res.json();
+      _bookmarksCache = (data.bookmarks || []).map(b => ({
+        path: b.project_path,
+        name: b.project_name,
+        icon: b.project_icon,
+        time: b.created_at * 1000
+      }));
+      _bookmarksLoaded = true;
+      renderBookmarks();
+      updateBookmarkButtons();
+    }
+  } catch(e) {
+    _bookmarksLoaded = true;
+  }
+}
 
 function getBookmarks() {
-  try {
-    return JSON.parse(localStorage.getItem(BOOKMARK_KEY)) || [];
-  } catch { return []; }
+  return _bookmarksCache;
 }
 
 function isBookmarked(path) {
-  return getBookmarks().some(b => b.path === path);
+  return _bookmarksCache.some(b => b.path === path);
 }
 
-function toggleBookmark(project) {
-  let bookmarks = getBookmarks();
-  if (isBookmarked(project.path)) {
-    bookmarks = bookmarks.filter(b => b.path !== project.path);
-  } else {
-    bookmarks.push({ path: project.path, name: project.name, icon: project.icon, time: Date.now() });
+async function toggleBookmark(project) {
+  if (!isLoggedIn()) {
+    toast('请先登录');
+    showLoginPage();
+    return;
   }
-  localStorage.setItem(BOOKMARK_KEY, JSON.stringify(bookmarks));
-  renderBookmarks();
-  updateBookmarkButtons();
+  try {
+    const res = await fetch('/api/user/bookmarks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        project_path: project.path,
+        project_name: project.name,
+        project_icon: project.icon
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.bookmarked) {
+        _bookmarksCache.unshift({ path: project.path, name: project.name, icon: project.icon, time: Date.now() });
+      } else {
+        _bookmarksCache = _bookmarksCache.filter(b => b.path !== project.path);
+      }
+      renderBookmarks();
+      updateBookmarkButtons();
+    }
+  } catch(e) {
+    toast('操作失败');
+  }
 }
 
-function clearBookmarks() {
-  localStorage.removeItem(BOOKMARK_KEY);
+async function clearBookmarks() {
+  if (!isLoggedIn() || !confirm('确定要清空所有收藏吗？')) return;
+  // 批量删除：逐个调用 toggle
+  const paths = _bookmarksCache.map(b => b.path);
+  for (const path of paths) {
+    const project = state.projects.find(p => p.path === path);
+    if (project) {
+      try {
+        await fetch('/api/user/bookmarks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ project_path: path, project_name: project.name, project_icon: project.icon })
+        });
+      } catch(e) {}
+    }
+  }
+  _bookmarksCache = [];
   renderBookmarks();
   updateBookmarkButtons();
+  toast('收藏已清空');
 }
 
 function renderBookmarks() {
@@ -6553,7 +7456,16 @@ function copyCode(btn) {
     }
     // 后台检查 auth 状态（不阻塞渲染）
     checkAuth().then(authed => {
-      if (authed && userMenuBtn) userMenuBtn.classList.remove('hidden');
+      if (authed && userMenuBtn) {
+        userMenuBtn.classList.remove('hidden');
+        adjustThemeBtnPosition();
+        if (state.currentUser && document.getElementById('userMenuName')) {
+          document.getElementById('userMenuName').textContent = state.currentUser.username;
+        }
+        if (state.currentUser) {
+          openAdminFromMenu.style.display = state.currentUser.role === 'admin' ? '' : 'none';
+        }
+      }
       state.isAuthenticated = authed;
     }).catch(() => {});
     return;
@@ -6570,7 +7482,7 @@ function copyCode(btn) {
         <div style="color:var(--accent-red);font-size:16px;margin-bottom:12px">加载耗时较长</div>
         <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px">请尝试刷新页面或登录后访问</div>
         <button onclick="location.reload()" style="padding:10px 20px;background:var(--accent-blue);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-right:10px">刷新页面</button>
-        <button onclick="showLoginPage(false)" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
+        <button onclick="showLoginPage()" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
       </div>
     `;
   }, LOADING_TIMEOUT);
@@ -6589,18 +7501,63 @@ function copyCode(btn) {
     clearTimeout(timeoutTimer);
 
     if (authed) {
-      if (userMenuBtn) userMenuBtn.classList.remove('hidden');
+      if (userMenuBtn) { userMenuBtn.classList.remove('hidden'); adjustThemeBtnPosition(); }
+      if (state.currentUser && document.getElementById('userMenuName')) {
+        document.getElementById('userMenuName').textContent = state.currentUser.username;
+      }
       init();
     } else {
-      showLoginPage(false);
+      showLoginPage();
     }
   } catch(e) {
     clearTimeout(timeoutTimer);
     console.error('启动失败:', e);
-    showLoginPage(false);
+    showLoginPage();
   }
 })();
 </script>
+<!-- 个人资料弹窗 -->
+<div class="profile-overlay" id="profileOverlay" onclick="if(event.target===this) closeProfileModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100000;align-items:center;justify-content:center">
+  <div class="profile-modal" style="background:var(--bg-primary,#1e1e2e);border-radius:12px;padding:28px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="margin:0;font-size:18px;color:var(--text-primary)">个人资料</h3>
+      <button onclick="closeProfileModal()" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:20px">&times;</button>
+    </div>
+    <div id="profileContent">
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">用户名</label>
+        <div id="profileUsername" style="font-size:15px;color:var(--text-primary);font-weight:500"></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">角色</label>
+        <div id="profileRole" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">注册时间</label>
+        <div id="profileCreatedAt" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">最后登录</label>
+        <div id="profileLastLogin" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="border-top:1px solid var(--border-color,#333);padding-top:16px">
+        <h4 style="margin:0 0 12px;font-size:14px;color:var(--text-primary)">修改密码</h4>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileOldPw" placeholder="旧密码" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileNewPw" placeholder="新密码（至少6位）" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileConfirmPw" placeholder="确认新密码" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <button onclick="doChangePassword()" style="width:100%;padding:10px;border:none;border-radius:8px;background:var(--accent,#6366f1);color:#fff;font-size:14px;cursor:pointer">修改密码</button>
+        <div class="auth-error" id="profileError" style="margin-top:8px"></div>
+        <div style="color:var(--success,#22c55e);font-size:13px;margin-top:8px;display:none" id="profileSuccess">密码修改成功</div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 <!-- force-refresh: 1785070272 -->

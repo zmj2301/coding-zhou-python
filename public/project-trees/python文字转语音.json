@@ -1,0 +1,177 @@
+[
+  {
+    "name": "core",
+    "type": "directory",
+    "path": "core",
+    "children": [
+      {
+        "name": "__init__.py",
+        "type": "file",
+        "path": "core/__init__.py",
+        "ext": ".py",
+        "lastModified": 1777973961073
+      },
+      {
+        "name": "ai_enhancer.py",
+        "type": "file",
+        "path": "core/ai_enhancer.py",
+        "ext": ".py",
+        "lastModified": 1777974525388
+      },
+      {
+        "name": "audio_handler.py",
+        "type": "file",
+        "path": "core/audio_handler.py",
+        "ext": ".py",
+        "lastModified": 1777973919388
+      },
+      {
+        "name": "config_manager.py",
+        "type": "file",
+        "path": "core/config_manager.py",
+        "ext": ".py",
+        "lastModified": 1777973880610
+      },
+      {
+        "name": "tts_engine.py",
+        "type": "file",
+        "path": "core/tts_engine.py",
+        "ext": ".py",
+        "lastModified": 1777975806756
+      }
+    ]
+  },
+  {
+    "name": "data",
+    "type": "directory",
+    "path": "data",
+    "children": [
+      {
+        "name": "config.json",
+        "type": "file",
+        "path": "data/config.json",
+        "ext": ".json",
+        "lastModified": 1777975916143
+      },
+      {
+        "name": "history.json",
+        "type": "file",
+        "path": "data/history.json",
+        "ext": ".json",
+        "lastModified": 1777975899021
+      }
+    ]
+  },
+  {
+    "name": "ui",
+    "type": "directory",
+    "path": "ui",
+    "children": [
+      {
+        "name": "__init__.py",
+        "type": "file",
+        "path": "ui/__init__.py",
+        "ext": ".py",
+        "lastModified": 1777974085647
+      },
+      {
+        "name": "ai_panel.py",
+        "type": "file",
+        "path": "ui/ai_panel.py",
+        "ext": ".py",
+        "lastModified": 1777974539599
+      },
+      {
+        "name": "control_panel.py",
+        "type": "file",
+        "path": "ui/control_panel.py",
+        "ext": ".py",
+        "lastModified": 1777974000800
+      },
+      {
+        "name": "main_window.py",
+        "type": "file",
+        "path": "ui/main_window.py",
+        "ext": ".py",
+        "lastModified": 1777975847390
+      },
+      {
+        "name": "settings_panel.py",
+        "type": "file",
+        "path": "ui/settings_panel.py",
+        "ext": ".py",
+        "lastModified": 1777974021807
+      },
+      {
+        "name": "status_panel.py",
+        "type": "file",
+        "path": "ui/status_panel.py",
+        "ext": ".py",
+        "lastModified": 1777974049983
+      },
+      {
+        "name": "text_input_panel.py",
+        "type": "file",
+        "path": "ui/text_input_panel.py",
+        "ext": ".py",
+        "lastModified": 1777973986370
+      }
+    ]
+  },
+  {
+    "name": "utils",
+    "type": "directory",
+    "path": "utils",
+    "children": [
+      {
+        "name": "__init__.py",
+        "type": "file",
+        "path": "utils/__init__.py",
+        "ext": ".py",
+        "lastModified": 1777973966006
+      },
+      {
+        "name": "file_utils.py",
+        "type": "file",
+        "path": "utils/file_utils.py",
+        "ext": ".py",
+        "lastModified": 1777973954547
+      },
+      {
+        "name": "history_manager.py",
+        "type": "file",
+        "path": "utils/history_manager.py",
+        "ext": ".py",
+        "lastModified": 1777973947897
+      }
+    ]
+  },
+  {
+    "name": "main.py",
+    "type": "file",
+    "path": "main.py",
+    "ext": ".py",
+    "lastModified": 1777974093348
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1777975714479
+  },
+  {
+    "name": "requirements.txt",
+    "type": "file",
+    "path": "requirements.txt",
+    "ext": ".txt",
+    "lastModified": 1777975673618
+  },
+  {
+    "name": "启动工具.py",
+    "type": "file",
+    "path": "启动工具.py",
+    "ext": ".py",
+    "lastModified": 1777975689682
+  }
+]

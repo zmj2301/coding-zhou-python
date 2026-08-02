@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中国象棋 - Chinese Chess</title>
+<link rel="stylesheet" href="../shared/style.css">
+</head>
+<body>
+
+<div class="game-header">
+  <h1>♟ 中国象棋</h1>
+  <p class="subtitle">点击棋子选择 · 点击目标位置移动</p>
+</div>
+
+<div class="game-container" id="gameContainer">
+  <div class="game-stats">
+    <div class="stat-item"><span class="label">回合</span><span class="value" id="turn">红方</span></div>
+    <div class="stat-item"><span class="label">状态</span><span class="value purple" id="status">游戏中</span></div>
+    <div class="stat-item"><span class="label">步数</span><span class="value" id="moves">0</span></div>
+  </div>
+
+  <canvas id="game" width="540" height="600"></canvas>
+
+  <div class="controls">
+    <button class="btn" id="restartBtn">重新开始</button>
+    <button class="btn secondary" id="undoBtn">悔棋</button>
+    <button class="btn secondary" id="aiBtn">人机对战(红)</button>
+    <button class="btn secondary" onclick="location.href='../index.html'">返回</button>
+  </div>
+  <div class="game-info">
+    人机对战模式：你执红子，AI执黑子。可随时切换为双人对弈模式。
+  </div>
+
+  <div class="game-overlay" id="overlay">
+    <div class="overlay-content">
+      <div class="overlay-title" id="overlayTitle">游戏结束</div>
+      <div class="overlay-text" id="overlayText"></div>
+      <button class="btn" id="restartBtn2">再来一局</button>
+    </div>
+  </div>
+</div>
+
+<script src="../shared/game.js"></script>
+<script>
+// Board: 9 cols (x:0-8), 10 rows (y:0-9). Red at bottom (y=7-9), Black at top (y=0-2)
+// Pieces: K=帅/将, A=仕/士, E=相/象, H=马/馬, R=车/車, C=炮/砲, P=兵/卒
+// side: 'r' (red) or 'b' (black)
+const INITIAL = [
+  // Black pieces (top)
+  { x: 0, y: 0, t: 'R', s: 'b' }, { x: 1, y: 0, t: 'H', s: 'b' }, { x: 2, y: 0, t: 'E', s: 'b' },
+  { x: 3, y: 0, t: 'A', s: 'b' }, { x: 4, y: 0, t: 'K', s: 'b' }, { x: 5, y: 0, t: 'A', s: 'b' },
+  { x: 6, y: 0, t: 'E', s: 'b' }, { x: 7, y: 0, t: 'H', s: 'b' }, { x: 8, y: 0, t: 'R', s: 'b' },
+  { x: 1, y: 2, t: 'C', s: 'b' }, { x: 7, y: 2, t: 'C', s: 'b' },
+  { x: 0, y: 3, t: 'P', s: 'b' }, { x: 2, y: 3, t: 'P', s: 'b' }, { x: 4, y: 3, t: 'P', s: 'b' },
+  { x: 6, y: 3, t: 'P', s: 'b' }, { x: 8, y: 3, t: 'P', s: 'b' },
+  // Red pieces (bottom)
+  { x: 0, y: 9, t: 'R', s: 'r' }, { x: 1, y: 9, t: 'H', s: 'r' }, { x: 2, y: 9, t: 'E', s: 'r' },
+  { x: 3, y: 9, t: 'A', s: 'r' }, { x: 4, y: 9, t: 'K', s: 'r' }, { x: 5, y: 9, t: 'A', s: 'r' },
+  { x: 6, y: 9, t: 'E', s: 'r' }, { x: 7, y: 9, t: 'H', s: 'r' }, { x: 8, y: 9, t: 'R', s: 'r' },
+  { x: 1, y: 7, t: 'C', s: 'r' }, { x: 7, y: 7, t: 'C', s: 'r' },
+  { x: 0, y: 6, t: 'P', s: 'r' }, { x: 2, y: 6, t: 'P', s: 'r' }, { x: 4, y: 6, t: 'P', s: 'r' },
+  { x: 6, y: 6, t: 'P', s: 'r' }, { x: 8, y: 6, t: 'P', s: 'r' },
+];
+
+const CHARS = {
+  r: { K: '帥', A: '仕', E: '相', H: '馬', R: '車', C: '炮', P: '兵' },
+  b: { K: '將', A: '士', E: '象', H: '馬', R: '車', C: '砲', P: '卒' },
+};
+
+const VALUES = { K: 10000, R: 900, H: 400, C: 450, E: 100, A: 100, P: 100 };
+
+class ChineseChess {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.cellSize = 56;
+    this.offsetX = 30;
+    this.offsetY = 30;
+    this.reset();
+
+    canvas.addEventListener('click', (e) => this.handleClick(e));
+    document.getElementById('restartBtn').onclick = () => this.reset();
+    document.getElementById('restartBtn2').onclick = () => { this.reset(); document.getElementById('overlay').classList.remove('active'); };
+    document.getElementById('undoBtn').onclick = () => this.undo();
+    document.getElementById('aiBtn').onclick = () => { this.aiMode = !this.aiMode; this.aiTurn = 'b'; this.reset(); document.getElementById('aiBtn').textContent = this.aiMode ? '双人对弈' : '人机对战(红)'; };
+  }
+
+  reset() {
+    this.board = [];
+    for (let x = 0; x < 9; x++) { this.board.push([]); for (let y = 0; y < 10; y++) this.board[x].push(null); }
+    INITIAL.forEach(p => { this.board[p.x][p.y] = { t: p.t, s: p.s }; });
+    this.turn = 'r';
+    this.selected = null;
+    this.validMoves = [];
+    this.moves = 0;
+    this.history = [];
+    this.gameOver = false;
+    this.aiMode = typeof this.aiMode === 'undefined' ? true : this.aiMode;
+    this.aiTurn = 'b';
+    this.updateUI();
+    this.render();
+  }
+
+  undo() {
+    if (this.history.length === 0 || this.gameOver) return;
+    // Undo one round (AI + player)
+    const steps = this.aiMode && this.turn === 'r' ? 2 : 1;
+    for (let i = 0; i < steps && this.history.length > 0; i++) {
+      const h = this.history.pop();
+      this.board[h.fromX][h.fromY] = h.moved;
+      this.board[h.toX][h.toY] = h.captured;
+      this.turn = this.turn === 'r' ? 'b' : 'r';
+      this.moves--;
+    }
+    this.selected = null;
+    this.validMoves = [];
+    this.gameOver = false;
+    this.updateUI();
+    this.render();
+  }
+
+  getPiece(x, y) {
+    if (x < 0 || x > 8 || y < 0 || y > 9) return null;
+    return this.board[x][y];
+  }
+
+  generateRawMoves(x, y, includeFlyingGeneral = false) {
+    const p = this.getPiece(x, y);
+    if (!p) return [];
+    const moves = [];
+
+    switch (p.t) {
+      case 'R': {
+        const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+        for (const [dx, dy] of dirs) {
+          let nx = x + dx, ny = y + dy;
+          while (nx >= 0 && nx <= 8 && ny >= 0 && ny <= 9) {
+            const t = this.board[nx][ny];
+            if (!t) moves.push({ x: nx, y: ny });
+            else { if (t.s !== p.s) moves.push({ x: nx, y: ny }); break; }
+            nx += dx; ny += dy;
+          }
+        }
+        break;
+      }
+      case 'H': {
+        const legMoves = [
+          { mx: 0, my: -1, m: [[1, -2], [-1, -2]] },
+          { mx: 0, my: 1, m: [[1, 2], [-1, 2]] },
+          { mx: -1, my: 0, m: [[-2, 1], [-2, -1]] },
+          { mx: 1, my: 0, m: [[2, 1], [2, -1]] },
+        ];
+        for (const lm of legMoves) {
+          if (!this.getPiece(x + lm.mx, y + lm.my)) {
+            for (const [dx, dy] of lm.m) {
+              const nx = x + dx, ny = y + dy;
+              if (nx < 0 || nx > 8 || ny < 0 || ny > 9) continue;
+              const t = this.board[nx][ny];
+              if (!t || t.s !== p.s) moves.push({ x: nx, y: ny });
+            }
+          }
+        }
+        break;
+      }
+      case 'E': {
+        const em = [[2, 2], [2, -2], [-2, 2], [-2, -2]];
+        for (const [dx, dy] of em) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || nx > 8 || ny < 0 || ny > 9) continue;
+          if (p.s === 'r' && ny < 5) continue;
+          if (p.s === 'b' && ny > 4) continue;
+          if (this.getPiece(x + dx / 2, y + dy / 2)) continue;
+          const t = this.board[nx][ny];
+          if (!t || t.s !== p.s) moves.push({ x: nx, y: ny });
+        }
+        break;
+      }
+      case 'A': {
+        const am = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+        for (const [dx, dy] of am) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 3 || nx > 5) continue;
+          if (p.s === 'r' && (ny < 7 || ny > 9)) continue;
+          if (p.s === 'b' && (ny < 0 || ny > 2)) continue;
+          const t = this.board[nx][ny];
+          if (!t || t.s !== p.s) moves.push({ x: nx, y: ny });
+        }
+        break;
+      }
+      case 'K': {
+        const km = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+        for (const [dx, dy] of km) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 3 || nx > 5) continue;
+          if (p.s === 'r' && (ny < 7 || ny > 9)) continue;
+          if (p.s === 'b' && (ny < 0 || ny > 2)) continue;
+          const t = this.board[nx][ny];
+          if (!t || t.s !== p.s) moves.push({ x: nx, y: ny });
+        }
+        if (includeFlyingGeneral) {
+          const otherS = p.s === 'r' ? 'b' : 'r';
+          let kingPos = null;
+          for (let yy = 0; yy < 10; yy++) {
+            const k = this.board[x][yy];
+            if (k && k.t === 'K' && k.s === otherS) { kingPos = yy; break; }
+          }
+          if (kingPos !== null) {
+            let clear = true;
+            const [a, b] = y < kingPos ? [y, kingPos] : [kingPos, y];
+            for (let yy = a + 1; yy < b; yy++) {
+              if (this.board[x][yy]) { clear = false; break; }
+            }
+            if (clear) moves.push({ x, y: kingPos });
+          }
+        }
+        break;
+      }
+      case 'C': {
+        const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+        for (const [dx, dy] of dirs) {
+          let nx = x + dx, ny = y + dy;
+          while (nx >= 0 && nx <= 8 && ny >= 0 && ny <= 9 && !this.board[nx][ny]) {
+            moves.push({ x: nx, y: ny });
+            nx += dx; ny += dy;
+          }
+          nx += dx; ny += dy;
+          while (nx >= 0 && nx <= 8 && ny >= 0 && ny <= 9) {
+            const t = this.board[nx][ny];
+            if (t) { if (t.s !== p.s) moves.push({ x: nx, y: ny }); break; }
+            nx += dx; ny += dy;
+          }
+        }
+        break;
+      }
+      case 'P': {
+        const forward = p.s === 'r' ? -1 : 1;
+        const ny = y + forward;
+        if (ny >= 0 && ny <= 9) {
+          const t = this.board[x][ny];
+          if (!t || t.s !== p.s) moves.push({ x, y: ny });
+        }
+        const crossed = (p.s === 'r' && y <= 4) || (p.s === 'b' && y >= 5);
+        if (crossed) {
+          for (const dx of [-1, 1]) {
+            const nx = x + dx;
+            if (nx < 0 || nx > 8) continue;
+            const t = this.board[nx][y];
+            if (!t || t.s !== p.s) moves.push({ x: nx, y });
+          }
+        }
+        break;
+      }
+    }
+    return moves;
+  }
+
+  genMoves(x, y) {
+    const moves = this.generateRawMoves(x, y, true);
+    const p = this.getPiece(x, y);
+    if (!p) return [];
+    return moves.filter(m => {
+      const snapshot = this.board[m.x][m.y];
+      const myPiece = this.board[x][y];
+      this.board[m.x][m.y] = myPiece;
+      this.board[x][y] = null;
+      const inCheck = this.isKingInCheck(p.s);
+      this.board[x][y] = myPiece;
+      this.board[m.x][m.y] = snapshot;
+      return !inCheck;
+    });
+  }
+
+  findKing(side) {
+    for (let x = 0; x < 9; x++) {
+      for (let y = 0; y < 10; y++) {
+        const p = this.board[x][y];
+        if (p && p.t === 'K' && p.s === side) return { x, y };
+      }
+    }
+    return null;
+  }
+
+  isKingInCheck(side) {
+    const k = this.findKing(side);
+    if (!k) return false;
+    const other = side === 'r' ? 'b' : 'r';
+    for (let x = 0; x < 9; x++) {
+      for (let y = 0; y < 10; y++) {
+        const p = this.board[x][y];
+        if (!p || p.s !== other) continue;
+        // Get raw moves without suicide check (avoid infinite recursion)
+        const rawMoves = this.genRawMoves(x, y);
+        if (rawMoves.some(m => m.x === k.x && m.y === k.y)) return true;
+      }
+    }
+    return false;
+  }
+
+  genRawMoves(x, y) {
+    return this.generateRawMoves(x, y, false);
+  }
+
+  hasAnyMoves(side) {
+    for (let x = 0; x < 9; x++) {
+      for (let y = 0; y < 10; y++) {
+        const p = this.board[x][y];
+        if (p && p.s === side) {
+          if (this.genMoves(x, y).length > 0) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  handleClick(e) {
+    if (this.gameOver) return;
+    if (this.aiMode && this.turn === this.aiTurn) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const cx = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+    const cy = (e.clientY - rect.top) * (this.canvas.height / rect.height);
+    const x = Math.round((cx - this.offsetX) / this.cellSize);
+    const y = Math.round((cy - this.offsetY) / this.cellSize);
+    if (x < 0 || x > 8 || y < 0 || y > 9) return;
+    const p = this.board[x][y];
+
+    if (this.selected) {
+      // Check if valid move
+      const move = this.validMoves.find(m => m.x === x && m.y === y);
+      if (move) {
+        this.makeMove(this.selected.x, this.selected.y, x, y);
+        this.selected = null;
+        this.validMoves = [];
+        this.render();
+        if (!this.gameOver && this.aiMode && this.turn === this.aiTurn) {
+          setTimeout(() => this.makeAIMove(), 400);
+        }
+        return;
+      }
+      // Select another own piece
+      if (p && p.s === this.turn) {
+        this.selected = { x, y };
+        this.validMoves = this.genMoves(x, y);
+        this.render();
+        return;
+      }
+      // Deselect
+      this.selected = null;
+      this.validMoves = [];
+      this.render();
+    } else {
+      if (p && p.s === this.turn) {
+        this.selected = { x, y };
+        this.validMoves = this.genMoves(x, y);
+        this.render();
+      }
+    }
+  }
+
+  makeMove(fx, fy, tx, ty) {
+    const moved = this.board[fx][fy];
+    const captured = this.board[tx][ty];
+    this.history.push({ fromX: fx, fromY: fy, toX: tx, toY: ty, moved, captured });
+    this.board[tx][ty] = moved;
+    this.board[fx][fy] = null;
+    this.turn = this.turn === 'r' ? 'b' : 'r';
+    this.moves++;
+    this.updateUI();
+    // Check game end
+    if (!this.findKing(this.turn)) {
+      this.gameOver = true;
+      const winner = this.turn === 'r' ? '黑方' : '红方';
+      document.getElementById('overlayTitle').textContent = `${winner}获胜！`;
+      document.getElementById('overlayText').textContent = `共进行 ${this.moves} 步`;
+      document.getElementById('overlay').classList.add('active');
+    } else if (!this.hasAnyMoves(this.turn)) {
+      this.gameOver = true;
+      const winner = this.turn === 'r' ? '黑方' : '红方';
+      document.getElementById('overlayTitle').textContent = `${winner}获胜(将死)！`;
+      document.getElementById('overlayText').textContent = `共进行 ${this.moves} 步`;
+      document.getElementById('overlay').classList.add('active');
+    }
+  }
+
+  makeAIMove() {
+    if (this.gameOver) return;
+    // Simple greedy AI with 2-ply minimax
+    const best = this.aiSearch(2, -Infinity, Infinity, this.aiTurn);
+    if (best && best.move) {
+      this.makeMove(best.move.fx, best.move.fy, best.move.tx, best.move.ty);
+      this.render();
+    }
+  }
+
+  evaluateBoard() {
+    let score = 0;
+    for (let x = 0; x < 9; x++) {
+      for (let y = 0; y < 10; y++) {
+        const p = this.board[x][y];
+        if (!p) continue;
+        let val = VALUES[p.t];
+        // Positional: pawns advanced, pieces in center
+        if (p.t === 'P') {
+          if (p.s === 'r') val += (9 - y) * 5;
+          else val += y * 5;
+        }
+        if (p.t === 'H' || p.t === 'R' || p.t === 'C') {
+          val += Math.abs(x - 4) * -1; // slight preference for center
+        }
+        score += (p.s === this.aiTurn ? val : -val);
+      }
+    }
+    return score;
+  }
+
+  aiSearch(depth, alpha, beta, side) {
+    if (depth === 0) return { score: this.evaluateBoard(), move: null };
+    const moves = [];
+    for (let x = 0; x < 9; x++) {
+      for (let y = 0; y < 10; y++) {
+        const p = this.board[x][y];
+        if (p && p.s === side) {
+          for (const m of this.genMoves(x, y)) {
+            moves.push({ fx: x, fy: y, tx: m.x, ty: m.y });
+          }
+        }
+      }
+    }
+    if (moves.length === 0) {
+      return { score: side === this.aiTurn ? -50000 : 50000, move: null };
+    }
+    let bestMove = moves[0];
+    let bestScore = side === this.aiTurn ? -Infinity : Infinity;
+    for (const mv of moves) {
+      const moved = this.board[mv.fx][mv.fy];
+      const captured = this.board[mv.tx][mv.ty];
+      this.board[mv.tx][mv.ty] = moved;
+      this.board[mv.fx][mv.fy] = null;
+      const res = this.aiSearch(depth - 1, alpha, beta, side === 'r' ? 'b' : 'r');
+      this.board[mv.fx][mv.fy] = moved;
+      this.board[mv.tx][mv.ty] = captured;
+      if (side === this.aiTurn) {
+        if (res.score > bestScore) { bestScore = res.score; bestMove = mv; }
+        alpha = Math.max(alpha, res.score);
+      } else {
+        if (res.score < bestScore) { bestScore = res.score; bestMove = mv; }
+        beta = Math.min(beta, res.score);
+      }
+      if (beta <= alpha) break;
+    }
+    return { score: bestScore, move: bestMove };
+  }
+
+  updateUI() {
+    document.getElementById('turn').textContent = this.turn === 'r' ? '红方' : '黑方';
+    document.getElementById('turn').style.color = this.turn === 'r' ? '#f85149' : '#c9d1d9';
+    document.getElementById('moves').textContent = this.moves;
+    document.getElementById('status').textContent = this.gameOver ? '结束' : '游戏中';
+  }
+
+  render() {
+    const ctx = this.ctx;
+    const cs = this.cellSize;
+    // Background
+    ctx.fillStyle = '#f0d9a8';
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.fillStyle = '#e8c98e';
+    ctx.fillRect(this.offsetX - 10, this.offsetY - 10, cs * 8 + 20, cs * 9 + 20);
+
+    ctx.strokeStyle = '#4a2e0a';
+    ctx.lineWidth = 1.5;
+
+    // Draw lines
+    // Horizontal lines
+    for (let y = 0; y < 10; y++) {
+      ctx.beginPath();
+      ctx.moveTo(this.offsetX, this.offsetY + y * cs);
+      ctx.lineTo(this.offsetX + 8 * cs, this.offsetY + y * cs);
+      ctx.stroke();
+    }
+    // Vertical lines (with river gap)
+    for (let x = 0; x < 9; x++) {
+      ctx.beginPath();
+      if (x === 0 || x === 8) {
+        ctx.moveTo(this.offsetX + x * cs, this.offsetY);
+        ctx.lineTo(this.offsetX + x * cs, this.offsetY + 9 * cs);
+      } else {
+        ctx.moveTo(this.offsetX + x * cs, this.offsetY);
+        ctx.lineTo(this.offsetX + x * cs, this.offsetY + 4 * cs);
+        ctx.moveTo(this.offsetX + x * cs, this.offsetY + 5 * cs);
+        ctx.lineTo(this.offsetX + x * cs, this.offsetY + 9 * cs);
+      }
+      ctx.stroke();
+    }
+
+    // Palace diagonals
+    ctx.beginPath();
+    ctx.moveTo(this.offsetX + 3 * cs, this.offsetY);
+    ctx.lineTo(this.offsetX + 5 * cs, this.offsetY + 2 * cs);
+    ctx.moveTo(this.offsetX + 5 * cs, this.offsetY);
+    ctx.lineTo(this.offsetX + 3 * cs, this.offsetY + 2 * cs);
+    ctx.moveTo(this.offsetX + 3 * cs, this.offsetY + 7 * cs);
+    ctx.lineTo(this.offsetX + 5 * cs, this.offsetY + 9 * cs);
+    ctx.moveTo(this.offsetX + 5 * cs, this.offsetY + 7 * cs);
+    ctx.lineTo(this.offsetX + 3 * cs, this.offsetY + 9 * cs);
+    ctx.stroke();
+
+    // River text
+    ctx.fillStyle = '#6a4520';
+    ctx.font = 'bold 18px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('楚 河', this.offsetX + 2 * cs, this.offsetY + 4.5 * cs);
+    ctx.fillText('漢 界', this.offsetX + 6 * cs, this.offsetY + 4.5 * cs);
+
+    // Valid move dots
+    for (const m of this.validMoves) {
+      ctx.fillStyle = 'rgba(63, 185, 80, 0.45)';
+      ctx.beginPath();
+      ctx.arc(this.offsetX + m.x * cs, this.offsetY + m.y * cs, 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Selected highlight
+    if (this.selected) {
+      ctx.strokeStyle = '#1f6feb';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(
+        this.offsetX + this.selected.x * cs - 25,
+        this.offsetY + this.selected.y * cs - 25,
+        50, 50
+      );
+    }
+
+    // Draw pieces
+    for (let x = 0; x < 9; x++) {
+      for (let y = 0; y < 10; y++) {
+        const p = this.board[x][y];
+        if (!p) continue;
+        const px = this.offsetX + x * cs;
+        const py = this.offsetY + y * cs;
+        // Circle
+        ctx.fillStyle = '#f8e4b8';
+        ctx.beginPath();
+        ctx.arc(px, py, 24, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = p.s === 'r' ? '#c0392b' : '#222';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(px, py, 20, 0, Math.PI * 2);
+        ctx.stroke();
+        // Text
+        ctx.fillStyle = p.s === 'r' ? '#c0392b' : '#222';
+        ctx.font = 'bold 24px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(CHARS[p.s][p.t], px, py);
+      }
+    }
+  }
+}
+
+const canvas = document.getElementById('game');
+const game = new ChineseChess(canvas);
+</script>
+</body>
+</html>

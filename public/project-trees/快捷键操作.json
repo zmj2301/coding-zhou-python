@@ -1,0 +1,149 @@
+[
+  {
+    "name": "__pycache__",
+    "type": "directory",
+    "path": "__pycache__",
+    "children": [
+      {
+        "name": "main.cpython-312.pyc",
+        "type": "file",
+        "path": "__pycache__/main.cpython-312.pyc",
+        "ext": ".pyc",
+        "lastModified": 1784859308058
+      },
+      {
+        "name": "ocr_engine.cpython-312.pyc",
+        "type": "file",
+        "path": "__pycache__/ocr_engine.cpython-312.pyc",
+        "ext": ".pyc",
+        "lastModified": 1784813946096
+      },
+      {
+        "name": "ocr_result_window.cpython-312.pyc",
+        "type": "file",
+        "path": "__pycache__/ocr_result_window.cpython-312.pyc",
+        "ext": ".pyc",
+        "lastModified": 1784861829208
+      },
+      {
+        "name": "screenshot_app.cpython-312.pyc",
+        "type": "file",
+        "path": "__pycache__/screenshot_app.cpython-312.pyc",
+        "ext": ".pyc",
+        "lastModified": 1784809250136
+      },
+      {
+        "name": "screenshot_overlay.cpython-312.pyc",
+        "type": "file",
+        "path": "__pycache__/screenshot_overlay.cpython-312.pyc",
+        "ext": ".pyc",
+        "lastModified": 1784859308014
+      },
+      {
+        "name": "wechat_detector.cpython-312.pyc",
+        "type": "file",
+        "path": "__pycache__/wechat_detector.cpython-312.pyc",
+        "ext": ".pyc",
+        "lastModified": 1784809922796
+      },
+      {
+        "name": "wechat_paster.cpython-312.pyc",
+        "type": "file",
+        "path": "__pycache__/wechat_paster.cpython-312.pyc",
+        "ext": ".pyc",
+        "lastModified": 1784809923332
+      }
+    ]
+  },
+  {
+    "name": "screenshots",
+    "type": "directory",
+    "path": "screenshots",
+    "children": [
+      {
+        "name": "screenshot_20260724_202515.png",
+        "type": "file",
+        "path": "screenshots/screenshot_20260724_202515.png",
+        "ext": ".png",
+        "lastModified": 1784895915194
+      },
+      {
+        "name": "screenshot_20260724_205046.png",
+        "type": "file",
+        "path": "screenshots/screenshot_20260724_205046.png",
+        "ext": ".png",
+        "lastModified": 1784897446097
+      },
+      {
+        "name": "screenshot_20260724_205940.png",
+        "type": "file",
+        "path": "screenshots/screenshot_20260724_205940.png",
+        "ext": ".png",
+        "lastModified": 1784897980499
+      },
+      {
+        "name": "screenshot_20260725_092531.png",
+        "type": "file",
+        "path": "screenshots/screenshot_20260725_092531.png",
+        "ext": ".png",
+        "lastModified": 1784942731192
+      }
+    ]
+  },
+  {
+    "name": "main.py",
+    "type": "file",
+    "path": "main.py",
+    "ext": ".py",
+    "lastModified": 1785156831090
+  },
+  {
+    "name": "ocr_engine.py",
+    "type": "file",
+    "path": "ocr_engine.py",
+    "ext": ".py",
+    "lastModified": 1785156831091
+  },
+  {
+    "name": "ocr_result_window.py",
+    "type": "file",
+    "path": "ocr_result_window.py",
+    "ext": ".py",
+    "lastModified": 1785156831092
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1785156831090
+  },
+  {
+    "name": "requirements.txt",
+    "type": "file",
+    "path": "requirements.txt",
+    "ext": ".txt",
+    "lastModified": 1785156831093
+  },
+  {
+    "name": "screenshot_overlay.py",
+    "type": "file",
+    "path": "screenshot_overlay.py",
+    "ext": ".py",
+    "lastModified": 1785156831094
+  },
+  {
+    "name": "wechat_detector.py",
+    "type": "file",
+    "path": "wechat_detector.py",
+    "ext": ".py",
+    "lastModified": 1785156831094
+  },
+  {
+    "name": "wechat_paster.py",
+    "type": "file",
+    "path": "wechat_paster.py",
+    "ext": ".py",
+    "lastModified": 1785156831095
+  }
+]

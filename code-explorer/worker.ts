@@ -205,6 +205,39 @@ async function fetchFromEcs(path: string, env: Env, request: Request): Promise<R
   return fetch(url, { method: request.method, headers });
 }
 
+async function proxyStreamToEcs(path: string, env: Env, request: Request): Promise<Response> {
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+  const url = `${ecsUrl}${path}`;
+  const headers = new Headers();
+  const contentType = request.headers.get('Content-Type');
+  if (contentType) headers.set('Content-Type', contentType);
+  const cookie = request.headers.get('Cookie');
+  if (cookie) headers.set('Cookie', cookie);
+  headers.set('Accept', 'text/event-stream');
+  const body = request.method === 'POST' ? await request.text() : undefined;
+  const ecsResp = await fetch(url, {
+    method: request.method,
+    headers,
+    body,
+  });
+  // 使用 TransformStream 确保不缓冲，立即转发
+  const { readable, writable } = new TransformStream({
+    transform(chunk, controller) {
+      controller.enqueue(chunk);
+    },
+  });
+  ecsResp.body?.pipeTo(writable).catch(() => {});
+  const responseHeaders = new Headers();
+  responseHeaders.set('Content-Type', 'text/event-stream; charset=utf-8');
+  responseHeaders.set('Cache-Control', 'no-cache, no-transform');
+  responseHeaders.set('Connection', 'keep-alive');
+  responseHeaders.set('Access-Control-Allow-Origin', '*');
+  responseHeaders.set('X-Accel-Buffering', 'no');
+  responseHeaders.delete('Content-Length');
+  responseHeaders.delete('Content-Encoding');
+  return new Response(readable, { status: ecsResp.status, headers: responseHeaders });
+}
+
 async function fetchAsset(path: string, env: Env): Promise<Response> {
   try {
     if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
@@ -454,6 +487,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- 需要认证的 API ----
   const needAuth = path.startsWith('/api/files/') ||
     path.startsWith('/api/comments') ||
+    path.startsWith('/api/run/') ||
     path === '/api/likes' ||
     path === '/api/admin/dashboard';
 
@@ -462,8 +496,27 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     if (!authenticated) return errorResponse('请先登录', 401);
   }
 
+  // ---- 代码执行 API（流式）----
+  if (path === '/api/run/start') {
+    return proxyStreamToEcs(path + (url.search || ''), env, request);
+  }
+  if (path === '/api/run/stop') {
+    return fetchFromEcs(path, env, request);
+  }
+
   // ---- 文件 API ----
   if (path === '/api/files/tree') {
+    // 代理到 ECS 服务器（避免加载 24.5MB 的 file-tree.json 到 Worker 内存）
+    try {
+      const ecsResp = await fetchFromEcs(`/api/files/tree${url.search}`, env, request);
+      if (ecsResp.ok) {
+        const data = await ecsResp.json();
+        const resp = jsonResponse(data);
+        addCacheHeader(resp.headers, 300);
+        return resp;
+      }
+    } catch {}
+    // ECS 失败时回退到本地 file-tree.json
     const tree = await getFileTree(env);
     const resp = jsonResponse(tree);
     addCacheHeader(resp.headers, 300);
@@ -547,11 +600,22 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     return resp;
   }
 
-  // ---- 项目文件树 API（按需加载）----
+  // ---- 项目文件树 API（按需加载，优先代理到ECS）----
   if (path === '/api/projects/tree') {
     const projPath = url.searchParams.get('path') || '';
     if (!projPath) return errorResponse('缺少 path 参数');
     if (projPath.includes('..') || projPath.startsWith('/')) return errorResponse('访问被拒绝', 403);
+    // 优先代理到 ECS 服务器（ECS 有实际文件系统，可以实时扫描项目结构）
+    try {
+      const ecsResp = await fetchFromEcs(`/api/projects/tree${url.search}`, env, request);
+      if (ecsResp.ok) {
+        const treeData = await ecsResp.json();
+        const resp = jsonResponse(treeData);
+        addCacheHeader(resp.headers, 300);
+        return resp;
+      }
+    } catch {}
+    // ECS 失败时回退到 GitHub Assets（预生成的project-trees JSON）
     const safeName = projPath.replace(/\//g, '__').replace(/\\/g, '__');
     const treeResp = await fetchAsset(`/project-trees/${safeName}.json`, env);
     if (!treeResp.ok) return errorResponse('项目文件树不存在', 404);
@@ -559,6 +623,25 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     const resp = jsonResponse(treeData);
     addCacheHeader(resp.headers, 86400);
     return resp;
+  }
+
+  // ---- 目录懒加载 API（代理到 ECS）----
+  if (path === '/api/files/subtree') {
+    const projectPath = url.searchParams.get('project') || '';
+    const dirPath = url.searchParams.get('dir') || '';
+    if (!projectPath || !dirPath) return errorResponse('缺少 project 或 dir 参数');
+    if (projectPath.includes('..') || dirPath.includes('..')) return errorResponse('访问被拒绝', 403);
+    // 代理到 ECS 服务器获取子目录内容
+    try {
+      const ecsResp = await fetchFromEcs(`/api/files/subtree${url.search}`, env, request);
+      if (ecsResp.ok) {
+        const data = await ecsResp.json();
+        const resp = jsonResponse(data);
+        addCacheHeader(resp.headers, 300);
+        return resp;
+      }
+    } catch {}
+    return errorResponse('无法加载目录内容', 502);
   }
 
   if (path === '/api/files/content') {
@@ -699,11 +782,44 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   if (path === '/api/files/search') {
     const query = (url.searchParams.get('q') || '').toLowerCase();
     if (!query) return jsonResponse([]);
+    // 代理到 ECS 服务器搜索（避免加载 24.5MB 的 file-tree.json）
+    try {
+      const ecsResp = await fetchFromEcs(`/api/files/search${url.search}`, env, request);
+      if (ecsResp.ok) {
+        const data = await ecsResp.json();
+        const resp = jsonResponse(data);
+        addCacheHeader(resp.headers, 300);
+        return resp;
+      }
+    } catch {}
+    // ECS 失败时回退到本地 file-tree.json 搜索
     const tree = await getFileTree(env);
     const results = searchInTree(tree, query);
     const resp = jsonResponse(results.slice(0, 100));
     addCacheHeader(resp.headers, 300);
     return resp;
+  }
+
+  // ---- 文件下载 API ----
+  if (path === '/api/files/download') {
+    const file_path = url.searchParams.get('path');
+    if (!file_path) return errorResponse('缺少 path 参数');
+    try {
+      const ecsResp = await fetchFromEcs(`/api/files/download?path=${encodeURIComponent(file_path)}`, env, request);
+      if (ecsResp.ok) {
+        return new Response(await ecsResp.arrayBuffer(), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': `attachment; filename="${encodeURIComponent(file_path.split('/').pop() || 'project.zip')}"`,
+          },
+        });
+      } else {
+        return errorResponse(`下载失败: ${ecsResp.status}`, ecsResp.status);
+      }
+    } catch (e) {
+      return errorResponse(`下载失败: ${e.message}`, 500);
+    }
   }
 
   // ---- 评论 API ----

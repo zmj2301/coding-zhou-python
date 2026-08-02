@@ -11,6 +11,7 @@ export interface Env {
   GITHUB_REPO: string;
   GITHUB_BRANCH: string;
   ZHIPU_API_KEY: string;
+  ECS_SERVER_URL: string;
   ASSETS: {
     fetch: (request: Request) => Promise<Response>;
   };
@@ -185,6 +186,56 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
   const cleanPath = path.replace(/^\/+/, '');
   const url = `https://raw.githubusercontent.com/${repo}/${branch}/${encodeURI(cleanPath)}`;
   return fetch(url);
+}
+
+// ------------------------------------------------------------
+// 工具：ECS 服务器代理
+// ------------------------------------------------------------
+
+async function fetchFromEcs(path: string, env: Env, request: Request): Promise<Response> {
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+  const url = `${ecsUrl}${path}`;
+  const headers = new Headers(request.headers);
+  headers.set('Host', new URL(ecsUrl).host);
+  // 保留 Cookie 用于认证
+  const cookie = request.headers.get('Cookie');
+  if (cookie) {
+    headers.set('Cookie', cookie);
+  }
+  return fetch(url, { method: request.method, headers });
+}
+
+async function proxyStreamToEcs(path: string, env: Env, request: Request): Promise<Response> {
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+  const url = `${ecsUrl}${path}`;
+  const headers = new Headers();
+  const contentType = request.headers.get('Content-Type');
+  if (contentType) headers.set('Content-Type', contentType);
+  const cookie = request.headers.get('Cookie');
+  if (cookie) headers.set('Cookie', cookie);
+  headers.set('Accept', 'text/event-stream');
+  const body = request.method === 'POST' ? await request.text() : undefined;
+  const ecsResp = await fetch(url, {
+    method: request.method,
+    headers,
+    body,
+  });
+  // 使用 TransformStream 确保不缓冲，立即转发
+  const { readable, writable } = new TransformStream({
+    transform(chunk, controller) {
+      controller.enqueue(chunk);
+    },
+  });
+  ecsResp.body?.pipeTo(writable).catch(() => {});
+  const responseHeaders = new Headers();
+  responseHeaders.set('Content-Type', 'text/event-stream; charset=utf-8');
+  responseHeaders.set('Cache-Control', 'no-cache, no-transform');
+  responseHeaders.set('Connection', 'keep-alive');
+  responseHeaders.set('Access-Control-Allow-Origin', '*');
+  responseHeaders.set('X-Accel-Buffering', 'no');
+  responseHeaders.delete('Content-Length');
+  responseHeaders.delete('Content-Encoding');
+  return new Response(readable, { status: ecsResp.status, headers: responseHeaders });
 }
 
 async function fetchAsset(path: string, env: Env): Promise<Response> {
@@ -436,12 +487,21 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- 需要认证的 API ----
   const needAuth = path.startsWith('/api/files/') ||
     path.startsWith('/api/comments') ||
+    path.startsWith('/api/run/') ||
     path === '/api/likes' ||
     path === '/api/admin/dashboard';
 
   if (needAuth) {
     const authenticated = await checkAuth(request, env);
     if (!authenticated) return errorResponse('请先登录', 401);
+  }
+
+  // ---- 代码执行 API（流式）----
+  if (path === '/api/run/start') {
+    return proxyStreamToEcs(path + (url.search || ''), env, request);
+  }
+  if (path === '/api/run/stop') {
+    return fetchFromEcs(path, env, request);
   }
 
   // ---- 文件 API ----
@@ -529,11 +589,22 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     return resp;
   }
 
-  // ---- 项目文件树 API（按需加载）----
+  // ---- 项目文件树 API（按需加载，优先代理到ECS）----
   if (path === '/api/projects/tree') {
     const projPath = url.searchParams.get('path') || '';
     if (!projPath) return errorResponse('缺少 path 参数');
     if (projPath.includes('..') || projPath.startsWith('/')) return errorResponse('访问被拒绝', 403);
+    // 优先代理到 ECS 服务器（ECS 有实际文件系统，可以实时扫描项目结构）
+    try {
+      const ecsResp = await fetchFromEcs(`/api/projects/tree${url.search}`, env, request);
+      if (ecsResp.ok) {
+        const treeData = await ecsResp.json();
+        const resp = jsonResponse(treeData);
+        addCacheHeader(resp.headers, 300);
+        return resp;
+      }
+    } catch {}
+    // ECS 失败时回退到 GitHub Assets（预生成的project-trees JSON）
     const safeName = projPath.replace(/\//g, '__').replace(/\\/g, '__');
     const treeResp = await fetchAsset(`/project-trees/${safeName}.json`, env);
     if (!treeResp.ok) return errorResponse('项目文件树不存在', 404);
@@ -548,6 +619,17 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     if (!filePath) return errorResponse('缺少 path 参数');
     if (filePath.includes('..') || filePath.startsWith('/')) return errorResponse('访问被拒绝：路径越界', 403);
 
+    // 代理到 ECS 服务器（ECS 服务器有实际文件）
+    const ecsResp = await fetchFromEcs(`/api/files/content${url.search}`, env, request);
+    if (ecsResp.ok) {
+      // 成功时直接返回 ECS 响应
+      const data = await ecsResp.json();
+      const resp = jsonResponse(data);
+      addCacheHeader(resp.headers, 3600);
+      return resp;
+    }
+
+    // ECS 失败时回退到 GitHub
     const cacheKey = `cache:file:${filePath}`;
     try {
       const cached = await env.CODE_EXPLORER_KV.get(cacheKey, { type: 'json' });
@@ -587,6 +669,12 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     const filePath = url.searchParams.get('path') || '';
     if (!filePath) return errorResponse('缺少 path 参数');
     if (filePath.includes('..') || filePath.startsWith('/')) return errorResponse('访问被拒绝：路径越界', 403);
+
+    // 优先代理到 ECS 服务器
+    const ecsResp = await fetchFromEcs(`/api/files/preview${url.search}`, env, request);
+    if (ecsResp.ok) {
+      return ecsResp;
+    }
 
     const ext = getExt(filePath);
     const contentType = CONTENT_TYPE_MAP[ext] || 'application/octet-stream';
@@ -1054,6 +1142,11 @@ async function callZhipuAI(messages: { role: string; content: string }[], apiKey
     text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
   }
 
+  if (!text && recommendations.length > 0) {
+    text = '为你推荐以下项目：';
+  } else if (!text) {
+    text = '抱歉，AI 暂时无法生成回复，请稍后再试。';
+  }
   return { text, recommendations, reasoning };
 }
 
@@ -1103,6 +1196,11 @@ async function getConversationalAI(messages: { role: string; content: string }[]
         text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
       }
 
+      if (!text && recommendations.length > 0) {
+        text = '为你推荐以下项目：';
+      } else if (!text) {
+        text = '抱歉，AI 暂时无法生成回复，请稍后再试。';
+      }
       return { text, recommendations };
     } catch (e: any) {
       console.error('AI call failed:', e);

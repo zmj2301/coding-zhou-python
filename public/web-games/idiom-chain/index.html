@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成语接龙 - Idiom Chain</title>
+<link rel="stylesheet" href="../shared/style.css">
+<style>
+  .idiom-box {
+    display: inline-block;
+    padding: 10px 18px;
+    margin: 6px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    animation: fadeIn 0.4s ease;
+  }
+  .idiom-user { background: rgba(88,166,255,0.15); color: #58a6ff; border: 1px solid #1f6feb; }
+  .idiom-ai { background: rgba(163,113,247,0.15); color: #a371f7; border: 1px solid #8957e5; }
+  .idiom-hint { background: rgba(210,153,34,0.15); color: #d29922; border: 1px solid #9e6a03; font-size: 13px; font-weight: normal; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .chain-area {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 200px;
+    max-height: 320px;
+    overflow-y: auto;
+    text-align: center;
+  }
+  .message {
+    text-align: center;
+    padding: 8px;
+    font-size: 14px;
+    color: #8b949e;
+  }
+  .message.success { color: #3fb950; }
+  .message.error { color: #f85149; }
+  .message.info { color: #58a6ff; }
+</style>
+</head>
+<body>
+
+<div class="game-header">
+  <h1>📖 成语接龙</h1>
+  <p class="subtitle">输入成语，第一个字需与上一个成语的最后一字相同</p>
+</div>
+
+<div class="game-container" id="gameContainer">
+  <div class="game-stats">
+    <div class="stat-item"><span class="label">回合</span><span class="value" id="round">0</span></div>
+    <div class="stat-item"><span class="label">成功</span><span class="value green" id="success">0</span></div>
+    <div class="stat-item"><span class="label">用时</span><span class="value yellow" id="timer">0s</span></div>
+    <div class="stat-item"><span class="label">最高分</span><span class="value purple" id="best">0</span></div>
+  </div>
+
+  <div class="message info" id="message">点击开始游戏，AI将先出一个成语</div>
+  <div class="chain-area" id="chainArea"><div class="idiom-box idiom-hint">成语接龙规则：下一个成语的首字 = 上一个成语的末字（可以是同音字）</div></div>
+
+  <div style="display: flex; gap: 12px; align-items: center; justify-content: center; margin: 16px 0;">
+    <div id="requireLabel" style="font-size: 18px; color: #f0f6fc; font-weight: 600;"></div>
+  </div>
+
+  <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+    <input type="text" id="answer" class="input-box" style="width: 220px; font-size: 18px;" placeholder="输入成语">
+    <button class="btn" id="submitBtn">提交 (Enter)</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn secondary" id="startBtn">开始/重来</button>
+    <button class="btn secondary" id="hintBtn">提示</button>
+    <button class="btn secondary" id="skipBtn">跳过</button>
+    <button class="btn secondary" onclick="location.href='../index.html'">返回</button>
+  </div>
+  <div class="game-info">
+    <kbd>Enter</kbd> 提交 · 支持同音不同字的接龙 · 输入 <kbd>?</kbd> 请求提示 · 输入 <kbd>!</kbd> 跳过该轮
+  </div>
+</div>
+
+<script>
+// Idiom dictionary: key = first char, value = list of idioms starting with that char
+// Also build reverse for last char lookup
+const IDIOMS = [
+  // A curated list of common 4-character idioms
+  '一心一意','意气风发','发人深省','省吃俭用','用兵如神','神采飞扬','扬眉吐气','气吞山河',
+  '河清海晏','晏然自若','若有所思','思前想后','后来居上','上天入地','地大物博','博大精深',
+  '深恶痛绝','绝处逢生','生龙活虎','虎头蛇尾','尾大不掉','掉以轻心','心想事成','成竹在胸',
+  '胸有成竹','竹报平安','安居乐业','业精于勤','勤学苦练','练达老成','成千上万','万众一心',
+  '心旷神怡','怡然自得','得心应手','手到擒来','来日方长','长风破浪','浪子回头','头头是道',
+  '道听途说','说一不二','二话不说','说来话长','长驱直入','入木三分','分秒必争','争先恐后',
+  '后起之秀','秀外慧中','中流砥柱','柱石之坚','坚不可摧','摧枯拉朽','朽木不雕','雕梁画栋',
+  '栋梁之才','才高八斗','斗志昂扬','扬长补短','短兵相接','接二连三','三心二意','意味深长',
+  '长相厮守','守株待兔','兔死狐悲','悲天悯人','人山人海','海阔天空','空前绝后','后生可畏',
+  '畏首畏尾','娓娓道来','来者不拒','拒之门外','外柔内刚','刚柔并济','济世救人','人情世故',
+  '故步自封','封金挂印','印累绶若','若即若离','离经叛道','道不同不相为谋',
+  '千军万马','马到成功','功败垂成','成败得失','失之交臂','臂有四肘','肘腋之患','患得患失',
+  '失魂落魄','魄散魂飞','飞黄腾达','达官显贵','贵在知心','心直口快','快马加鞭','鞭长莫及',
+  '及锋而试','试金石','石破天惊','惊弓之鸟','鸟语花香','香车宝马','马首是瞻','瞻前顾后',
+  '后顾之忧','忧心忡忡','忡忡不安','安居乐业','业精于勤',
+  '明察秋毫','毫不犹豫','豫则立','立竿见影','影影绰绰','绰绰有余','余音绕梁','梁上君子',
+  '子虚乌有','有口皆碑','碑帖书法','发扬光大','大器晚成','成人之美','美中不足','足智多谋',
+  '谋事在人','人定胜天','天经地义','义不容辞','辞旧迎新','新陈代谢','谢天谢地','地动山摇',
+  '摇摇欲坠','坠茵落溷','混为一谈','谈笑风生','生离死别','别有洞天','天作之合','合情合理',
+  '理所当然','然荻读书','书声琅琅','琅琅上口','口若悬河','河奔海聚','聚精会神','神出鬼没',
+  '没齿难忘','忘恩负义','义无反顾','顾此失彼','彼此彼此','此起彼伏','伏案疾书','书剑飘零',
+  '零零星星','星火燎原','原封不动','动人心弦','弦外之音','音容笑貌','貌合神离','离群索居',
+  '居高临下','下笔成章','章台杨柳','柳暗花明','明辨是非','非同小可','可歌可泣','泣不成声',
+  '声名狼藉','藉草枕块','块垒难消','消愁解闷','闷闷不乐','乐不思蜀','蜀犬吠日','日新月异',
+  '异想天开','开天辟地','地老天荒','荒无人烟','烟雾弥漫','漫不经心','心惊肉跳','跳梁小丑',
+  '丑态百出','出类拔萃','萃萃学子','子夏悬鹑','鹑衣百结','结发夫妻','妻离子散','散兵游勇',
+  '勇往直前','前仆后继','继往开来','来龙去脉','脉络分明','明察暗访','访亲问友','友好往来',
+  '来者不善','善始善终','终成眷属','属垣有耳','耳聪目明','明目张胆','胆战心惊','惊天动地',
+  '地动山摇','摇头摆尾','娓娓动听','听天由命','命中注定','定国安邦','邦国殄瘁',
+  '风和日丽','丽日蓝天','天马行空','空谷足音','音犹在耳','耳熟能详','详情度理','理直气壮',
+  '壮志凌云','云淡风轻','轻而易举','举一反三','三顾茅庐','庐山真面','面目一新','新陈代谢',
+  '谢馆秦楼','楼台亭阁',
+  '一马当先','先声夺人','人杰地灵','灵机一动','动荡不安','安然无恙',
+  '无中生有','有板有眼','眼高手低','低声下气','气象万千','千锤百炼','炼石补天','天衣无缝',
+  '缝衣浅带','带牛佩犊','犊牧采薪','薪尽火传','传为佳话','话里有话','话不投机','机不可失',
+  '失之东隅','隅谷桑榆','榆木脑袋','代人受过','过河拆桥','桥归桥路归路',
+  '画龙点睛','睛鼓眼突','突如其来','来者可追','追根究底','底死谩生','生花妙笔','笔走龙蛇',
+  '蛇蝎心肠','肠肥脑满','满城风雨','雨过天晴','晴天霹雳','沥尽心血','血气方刚','刚正不阿',
+  '阿谀逢迎','迎刃而解','解民倒悬','悬梁刺股','股肱之力','力挽狂澜','澜倒波随',
+  '春风得意','意气相投','投桃报李','李代桃僵','僵李代桃','桃李满天下','下里巴人',
+  '金玉满堂','堂堂正正','正大光明','明察秋毫','毫不犹豫',
+  '马不停蹄','蹄间三寻','寻花问柳','柳绿花红','红颜薄命','命中注定','定国安邦',
+  '白手起家','家喻户晓','晓以大义','义薄云天','天长地久','久旱逢甘雨','雨打风吹',
+  '吹毛求疵','疵瑕不掩','掩耳盗铃','铃儿响叮当','当机立断','断章取义','义正词严',
+  '严阵以待','待人接物','物以类聚','聚少成多','多多益善','善男信女','女中豪杰',
+  '杰出人才','才疏学浅','浅尝辄止','止于至善','善有善报','报仇雪恨','恨相见晚',
+  '晚节不保','保家卫国','国泰民安','安然无恙',
+  '百年树人','人才辈出','出人头地','地覆天翻','翻天覆地','地广人稀','稀世之宝',
+  '宝刀不老','老当益壮','壮志未酬','酬功给效','效死输忠','忠言逆耳','耳听为虚',
+  '虚怀若谷','谷贱伤农','农工商学','学以致用','用心良苦','苦口婆心','心灵手巧',
+  '巧夺天工','工力悉敌','敌众我寡','寡不敌众','众志成城','城门失火','殃及池鱼',
+  '鱼目混珠','珠联璧合','合二为一','一帆风顺','顺水推舟','舟车劳顿','顿开茅塞',
+  '塞翁失马','马革裹尸','尸位素餐','餐风饮露','露出马脚','脚踏实地','地灵人杰',
+  '黑白分明','明枪暗箭','箭在弦上','上善若水','水滴石穿','穿针引线','线断风筝',
+  '争分夺秒','秒秒必争','争先恐后','后发制人','人满为患','患至呼天','天罗地网',
+  '网开一面','面面相觑','觑觎神器','器宇轩昂','昂首阔步','步步为营','营私舞弊',
+  '弊绝风清','清风明月','月明星稀','稀松平常','常胜将军','军令如山',
+  '山清水秀','秀色可餐','餐松饮涧','涧谷幽深','深入浅出','出口成章',
+  '章法有度','度日如年','年老体弱','弱不禁风','风卷残云','云开雾散',
+  '散兵游勇','勇冠三军','军令如山','山盟海誓','誓死不屈','屈指可数',
+  '数一数二','二话不说','说三道四','四面八方','方兴未艾','艾发衰容',
+  '容光焕发','发奋图强','强词夺理','理屈词穷','穷途末路','路不拾遗',
+  '遗臭万年','年富力强','强弩之末','末学肤受','受宠若惊','惊天动地',
+  '地震天翻','翻云覆雨','雨过天青','青梅竹马','马放南山','山高水长',
+  '长歌当哭','哭笑不得','得道多助','助人为乐','乐极生悲','悲欢离合',
+  '合情合理','里应外合','合衷共济','济济一堂','堂堂正正','正襟危坐',
+  '坐井观天','天各一方','方枘圆凿','凿壁偷光','光阴似箭','箭步如飞',
+  '飞蛾扑火','火中取栗','栗栗危惧','惧老休妻','妻荣夫贵','贵耳贱目',
+  '目瞪口呆','呆若木鸡','鸡犬升天','天花乱坠','坠溷飘茵','因小失大',
+  '大功告成','成仁取义','义愤填膺','膺图受箓','箓符驱鬼','兔死狗烹',
+  '烹龙炮凤','凤毛麟角','角立杰出','出生入死','死灰复燃','燃眉之急',
+  '急中生智','智勇双全','全力以赴','赴汤蹈火','火烧眉毛','毛遂自荐',
+  '荐贤举能','能言善辩','辩才无碍','碍手碍脚','脚踏实地','地丑德齐',
+  '齐天大圣','圣君贤相','相得益彰','彰善瘅恶','恶语伤人','人才济济',
+  '济世安民','民以食为天','天诛地灭','灭绝人性','性命交关','关门大吉',
+  '吉祥如意','意气自若','若有所失','失道寡助','助我张目','目不暇接',
+  '接踵而至','至理名言','言而有信','信口开河','河东狮吼','吼天喊地',
+  '地利人和','和风细雨','雨丝风片','片甲不留','流连忘返','返老还童',
+  '童颜鹤发','发指眦裂','裂土分茅','茅塞顿开','开卷有益','益寿延年',
+  '年深日久','久负盛名','名正言顺','顺水推舟','舟中敌国','国富民强',
+  '强将手下无弱兵','兵荒马乱','乱作一团','团结一致','治国安民',
+  '民怨沸腾','腾云驾雾','雾里看花','花好月圆','圆颅方趾','趾高气扬',
+  '扬眉吐气','气宇轩昂','昂首挺胸','胸无点墨','墨守成规','规行矩步',
+  '步步高升','升堂入室','室迩人远','远走高飞','飞沙走石','石沉大海',
+  '海晏河清','清心寡欲','欲罢不能','能屈能伸','伸手不见五指','指鹿为马',
+  '马到功成','成败论人','人言可畏','畏葸不前','前功尽弃','弃暗投明',
+  '明镜高悬','悬壶济世','世外桃源','源源不断','断壁残垣','垣堵皆倾',
+  '倾国倾城','城门失火','火海刀山','山崩地裂','裂裳裹足','足不逾户',
+  '户枢不蠹','蠹众木折','折冲尊俎','俎豆千秋','秋毫无犯','犯上作乱',
+  '乱臣贼子','子孝父慈','慈眉善目','目瞪口呆','呆头呆脑','脑满肠肥',
+  '肥头大耳','耳聪目明','明察秋毫','毫不在意','意在笔先','先发制人',
+  '人寿年丰','丰功伟绩','绩学之士','士别三日','日理万机','机变如神',
+  '神通广大','大显身手','手无寸铁','铁石心肠','肠回气荡','荡气回肠',
+  '肠肥脑满','满腹狐疑','疑神疑鬼','鬼哭狼嚎','嚎天动地','地覆天翻',
+  '翻江倒海','海底捞针','针锋相对','对牛弹琴','琴心剑胆','胆大包天',
+  '天伦之乐','乐而忘返','返璞归真','真知灼见','见义勇为','为富不仁',
+  '仁至义尽','尽善尽美','美不胜收','收放自如','如鱼得水','水到渠成',
+  '成家立业','业精于勤','勤能补拙','拙口笨舌','舌战群儒','儒雅风流',
+  '流光溢彩','彩衣娱亲','亲如手足','足不履地','地利人和','和衷共济',
+];
+
+// Clean to only 4-char idioms (standard)
+const IDIOM_LIST = IDIOMS.filter(s => {
+  // Count chars as Chinese characters only, keep exactly 4
+  const clean = s.replace(/[，,。！!？?]/g, '');
+  return clean.length === 4 && /[\u4e00-\u9fa5]/.test(clean);
+}).map(s => s.replace(/[，,。！!？?]/g, ''));
+
+// Deduplicate
+const uniqueSet = new Set(IDIOM_LIST);
+const UNIQUE_IDIOMS = [...uniqueSet];
+
+// Build index: first char -> list of idioms
+const BY_FIRST = {};
+for (const idiom of UNIQUE_IDIOMS) {
+  const first = idiom[0];
+  if (!BY_FIRST[first]) BY_FIRST[first] = [];
+  BY_FIRST[first].push(idiom);
+}
+
+// Simple homophone map: map pinyin-ish by using a few common char groupings
+// For simplicity: we'll allow user to use same char only
+// But support a tiny homophone list: common pairs
+const HOMOPHONES = {
+  // Some common 同音不同字 pairs to make game more forgiving
+  '成':'城诚承程乘橙盛呈','城':'成诚承程乘橙盛呈','诚':'成城承程乘橙盛呈',
+  '承':'成城诚程乘橙盛呈','程':'成城诚承乘橙盛呈','乘':'成城诚承程橙盛呈',
+  '长':'常尝偿嫦场','常':'长尝偿嫦场','尝':'长常偿嫦场',
+  '头':'投骰透','投':'头骰透',
+  '意':'义议异毅','义':'意议异毅','议':'意义异毅',
+  '一':'医依衣益','依':'一医衣益','衣':'一医依益',
+  '天':'田添甜填','田':'天添甜填',
+  '三':'山删姗扇衫','山':'三删姗扇衫',
+  '上':'尚赏裳','尚':'上赏裳',
+  '大':'达打答','达':'大打答',
+  '小':'晓笑肖','晓':'小笑肖',
+  '多':'夺朵惰','夺':'多朵惰',
+  '少':'烧梢稍','烧':'少梢稍',
+  '人':'仁壬忍','仁':'人壬忍',
+  '马':'码玛蚂','码':'马玛蚂',
+  '龙':'隆笼聋珑','隆':'龙笼聋珑',
+  '虎':'唬琥沪','唬':'虎琥沪',
+  '书':'输叔舒殊','输':'书叔舒殊',
+  '生':'升声牲','升':'生声牲','声':'生升牲',
+  '死':'四肆寺似','四':'死肆寺似',
+  '心':'新薪馨辛','新':'心薪馨辛','辛':'心新薪馨',
+  '明':'名鸣铭冥','名':'明鸣铭冥','鸣':'明名铭冥',
+  '地':'的低弟帝第','的':'地低弟帝第',
+  '后':'厚候侯猴','厚':'后候侯猴',
+  '来':'莱徕赉','莱':'来徕赉',
+  '去':'趣驱躯区','趣':'去驱躯区',
+  '分':'纷吩芬氛','纷':'分吩芬氛',
+  '合':'和何河禾荷','和':'合何河禾荷','何':'合和河禾荷',
+  '海':'嗨亥','嗨':'海亥',
+  '空':'恐控孔','孔':'空恐控',
+  '前':'钱乾潜','钱':'前乾潜',
+  '千':'迁签仟谦','迁':'千签仟谦',
+  '金':'今斤巾筋津','今':'金斤巾筋津',
+  '发':'法罚伐乏','法':'发罚伐乏',
+  '神':'伸身深申','伸':'神身深申','身':'神伸深申',
+  '鬼':'诡贵轨桂','诡':'鬼贵轨桂',
+  '风':'丰封枫峰锋蜂逢','丰':'风封枫峰锋蜂逢',
+  '雨':'语宇羽禹','语':'雨宇羽禹',
+  '火':'伙货或获祸','伙':'火货或获祸',
+  '水':'税睡虽','税':'水睡虽',
+  '山':'删姗扇衫','删':'山姗扇衫',
+  '石':'时十拾识实食','时':'石十拾识实食','十':'石时拾识实食',
+  '木':'目牧幕墓睦','目':'木牧幕墓睦',
+  '土':'吐兔途涂图','吐':'土兔途涂图',
+  '口':'叩扣寇','叩':'口扣寇',
+  '目':'木牧幕墓睦','牧':'木目幕墓睦',
+  '耳':'尔迩饵','尔':'耳迩饵',
+  '鼻':'比彼笔','比':'鼻彼笔',
+  '手':'守首寿受','守':'手首寿受',
+  '足':'族卒逐','族':'足卒逐',
+  '心':'新薪馨辛',
+  '肝':'干甘杆竿','干':'肝甘杆竿',
+  '胆':'但担弹淡旦','但':'胆担弹淡旦',
+  '眉':'煤梅媒枚','煤':'眉梅媒枚',
+  '眼':'演烟言严颜','演':'眼烟言严颜',
+  '身':'神伸深申',
+  '面':'绵棉眠免','绵':'面棉眠免',
+  '头':'投骰透',
+  '发':'法罚伐乏',
+};
+
+function isMatch(prevLast, nextFirst) {
+  if (prevLast === nextFirst) return true;
+  const h = HOMOPHONES[prevLast];
+  return h && h.includes(nextFirst);
+}
+
+function findIdiomStarting(ch, used) {
+  const direct = BY_FIRST[ch];
+  if (direct) {
+    const candidates = direct.filter(x => !used.has(x));
+    if (candidates.length > 0) return candidates[Math.floor(Math.random() * candidates.length)];
+  }
+  // try homophone
+  const h = HOMOPHONES[ch];
+  if (h) {
+    for (const alt of h) {
+      const list = BY_FIRST[alt];
+      if (!list) continue;
+      const candidates = list.filter(x => !used.has(x));
+      if (candidates.length > 0) return candidates[Math.floor(Math.random() * candidates.length)];
+    }
+  }
+  return null;
+}
+
+// Game state
+let chain = [];
+let used = new Set();
+let currentLast = '';
+let turn = 'ai';
+let running = false;
+let roundCount = 0;
+let successCount = 0;
+let startTime = 0;
+let timerInterval = null;
+
+function setMessage(text, cls) {
+  const m = document.getElementById('message');
+  m.textContent = text;
+  m.className = 'message ' + (cls || 'info');
+}
+
+function addIdiomToChain(text, who) {
+  const area = document.getElementById('chainArea');
+  const box = document.createElement('div');
+  box.className = 'idiom-box ' + (who === 'user' ? 'idiom-user' : 'idiom-ai');
+  box.textContent = text + (who === 'user' ? ' ✓' : ' 🤖');
+  area.appendChild(box);
+  area.scrollTop = area.scrollHeight;
+}
+
+function startGame() {
+  chain = [];
+  used = new Set();
+  roundCount = 0;
+  successCount = 0;
+  running = true;
+  startTime = Date.now();
+  document.getElementById('chainArea').innerHTML = '';
+  turn = 'ai';
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (running) {
+      const t = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('timer').textContent = t + 's';
+    }
+  }, 500);
+  aiTurn();
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('round').textContent = roundCount;
+  document.getElementById('success').textContent = successCount;
+  if (currentLast) {
+    document.getElementById('requireLabel').textContent = `请输入以「${currentLast}」开头的成语`;
+  } else {
+    document.getElementById('requireLabel').textContent = '';
+  }
+  const best = parseInt(localStorage.getItem('idiom_best') || '0');
+  document.getElementById('best').textContent = best;
+}
+
+function aiTurn() {
+  roundCount++;
+  let aiPicked;
+  if (chain.length === 0) {
+    aiPicked = UNIQUE_IDIOMS[Math.floor(Math.random() * UNIQUE_IDIOMS.length)];
+  } else {
+    aiPicked = findIdiomStarting(currentLast, used);
+  }
+  if (!aiPicked) {
+    setMessage('AI接不上了！你赢了！🎉', 'success');
+    endGame(true);
+    return;
+  }
+  chain.push(aiPicked);
+  used.add(aiPicked);
+  currentLast = aiPicked[aiPicked.length - 1];
+  addIdiomToChain(aiPicked, 'ai');
+  setMessage(`AI出：${aiPicked} → 请以「${currentLast}」开头`, 'info');
+  turn = 'user';
+  document.getElementById('answer').focus();
+  updateUI();
+}
+
+function userSubmit() {
+  if (!running) return;
+  if (turn !== 'user') {
+    setMessage('请等待AI出成语...', 'info');
+    return;
+  }
+  const input = document.getElementById('answer').value.trim();
+  document.getElementById('answer').value = '';
+
+  if (input === '?' || input === '？') { return giveHint(); }
+  if (input === '!' || input === '！') { return userSkip(); }
+
+  if (input.length !== 4) {
+    setMessage('请输入 4 个字的成语', 'error');
+    return;
+  }
+  // Check first char matches
+  if (!isMatch(currentLast, input[0])) {
+    setMessage(`首字「${input[0]}」不匹配，需要「${currentLast}」开头（或同音）`, 'error');
+    return;
+  }
+  // Check in dictionary
+  if (!UNIQUE_IDIOMS.includes(input)) {
+    setMessage(`「${input}」不是一个有效的成语`, 'error');
+    return;
+  }
+  if (used.has(input)) {
+    setMessage(`「${input}」已使用过，请换一个`, 'error');
+    return;
+  }
+  chain.push(input);
+  used.add(input);
+  currentLast = input[input.length - 1];
+  successCount++;
+  addIdiomToChain(input, 'user');
+  setMessage(`好！「${input}」→ 请以「${currentLast}」开头`, 'success');
+  turn = 'ai';
+  updateUI();
+  setTimeout(aiTurn, 600);
+}
+
+function giveHint() {
+  const hint = findIdiomStarting(currentLast, used);
+  if (hint) {
+    setMessage(`提示：试试「${hint[0]}${hint[1]}…」`, 'info');
+  } else {
+    setMessage('暂无可提示成语，请跳过此轮', 'error');
+  }
+}
+
+function userSkip() {
+  // Reset: find a new starting idiom for user
+  setMessage('你跳过了这轮，AI重新开局', 'info');
+  turn = 'ai';
+  currentLast = '';
+  chain = [];
+  used = new Set();
+  document.getElementById('chainArea').innerHTML = '';
+  setTimeout(aiTurn, 500);
+}
+
+function endGame(userWon) {
+  running = false;
+  if (timerInterval) clearInterval(timerInterval);
+  const best = parseInt(localStorage.getItem('idiom_best') || '0');
+  if (successCount > best) {
+    localStorage.setItem('idiom_best', String(successCount));
+  }
+  updateUI();
+}
+
+document.getElementById('startBtn').onclick = startGame;
+document.getElementById('submitBtn').onclick = userSubmit;
+document.getElementById('hintBtn').onclick = giveHint;
+document.getElementById('skipBtn').onclick = userSkip;
+document.getElementById('answer').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') userSubmit();
+});
+
+// Show initial state
+updateUI();
+</script>
+</body>
+</html>

@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>API 管理控制台 - Code Explorer</title>
+<style>
+/* ========== CSS Reset & Variables ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --bg-overlay: #30363d;
+  --border-color: #30363d;
+  --border-light: #21262d;
+  --text-primary: #c9d1d9;
+  --text-secondary: #8b949e;
+  --text-tertiary: #6e7681;
+  --accent-blue: #58a6ff;
+  --accent-green: #3fb950;
+  --accent-yellow: #d29922;
+  --accent-red: #f85149;
+  --accent-purple: #a371f7;
+  --accent-orange: #f0883e;
+  --accent-pink: #db61a2;
+  --accent-cyan: #39d353;
+  --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace;
+  --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  --transition: 150ms ease;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f6f8fa;
+  --bg-tertiary: #eaeef2;
+  --bg-overlay: #d0d7de;
+  --border-color: #d0d7de;
+  --border-light: #eaeef2;
+  --text-primary: #24292f;
+  --text-secondary: #57606a;
+  --text-tertiary: #8c959f;
+  --accent-blue: #0969da;
+  --accent-green: #1a7f37;
+  --accent-yellow: #bf8700;
+  --accent-red: #cf222e;
+  --accent-purple: #8250df;
+  --accent-orange: #bf5612;
+  --accent-pink: #bf3c5b;
+  --accent-cyan: #1a7f37;
+}
+
+[data-theme="light"] body::before {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: var(--border-color); }
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#484f58}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+body > * { position: relative; z-index: 1; }
+
+/* ===== 主题切换按钮 ===== */
+.theme-toggle-btn {
+  position: fixed; top: 12px; right: 56px;
+  z-index: 99997;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+.theme-toggle-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--accent-blue);
+}
+.theme-toggle-btn svg { width: 18px; height: 18px; }
+[data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
+[data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
+.theme-toggle-btn .moon-icon { display: none; }
+
+/* ===== 顶部栏 ===== */
+.admin-header {
+  height: 56px; padding: 0 24px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.admin-header-left {
+  display: flex; align-items: center; gap: 16px;
+}
+.admin-back-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px; background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px; color: var(--text-secondary);
+  cursor: pointer; font-size: 13px;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.admin-back-btn:hover {
+  color: var(--text-primary); border-color: var(--text-tertiary);
+  background: var(--bg-tertiary);
+}
+.admin-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 16px; font-weight: 600; color: var(--text-primary);
+}
+.admin-title-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.admin-header-right {
+  display: flex; align-items: center; gap: 12px;
+}
+.admin-refresh-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px; color: var(--text-secondary);
+  cursor: pointer; font-size: 13px;
+  transition: all 0.15s;
+}
+.admin-refresh-btn:hover {
+  color: var(--text-primary); border-color: var(--text-tertiary);
+}
+.admin-refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ===== 主体 ===== */
+.admin-body {
+  flex: 1; overflow-y: auto;
+  padding: 32px;
+}
+.admin-body-inner {
+  max-width: 1200px; margin: 0 auto;
+}
+.admin-section { margin-bottom: 32px; }
+.admin-section-title {
+  font-size: 13px; font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+/* ===== 卡片 ===== */
+.admin-cards {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.admin-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 20px;
+  transition: all 0.15s;
+}
+.admin-card:hover {
+  border-color: var(--text-tertiary);
+  transform: translateY(-1px);
+}
+.admin-card-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.admin-card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.admin-card-icon.blue { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
+.admin-card-icon.green { background: rgba(63,185,80,0.12); color: var(--accent-green); }
+.admin-card-icon.purple { background: rgba(163,113,247,0.12); color: #a371f7; }
+.admin-card-icon.red { background: rgba(248,81,73,0.12); color: var(--accent-red); }
+.admin-card-icon.yellow { background: rgba(210,153,34,0.12); color: #d29922; }
+.admin-card-title {
+  font-size: 14px; color: var(--text-secondary);
+  font-weight: 500;
+}
+.admin-card-value {
+  font-size: 28px; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 4px;
+  line-height: 1.2;
+}
+.admin-card-desc {
+  font-size: 12px; color: var(--text-tertiary);
+  word-break: break-all;
+  font-family: var(--font-mono);
+}
+
+/* ===== 进度条 ===== */
+.pool-progress-wrap {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 20px;
+  margin-top: 16px;
+}
+.pool-progress-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.pool-progress-label {
+  font-size: 14px; font-weight: 500; color: var(--text-primary);
+}
+.pool-progress-meta {
+  font-size: 13px; color: var(--text-secondary); font-family: var(--font-mono);
+}
+.pool-progress-track {
+  height: 14px; border-radius: 7px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+.pool-progress-fill {
+  height: 100%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  transition: width 0.6s ease;
+  width: 0;
+}
+.pool-progress-foot {
+  margin-top: 10px;
+  font-size: 12px; color: var(--text-tertiary);
+  line-height: 1.6;
+}
+
+/* ===== 用户排行 ===== */
+.rank-list {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+.rank-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-light);
+}
+.rank-row:last-child { border-bottom: none; }
+.rank-row.self {
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1));
+}
+.rank-index {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
+  background: var(--bg-tertiary); color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.rank-index.top1 { background: rgba(210,153,34,0.2); color: var(--accent-yellow); }
+.rank-index.top2 { background: rgba(176,190,197,0.2); color: var(--text-secondary); }
+.rank-index.top3 { background: rgba(205,127,50,0.2); color: var(--accent-orange); }
+.rank-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600; color: #fff;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+}
+.rank-avatar.admin { background: linear-gradient(135deg, #a371f7, #8957e5); }
+.rank-info { flex: 1; min-width: 0; }
+.rank-name-line {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 500; color: var(--text-primary);
+}
+.rank-role-badge {
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; font-weight: 500;
+}
+.rank-role-badge.admin { background: rgba(163,113,247,0.15); color: var(--accent-purple); }
+.rank-role-badge.user { background: var(--bg-overlay); color: var(--text-tertiary); }
+.rank-role-badge.self { background: rgba(99,102,241,0.2); color: #6366f1; }
+.rank-sub {
+  font-size: 12px; color: var(--text-tertiary); margin-top: 3px;
+}
+.rank-count {
+  font-size: 18px; font-weight: 700; color: var(--text-primary);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+.rank-count small {
+  font-size: 12px; font-weight: 400; color: var(--text-tertiary);
+}
+
+/* ===== 趋势图 ===== */
+.trend-wrap {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+}
+.trend-bars {
+  display: flex; align-items: flex-end; gap: 12px;
+  height: 180px;
+  padding: 0 8px;
+}
+.trend-bar-col {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  height: 100%; justify-content: flex-end; gap: 8px;
+}
+.trend-bar-count {
+  font-size: 12px; color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+.trend-bar {
+  width: 100%; max-width: 46px;
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(180deg, #a855f7, #6366f1);
+  min-height: 4px;
+  transition: height 0.6s ease;
+}
+.trend-bar.zero { background: var(--bg-tertiary); }
+.trend-bar-label {
+  font-size: 11px; color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* ===== 上游状态 ===== */
+.upstream-list {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.upstream-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 20px;
+  transition: all 0.15s;
+}
+.upstream-card:hover { border-color: var(--text-tertiary); transform: translateY(-1px); }
+.upstream-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.upstream-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 8px rgba(63,185,80,0.5);
+}
+.upstream-dot.fallback { background: var(--accent-yellow); box-shadow: 0 0 8px rgba(210,153,34,0.5); }
+.upstream-name {
+  font-size: 14px; font-weight: 600; color: var(--text-primary);
+}
+.upstream-meta {
+  font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono);
+  line-height: 1.8;
+}
+.upstream-meta b { color: var(--text-secondary); font-weight: 600; }
+
+/* ===== 快捷入口 ===== */
+.quick-links {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.quick-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  transition: all 0.15s;
+}
+.quick-link:hover {
+  border-color: var(--text-tertiary);
+  transform: translateY(-1px);
+  color: var(--accent-blue);
+}
+.quick-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+/* ===== 加载 / 空态 ===== */
+.console-loading, .console-error {
+  text-align: center; padding: 60px 20px;
+  color: var(--text-tertiary); font-size: 14px;
+}
+.console-error { color: var(--accent-red); }
+
+/* ===== 许愿池喷泉 ===== */
+.wishing-pool-wrap {
+  display: flex; align-items: center; gap: 40px;
+  margin-top: 20px;
+}
+.wishing-pool {
+  position: relative; width: 200px; height: 220px; flex-shrink: 0;
+}
+/* 底座（最外圈） */
+.wp-base {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 180px; height: 40px;
+  background: linear-gradient(180deg, #f5deb3 0%, #e8c47a 40%, #d4a840 100%);
+  border-radius: 50%;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+/* 底座边缘高光 */
+.wp-base::before {
+  content: ''; position: absolute; top: -3px; left: 5%; right: 5%; height: 6px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0));
+  border-radius: 50%;
+}
+/* 底层水池 */
+.wp-tier1 {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 160px; height: 50px;
+  background: linear-gradient(180deg, #7dd3d3 0%, #45b8b8 30%, #3a9e9e 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1);
+}
+/* 水面高光 */
+.wp-tier1::before {
+  content: ''; position: absolute; top: 8px; left: 15%; right: 15%; height: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+  border-radius: 50%;
+}
+/* 中层 */
+.wp-tier2 {
+  position: absolute; bottom: 68px; left: 50%; transform: translateX(-50%);
+  width: 110px; height: 40px;
+  background: linear-gradient(180deg, #8de0e0 0%, #5cc4c4 30%, #45b0b0 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 -4px 10px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.1);
+}
+.wp-tier2::before {
+  content: ''; position: absolute; top: 6px; left: 12%; right: 12%; height: 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0));
+  border-radius: 50%;
+}
+/* 顶层 */
+.wp-tier3 {
+  position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+  width: 60px; height: 28px;
+  background: linear-gradient(180deg, #a8ecec 0%, #6dd0d0 30%, #52baba 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 -3px 8px rgba(0,0,0,0.1);
+}
+.wp-tier3::before {
+  content: ''; position: absolute; top: 4px; left: 10%; right: 10%; height: 6px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+  border-radius: 50%;
+}
+/* 水柱（顶部喷泉） */
+.wp-spout {
+  position: absolute; bottom: 122px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 50px;
+  background: linear-gradient(180deg, rgba(120,220,220,0.9), rgba(80,190,190,0.6));
+  border-radius: 4px 4px 2px 2px;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+}
+/* 水花飞溅粒子 */
+.wp-splash {
+  position: absolute; bottom: 166px; left: 50%; transform: translateX(-50%);
+  width: 40px; height: 30px;
+}
+.wp-splash-dot {
+  position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(120,220,220,0.8);
+  animation: splashFloat 2s ease-in-out infinite;
+}
+.wp-splash-dot:nth-child(1) { left: 0; top: 10px; animation-delay: 0s; }
+.wp-splash-dot:nth-child(2) { left: 17px; top: 0; animation-delay: 0.3s; }
+.wp-splash-dot:nth-child(3) { right: 0; top: 10px; animation-delay: 0.6s; }
+.wp-splash-dot:nth-child(4) { left: 8px; top: 18px; animation-delay: 0.9s; }
+.wp-splash-dot:nth-child(5) { right: 8px; top: 18px; animation-delay: 1.2s; }
+@keyframes splashFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-8px) scale(0.6); opacity: 0.3; }
+}
+/* 流水（层间下落动画） */
+.wp-waterfall {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  width: 18px; height: 20px; border-radius: 0 0 9px 9px;
+  background: linear-gradient(180deg, rgba(100,210,210,0.7), rgba(60,180,180,0.3));
+  animation: waterFall 1.8s ease-in-out infinite;
+}
+.wp-waterfall.wf1 { bottom: 72px; animation-delay: 0s; }
+.wp-waterfall.wf2 { bottom: 102px; width: 12px; height: 16px; animation-delay: 0.6s; }
+@keyframes waterFall {
+  0%, 100% { opacity: 0.6; height: 20px; }
+  50% { opacity: 0.2; height: 14px; }
+}
+/* 水中硬币 */
+.wp-coin {
+  position: absolute; bottom: 36px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: linear-gradient(135deg, #f5d442, #e6b800);
+  border: 2px solid #d4a000;
+  animation: coinBob 3s ease-in-out infinite;
+}
+.wp-coin::after {
+  content: '¥'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700; color: #b8860b;
+}
+.wp-coin:nth-child(1) { left: 30%; animation-delay: 0s; }
+.wp-coin:nth-child(2) { left: 55%; animation-delay: 0.8s; }
+.wp-coin:nth-child(3) { left: 42%; animation-delay: 1.6s; }
+@keyframes coinBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(5deg); }
+  75% { transform: translateY(2px) rotate(-3deg); }
+}
+/* 植物装饰 */
+.wp-plant {
+  position: absolute; bottom: 10px;
+}
+.wp-plant-left { left: -8px; }
+.wp-plant-right { right: -8px; }
+.wp-stem {
+  width: 3px; height: 22px; background: #3a7a3a; border-radius: 1px;
+  margin: 0 auto;
+}
+.wp-leaf {
+  width: 14px; height: 8px; border-radius: 0 50% 50% 0;
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  position: relative; top: -12px;
+  transform-origin: left center;
+  animation: leafSway 4s ease-in-out infinite;
+}
+.wp-plant-right .wp-leaf {
+  border-radius: 50% 0 0 50%;
+  transform-origin: right center;
+  left: -11px;
+}
+.wp-flower {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: radial-gradient(circle, #ff9800, #f57c00);
+  position: relative; top: -18px; left: 1px;
+}
+@keyframes leafSway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+/* 整体浮动 */
+.wishing-pool {
+  animation: poolFloat 6s ease-in-out infinite;
+}
+@keyframes poolFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+/* 水面波纹动画 */
+.wp-tier1::after, .wp-tier2::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 40%, rgba(255,255,255,0.15) 0%, transparent 60%);
+  animation: ripple 4s ease-in-out infinite;
+}
+.wp-tier2::after { animation-delay: 1.5s; }
+@keyframes ripple {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.03); }
+}
+/* 亮色主题调整 */
+[data-theme="light"] .wp-base { background: linear-gradient(180deg, #f5e0b0, #e0b860, #c89e30); }
+[data-theme="light"] .wp-tier1 { background: linear-gradient(180deg, #90e8e8, #60d0d0, #50c0c0); }
+[data-theme="light"] .wp-tier2 { background: linear-gradient(180deg, #a0f0f0, #70dada, #60cccc); }
+[data-theme="light"] .wp-tier3 { background: linear-gradient(180deg, #b0f0f0, #80e0e0, #70d0d0); }
+[data-theme="light"] .wp-spout { background: linear-gradient(180deg, rgba(80,200,200,0.8), rgba(60,180,180,0.5)); }
+[data-theme="light"] .wp-splash-dot { background: rgba(80,190,190,0.7); }
+[data-theme="light"] .wp-waterfall { background: linear-gradient(180deg, rgba(80,190,190,0.6), rgba(50,160,160,0.3)); }
+[data-theme="light"] .wp-stem { background: #4a8a4a; }
+[data-theme="light"] .wp-leaf { background: linear-gradient(135deg, #5cb860, #3a8a3a); }
+
+.wishing-pool-info {
+  flex: 1;
+}
+.wishing-pool-title {
+  font-size: 18px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.wishing-pool-desc {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+}
+.wishing-pool-desc b {
+  color: var(--accent-blue); font-weight: 600;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .admin-body { padding: 16px; }
+  .admin-header { padding: 0 16px; }
+  .admin-cards { grid-template-columns: 1fr; }
+  .upstream-list { grid-template-columns: 1fr; }
+  .quick-links { grid-template-columns: 1fr; }
+  .trend-bar-label { font-size: 10px; }
+  .wishing-pool-wrap { flex-direction: column; align-items: center; gap: 20px; }
+  .wishing-pool-info { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 主题切换 ===== -->
+<button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)">
+  <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+
+<!-- ===== 顶部栏 ===== -->
+<div class="admin-header">
+  <div class="admin-header-left">
+    <a class="admin-back-btn" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      返回
+    </a>
+    <div class="admin-title">
+      <div class="admin-title-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      </div>
+      API 管理控制台
+    </div>
+  </div>
+  <div class="admin-header-right">
+    <button class="admin-refresh-btn" id="refreshBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+      刷新
+    </button>
+  </div>
+</div>
+
+<!-- ===== 主体 ===== -->
+<div class="admin-body">
+  <div class="admin-body-inner">
+    <div id="content"><div class="console-loading">加载中...</div></div>
+  </div>
+</div>
+
+<script>
+// ===== 工具函数 =====
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtTime = (ts) => {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  if (d.toDateString() === now.toDateString()) return '今天 ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+// ===== 主题 =====
+const THEME_KEY = 'code_explorer_theme';
+function getTheme() { return localStorage.getItem(THEME_KEY) || 'dark'; }
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(THEME_KEY, theme);
+}
+function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
+$('themeToggleBtn').addEventListener('click', toggleTheme);
+setTheme(getTheme());
+
+// ===== 数据加载 =====
+let currentUser = null;
+
+async function loadPool() {
+  const content = $('content');
+  try {
+    const authRes = await fetch('/api/auth-check');
+    const authData = await authRes.json();
+    if (!authData.authenticated) {
+      window.location.href = '/';
+      return;
+    }
+    currentUser = authData.user;
+
+    const res = await fetch('/api/ai-pool?days=7');
+    if (res.status === 401) { window.location.href = '/'; return; }
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    content.innerHTML = '<div class="console-error">数据加载失败：' + esc(e.message) + '</div>';
+  }
+}
+
+function render(data) {
+  const p = data.pool;
+  const used = p.used;
+  const total = p.total;
+  const pct = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0;
+  const usersCount = data.users.length;
+  const isAdmin = currentUser && currentUser.role === 'admin';
+
+  const cards = `
+    <div class="admin-cards">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="admin-card-title">池子上限</div>
+        </div>
+        <div class="admin-card-value">${total.toLocaleString()}</div>
+        <div class="admin-card-desc">${esc(p.date)} · 90% 占比</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="admin-card-title">今日已使用</div>
+        </div>
+        <div class="admin-card-value">${used.toLocaleString()}</div>
+        <div class="admin-card-desc">${pct}% 已消耗</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <div class="admin-card-title">剩余额度</div>
+        </div>
+        <div class="admin-card-value">${p.remaining.toLocaleString()}</div>
+        <div class="admin-card-desc">今日剩余可调用次数</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-icon yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="admin-card-title">参与用户</div>
+        </div>
+        <div class="admin-card-value">${usersCount}</div>
+        <div class="admin-card-desc">今日使用过 AI 的用户</div>
+      </div>
+    </div>`;
+
+  const progress = `
+    <div class="pool-progress-wrap">
+      <div class="pool-progress-head">
+        <span class="pool-progress-label">共享池当日消耗</span>
+        <span class="pool-progress-meta">${used.toLocaleString()} / ${total.toLocaleString()}</span>
+      </div>
+      <div class="pool-progress-track">
+        <div class="pool-progress-fill" style="width:${pct}%"></div>
+      </div>
+      <div class="pool-progress-foot">总可用 1050 = Cloudflare Workers AI 1000 次/天 + OpenRouter Free 50 次/天；池子上限 = 总可用 × 90%（${total} 次/天）。所有登录用户共享此池子，每人用量独立统计。</div>
+    </div>
+    <div class="wishing-pool-wrap">
+      <div class="wishing-pool">
+        <div class="wp-base"></div>
+        <div class="wp-tier1"></div>
+        <div class="wp-tier2"></div>
+        <div class="wp-tier3"></div>
+        <div class="wp-spout"></div>
+        <div class="wp-splash"><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div></div>
+        <div class="wp-waterfall wf1"></div>
+        <div class="wp-waterfall wf2"></div>
+        <div class="wp-coin"></div><div class="wp-coin"></div><div class="wp-coin"></div>
+        <div class="wp-plant wp-plant-left"><div class="wp-stem"></div><div class="wp-leaf"></div><div class="wp-flower"></div></div>
+        <div class="wp-plant wp-plant-right"><div class="wp-stem"></div><div class="wp-leaf"></div></div>
+      </div>
+      <div class="wishing-pool-info">
+        <div class="wishing-pool-title">许愿池 AI 额度</div>
+        <div class="wishing-pool-desc">
+          每位用户使用 AI 推荐时，都会从共享池中消耗一次额度。<br>
+          当日池子剩余 <b>${p.remaining.toLocaleString()}</b> 次可用，<br>
+          已有 <b>${usersCount}</b> 位用户今日许过愿 ✨
+        </div>
+      </div>
+    </div>`;
+
+  let ranks = '<div class="console-loading" style="padding:30px">暂无用户数据</div>';
+  if (data.users.length) {
+    ranks = data.users.map((u, i) => {
+      const isSelf = currentUser && u.username === currentUser.username;
+      const top = i === 0 ? ' top1' : i === 1 ? ' top2' : i === 2 ? ' top3' : '';
+      const roleCls = u.role === 'admin' ? 'admin' : (isSelf ? 'self' : 'user');
+      const roleTxt = u.role === 'admin' ? '管理员' : (isSelf ? '我' : '用户');
+      return `
+        <div class="rank-row${isSelf ? ' self' : ''}">
+          <div class="rank-index${top}">${i + 1}</div>
+          <div class="rank-avatar${u.role === 'admin' ? ' admin' : ''}">${esc((u.username || '?').charAt(0).toUpperCase())}</div>
+          <div class="rank-info">
+            <div class="rank-name-line">
+              <span>${esc(u.username)}</span>
+              <span class="rank-role-badge ${roleCls}">${roleTxt}</span>
+            </div>
+            <div class="rank-sub">最近活跃：${fmtTime(u.lastActive)}</div>
+          </div>
+          <div class="rank-count">${u.used}<small> 次</small></div>
+        </div>`;
+    }).join('');
+  }
+
+  const maxTrend = Math.max(1, ...data.trend.map((t) => t.used));
+  const trendBars = data.trend.map((t) => {
+    const h = Math.round((t.used / maxTrend) * 120);
+    const label = t.date.slice(5).replace('-', '/');
+    return `
+      <div class="trend-bar-col" title="${esc(t.date)} · ${t.used} 次">
+        <div class="trend-bar-count">${t.used}</div>
+        <div class="trend-bar${t.used === 0 ? ' zero' : ''}" style="height:${Math.max(t.used === 0 ? 4 : 8, h)}px"></div>
+        <div class="trend-bar-label">${label}</div>
+      </div>`;
+  }).join('');
+
+  const upstreams = `
+    <div class="upstream-list">
+      <div class="upstream-card">
+        <div class="upstream-head">
+          <span class="upstream-dot"></span>
+          <span class="upstream-name">Cloudflare Workers AI</span>
+        </div>
+        <div class="upstream-meta">
+          状态：<b>主通道 · 可用</b><br>
+          每日限额：<b>${p.cloudflareDaily} 次</b><br>
+          模型：<b>@cf/qwen3-coder-30b-a3b-fp8</b><br>
+          计费：<b>免费（10000 neurons/天）</b>
+        </div>
+      </div>
+      <div class="upstream-card">
+        <div class="upstream-head">
+          <span class="upstream-dot"></span>
+          <span class="upstream-name">智谱 GLM-4.7-Flash</span>
+        </div>
+        <div class="upstream-meta">
+          状态：<b>备用 · 可用</b><br>
+          每日限额：<b>永久免费</b><br>
+          模型：<b>glm-4.7-flash</b><br>
+          计费：<b>免费</b>
+        </div>
+      </div>
+      <div class="upstream-card">
+        <div class="upstream-head">
+          <span class="upstream-dot fallback"></span>
+          <span class="upstream-name">OpenRouter Free</span>
+        </div>
+        <div class="upstream-meta">
+          状态：<b>兜底 · 受限</b><br>
+          每日限额：<b>${p.openrouterDaily} 次</b><br>
+          模型：<b>openrouter/free</b><br>
+          计费：<b>免费（含池子基数）</b>
+        </div>
+      </div>
+    </div>`;
+
+  const quickLinks = `
+    <div class="quick-links">
+      <a class="quick-link" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        返回主站
+      </a>
+      ${isAdmin ? `
+      <a class="quick-link" href="/admin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        管理员后台
+      </a>` : ''}
+      <a class="quick-link" href="javascript:void(0)" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        切换主题
+      </a>
+    </div>`;
+
+  $('content').innerHTML = `
+    <div class="admin-section">
+      <div class="admin-section-title">共享池</div>
+      ${cards}
+      ${progress}
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">今日用户用量排行</div>
+      <div class="rank-list">${ranks}</div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">近 7 天趋势</div>
+      <div class="trend-wrap">
+        <div class="trend-bars">${trendBars}</div>
+      </div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">上游状态</div>
+      ${upstreams}
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">快捷入口</div>
+      ${quickLinks}
+    </div>`;
+}
+
+$('refreshBtn').addEventListener('click', () => {
+  $('refreshBtn').disabled = true;
+  loadPool().finally(() => { $('refreshBtn').disabled = false; });
+});
+
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 't') {
+    e.preventDefault();
+    toggleTheme();
+  }
+});
+
+loadPool();
+</script>
+</body>
+</html>

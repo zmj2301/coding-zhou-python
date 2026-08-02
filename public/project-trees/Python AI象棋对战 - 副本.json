@@ -1,0 +1,72 @@
+[
+  {
+    "name": "img",
+    "type": "directory",
+    "path": "img",
+    "children": [
+      {
+        "name": "test.py",
+        "type": "file",
+        "path": "img/test.py",
+        "ext": ".py",
+        "lastModified": 1777621244719
+      }
+    ]
+  },
+  {
+    "name": "ai_module.py",
+    "type": "file",
+    "path": "ai_module.py",
+    "ext": ".py",
+    "lastModified": 1777604224504
+  },
+  {
+    "name": "answer.json",
+    "type": "file",
+    "path": "answer.json",
+    "ext": ".json",
+    "lastModified": 1777710553822
+  },
+  {
+    "name": "Chinese_chess.py",
+    "type": "file",
+    "path": "Chinese_chess.py",
+    "ext": ".py",
+    "lastModified": 1785199351573
+  },
+  {
+    "name": "download_git.py",
+    "type": "file",
+    "path": "download_git.py",
+    "ext": ".py",
+    "lastModified": 1777621244710
+  },
+  {
+    "name": "parse_answer.py",
+    "type": "file",
+    "path": "parse_answer.py",
+    "ext": ".py",
+    "lastModified": 1777621244725
+  },
+  {
+    "name": "Python AI象棋对战.code-workspace",
+    "type": "file",
+    "path": "Python AI象棋对战.code-workspace",
+    "ext": ".code-workspace",
+    "lastModified": 1777766356459
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1653642048000
+  },
+  {
+    "name": "text.py",
+    "type": "file",
+    "path": "text.py",
+    "ext": ".py",
+    "lastModified": 1777713123351
+  }
+]

@@ -46,6 +46,8 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+ecs-env.sh
+code-explorer/ecs-env.sh
 
 # 图片文件
 *.png
@@ -75,6 +77,9 @@ garden/
 
 # TRAE 计划文档
 .trae/
+
+# 数据库文件（用户数据，不提交）
+data/
 
 # 其他
 node_modules/
