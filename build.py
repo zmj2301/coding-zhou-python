@@ -13,8 +13,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 PUBLIC_DIR = Path(__file__).resolve().parent / 'public'
 CODE_EXPLORER_DIR = Path(__file__).resolve().parent
-WEB_GAMES_DIR = BASE_DIR / 'web-games'
-FATHERS_DAY_DIR = BASE_DIR / 'fathers-day'
+WEB_GAMES_DIR = CODE_EXPLORER_DIR / 'web-games'
+FATHERS_DAY_DIR = CODE_EXPLORER_DIR / 'fathers-day'
 
 
 def copy_file(src: Path, dst: Path):
@@ -62,7 +62,7 @@ def main():
 
     print()
     print('步骤 1: 生成文件树和项目列表 JSON...')
-    sys.path.insert(0, str(CODE_EXPLORER_DIR))
+    sys.path.insert(0, str(CODE_EXPLORER_DIR / 'code-explorer'))
     import generate_filetree
     generate_filetree.main()
 
@@ -71,8 +71,16 @@ def main():
     copy_file(CODE_EXPLORER_DIR / 'index.html', PUBLIC_DIR / 'index.html')
 
     print()
+    print('步骤 2.1: 复制控制台 console.html...')
+    console_src = CODE_EXPLORER_DIR / 'console.html'
+    if console_src.exists():
+        copy_file(console_src, PUBLIC_DIR / 'console.html')
+    else:
+        print('  跳过: console.html 不存在')
+
+    print()
     print('步骤 2.2: 复制 images 目录...')
-    images_src = CODE_EXPLORER_DIR / 'public' / 'images'
+    images_src = CODE_EXPLORER_DIR / 'code-explorer' / 'public' / 'images'
     if images_src.exists():
         copy_dir(images_src, PUBLIC_DIR / 'images')
     else:
@@ -80,7 +88,7 @@ def main():
 
     print()
     print('步骤 2.5: 复制 changelog.json...')
-    changelog_src = BASE_DIR / 'changelog.json'
+    changelog_src = CODE_EXPLORER_DIR / 'changelog.json'
     if changelog_src.exists():
         copy_file(changelog_src, PUBLIC_DIR / 'changelog.json')
     else:
