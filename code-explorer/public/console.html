@@ -613,9 +613,155 @@ body > * { position: relative; z-index: 1; }
   color: var(--accent-blue); font-weight: 600;
 }
 
+/* ===== 左侧导航栏 ===== */
+.console-layout {
+  display: flex; flex: 1; overflow: hidden;
+}
+.console-sidebar {
+  width: 180px; flex-shrink: 0;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  padding: 16px 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.console-sidebar-title {
+  padding: 8px 20px 12px;
+  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.console-nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px;
+  font-size: 14px; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.15s;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.console-nav-item:hover {
+  color: var(--text-primary); background: var(--bg-tertiary);
+}
+.console-nav-item.active {
+  color: var(--accent-blue); background: rgba(88,166,255,0.08);
+  border-left-color: var(--accent-blue); font-weight: 500;
+}
+.console-nav-item svg {
+  width: 18px; height: 18px; flex-shrink: 0;
+}
+.console-main {
+  flex: 1; overflow-y: auto; padding: 32px;
+}
+.console-main-inner {
+  max-width: 1200px; margin: 0 auto;
+}
+
+/* ===== API Key 管理 ===== */
+.apikey-section { margin-bottom: 32px; }
+.apikey-section-title {
+  font-size: 13px; font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+.apikey-create-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.apikey-input {
+  flex: 1; max-width: 320px;
+  padding: 8px 14px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 14px; font-family: var(--font-sans);
+  outline: none; transition: border-color 0.15s;
+}
+.apikey-input:focus { border-color: var(--accent-blue); }
+.apikey-input::placeholder { color: var(--text-tertiary); }
+.apikey-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border: none; border-radius: 6px;
+  color: #fff; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s;
+}
+.apikey-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,0.4); }
+.apikey-btn:active { transform: translateY(0); }
+.apikey-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.apikey-btn.danger {
+  background: linear-gradient(135deg, var(--accent-red), #dc2626);
+}
+.apikey-btn.danger:hover { box-shadow: 0 4px 12px rgba(248,81,73,0.4); }
+.apikey-btn.secondary {
+  background: var(--bg-tertiary); color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.apikey-btn.secondary:hover { color: var(--text-primary); border-color: var(--text-tertiary); }
+
+/* API Key 列表 */
+.apikey-list {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.apikey-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 16px 20px;
+  transition: all 0.15s;
+}
+.apikey-card:hover { border-color: var(--text-tertiary); }
+.apikey-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.apikey-card-name {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+}
+.apikey-card-badge {
+  padding: 3px 10px; border-radius: 10px;
+  font-size: 11px; font-weight: 500;
+}
+.apikey-card-badge.active {
+  background: rgba(63,185,80,0.12); color: var(--accent-green);
+}
+.apikey-card-badge.revoked {
+  background: rgba(248,81,73,0.12); color: var(--accent-red);
+}
+.apikey-card-key {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px; margin-bottom: 10px;
+  font-family: var(--font-mono); font-size: 13px;
+  color: var(--text-secondary);
+}
+.apikey-card-key code {
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.apikey-card-key .copy-btn {
+  padding: 4px 8px; background: transparent;
+  border: 1px solid var(--border-color); border-radius: 4px;
+  color: var(--text-tertiary); cursor: pointer; font-size: 11px;
+  transition: all 0.15s; flex-shrink: 0;
+}
+.apikey-card-key .copy-btn:hover {
+  color: var(--accent-blue); border-color: var(--accent-blue);
+}
+.apikey-card-meta {
+  display: flex; align-items: center; gap: 16px;
+  font-size: 12px; color: var(--text-tertiary);
+}
+.apikey-card-actions {
+  display: flex; gap: 8px; margin-left: auto;
+}
+.apikey-empty {
+  text-align: center; padding: 40px 20px;
+  color: var(--text-tertiary); font-size: 14px;
+}
+
 /* 响应式 */
 @media (max-width: 768px) {
-  .admin-body { padding: 16px; }
+  .admin-body { padding: 0; }
   .admin-header { padding: 0 16px; }
   .admin-cards { grid-template-columns: 1fr; }
   .upstream-list { grid-template-columns: 1fr; }
@@ -623,6 +769,13 @@ body > * { position: relative; z-index: 1; }
   .trend-bar-label { font-size: 10px; }
   .wishing-pool-wrap { flex-direction: column; align-items: center; gap: 20px; }
   .wishing-pool-info { text-align: center; }
+  .console-sidebar { width: 60px; }
+  .console-sidebar-title { display: none; }
+  .console-nav-item { padding: 12px 0; justify-content: center; font-size: 0; }
+  .console-nav-item span { display: none; }
+  .console-main { padding: 16px; }
+  .apikey-create-row { flex-direction: column; align-items: stretch; }
+  .apikey-input { max-width: 100%; }
 }
 </style>
 </head>
@@ -658,8 +811,23 @@ body > * { position: relative; z-index: 1; }
 
 <!-- ===== 主体 ===== -->
 <div class="admin-body">
-  <div class="admin-body-inner">
-    <div id="content"><div class="console-loading">加载中...</div></div>
+  <div class="console-layout">
+    <nav class="console-sidebar">
+      <div class="console-sidebar-title">导航</div>
+      <a class="console-nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>控制台</span>
+      </a>
+      <a class="console-nav-item" data-tab="apikeys" onclick="switchTab('apikeys')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <span>新建 API</span>
+      </a>
+    </nav>
+    <div class="console-main">
+      <div class="console-main-inner">
+        <div id="content"><div class="console-loading">加载中...</div></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -928,6 +1096,128 @@ document.addEventListener('keydown', (e) => {
 });
 
 loadPool();
+
+// ===== 标签页切换 =====
+let currentTab = 'dashboard';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.console-nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+  if (tab === 'dashboard') {
+    loadPool();
+  } else if (tab === 'apikeys') {
+    loadApiKeys();
+  }
+}
+
+// ===== API Key 管理 =====
+async function loadApiKeys() {
+  const content = $('content');
+  content.innerHTML = '<div class="console-loading">加载中...</div>';
+  try {
+    const res = await fetch('/api/api-keys');
+    if (res.status === 401) { window.location.href = '/'; return; }
+    const data = await res.json();
+    if (!data.success) {
+      content.innerHTML = '<div class="console-error">' + esc(data.error) + '</div>';
+      return;
+    }
+    renderApiKeys(data.keys);
+  } catch (e) {
+    content.innerHTML = '<div class="console-error">加载失败: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderApiKeys(keys) {
+  const content = $('content');
+  const cardsHtml = keys.length === 0
+    ? '<div class="apikey-empty">暂无 API Key，点击上方按钮创建</div>'
+    : keys.map(k => `
+        <div class="apikey-card" data-id="${k.id}">
+          <div class="apikey-card-head">
+            <div class="apikey-card-name">${esc(k.name)}</div>
+            <span class="apikey-card-badge ${k.is_active ? 'active' : 'revoked'}">${k.is_active ? '有效' : '已吊销'}</span>
+          </div>
+          <div class="apikey-card-key">
+            <code>${esc(k.key.slice(0,10))}****${esc(k.key.slice(-4))}</code>
+            <button class="copy-btn" onclick="copyApiKey('${esc(k.key)}')">复制</button>
+          </div>
+          <div class="apikey-card-meta">
+            <span>创建: ${fmtTime(k.created_at)}</span>
+            <span>最近使用: ${k.last_used_at ? fmtTime(k.last_used_at) : '—'}</span>
+            <div class="apikey-card-actions">
+              <button class="apikey-btn danger" onclick="deleteApiKey(${k.id}, '${esc(k.name)}')">删除</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+  content.innerHTML = `
+    <div class="admin-section">
+      <div class="admin-section-title">API Key 管理</div>
+      <div class="apikey-create-row">
+        <input class="apikey-input" id="apikeyNameInput" placeholder="Key 名称 (可选)" maxlength="40" />
+        <button class="apikey-btn" id="createKeyBtn" onclick="createApiKey()">创建新 Key</button>
+      </div>
+      <div class="apikey-list">${cardsHtml}</div>
+    </div>`;
+}
+
+async function createApiKey() {
+  const btn = $('createKeyBtn');
+  const nameInput = $('apikeyNameInput');
+  const name = nameInput.value.trim();
+  btn.disabled = true;
+  btn.textContent = '创建中...';
+  try {
+    const res = await fetch('/api/api-keys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name })
+    });
+    const data = await res.json();
+    if (data.success) {
+      nameInput.value = '';
+      loadApiKeys();
+    } else {
+      alert(data.error || '创建失败');
+    }
+  } catch (e) {
+    alert('网络错误: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '创建新 Key';
+  }
+}
+
+function copyApiKey(key) {
+  navigator.clipboard.writeText(key).then(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '已复制到剪贴板';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  }).catch(() => {
+    prompt('请手动复制', key);
+  });
+}
+
+async function deleteApiKey(id, name) {
+  if (!confirm(`确定删除 Key "${name}" 吗？删除后使用该 Key 的服务将失效。`)) return;
+  try {
+    const res = await fetch(`/api/api-keys/delete?id=${id}`);
+    const data = await res.json();
+    if (data.success) {
+      loadApiKeys();
+    } else {
+      alert(data.error || '删除失败');
+    }
+  } catch (e) {
+    alert('网络错误: ' + e.message);
+  }
+}
 </script>
 </body>
 </html>

@@ -807,15 +807,22 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const ecsResp = await fetchFromEcs(`/api/files/download?path=${encodeURIComponent(file_path)}`, env, request);
       if (ecsResp.ok) {
-        return new Response(await ecsResp.arrayBuffer(), {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/octet-stream',
-            'Content-Disposition': `attachment; filename="${encodeURIComponent(file_path.split('/').pop() || 'project.zip')}"`,
-          },
+        const zipName = file_path.split('/').pop() || 'project.zip';
+        const encodedName = encodeURIComponent(zipName);
+        const newHeaders = new Headers(ecsResp.headers);
+        newHeaders.set('Content-Type', 'application/zip');
+        newHeaders.set('Content-Disposition', `attachment; filename="${encodedName}.zip"; filename*=UTF-8''${encodedName}.zip`);
+        return new Response(ecsResp.body, {
+          status: ecsResp.status,
+          headers: newHeaders,
         });
       } else {
-        return errorResponse(`下载失败: ${ecsResp.status}`, ecsResp.status);
+        let errMsg = `下载失败: ${ecsResp.status}`;
+        try {
+          const errBody = await ecsResp.json();
+          if (errBody && errBody.error) errMsg = errBody.error;
+        } catch {}
+        return errorResponse(errMsg, ecsResp.status);
       }
     } catch (e) {
       return errorResponse(`下载失败: ${e.message}`, 500);

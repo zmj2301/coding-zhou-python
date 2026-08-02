@@ -604,5 +604,16 @@
       "重新构建并部署 Cloudflare Worker，确保 ASSETS 绑定包含完整的 project-list.json（56 个项目）和 project-trees（56 个文件）",
       "Git 提交并推送所有更改"
     ]
+  },
+  {
+    "version": "2.2.1",
+    "date": "2026-08-02",
+    "title": "修复下载按钮提示文件不存在的问题：ECS 下载端点支持目录打包为 ZIP",
+    "changes": [
+      "修复 Worker 端缺少 /api/files/download 代理路由导致请求无法到达 ECS 的问题",
+      "修复 ECS 端 /api/files/download 只支持单个文件下载，不支持目录下载的问题",
+      "ECS 下载端点现在支持目录路径：自动将项目目录打包为 ZIP 文件返回",
+      "Worker 添加 /api/files/download 代理路由，透传 ECS 的下载响应"
+    ]
   }
 ]

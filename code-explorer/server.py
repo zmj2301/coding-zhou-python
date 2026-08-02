@@ -772,7 +772,7 @@ class CodeExplorerHandler(http.server.BaseHTTPRequestHandler):
                         if total_size + size > MAX_TOTAL_SIZE:
                             break
 
-                        arcname = os.path.relpath(file_full, str(full_path.parent))
+                        arcname = os.path.relpath(file_full, str(full_path))
                         file_list.append((file_full, arcname))
                         total_size += size
 

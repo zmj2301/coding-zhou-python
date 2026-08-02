@@ -615,5 +615,16 @@
       "ECS 下载端点现在支持目录路径：自动将项目目录打包为 ZIP 文件返回",
       "Worker 添加 /api/files/download 代理路由，透传 ECS 的下载响应"
     ]
+  },
+  {
+    "version": "2.2.2",
+    "date": "2026-08-02",
+    "title": "修复项目图片缺失问题：同步 web-games/、fathers-day/ 目录并补充缺失封面图",
+    "changes": [
+      "修复 ECS 服务器 public/ 目录缺少 web-games/ 和 fathers-day/ 子目录的问题",
+      "web-games 页面引用的 6 张封面图片（飞机大战、PVZ、中国象棋、我的世界、口算战争、成语接龙）实际文件不存在",
+      "在 web-games/images/ 目录中创建缺失的封面图（从 images/covers/ 复制并重命名）",
+      "同步更新 index.html、project-list.json、changelog.json 到 ECS 服务器"
+    ]
   }
 ]
