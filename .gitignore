@@ -33,11 +33,6 @@ build/
 server.log
 server.err
 
-# 音频文件
-*.wav
-*.mp3
-*.ogg
-
 # 系统文件
 Thumbs.db
 .DS_Store
@@ -49,31 +44,16 @@ Thumbs.db
 ecs-env.sh
 code-explorer/ecs-env.sh
 
-# 图片文件
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.ico
-*.webp
-*.bmp
-!code-explorer/public/images/covers/*.jpg
-!Python AI象棋对战 - 副本/img/*.png
-
 # 视频文件
 *.mp4
 *.avi
 *.mov
 *.mkv
 
-# 字体文件
-*.ttf
-*.ttc
-
-# Scratch项目文件
+# Scratch素材项目文件（素材源，不上传到代码库）
 *.sb3
 
-# 植物大战僵尸游戏资源
+# 植物大战僵尸游戏资源目录（garden/ 在 git 根层级）
 garden/
 
 # TRAE 计划文档
@@ -88,3 +68,7 @@ node_modules/
 .wrangler/
 
 output/
+
+# font.ttf (根目录下的字体文件)
+*.ttf
+*.ttc

@@ -9,6 +9,10 @@ ECS_SERVER_URL = "http://39.107.96.165"
 
 account_id = "d6b8ca32610afe0fd9407736b9266cb3"
 
+[[kv_namespaces]]
+binding = "CODE_EXPLORER_KV"
+id = "70cb2749fafd40fdb5b8e3140d65a414"
+
 [assets]
 binding = "ASSETS"
 directory = "public"

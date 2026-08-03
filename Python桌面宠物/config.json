@@ -8,7 +8,7 @@
         "transparent": false
     },
     "timer": {
-        "work_minutes": 10,
+        "work_minutes": 20,
         "break_minutes": 5
     },
     "menus": {
