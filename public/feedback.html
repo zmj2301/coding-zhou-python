@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>意见反馈 - Code Explorer</title>
 <style>
-/* ========== CSS Reset & Variables ========== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 
 :root {
@@ -218,7 +217,7 @@ body::before {
   font-weight: 500;
 }
 
-/* ========== Form ========== */
+/* ========== Card & Form ========== */
 .card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -272,7 +271,6 @@ body::before {
   margin-top: 6px;
 }
 
-/* Star rating */
 .star-rating {
   display: inline-flex;
   gap: 6px;
@@ -283,15 +281,21 @@ body::before {
 
 .star-rating .star {
   color: var(--border-color);
-  transition: var(--transition);
+  transition: transform 0.15s, color 0.15s, text-shadow 0.15s;
   line-height: 1;
 }
 
-.star-rating .star.active { color: var(--accent-yellow); text-shadow: 0 0 12px rgba(210,153,34,0.4); }
+.star-rating .star:hover {
+  transform: scale(1.2);
+}
+
+.star-rating .star.active {
+  color: var(--accent-yellow);
+  text-shadow: 0 0 12px rgba(210,153,34,0.5);
+}
 
 .rating-label { margin-left: 10px; font-size: 13px; color: var(--text-secondary); }
 
-/* Submit button */
 .submit-btn {
   display: inline-flex;
   align-items: center;
@@ -310,16 +314,45 @@ body::before {
 .submit-btn:hover { filter: brightness(1.1); }
 .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* ========== Inbox ========== */
-.feedback-item {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+/* ========== Message Toast ========== */
+.message {
+  padding: 14px 18px;
   border-radius: var(--radius-md);
-  padding: 18px 20px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  display: none;
+  border-left: 4px solid transparent;
+  animation: none;
 }
 
-.feedback-item-head {
+.message.show { display: block; animation: messageIn 0.3s ease; }
+.message.success { background: rgba(63,185,80,0.15); color: var(--accent-green); border-color: var(--accent-green); }
+.message.error { background: rgba(248,81,73,0.15); color: var(--accent-red); border-color: var(--accent-red); }
+
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Ticket List ========== */
+.ticket-list { display: flex; flex-direction: column; gap: 12px; }
+
+.ticket-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.ticket-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 4px 16px rgba(88,166,255,0.1);
+}
+
+.ticket-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -327,186 +360,350 @@ body::before {
   margin-bottom: 10px;
 }
 
-.feedback-item-user {
+.ticket-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ticket-type {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.type-bug { background: rgba(248,81,73,0.15); color: var(--accent-red); }
+.type-feature { background: rgba(88,166,255,0.15); color: var(--accent-blue); }
+.type-suggestion { background: rgba(163,113,247,0.15); color: var(--accent-purple); }
+.type-praise { background: rgba(63,185,80,0.15); color: var(--accent-green); }
+.type-other { background: rgba(139,148,158,0.15); color: var(--text-secondary); }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-new { background: rgba(88,166,255,0.15); color: var(--accent-blue); }
+.status-processing { background: rgba(210,153,34,0.15); color: var(--accent-yellow); }
+.status-resolved { background: rgba(63,185,80,0.15); color: var(--accent-green); }
+.status-closed { background: rgba(139,148,158,0.15); color: var(--text-tertiary); }
+
+.ticket-content {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ticket-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.ticket-foot-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reply-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-blue);
+}
+
+/* ========== Ticket Detail ========== */
+.ticket-detail { padding: 0; overflow: hidden; }
+
+.detail-head {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-head-left {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 0;
+  flex-wrap: wrap;
 }
 
-.feedback-avatar {
-  width: 32px;
-  height: 32px;
+.detail-body { padding: 24px; }
+
+.original-post {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.original-post-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.original-post-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  flex-shrink: 0;
+  color: #fff;
 }
 
-.feedback-item-username { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-
-.feedback-item-time { font-size: 12px; color: var(--text-tertiary); }
-
-.feedback-item-stars {
-  color: var(--accent-yellow);
-  font-size: 14px;
-  letter-spacing: 1px;
-  flex-shrink: 0;
-}
-
-.feedback-item-type {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  margin-bottom: 8px;
-}
-
-.type-bug { background: rgba(248,81,73,0.12); color: var(--accent-red); }
-.type-feature { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
-.type-suggestion { background: rgba(163,113,247,0.12); color: var(--accent-purple); }
-.type-praise { background: rgba(63,185,80,0.12); color: var(--accent-green); }
-.type-other { background: rgba(139,148,158,0.12); color: var(--text-secondary); }
-
-.feedback-item-body {
+.original-post-content {
   font-size: 14px;
   line-height: 1.7;
-  color: var(--text-primary);
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-.feedback-item-project {
+.rating-stars {
   margin-top: 10px;
-  font-size: 12px;
-  color: var(--text-tertiary);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+  color: var(--accent-yellow);
+  font-size: 16px;
 }
 
-/* Status */
-.feedback-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 4px;
+.replies-section {
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
 }
 
-.status-new { background: rgba(210,153,34,0.12); color: var(--accent-yellow); }
-.status-read { background: rgba(139,148,158,0.12); color: var(--text-secondary); }
+.replies-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-secondary);
+}
 
-/* ========== Message ========== */
-.message {
-  padding: 14px 18px;
+.reply-item {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  margin-bottom: 20px;
-  font-size: 14px;
-  display: none;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-left: 3px solid var(--accent-blue);
 }
 
-.message.show { display: block; }
+.reply-item.admin-reply { border-left-color: var(--accent-purple); }
 
-.message.success { background: rgba(63,185,80,0.12); color: var(--accent-green); border: 1px solid rgba(63,185,80,0.3); }
-.message.error { background: rgba(248,81,73,0.12); color: var(--accent-red); border: 1px solid rgba(248,81,73,0.3); }
+.reply-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
 
-/* ========== Empty & Loading ========== */
-.empty-state {
+.reply-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.reply-user .badge-admin {
+  background: var(--accent-purple);
+  color: #fff;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.reply-time { font-size: 12px; color: var(--text-tertiary); }
+
+.reply-content {
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.reply-form {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.reply-form textarea {
+  min-height: 80px;
+  margin-bottom: 12px;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.status-select {
+  padding: 6px 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
+
+.btn:hover { background: var(--bg-overlay); }
+.btn-danger { background: rgba(248,81,73,0.15); color: var(--accent-red); border-color: rgba(248,81,73,0.3); }
+.btn-danger:hover { background: rgba(248,81,73,0.25); }
+.btn-primary { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+.btn-primary:hover { filter: brightness(1.1); }
+
+/* ========== Empty / Loading ========== */
+.loading-state, .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 48px 24px;
   color: var(--text-tertiary);
 }
 
-.empty-state svg { width: 48px; height: 48px; margin-bottom: 14px; opacity: 0.5; }
-.empty-state p { font-size: 14px; }
-
-.loading-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-tertiary);
-  font-size: 14px;
-}
-
-.spinner {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  border: 3px solid var(--bg-overlay);
+.loading-state .spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
   border-top-color: var(--accent-blue);
   border-radius: 50%;
+  margin: 0 auto 12px;
   animation: spin 0.8s linear infinite;
-  margin-bottom: 10px;
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Delete button */
-.delete-btn {
-  padding: 4px 10px;
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  border-radius: 4px;
-  font-size: 11px;
-  cursor: pointer;
-  transition: var(--transition);
+.empty-state svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state p { font-size: 14px; }
+
+/* ========== Filter Bar ========== */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
-.delete-btn:hover { border-color: var(--accent-red); color: var(--accent-red); }
+.filter-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-sans);
+}
 
-/* Responsive */
-@media (max-width: 600px) {
+.filter-btn:hover { color: var(--text-primary); }
+.filter-btn.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
   .container { padding: 20px 16px 40px; }
   .topbar { padding: 12px 16px; }
-  .feedback-item-head { flex-wrap: wrap; }
-  .star-rating { font-size: 26px; }
+  .card { padding: 20px 16px; }
+  .page-head h1 { font-size: 20px; }
+  .detail-head { padding: 16px; flex-direction: column; align-items: flex-start; }
+  .ticket-card-head { flex-direction: column; align-items: flex-start; }
+  .topbar-title { display: none; }
 }
 </style>
 </head>
 <body>
 
-<!-- ========== Top Bar ========== -->
 <div class="topbar">
   <div class="topbar-left">
-    <a class="back-btn" href="/">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-      返回首页
+    <a href="/" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      返回
     </a>
     <span class="topbar-title">意见反馈</span>
   </div>
   <div class="topbar-right">
-    <span class="user-chip" id="userChip" style="display:none">👤 <span><b id="chipName"></b></span></span>
+    <div class="user-chip" id="userChip" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>你好，<b id="chipName"></b></span>
+    </div>
     <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)">
-      <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
     </button>
   </div>
 </div>
 
 <div class="container">
-  <div id="message" class="message"></div>
-
-  <!-- ========== Submit View ========== -->
+  <!-- Submit View -->
   <div id="submitView">
     <div class="page-head">
       <h1>提交意见</h1>
-      <p>欢迎提出您的宝贵意见，帮助我们做得更好。您的反馈对我们非常重要！</p>
+      <p>欢迎提出您的宝贵意见，帮助我们做得更好。您可以在"我的工单"中查看回复。</p>
     </div>
 
     <div class="tabs">
-      <button class="tab active" id="tabSubmit">✍️ 提交意见</button>
-      <button class="tab" id="tabInbox" style="display:none">📥 意见箱</button>
+      <button class="tab active" id="tabSubmit">✍️ 提交新意见</button>
+      <button class="tab" id="tabMyTickets">📋 我的工单</button>
     </div>
 
     <div class="card">
-      <form id="feedbackForm" onsubmit="return submitFeedback(event)">
+      <div id="message"></div>
+      <form id="feedbackForm">
         <div class="form-group">
           <label class="form-label">意见类型 <span class="required">*</span></label>
           <select class="form-select" id="feedbackType">
@@ -520,7 +717,7 @@ body::before {
 
         <div class="form-group">
           <label class="form-label">内容 <span class="required">*</span></label>
-          <textarea class="form-textarea" id="feedbackContent" placeholder="请详细描述您的意见或建议..." maxlength="2000"></textarea>
+          <textarea class="form-textarea" id="feedbackContent" placeholder="请详细描述您的意见或建议... (至少 5 个字)" maxlength="2000"></textarea>
           <div class="form-hint"><span id="contentCount">0</span>/2000 字</div>
         </div>
 
@@ -552,267 +749,563 @@ body::before {
     </div>
   </div>
 
-  <!-- ========== Inbox View ========== -->
-  <div id="inboxView" style="display:none">
+  <!-- My Tickets View -->
+  <div id="ticketsView" style="display:none">
     <div class="page-head">
-      <h1>意见箱</h1>
-      <p>所有用户提交的意见反馈，按时间倒序排列。</p>
+      <h1 id="ticketsTitle">我的工单</h1>
+      <p id="ticketsDesc">查看您提交的反馈和管理员的回复</p>
     </div>
 
     <div class="tabs">
-      <button class="tab" id="tabSubmit2">✍️ 提交意见</button>
-      <button class="tab active" id="tabInbox2">📥 意见箱</button>
+      <button class="tab" id="tabSubmit2">✍️ 提交新意见</button>
+      <button class="tab active" id="tabMyTickets2">📋 <span id="ticketsTabLabel">我的工单</span></button>
     </div>
 
-    <div id="inboxContent">
-      <div class="loading-state">
-        <div class="spinner"></div>
-        <div>加载中...</div>
-      </div>
+    <div id="filterBar" class="filter-bar" style="display:none">
+      <button class="filter-btn active" data-status="all">全部</button>
+      <button class="filter-btn" data-status="new">🆕 新提交</button>
+      <button class="filter-btn" data-status="processing">⏳ 处理中</button>
+      <button class="filter-btn" data-status="resolved">✅ 已解决</button>
+      <button class="filter-btn" data-status="closed">📕 已关闭</button>
+    </div>
+
+    <div id="ticketsList">
+      <div class="loading-state"><div class="spinner"></div><div>加载中...</div></div>
+    </div>
+  </div>
+
+  <!-- Ticket Detail View -->
+  <div id="detailView" style="display:none">
+    <div class="page-head">
+      <button class="btn" id="backToListBtn" style="margin-bottom:12px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        返回列表
+      </button>
+      <h1 id="detailTitle">工单详情</h1>
+    </div>
+
+    <div class="card ticket-detail" id="detailCard">
+      <div class="loading-state"><div class="spinner"></div><div>加载中...</div></div>
     </div>
   </div>
 </div>
 
 <script>
+// ========== Safe DOM Helpers ==========
+function $(id) { return document.getElementById(id); }
+
 // ========== Theme ==========
-const THEME_KEY = 'code_explorer_theme';
+var THEME_KEY = 'code_explorer_theme';
 function getTheme() { return localStorage.getItem(THEME_KEY) || 'dark'; }
 function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem(THEME_KEY, theme);
+  try { localStorage.setItem(THEME_KEY, theme); } catch(e) {}
 }
 function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
-document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
 setTheme(getTheme());
-document.addEventListener('keydown', function(e) { if ((e.ctrlKey || e.metaKey) && e.key === 't') { e.preventDefault(); toggleTheme(); } });
+
+document.addEventListener('DOMContentLoaded', function() {
+'use strict';
+
+// ========== Theme Init ==========
+var themeBtn = $('themeToggleBtn');
+if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+    e.preventDefault();
+    toggleTheme();
+  }
+});
 
 // ========== State ==========
-const state = { currentUser: null, rating: 0, isAdmin: false };
+var state = {
+  currentUser: null,
+  isAdmin: false,
+  rating: 0,
+  currentTicketId: null,
+  currentFilter: 'all'
+};
 
 // ========== Auth ==========
 async function checkAuth() {
   try {
-    const r = await fetch('/api/auth-check');
-    const d = await r.json();
+    var r = await fetch('/api/auth-check');
+    if (!r.ok) throw new Error('Auth check failed');
+    var d = await r.json();
     if (d.authenticated && d.user) {
       state.currentUser = d.user;
       state.isAdmin = d.user.role === 'admin';
-      document.getElementById('userChip').style.display = 'inline-flex';
-      document.getElementById('chipName').textContent = d.user.username;
-      document.getElementById('tabInbox').style.display = state.isAdmin ? 'inline-block' : 'none';
+      var chip = $('userChip');
+      if (chip) chip.style.display = 'inline-flex';
+      var name = $('chipName');
+      if (name) name.textContent = d.user.username;
+      if (state.isAdmin) {
+        var tl = $('ticketsTabLabel');
+        if (tl) tl.textContent = '所有工单';
+        var td = $('ticketsDesc');
+        if (td) td.textContent = '查看所有用户提交的工单，进行回复和状态管理';
+      }
       return true;
     }
-  } catch(e) {}
+  } catch(e) {
+    console.warn('Auth check error:', e.message);
+  }
   window.location.href = '/';
   return false;
 }
 
-// ========== View switching ==========
+// ========== View Switching ==========
 function showSubmitView() {
-  document.getElementById('submitView').style.display = 'block';
-  document.getElementById('inboxView').style.display = 'none';
-  document.getElementById('tabSubmit').classList.add('active');
-  document.getElementById('tabSubmit2').classList.add('active');
-  document.getElementById('tabInbox').classList.remove('active');
-  document.getElementById('tabInbox2').classList.remove('active');
+  var sv = $('submitView'), tv = $('ticketsView'), dv = $('detailView');
+  if (sv) sv.style.display = 'block';
+  if (tv) tv.style.display = 'none';
+  if (dv) dv.style.display = 'none';
+  var t1 = $('tabSubmit'); if (t1) t1.classList.add('active');
+  var t2 = $('tabSubmit2'); if (t2) t2.classList.add('active');
+  var t3 = $('tabMyTickets'); if (t3) t3.classList.remove('active');
+  var t4 = $('tabMyTickets2'); if (t4) t4.classList.remove('active');
 }
 
-async function showInboxView() {
-  if (!state.isAdmin) return;
-  document.getElementById('submitView').style.display = 'none';
-  document.getElementById('inboxView').style.display = 'block';
-  document.getElementById('tabSubmit').classList.remove('active');
-  document.getElementById('tabSubmit2').classList.remove('active');
-  document.getElementById('tabInbox').classList.add('active');
-  document.getElementById('tabInbox2').classList.add('active');
-  await loadFeedback();
+async function showTicketsView() {
+  var sv = $('submitView'), tv = $('ticketsView'), dv = $('detailView');
+  if (sv) sv.style.display = 'none';
+  if (tv) tv.style.display = 'block';
+  if (dv) dv.style.display = 'none';
+  var t1 = $('tabSubmit'); if (t1) t1.classList.remove('active');
+  var t2 = $('tabSubmit2'); if (t2) t2.classList.remove('active');
+  var t3 = $('tabMyTickets'); if (t3) t3.classList.add('active');
+  var t4 = $('tabMyTickets2'); if (t4) t4.classList.add('active');
+  var fb = $('filterBar');
+  if (fb) fb.style.display = state.isAdmin ? 'flex' : 'none';
+  try { await loadTickets(); } catch(err) { console.error('loadTickets error:', err); }
 }
 
-document.getElementById('tabSubmit').addEventListener('click', showSubmitView);
-document.getElementById('tabSubmit2').addEventListener('click', showSubmitView);
-document.getElementById('tabInbox').addEventListener('click', function() { if (state.isAdmin) showInboxView(); });
-document.getElementById('tabInbox2').addEventListener('click', function() { if (state.isAdmin) showInboxView(); });
+async function showDetailView(ticketId) {
+  state.currentTicketId = ticketId;
+  var sv = $('submitView'), tv = $('ticketsView'), dv = $('detailView');
+  if (sv) sv.style.display = 'none';
+  if (tv) tv.style.display = 'none';
+  if (dv) dv.style.display = 'block';
+  try { await loadTicketDetail(ticketId); } catch(err) { console.error('loadTicketDetail error:', err); }
+}
+
+// ========== Event Bindings ==========
+var el1 = $('tabSubmit'); if (el1) el1.addEventListener('click', showSubmitView);
+var el2 = $('tabSubmit2'); if (el2) el2.addEventListener('click', showSubmitView);
+var el3 = $('tabMyTickets'); if (el3) el3.addEventListener('click', showTicketsView);
+var el4 = $('tabMyTickets2'); if (el4) el4.addEventListener('click', showTicketsView);
+var el5 = $('backToListBtn'); if (el5) el5.addEventListener('click', showTicketsView);
+
+// Filter bar
+var filterBar = $('filterBar');
+if (filterBar) {
+  filterBar.addEventListener('click', function(e) {
+    var btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    filterBar.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    state.currentFilter = btn.getAttribute('data-status');
+    loadTickets();
+  });
+}
 
 // ========== Star Rating ==========
-const starRating = document.getElementById('starRating');
-const ratingLabel = document.getElementById('ratingLabel');
-const ratingTexts = ['', '非常不满意', '不满意', '一般', '满意', '非常满意'];
+var ratingTexts = ['', '非常不满意', '不满意', '一般', '满意', '非常满意'];
+var starRating = $('starRating');
 
-starRating.querySelectorAll('.star').forEach(star => {
-  star.addEventListener('click', function() {
-    state.rating = parseInt(this.dataset.value, 10);
+if (starRating) {
+  starRating.addEventListener('click', function(e) {
+    var star = e.target.closest('.star');
+    if (!star) return;
+    state.rating = parseInt(star.getAttribute('data-value'), 10);
     updateStars();
   });
-  star.addEventListener('mouseenter', function() {
-    const val = parseInt(this.dataset.value, 10);
-    starRating.querySelectorAll('.star').forEach(s => {
-      s.classList.toggle('active', parseInt(s.dataset.value, 10) <= val);
-    });
-  });
-});
-starRating.addEventListener('mouseleave', updateStars);
+
+  starRating.addEventListener('mouseleave', updateStars);
+}
 
 function updateStars() {
-  starRating.querySelectorAll('.star').forEach(s => {
-    s.classList.toggle('active', parseInt(s.dataset.value, 10) <= state.rating);
-  });
-  ratingLabel.textContent = state.rating ? ratingTexts[state.rating] : '请选择评分';
+  var stars = document.querySelectorAll('#starRating .star');
+  for (var i = 0; i < stars.length; i++) {
+    var val = parseInt(stars[i].getAttribute('data-value'), 10);
+    if (val <= state.rating) {
+      stars[i].classList.add('active');
+    } else {
+      stars[i].classList.remove('active');
+    }
+  }
+  var label = $('ratingLabel');
+  if (label) {
+    label.textContent = state.rating ? ratingTexts[state.rating] : '请选择评分';
+  }
 }
 
-// ========== Content counter ==========
-document.getElementById('feedbackContent').addEventListener('input', function() {
-  document.getElementById('contentCount').textContent = this.value.length;
-});
+// ========== Content Counter ==========
+var contentInput = $('feedbackContent');
+if (contentInput) {
+  contentInput.addEventListener('input', function() {
+    var counter = $('contentCount');
+    if (counter) counter.textContent = this.value.length;
+  });
+}
 
-// ========== Submit ==========
+// ========== Messages ==========
 function showMessage(type, text) {
-  const el = document.getElementById('message');
+  var el = $('message');
+  if (!el) return;
   el.className = 'message ' + type + ' show';
   el.textContent = text;
+  try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
+  setTimeout(function() {
+    el.className = 'message';
+  }, 4000);
 }
 
+// ========== Submit Feedback ==========
 async function submitFeedback(e) {
-  e.preventDefault();
-  const type = document.getElementById('feedbackType').value;
-  const content = document.getElementById('feedbackContent').value.trim();
-  const project = document.getElementById('feedbackProject').value.trim();
-  const rating = state.rating;
+  if (e) e.preventDefault();
+  var type = $('feedbackType').value;
+  var content = $('feedbackContent').value.trim();
+  var project = $('feedbackProject') ? $('feedbackProject').value.trim() : '';
+  var rating = state.rating;
 
   if (!content) { showMessage('error', '请输入反馈内容'); return; }
   if (content.length < 5) { showMessage('error', '反馈内容至少 5 个字'); return; }
   if (!rating) { showMessage('error', '请选择评分'); return; }
 
-  const btn = document.getElementById('submitBtn');
+  var btn = $('submitBtn');
   btn.disabled = true;
-  btn.innerHTML = '提交中...';
+  btn.textContent = '提交中...';
 
   try {
-    const r = await fetch('/api/feedback', {
+    var r = await fetch('/api/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, content, rating, project })
+      body: JSON.stringify({ type: type, content: content, rating: rating, project: project })
     });
-    const d = await r.json();
+    var d = await r.json();
     if (r.ok) {
-      showMessage('success', '感谢您的反馈！意见已提交。');
-      document.getElementById('feedbackContent').value = '';
-      document.getElementById('feedbackProject').value = '';
+      showMessage('success', '✅ 感谢您的反馈！意见已提交，即将返回首页...');
+      $('feedbackContent').value = '';
+      if ($('feedbackProject')) $('feedbackProject').value = '';
       state.rating = 0;
       updateStars();
-      document.getElementById('contentCount').textContent = '0';
+      var counter = $('contentCount');
+      if (counter) counter.textContent = '0';
+      setTimeout(function() { window.location.href = '/'; }, 2000);
     } else {
       showMessage('error', d.error || '提交失败，请重试');
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> 提交意见';
     }
   } catch(err) {
     showMessage('error', '网络错误，请重试');
-  } finally {
     btn.disabled = false;
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> 提交意见';
   }
-  return false;
 }
 
-// ========== Inbox ==========
+var feedbackForm = $('feedbackForm');
+if (feedbackForm) {
+  feedbackForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    submitFeedback(e);
+    return false;
+  });
+}
+
+// ========== Helpers ==========
 function escapeHtml(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
+  var d = document.createElement('div');
+  d.textContent = s || '';
   return d.innerHTML;
 }
 
-const typeNames = { bug: 'Bug 反馈', feature: '功能建议', suggestion: '改进建议', praise: '表扬', other: '其他' };
-const typeClasses = { bug: 'type-bug', feature: 'type-feature', suggestion: 'type-suggestion', praise: 'type-praise', other: 'type-other' };
-
 function formatTime(ts) {
   if (!ts) return '';
-  const d = new Date(ts * 1000);
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  var d = new Date(ts * 1000);
+  var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
 }
 
 function starsHtml(n) {
-  let s = '';
-  for (let i = 0; i < 5; i++) s += i < n ? '★' : '☆';
+  var s = '';
+  for (var i = 0; i < 5; i++) s += i < n ? '★' : '☆';
   return s;
 }
 
-async function loadFeedback() {
-  const content = document.getElementById('inboxContent');
-  content.innerHTML = '<div class="loading-state"><div class="spinner"></div><div>加载中...</div></div>';
+var typeNames = { bug: 'Bug 反馈', feature: '功能建议', suggestion: '改进建议', praise: '表扬', other: '其他' };
+var typeClasses = { bug: 'type-bug', feature: 'type-feature', suggestion: 'type-suggestion', praise: 'type-praise', other: 'type-other' };
+var statusNames = { new: '新提交', processing: '处理中', resolved: '已解决', closed: '已关闭' };
+var statusClasses = { new: 'status-new', processing: 'status-processing', resolved: 'status-resolved', closed: 'status-closed' };
+
+// ========== Load Tickets List ==========
+async function loadTickets() {
+  var container = $('ticketsList');
+  if (!container) return;
+  container.innerHTML = '<div class="loading-state"><div class="spinner"></div><div>加载中...</div></div>';
+
   try {
-    const r = await fetch('/api/feedback/list');
-    const d = await r.json();
+    var r = await fetch('/api/feedback/list');
+    var d = await r.json();
     if (!r.ok) {
-      content.innerHTML = '<div class="empty-state"><p>' + escapeHtml(d.error || '加载失败') + '</p></div>';
+      container.innerHTML = '<div class="empty-state"><p>' + escapeHtml(d.error || '加载失败') + '</p></div>';
       return;
     }
-    const items = d.feedback || [];
+
+    var items = d.feedback || [];
+    if (state.currentFilter !== 'all') {
+      items = items.filter(function(f) { return f.status === state.currentFilter; });
+    }
+
     if (items.length === 0) {
-      content.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><p>暂无意见反馈</p></div>';
+      container.innerHTML = '<div class="empty-state">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>' +
+        '<p>暂无工单反馈</p></div>';
       return;
     }
-    content.innerHTML = items.map(f => {
-      const avatar = escapeHtml((f.username || '?').charAt(0).toUpperCase());
-      const projectHtml = f.project
-        ? '<div class="feedback-item-project">📁 ' + escapeHtml(f.project) + '</div>'
-        : '';
-      return '<div class="feedback-item" data-id="' + f.id + '">' +
-        '<div class="feedback-item-head">' +
-          '<div class="feedback-item-user">' +
-            '<div class="feedback-avatar">' + avatar + '</div>' +
-            '<div>' +
-              '<div class="feedback-item-username">' + escapeHtml(f.username || '匿名') + '</div>' +
-              '<div class="feedback-item-time">' + formatTime(f.created_at) + '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div style="display:flex;align-items:center;gap:10px">' +
-            '<span class="feedback-item-stars">' + starsHtml(f.rating || 0) + '</span>' +
-            '<button class="delete-btn" onclick="deleteFeedback(' + f.id + ')">删除</button>' +
+
+    var html = '<div class="ticket-list">';
+    for (var idx = 0; idx < items.length; idx++) {
+      var f = items[idx];
+      var avatar = escapeHtml((f.username || '?').charAt(0).toUpperCase());
+      var time = formatTime(f.created_at);
+      var typeName = escapeHtml(typeNames[f.type] || f.type || '其他');
+      var statusName = escapeHtml(statusNames[f.status] || f.status || 'new');
+      var replyCount = f.reply_count || 0;
+      var contentPreview = escapeHtml(f.content.length > 100 ? f.content.slice(0, 100) + '...' : f.content);
+      var projectHtml = f.project ? '<span style="color:var(--text-tertiary)">📁 ' + escapeHtml(f.project) + '</span>' : '';
+
+      html += '<div class="ticket-card" data-id="' + f.id + '">' +
+        '<div class="ticket-card-head">' +
+          '<div class="ticket-meta">' +
+            '<span class="ticket-type ' + (typeClasses[f.type] || 'type-other') + '">' + typeName + '</span>' +
+            '<span class="status-badge ' + (statusClasses[f.status] || 'status-new') + '">' + statusName + '</span>' +
           '</div>' +
         '</div>' +
-        '<span class="feedback-item-type ' + (typeClasses[f.type] || 'type-other') + '">' + escapeHtml(typeNames[f.type] || f.type || '其他') + '</span>' +
-        '<div class="feedback-item-body">' + escapeHtml(f.content) + '</div>' +
-        projectHtml +
+        '<div class="ticket-content">' + contentPreview + '</div>' +
+        '<div class="ticket-foot">' +
+          '<div class="ticket-foot-left">' +
+            '<span><span class="avatar" style="width:20px;height:20px;font-size:10px">' + avatar + '</span> ' + escapeHtml(f.username || '匿名') + '</span>' +
+            projectHtml +
+          '</div>' +
+          '<div class="ticket-foot-left">' +
+            '<span class="reply-count">💬 ' + replyCount + ' 条回复</span>' +
+            '<span>' + time + '</span>' +
+          '</div>' +
+        '</div>' +
       '</div>';
-    }).join('');
+    }
+    html += '</div>';
+    container.innerHTML = html;
+
+    var cards = container.querySelectorAll('.ticket-card');
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].addEventListener('click', function() {
+        showDetailView(parseInt(this.getAttribute('data-id')));
+      });
+    }
+
+    var fb = $('filterBar');
+    if (fb) fb.style.display = state.isAdmin ? 'flex' : 'none';
+
   } catch(err) {
-    content.innerHTML = '<div class="empty-state"><p>加载失败：' + escapeHtml(err.message) + '</p></div>';
+    container.innerHTML = '<div class="empty-state"><p>加载失败：' + escapeHtml(err.message) + '</p></div>';
   }
 }
 
-async function deleteFeedback(id) {
-  if (!confirm('确定要删除这条反馈吗？')) return;
+// ========== Load Ticket Detail ==========
+async function loadTicketDetail(ticketId) {
+  var card = $('detailCard');
+  if (!card) return;
+  card.className = 'card ticket-detail';
+  card.innerHTML = '<div class="loading-state"><div class="spinner"></div><div>加载中...</div></div>';
+
   try {
-    const r = await fetch('/api/feedback/delete', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
-    });
-    const d = await r.json();
-    if (r.ok) {
-      document.querySelector('.feedback-item[data-id="' + id + '"]')?.remove();
-      const remaining = document.querySelectorAll('.feedback-item').length;
-      if (remaining === 0) {
-        document.getElementById('inboxContent').innerHTML = '<div class="empty-state"><p>暂无意见反馈</p></div>';
-      }
-    } else {
-      alert(d.error || '删除失败');
+    var r = await fetch('/api/feedback/detail?id=' + ticketId);
+    var d = await r.json();
+    if (!r.ok) {
+      card.innerHTML = '<div class="empty-state"><p>' + escapeHtml(d.error || '加载失败') + '</p></div>';
+      return;
     }
-  } catch(e) {
-    alert('网络错误');
+
+    var avatar = escapeHtml((d.username || '?').charAt(0).toUpperCase());
+    var time = formatTime(d.created_at);
+    var typeName = escapeHtml(typeNames[d.type] || d.type || '其他');
+    var statusName = escapeHtml(statusNames[d.status] || d.status || 'new');
+    var ratingStars = starsHtml(d.rating || 0);
+    var projectHtml = d.project ? '<div style="margin-top:8px;color:var(--text-tertiary);font-size:13px">📁 ' + escapeHtml(d.project) + '</div>' : '';
+    var replies = d.replies || [];
+
+    var repliesHtml = '';
+    if (replies.length > 0) {
+      repliesHtml = '<div class="replies-section">' +
+        '<div class="replies-title">💬 管理员回复 (' + replies.length + ')</div>';
+      for (var ri = 0; ri < replies.length; ri++) {
+        var reply = replies[ri];
+        var rAvatar = escapeHtml((reply.username || '?').charAt(0).toUpperCase());
+        var rTime = formatTime(reply.created_at);
+        var isAdmin = reply.is_admin === 1;
+        repliesHtml += '<div class="reply-item' + (isAdmin ? ' admin-reply' : '') + '">' +
+          '<div class="reply-head">' +
+            '<div class="reply-user">' +
+              '<span class="avatar" style="width:24px;height:24px;font-size:10px">' + rAvatar + '</span>' +
+              escapeHtml(reply.username || '匿名') +
+              (isAdmin ? '<span class="badge-admin">管理员</span>' : '') +
+            '</div>' +
+            '<span class="reply-time">' + rTime + '</span>' +
+          '</div>' +
+          '<div class="reply-content">' + escapeHtml(reply.content) + '</div>' +
+        '</div>';
+      }
+      repliesHtml += '</div>';
+    }
+
+    var adminActionsHtml = '';
+    if (state.isAdmin) {
+      adminActionsHtml = '<div class="detail-actions">' +
+        '<select class="status-select" id="statusSelect">' +
+          '<option value="new"' + (d.status === 'new' ? ' selected' : '') + '>🆕 新提交</option>' +
+          '<option value="processing"' + (d.status === 'processing' ? ' selected' : '') + '>⏳ 处理中</option>' +
+          '<option value="resolved"' + (d.status === 'resolved' ? ' selected' : '') + '>✅ 已解决</option>' +
+          '<option value="closed"' + (d.status === 'closed' ? ' selected' : '') + '>📕 已关闭</option>' +
+        '</select>' +
+        '<button class="btn btn-danger" id="deleteTicketBtn">🗑 删除工单</button>' +
+      '</div>';
+    }
+
+    var replyFormHtml = '';
+    if (state.isAdmin) {
+      replyFormHtml = '<div class="reply-form">' +
+        '<div class="form-label">管理员回复</div>' +
+        '<textarea class="form-textarea" id="replyContent" placeholder="输入回复内容..."></textarea>' +
+        '<button class="submit-btn" id="sendReplyBtn">发送回复</button>' +
+      '</div>';
+    } else if (replies.length === 0) {
+      replyFormHtml = '<div class="reply-form" style="text-align:center;color:var(--text-tertiary);font-size:13px">暂无回复，管理员收到反馈后会尽快回复您</div>';
+    }
+
+    card.innerHTML =
+      '<div class="detail-head">' +
+        '<div class="detail-head-left">' +
+          '<span class="ticket-type ' + (typeClasses[d.type] || 'type-other') + '">' + typeName + '</span>' +
+          '<span class="status-badge ' + (statusClasses[d.status] || 'status-new') + '">' + statusName + '</span>' +
+          '<span style="font-size:12px;color:var(--text-tertiary)">#' + d.id + '</span>' +
+        '</div>' +
+        adminActionsHtml +
+      '</div>' +
+      '<div class="detail-body">' +
+        '<div class="original-post">' +
+          '<div class="original-post-head">' +
+            '<div class="original-post-user">' +
+              '<span class="avatar">' + avatar + '</span>' +
+              escapeHtml(d.username || '匿名') +
+            '</div>' +
+            '<span class="reply-time">' + time + '</span>' +
+          '</div>' +
+          '<div class="original-post-content">' + escapeHtml(d.content) + '</div>' +
+          projectHtml +
+          '<div class="rating-stars">' + ratingStars + '</div>' +
+        '</div>' +
+        repliesHtml +
+        replyFormHtml +
+      '</div>';
+
+    // Bind admin event handlers
+    if (state.isAdmin) {
+      var statusSelect = $('statusSelect');
+      if (statusSelect) {
+        statusSelect.addEventListener('change', function() {
+          fetch('/api/feedback/status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: d.id, status: this.value })
+          }).then(function(r) {
+            if (r.ok) {
+              showMessage('success', '状态已更新');
+            } else {
+              return r.json().then(function(err) { showMessage('error', err.error || '更新失败'); });
+            }
+          }).catch(function() { showMessage('error', '网络错误'); });
+        });
+      }
+
+      var replyBtn = $('sendReplyBtn');
+      if (replyBtn) {
+        replyBtn.addEventListener('click', function() {
+          var content = $('replyContent').value.trim();
+          if (!content) { showMessage('error', '请输入回复内容'); return; }
+          var self = this;
+          self.disabled = true;
+          self.textContent = '发送中...';
+          fetch('/api/feedback/reply', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ feedback_id: d.id, content: content })
+          }).then(function(r) {
+            if (r.ok) {
+              showMessage('success', '回复成功');
+              loadTicketDetail(d.id);
+            } else {
+              return r.json().then(function(err) { showMessage('error', err.error || '回复失败'); });
+            }
+          }).catch(function() { showMessage('error', '网络错误'); })
+            .finally(function() {
+              self.disabled = false;
+              self.textContent = '发送回复';
+            });
+        });
+      }
+
+      var delBtn = $('deleteTicketBtn');
+      if (delBtn) {
+        delBtn.addEventListener('click', function() {
+          if (!confirm('确定要删除此工单吗？所有回复也会一同删除。')) return;
+          fetch('/api/feedback/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: d.id })
+          }).then(function(r) {
+            if (r.ok) {
+              showMessage('success', '工单已删除');
+              setTimeout(function() { showTicketsView(); }, 500);
+            } else {
+              return r.json().then(function(err) { showMessage('error', err.error || '删除失败'); });
+            }
+          }).catch(function() { showMessage('error', '网络错误'); });
+        });
+      }
+    }
+
+  } catch(err) {
+    card.innerHTML = '<div class="empty-state"><p>加载失败：' + escapeHtml(err.message) + '</p></div>';
   }
 }
 
 // ========== Init ==========
 (async function init() {
-  const authed = await checkAuth();
-  if (!authed) return;
+  try {
+    var authed = await checkAuth();
+    if (!authed) return;
 
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('view') === 'inbox' && state.isAdmin) {
-    await showInboxView();
-  } else {
-    showSubmitView();
+    var params = new URLSearchParams(window.location.search);
+    var view = params.get('view');
+    if (view === 'tickets' || view === 'inbox') {
+      await showTicketsView();
+    } else if (view === 'detail' && params.get('id')) {
+      await showDetailView(parseInt(params.get('id')));
+    } else {
+      showSubmitView();
+    }
+  } catch(err) {
+    console.error('Init error:', err);
+    showMessage('error', '页面加载失败，请刷新重试');
   }
 })();
+
+}); // end DOMContentLoaded
 </script>
+
 </body>
 </html>
