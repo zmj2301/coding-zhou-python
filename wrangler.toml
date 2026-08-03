@@ -11,8 +11,8 @@ account_id = "d6b8ca32610afe0fd9407736b9266cb3"
 
 [[kv_namespaces]]
 binding = "CODE_EXPLORER_KV"
-id = "8dea9684a12b4e1f8bd41348644dbd8e"
-preview_id = "8dea9684a12b4e1f8bd41348644dbd8e"
+id = "69c61f369a764a519631b00e613f7ea6"
+preview_id = "69c61f369a764a519631b00e613f7ea6"
 
 [assets]
 binding = "ASSETS"
