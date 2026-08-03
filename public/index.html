@@ -2985,10 +2985,17 @@ body::before {
     transition: transform 0.15s;
     white-space: nowrap;
     overflow: hidden;
+    flex-shrink: 1;
+    min-width: 0;
   }
   .user-menu-btn span {
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+  .user-menu-btn svg {
+    flex-shrink: 0;
   }
   .user-menu-btn:hover { transform: scale(1.05); }
   .user-menu-btn.hidden { display: none; }

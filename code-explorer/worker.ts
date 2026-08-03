@@ -1417,6 +1417,14 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     }
   }
 
+  // resource 页面保护
+  if (path.startsWith('/resource/') || path === '/resource') {
+    if (isBrowserRequest(request)) {
+      const authenticated = await checkAuth(request, env);
+      if (!authenticated) return redirectResponse('/');
+    }
+  }
+
   const ext = getExt(path);
   const isStatic = isStaticAsset(ext);
   const isHtml = ext === '.html' || ext === '.htm';
