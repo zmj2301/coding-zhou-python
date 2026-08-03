@@ -801,6 +801,29 @@ body::before {
 }
 .user-menu-btn:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(88,166,255,0.4), 0 0 40px rgba(163,113,247,0.3); }
 .user-menu-btn.hidden { display: none; }
+
+/* 主题切换按钮 */
+.theme-toggle-btn {
+  position: fixed; top: 16px; right: 68px;
+  z-index: 99997;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-primary);
+  transition: all var(--transition);
+}
+.theme-toggle-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-blue);
+}
+.theme-toggle-btn svg { width: 20px; height: 20px; }
+.theme-toggle-btn .sun-icon { display: none; }
+.theme-toggle-btn .moon-icon { display: block; }
+[data-theme="light"] .theme-toggle-btn .sun-icon { display: block; }
+[data-theme="light"] .theme-toggle-btn .moon-icon { display: none; }
 .user-dropdown {
   position: fixed; top: 68px; right: 16px;
   z-index: 99998;
@@ -913,6 +936,10 @@ body::before {
 
 <!-- 用户菜单 -->
 <button class="user-menu-btn hidden" id="userMenuBtn">U</button>
+<button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)">
+  <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
 <div class="user-dropdown" id="userDropdown">
   <button class="user-dropdown-item" id="openAdminFromMenu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg> 管理员后台</button>
   <div class="user-dropdown-divider"></div>
@@ -1440,6 +1467,29 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('.game-card').forEach(card => observer.observe(card));
+
+// 主题切换
+const THEME_KEY = 'code_explorer_theme';
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+function getTheme() {
+  return localStorage.getItem(THEME_KEY) || 'dark';
+}
+
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(THEME_KEY, theme);
+}
+
+function toggleTheme() {
+  setTheme(getTheme() === 'dark' ? 'light' : 'dark');
+}
+
+themeToggleBtn.addEventListener('click', toggleTheme);
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 't') { e.preventDefault(); toggleTheme(); }
+});
+setTheme(getTheme());
 
 // 初始化
 (async function init() {

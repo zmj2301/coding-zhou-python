@@ -2006,6 +2006,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             if not user:
                 return self.send_error_json('请先登录', 401)
             if not check_admin(self):
+                print(f"[WARN] Non-admin user '{user.get('username', 'unknown')}' (id={user.get('id')}) attempted to reply to feedback", file=sys.stderr)
                 return self.send_error_json('需要管理员权限', 401)
             feedback_id = body.get('feedback_id')
             content = (body.get('content', '') or '').strip()
@@ -2033,7 +2034,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 db.close()
 
         if path == '/api/feedback/status':
+            user = get_current_user(self)
             if not check_admin(self):
+                if user:
+                    print(f"[WARN] Non-admin user '{user.get('username', 'unknown')}' (id={user.get('id')}) attempted to change feedback status", file=sys.stderr)
                 return self.send_error_json('需要管理员权限', 401)
             feedback_id = body.get('id')
             status = body.get('status', '')

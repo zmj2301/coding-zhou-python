@@ -150,18 +150,13 @@ body > * { position: relative; z-index: 1; }
 .admin-header-right {
   display: flex; align-items: center; gap: 12px;
 }
-.admin-refresh-btn {
-  display: flex; align-items: center; gap: 6px;
+.admin-refresh-btn, .admin-refresh-btn:disabled { display: none; }
+.admin-username {
+  font-size: 13px; font-weight: 500; color: var(--text-primary);
   padding: 6px 14px; background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px; color: var(--text-secondary);
-  cursor: pointer; font-size: 13px;
-  transition: all 0.15s;
+  border: 1px solid var(--border-color); border-radius: 8px;
+  white-space: nowrap;
 }
-.admin-refresh-btn:hover {
-  color: var(--text-primary); border-color: var(--text-tertiary);
-}
-.admin-refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ===== 主体 ===== */
 .admin-body {
@@ -931,11 +926,8 @@ select.apikey-input { cursor: pointer; appearance: none; padding-right: 34px; }
       API 管理控制台
     </div>
   </div>
-  <div class="admin-header-right">
-    <button class="admin-refresh-btn" id="refreshBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-      刷新
-    </button>
+<div class="admin-header-right">
+    <span class="admin-username" id="adminUsername"></span>
   </div>
 </div>
 
@@ -1003,6 +995,7 @@ async function loadPool() {
       return;
     }
     currentUser = authData.user;
+    $('adminUsername').textContent = currentUser.username;
 
     const res = await fetch('/api/ai-pool?days=7');
     if (res.status === 401) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a></div>'; return; }
@@ -1218,11 +1211,6 @@ function render(data) {
     </div>`;
 }
 
-$('refreshBtn').addEventListener('click', () => {
-  $('refreshBtn').disabled = true;
-  loadPool().finally(() => { $('refreshBtn').disabled = false; });
-});
-
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 't') {
     e.preventDefault();
@@ -1262,6 +1250,7 @@ async function loadApiKeys() {
       const authData = await authRes.json();
       if (!authData.authenticated) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>'; return; }
       currentUser = authData.user;
+      $('adminUsername').textContent = currentUser.username;
     }
     const url = '/api/api-keys' + (currentUser && currentUser.role === 'admin' ? '?all=' + (apiKeyView === 'all' ? '1' : '0') : '');
     const res = await fetch(url);
@@ -1667,5 +1656,6 @@ function copyGuideCode(lang) {
     setTimeout(() => toast.remove(), 2000);
   });
 }
+</script>
 </body>
 </html>

@@ -568,6 +568,73 @@ body::before {
   border-top: 1px solid var(--border-color);
 }
 
+.quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.quick-reply {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  font-size: 12px;
+  cursor: pointer;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.quick-reply:hover {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.tab .badge {
+  display: inline-block;
+  padding: 1px 6px;
+  margin-left: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--accent-purple);
+  color: #fff;
+  vertical-align: middle;
+}
+
+.tab .badge.readonly {
+  background: var(--text-tertiary);
+}
+
+.reply-form .admin-label {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  background: rgba(163, 113, 247, 0.15);
+  color: var(--accent-purple);
+  margin-bottom: 10px;
+}
+
+.reply-form .readonly-notice {
+  text-align: center;
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.reply-form .readonly-notice svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
 .reply-form textarea {
   min-height: 80px;
   margin-bottom: 12px;
@@ -689,16 +756,17 @@ body::before {
 </div>
 
 <div class="container">
+  <!-- Global Tabs -->
+  <div class="tabs" id="mainTabs">
+    <button class="tab active" id="tabSubmit">✍️ 提交新意见</button>
+    <button class="tab" id="tabInbox">📋 <span id="inboxTabLabel">我的工单</span></button>
+  </div>
+
   <!-- Submit View -->
   <div id="submitView">
     <div class="page-head">
       <h1>提交意见</h1>
-      <p>欢迎提出您的宝贵意见，帮助我们做得更好。您可以在"我的工单"中查看回复。</p>
-    </div>
-
-    <div class="tabs">
-      <button class="tab active" id="tabSubmit">✍️ 提交新意见</button>
-      <button class="tab" id="tabMyTickets">📋 我的工单</button>
+      <p>欢迎提出您的宝贵意见，帮助我们做得更好。</p>
     </div>
 
     <div class="card">
@@ -749,16 +817,11 @@ body::before {
     </div>
   </div>
 
-  <!-- My Tickets View -->
+  <!-- Tickets / Inbox View -->
   <div id="ticketsView" style="display:none">
     <div class="page-head">
       <h1 id="ticketsTitle">我的工单</h1>
       <p id="ticketsDesc">查看您提交的反馈和管理员的回复</p>
-    </div>
-
-    <div class="tabs">
-      <button class="tab" id="tabSubmit2">✍️ 提交新意见</button>
-      <button class="tab active" id="tabMyTickets2">📋 <span id="ticketsTabLabel">我的工单</span></button>
     </div>
 
     <div id="filterBar" class="filter-bar" style="display:none">
@@ -840,12 +903,31 @@ async function checkAuth() {
       if (chip) chip.style.display = 'inline-flex';
       var name = $('chipName');
       if (name) name.textContent = d.user.username;
+
+      // Configure inbox tab based on role
+      var inboxTab = $('tabInbox');
+      var inboxLabel = $('inboxTabLabel');
+      var ticketsTitle = $('ticketsTitle');
+      var ticketsDesc = $('ticketsDesc');
+
       if (state.isAdmin) {
-        var tl = $('ticketsTabLabel');
-        if (tl) tl.textContent = '所有工单';
-        var td = $('ticketsDesc');
-        if (td) td.textContent = '查看所有用户提交的工单，进行回复和状态管理';
+        // Admin: show "意见箱" with management features
+        if (inboxLabel) inboxLabel.textContent = '意见箱';
+        if (ticketsTitle) ticketsTitle.textContent = '📋 意见箱';
+        if (ticketsDesc) ticketsDesc.textContent = '查看所有用户提交的工单，进行回复和状态管理';
+        if (inboxTab) {
+          inboxTab.innerHTML = '📋 <span id="inboxTabLabel">意见箱</span><span class="badge" id="inboxBadge">管理员</span>';
+        }
+      } else {
+        // Non-admin: show "我的工单" (read-only personal tickets)
+        if (inboxLabel) inboxLabel.textContent = '我的工单';
+        if (ticketsTitle) ticketsTitle.textContent = '📋 我的工单';
+        if (ticketsDesc) ticketsDesc.textContent = '查看您提交的反馈和管理员的回复';
+        if (inboxTab) {
+          inboxTab.innerHTML = '📋 <span id="inboxTabLabel">我的工单</span><span class="badge readonly">只读</span>';
+        }
       }
+
       return true;
     }
   } catch(e) {
@@ -862,9 +944,7 @@ function showSubmitView() {
   if (tv) tv.style.display = 'none';
   if (dv) dv.style.display = 'none';
   var t1 = $('tabSubmit'); if (t1) t1.classList.add('active');
-  var t2 = $('tabSubmit2'); if (t2) t2.classList.add('active');
-  var t3 = $('tabMyTickets'); if (t3) t3.classList.remove('active');
-  var t4 = $('tabMyTickets2'); if (t4) t4.classList.remove('active');
+  var t2 = $('tabInbox'); if (t2) t2.classList.remove('active');
 }
 
 async function showTicketsView() {
@@ -873,9 +953,7 @@ async function showTicketsView() {
   if (tv) tv.style.display = 'block';
   if (dv) dv.style.display = 'none';
   var t1 = $('tabSubmit'); if (t1) t1.classList.remove('active');
-  var t2 = $('tabSubmit2'); if (t2) t2.classList.remove('active');
-  var t3 = $('tabMyTickets'); if (t3) t3.classList.add('active');
-  var t4 = $('tabMyTickets2'); if (t4) t4.classList.add('active');
+  var t2 = $('tabInbox'); if (t2) t2.classList.add('active');
   var fb = $('filterBar');
   if (fb) fb.style.display = state.isAdmin ? 'flex' : 'none';
   try { await loadTickets(); } catch(err) { console.error('loadTickets error:', err); }
@@ -892,9 +970,7 @@ async function showDetailView(ticketId) {
 
 // ========== Event Bindings ==========
 var el1 = $('tabSubmit'); if (el1) el1.addEventListener('click', showSubmitView);
-var el2 = $('tabSubmit2'); if (el2) el2.addEventListener('click', showSubmitView);
-var el3 = $('tabMyTickets'); if (el3) el3.addEventListener('click', showTicketsView);
-var el4 = $('tabMyTickets2'); if (el4) el4.addEventListener('click', showTicketsView);
+var el2 = $('tabInbox'); if (el2) el2.addEventListener('click', showTicketsView);
 var el5 = $('backToListBtn'); if (el5) el5.addEventListener('click', showTicketsView);
 
 // Filter bar
@@ -1178,12 +1254,30 @@ async function loadTicketDetail(ticketId) {
     var replyFormHtml = '';
     if (state.isAdmin) {
       replyFormHtml = '<div class="reply-form">' +
-        '<div class="form-label">管理员回复</div>' +
+        '<div class="admin-label">🔒 管理员回复区域</div>' +
+        '<div class="quick-replies">' +
+          '<span class="quick-reply" data-text="您好，问题已解决，感谢您的反馈！">✅ 问题解决</span>' +
+          '<span class="quick-reply" data-text="您好，我们正在处理您的反馈，请耐心等待。">⏳ 正在处理</span>' +
+          '<span class="quick-reply" data-text="感谢您的宝贵反馈！我们会尽快核实并处理。">🙏 感谢反馈</span>' +
+          '<span class="quick-reply" data-text="您好，已收到您的反馈，我们将在下个版本中修复。">🔧 下个版本修复</span>' +
+          '<span class="quick-reply" data-text="您好，此问题已记录并安排开发人员跟进。">📝 已记录跟进</span>' +
+          '<span class="quick-reply" data-text="您好，请提供更多详细信息以便我们更好地排查问题。">❓ 需要更多信息</span>' +
+          '<span class="quick-reply" data-text="您好，建议您尝试更新到最新版本后再试。">📦 请更新版本</span>' +
+          '<span class="quick-reply" data-text="您好，此为预期行为，我们已在文档中说明。">📖 预期行为</span>' +
+          '<span class="quick-reply" data-text="您好，我们已将此问题转交给相关团队处理。">👥 已转交团队</span>' +
+          '<span class="quick-reply" data-text="您好，感谢您的建议！我们已将其纳入后续规划。">💡 建议已采纳</span>' +
+        '</div>' +
         '<textarea class="form-textarea" id="replyContent" placeholder="输入回复内容..."></textarea>' +
         '<button class="submit-btn" id="sendReplyBtn">发送回复</button>' +
       '</div>';
-    } else if (replies.length === 0) {
-      replyFormHtml = '<div class="reply-form" style="text-align:center;color:var(--text-tertiary);font-size:13px">暂无回复，管理员收到反馈后会尽快回复您</div>';
+    } else {
+      replyFormHtml = '<div class="reply-form">' +
+        '<div class="readonly-notice">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="vertical-align:middle"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>' +
+          '您当前为普通用户，仅可查看工单和管理员回复<br>' +
+          '<span style="font-size:11px;opacity:0.7">如需补充信息，请在评论区留言或联系管理员</span>' +
+        '</div>' +
+      '</div>';
     }
 
     card.innerHTML =
@@ -1217,6 +1311,11 @@ async function loadTicketDetail(ticketId) {
       var statusSelect = $('statusSelect');
       if (statusSelect) {
         statusSelect.addEventListener('change', function() {
+          if (!state.isAdmin) {
+            showMessage('error', '仅管理员可修改状态');
+            this.value = d.status;
+            return;
+          }
           fetch('/api/feedback/status', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1231,9 +1330,26 @@ async function loadTicketDetail(ticketId) {
         });
       }
 
+      // Quick reply buttons
+      var quickReplies = card.querySelectorAll('.quick-reply');
+      for (var qi = 0; qi < quickReplies.length; qi++) {
+        quickReplies[qi].addEventListener('click', function() {
+          var text = this.getAttribute('data-text');
+          var replyArea = $('replyContent');
+          if (replyArea) {
+            replyArea.value = text;
+            replyArea.focus();
+          }
+        });
+      }
+
       var replyBtn = $('sendReplyBtn');
       if (replyBtn) {
         replyBtn.addEventListener('click', function() {
+          if (!state.isAdmin) {
+            showMessage('error', '仅管理员可回复工单');
+            return;
+          }
           var content = $('replyContent').value.trim();
           if (!content) { showMessage('error', '请输入回复内容'); return; }
           var self = this;
@@ -1261,6 +1377,10 @@ async function loadTicketDetail(ticketId) {
       var delBtn = $('deleteTicketBtn');
       if (delBtn) {
         delBtn.addEventListener('click', function() {
+          if (!state.isAdmin) {
+            showMessage('error', '仅管理员可删除工单');
+            return;
+          }
           if (!confirm('确定要删除此工单吗？所有回复也会一同删除。')) return;
           fetch('/api/feedback/delete', {
             method: 'POST',
