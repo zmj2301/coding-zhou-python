@@ -45,10 +45,6 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    location = /console {
-        rewrite ^ /console.html permanent;
-    }
-
     location /health {
         access_log off;
         return 200 'healthy\n';

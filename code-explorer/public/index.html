@@ -2743,31 +2743,6 @@ body::before {
     text-decoration: none; font-weight: 500;
   }
   .auth-switch a:hover { text-decoration: underline; }
-  .auth-tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 24px;
-    background: var(--bg-secondary, #f0f0f0);
-    border-radius: 8px;
-    padding: 3px;
-  }
-  .auth-tab {
-    flex: 1;
-    padding: 8px 16px;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary, #666);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s;
-  }
-  .auth-tab.active {
-    background: var(--accent, #6366f1);
-    color: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-  }
 
   /* ========== 管理员仪表板 ========== */
   .admin-page {
@@ -2968,22 +2943,14 @@ body::before {
   .user-menu-btn {
     position: fixed; top: 12px; right: 12px;
     z-index: 99997;
-    padding: 6px 12px;
-    max-width: 200px;
-    border-radius: 8px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-    color: var(--text-primary);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 14px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: transform 0.15s;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-  .user-menu-btn span {
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   .user-menu-btn:hover { transform: scale(1.05); }
   .user-menu-btn.hidden { display: none; }
@@ -3047,7 +3014,7 @@ body::before {
 
   /* ===== 更新日志按钮 ===== */
   .changelog-btn {
-    position: fixed; top: 12px; right: 35px;
+    position: fixed; top: 12px; right: 100px;
     z-index: 99997;
     width: 36px; height: 36px;
     border-radius: 50%;
@@ -3057,8 +3024,6 @@ body::before {
     display: flex; align-items: center; justify-content: center;
     color: var(--text-secondary);
     transition: all 0.15s;
-    margin-left: 90px;
-    margin-right: 90px;
   }
   .changelog-btn:hover {
     background: var(--bg-tertiary);
@@ -3394,44 +3359,33 @@ body::before {
   </div>
   <div class="auth-right">
     <div class="auth-card">
-      <!-- 登录/注册切换标签 -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="authTabLogin" onclick="showAuthForm('login')">登录</button>
-        <button class="auth-tab" id="authTabRegister" onclick="showAuthForm('register')">注册</button>
-      </div>
-      <!-- 登录表单 -->
+      <!-- 用户登录 -->
       <div id="userLoginForm">
         <h2>欢迎回来</h2>
-        <p class="auth-subtitle">输入账号密码以继续</p>
+        <p class="auth-subtitle">输入访问密码以继续</p>
         <div class="auth-field">
-          <label for="loginUsernameInput">用户名</label>
-          <input type="text" id="loginUsernameInput" placeholder="请输入用户名" autocomplete="off">
-        </div>
-        <div class="auth-field">
-          <label for="loginPasswordInput">密码</label>
+          <label for="loginPasswordInput">访问密码</label>
           <input type="password" id="loginPasswordInput" placeholder="请输入密码" autocomplete="off">
         </div>
         <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
         <div class="auth-error" id="loginError"></div>
+        <div class="auth-switch">
+          使用 <a id="switchToAdmin">管理员身份</a> 登录
+        </div>
       </div>
-      <!-- 注册表单 -->
-      <div id="registerForm" style="display:none">
-        <h2>创建账号</h2>
-        <p class="auth-subtitle">注册新账号以访问平台</p>
+      <!-- 管理员登录 -->
+      <div id="adminLoginForm" style="display:none">
+        <h2>管理员登录</h2>
+        <p class="auth-subtitle">输入管理员密码以访问后台</p>
         <div class="auth-field">
-          <label for="registerUsernameInput">用户名</label>
-          <input type="text" id="registerUsernameInput" placeholder="3-20位字母、数字或下划线" autocomplete="off">
+          <label for="adminPasswordInput">管理员密码</label>
+          <input type="password" id="adminPasswordInput" placeholder="请输入管理员密码" autocomplete="off">
         </div>
-        <div class="auth-field">
-          <label for="registerPasswordInput">密码</label>
-          <input type="password" id="registerPasswordInput" placeholder="至少6位密码" autocomplete="off">
+        <button class="auth-btn-primary auth-btn-admin" id="adminLoginSubmitBtn">进入后台</button>
+        <div class="auth-error" id="adminLoginError"></div>
+        <div class="auth-switch">
+          返回 <a id="switchToUser">用户登录</a>
         </div>
-        <div class="auth-field">
-          <label for="registerConfirmInput">确认密码</label>
-          <input type="password" id="registerConfirmInput" placeholder="再次输入密码" autocomplete="off">
-        </div>
-        <button class="auth-btn-primary" id="registerSubmitBtn">注册</button>
-        <div class="auth-error" id="registerError"></div>
       </div>
     </div>
   </div>
@@ -3478,17 +3432,9 @@ body::before {
 <button class="changelog-btn" id="changelogBtn" title="更新日志">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
 </button>
-<button class="user-menu-btn hidden" id="userMenuBtn" title="用户菜单">
-  <span id="userMenuName" style="font-size:13px;font-weight:500;color:var(--text-primary)">用户</span>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-</button>
+<button class="user-menu-btn hidden" id="userMenuBtn">U</button>
 <div class="user-dropdown" id="userDropdown">
-  <button class="user-dropdown-item" id="profileFromMenu">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    个人资料
-  </button>
-  <div class="user-dropdown-divider"></div>
-  <button class="user-dropdown-item" id="openAdminFromMenu" style="display:none">
+  <button class="user-dropdown-item" id="openAdminFromMenu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
     管理员后台
   </button>
@@ -3972,8 +3918,6 @@ const state = {
   flatFiles: [],
   projects: [],        // 项目卡片数据
   currentProject: null,
-  currentUser: null,
-  isAuthenticated: false,
   openTabs: [],
   activeTabIdx: -1,
   expandedDirs: new Set(),
@@ -3983,10 +3927,6 @@ const state = {
   view: 'home',        // 当前视图: home | editor
 };
 
-function isLoggedIn() {
-  return !!state.currentUser && !!getCookie('wg_token');
-}
-
 const $ = (sel) => document.querySelector(sel);
 
 // ==================== API ====================
@@ -3995,13 +3935,12 @@ async function api(url, opts = {}) {
     const res = await fetch(url, opts);
     if (res.status === 401) {
       delCookie('wg_token');
-      state.currentUser = null;
       if (userMenuBtn) userMenuBtn.classList.add('hidden');
       if (userDropdown) userDropdown.classList.remove('show');
       hideAdminDashboard();
       const hasProjects = state.projects && state.projects.length > 0;
       if (!hasProjects) {
-        showLoginPage();
+        showLoginPage(false);
         const grid = document.getElementById('cardsGrid');
         if (grid) grid.innerHTML = '';
       } else {
@@ -5312,6 +5251,7 @@ async function copyCode() {
 async function downloadProject() {
   if (!state.currentProject) return;
   try {
+    toast('正在打包下载...');
     const res = await api(`/api/files/download?path=${encodeURIComponent(state.currentProject.path)}`);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
@@ -5323,7 +5263,7 @@ async function downloadProject() {
     a.remove();
     URL.revokeObjectURL(url);
     toast('下载完成');
-  } catch(e) { toast(`${e.message}`); }
+  } catch(e) { toast(`下载失败: ${e.message}`); }
 }
 
 // ==================== PANEL TOGGLE ====================
@@ -5679,55 +5619,13 @@ async function aiAsstFetchQuota() {
   } catch {}
 }
 
-async function aiAsstLoadConvs() {
-  if (!isLoggedIn()) {
-    AI_ASST.conversations = [];
-    aiAsstRenderConvs();
-    return;
-  }
-  try {
-    const res = await fetch('/api/user/conversations');
-    if (res.ok) {
-      const data = await res.json();
-      AI_ASST.conversations = (data.conversations || []).map(c => {
-        const t = new Date((c.updated_at || c.created_at) * 1000);
-        return {
-          id: c.id,
-          title: c.title,
-          time: String(t.getHours()).padStart(2,'0') + ':' + String(t.getMinutes()).padStart(2,'0'),
-          messages: c.messages || []
-        };
-      });
-    }
-  } catch(e) {}
+function aiAsstLoadConvs() {
+  try { const s = localStorage.getItem('ai-asst-convs'); if (s) AI_ASST.conversations = JSON.parse(s); } catch {}
   aiAsstRenderConvs();
 }
 
-async function aiAsstSaveConvs() {
-  if (!isLoggedIn()) return;
-  // 保存当前对话
-  if (AI_ASST.currentConv !== null) {
-    const conv = AI_ASST.conversations[AI_ASST.currentConv];
-    if (conv) {
-      try {
-        const res = await fetch('/api/user/conversations', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: conv.id || null,
-            title: conv.title,
-            messages: conv.messages
-          })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.id && !conv.id) {
-            conv.id = data.id;
-          }
-        }
-      } catch(e) {}
-    }
-  }
+function aiAsstSaveConvs() {
+  try { localStorage.setItem('ai-asst-convs', JSON.stringify(AI_ASST.conversations)); } catch {}
 }
 
 function aiAsstRenderConvs() {
@@ -5765,11 +5663,8 @@ function aiAsstSwitchConv(idx) {
   aiAsstRenderConvs();
 }
 
-async function aiAsstDeleteConv(idx) {
+function aiAsstDeleteConv(idx) {
   if (!confirm('确定要删除该对话吗？')) return;
-  const conv = AI_ASST.conversations[idx];
-  const convId = conv ? conv.id : null;
-
   AI_ASST.conversations.splice(idx, 1);
   if (AI_ASST.currentConv === idx) {
     AI_ASST.currentConv = null;
@@ -5779,19 +5674,9 @@ async function aiAsstDeleteConv(idx) {
   }
   AI_ASST.awaiting = false;
   if (AI_ASST.abortCtrl) { AI_ASST.abortCtrl.abort(); AI_ASST.abortCtrl = null; }
+  aiAsstSaveConvs();
   aiAsstRenderConvs();
   aiAsstRenderMsgs();
-
-  // 同步删除到服务端
-  if (isLoggedIn() && convId) {
-    try {
-      await fetch('/api/user/conversations/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: convId })
-      });
-    } catch(e) {}
-  }
 }
 
 function aiAsstExportConv() {
@@ -5835,7 +5720,7 @@ function aiAsstExportConv() {
   }
 }
 
-async function aiAsstSaveCurrentConv(firstUserMsg) {
+function aiAsstSaveCurrentConv(firstUserMsg) {
   const title = firstUserMsg.substring(0, 28) + (firstUserMsg.length > 28 ? '...' : '');
   const now = new Date();
   const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
@@ -5847,9 +5732,8 @@ async function aiAsstSaveCurrentConv(firstUserMsg) {
     AI_ASST.conversations.unshift({ title, time, messages: [...AI_ASST.messages] });
     AI_ASST.currentConv = 0;
   }
-  aiAsstRenderConvs();
-  // 异步保存到服务端
   aiAsstSaveConvs();
+  aiAsstRenderConvs();
 }
 
 function aiAsstNeedsProjects(text) {
@@ -6223,7 +6107,7 @@ function closeAuthPromptModal() {
 
 function goToLoginFromPrompt() {
   closeAuthPromptModal();
-  showLoginPage();
+  showLoginPage(false);
 }
 
 // ==================== COMMENT FUNCTIONS ====================
@@ -6623,16 +6507,15 @@ function getProjectCardClass(type) {
 const authPage = document.getElementById('authPage');
 const adminPage = document.getElementById('adminPage');
 const userLoginForm = document.getElementById('userLoginForm');
-const registerForm = document.getElementById('registerForm');
-const loginUsernameInput = document.getElementById('loginUsernameInput');
+const adminLoginForm = document.getElementById('adminLoginForm');
 const loginPasswordInput = document.getElementById('loginPasswordInput');
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginError = document.getElementById('loginError');
-const registerUsernameInput = document.getElementById('registerUsernameInput');
-const registerPasswordInput = document.getElementById('registerPasswordInput');
-const registerConfirmInput = document.getElementById('registerConfirmInput');
-const registerSubmitBtn = document.getElementById('registerSubmitBtn');
-const registerError = document.getElementById('registerError');
+const adminPasswordInput = document.getElementById('adminPasswordInput');
+const adminLoginSubmitBtn = document.getElementById('adminLoginSubmitBtn');
+const adminLoginError = document.getElementById('adminLoginError');
+const switchToAdmin = document.getElementById('switchToAdmin');
+const switchToUser = document.getElementById('switchToUser');
 const userMenuBtn = document.getElementById('userMenuBtn');
 const userDropdown = document.getElementById('userDropdown');
 const openAdminFromMenu = document.getElementById('openAdminFromMenu');
@@ -6652,36 +6535,23 @@ function delCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
 }
 
-function getCookie(name) {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? match[2] : null;
-}
-
-function showAuthForm(type) {
-  const loginTab = document.getElementById('authTabLogin');
-  const regTab = document.getElementById('authTabRegister');
-  if (type === 'login') {
+function showLoginPage(isAdmin) {
+  authPage.classList.add('active');
+  if (isAdmin) {
+    userLoginForm.style.display = 'none';
+    adminLoginForm.style.display = 'block';
+    adminLoginError.classList.remove('show');
+    adminLoginError.textContent = '';
+    adminPasswordInput.value = '';
+    setTimeout(() => adminPasswordInput.focus(), 50);
+  } else {
     userLoginForm.style.display = 'block';
-    registerForm.style.display = 'none';
-    loginTab.classList.add('active');
-    regTab.classList.remove('active');
+    adminLoginForm.style.display = 'none';
     loginError.classList.remove('show');
     loginError.textContent = '';
-    setTimeout(() => loginUsernameInput.focus(), 50);
-  } else {
-    userLoginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-    loginTab.classList.remove('active');
-    regTab.classList.add('active');
-    registerError.classList.remove('show');
-    registerError.textContent = '';
-    setTimeout(() => registerUsernameInput.focus(), 50);
+    loginPasswordInput.value = '';
+    setTimeout(() => loginPasswordInput.focus(), 50);
   }
-}
-
-function showLoginPage() {
-  authPage.classList.add('active');
-  showAuthForm('login');
 }
 
 function hideLoginPage() {
@@ -6689,92 +6559,59 @@ function hideLoginPage() {
 }
 
 async function checkAuth() {
-  try {
-    const r = await fetch('/api/auth-check');
-    const d = await r.json();
-    if (d.authenticated && d.user) {
-      state.currentUser = d.user;
-    }
-    return d.authenticated;
-  }
+  try { const r = await fetch('/api/auth-check'); const d = await r.json(); return d.authenticated; }
   catch(e) { return false; }
 }
 
 async function doUserLogin() {
-  const username = loginUsernameInput.value.trim();
   const pw = loginPasswordInput.value.trim();
-  if (!username || !pw) { loginError.textContent = '请输入用户名和密码'; loginError.classList.add('show'); return; }
+  if (!pw) { loginError.textContent = '请输入密码'; loginError.classList.add('show'); return; }
   loginSubmitBtn.disabled = true; loginSubmitBtn.textContent = '登录中...';
   loginError.classList.remove('show'); loginError.textContent = '';
   try {
-    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
+    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
     const d = await r.json();
     if (r.ok && d.token) {
       setCookie('wg_token', d.token, 7);
-      state.currentUser = d.user;
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
-      adjustThemeBtnPosition();
-      if (document.getElementById('userMenuName')) document.getElementById('userMenuName').textContent = d.user.username;
-      openAdminFromMenu.style.display = d.user.role === 'admin' ? '' : 'none';
-      loginUsernameInput.value = '';
       loginPasswordInput.value = '';
       loginError.textContent = '';
       init();
-      // 加载用户隔离数据（收藏、浏览记录、AI对话历史）
-      loadBookmarksFromServer();
-      loadRecentFromServer();
-      aiAsstLoadConvs();
     } else {
-      loginError.textContent = d.error || '用户名或密码错误';
+      loginError.textContent = d.error || '密码错误';
       loginError.classList.add('show');
     }
   } catch(e) { loginError.textContent = '网络错误，请重试'; loginError.classList.add('show'); }
   loginSubmitBtn.disabled = false; loginSubmitBtn.textContent = '登录';
 }
 
-async function doRegister() {
-  const username = registerUsernameInput.value.trim();
-  const pw = registerPasswordInput.value.trim();
-  const confirm = registerConfirmInput.value.trim();
-  if (!username || !pw || !confirm) { registerError.textContent = '请填写所有字段'; registerError.classList.add('show'); return; }
-  if (pw !== confirm) { registerError.textContent = '两次密码不一致'; registerError.classList.add('show'); return; }
-  if (pw.length < 6) { registerError.textContent = '密码长度至少6位'; registerError.classList.add('show'); return; }
-  registerSubmitBtn.disabled = true; registerSubmitBtn.textContent = '注册中...';
-  registerError.classList.remove('show'); registerError.textContent = '';
+async function doAdminLogin() {
+  const pw = adminPasswordInput.value.trim();
+  if (!pw) { adminLoginError.textContent = '请输入管理员密码'; adminLoginError.classList.add('show'); return; }
+  adminLoginSubmitBtn.disabled = true; adminLoginSubmitBtn.textContent = '验证中...';
+  adminLoginError.classList.remove('show'); adminLoginError.textContent = '';
   try {
-    const r = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
+    const r = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
     const d = await r.json();
-    if (r.ok) {
-      // 注册成功，自动登录
-      registerError.textContent = '注册成功，正在登录...';
-      registerError.classList.add('show');
-      registerError.style.color = 'var(--success, #22c55e)';
-      registerError.style.borderColor = 'var(--success, #22c55e)';
-      // 自动填充登录表单并登录
-      loginUsernameInput.value = username;
-      loginPasswordInput.value = pw;
-      setTimeout(() => doUserLogin(), 500);
+    if (r.ok && d.token) {
+      setCookie('wg_token', d.token, 7);
+      authPage.classList.remove('active');
+      showAdminDashboard();
+      adminPasswordInput.value = '';
+      adminLoginError.textContent = '';
     } else {
-      registerError.textContent = d.error || '注册失败';
-      registerError.classList.add('show');
-      registerError.style.color = '';
-      registerError.style.borderColor = '';
+      adminLoginError.textContent = d.error || '密码错误';
+      adminLoginError.classList.add('show');
     }
-  } catch(e) { registerError.textContent = '网络错误，请重试'; registerError.classList.add('show'); }
-  registerSubmitBtn.disabled = false; registerSubmitBtn.textContent = '注册';
+  } catch(e) { adminLoginError.textContent = '网络错误，请重试'; adminLoginError.classList.add('show'); }
+  adminLoginSubmitBtn.disabled = false; adminLoginSubmitBtn.textContent = '进入后台';
 }
 
 function showAdminDashboard() {
   adminPage.classList.add('active');
   userDropdown.classList.remove('show');
   loadDashboard();
-}
-
-function adjustThemeBtnPosition() {
-  const userW = userMenuBtn.offsetWidth;
-  const right = userW + 12;
-  if (themeToggleBtn) themeToggleBtn.style.right = right + 'px';
 }
 
 function hideAdminDashboard() {
@@ -6784,7 +6621,6 @@ function hideAdminDashboard() {
 async function doLogout() {
   try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
   delCookie('wg_token');
-  state.currentUser = null;
   hideAdminDashboard();
   hideLoginPage();
   userMenuBtn.classList.add('hidden');
@@ -6792,71 +6628,7 @@ async function doLogout() {
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
   document.getElementById('homePage').classList.add('active');
-  // 清空用户数据缓存
-  _bookmarksCache = [];
-  _recentCache = [];
-  AI_ASST.conversations = [];
-  AI_ASST.currentConv = null;
-  AI_ASST.messages = [];
-  renderBookmarks();
-  renderRecentProjects();
-  updateBookmarkButtons();
-  aiAsstRenderConvs();
-  aiAsstRenderMsgs();
-  showLoginPage();
-}
-
-function showProfileModal() {
-  if (!state.currentUser) return;
-  const overlay = document.getElementById('profileOverlay');
-  overlay.style.display = 'flex';
-  document.getElementById('profileUsername').textContent = state.currentUser.username;
-  document.getElementById('profileRole').textContent = state.currentUser.role === 'admin' ? '管理员' : '普通用户';
-  // 获取用户详细信息
-  fetch('/api/user/profile').then(r => r.json()).then(d => {
-    if (d.user) {
-      document.getElementById('profileCreatedAt').textContent = d.user.created_at ? new Date(d.user.created_at * 1000).toLocaleString('zh-CN') : '未知';
-      document.getElementById('profileLastLogin').textContent = d.user.last_login ? new Date(d.user.last_login * 1000).toLocaleString('zh-CN') : '首次登录';
-    }
-  }).catch(() => {});
-  document.getElementById('profileOldPw').value = '';
-  document.getElementById('profileNewPw').value = '';
-  document.getElementById('profileConfirmPw').value = '';
-  document.getElementById('profileError').classList.remove('show');
-  document.getElementById('profileError').textContent = '';
-  document.getElementById('profileSuccess').style.display = 'none';
-  userDropdown.classList.remove('show');
-}
-
-function closeProfileModal() {
-  document.getElementById('profileOverlay').style.display = 'none';
-}
-
-async function doChangePassword() {
-  const oldPw = document.getElementById('profileOldPw').value.trim();
-  const newPw = document.getElementById('profileNewPw').value.trim();
-  const confirmPw = document.getElementById('profileConfirmPw').value.trim();
-  const errorEl = document.getElementById('profileError');
-  const successEl = document.getElementById('profileSuccess');
-  errorEl.classList.remove('show');
-  errorEl.textContent = '';
-  successEl.style.display = 'none';
-  if (!oldPw || !newPw || !confirmPw) { errorEl.textContent = '请填写所有字段'; errorEl.classList.add('show'); return; }
-  if (newPw !== confirmPw) { errorEl.textContent = '两次密码不一致'; errorEl.classList.add('show'); return; }
-  if (newPw.length < 6) { errorEl.textContent = '新密码长度至少6位'; errorEl.classList.add('show'); return; }
-  try {
-    const r = await fetch('/api/user/change-password', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({old_password:oldPw, new_password:newPw}) });
-    const d = await r.json();
-    if (r.ok) {
-      successEl.style.display = 'block';
-      document.getElementById('profileOldPw').value = '';
-      document.getElementById('profileNewPw').value = '';
-      document.getElementById('profileConfirmPw').value = '';
-    } else {
-      errorEl.textContent = d.error || '修改失败';
-      errorEl.classList.add('show');
-    }
-  } catch(e) { errorEl.textContent = '网络错误'; errorEl.classList.add('show'); }
+  showLoginPage(false);
 }
 
 function renderDashboard(data) {
@@ -6985,13 +6757,6 @@ function renderDashboard(data) {
         </div>
       </div>
     </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">用户管理</div>
-      <div id="adminUserList" style="background:var(--bg-secondary,#2a2a3e);border-radius:8px;overflow:hidden">
-        <div style="padding:16px;text-align:center;color:var(--text-secondary)">加载中...</div>
-      </div>
-    </div>
   `;
 }
 
@@ -7002,56 +6767,23 @@ async function loadDashboard() {
     if (!res.ok) throw new Error((await res.json()).error || '请求失败');
     const data = await res.json();
     renderDashboard(data);
-    // 加载用户列表
-    loadAdminUsers();
   } catch(e) {
     adminDashboardContent.innerHTML = '<div style="text-align:center;padding:40px;color:var(--accent-red)">加载失败: ' + e.message + '</div>';
     if (e.message.includes('管理员未登录')) {
       hideAdminDashboard();
-      showLoginPage();
+      showLoginPage(true);
     }
   }
-}
-
-async function loadAdminUsers() {
-  try {
-    const r = await fetch('/api/admin/users');
-    if (!r.ok) return;
-    const d = await r.json();
-    const container = document.getElementById('adminUserList');
-    if (!d.users || d.users.length === 0) {
-      container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-secondary)">暂无用户</div>';
-      return;
-    }
-    const escape = (s) => { const el=document.createElement('div'); el.textContent=s; return el.innerHTML; };
-    container.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--bg-primary,#1e1e2e)"><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">ID</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">用户名</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">角色</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">注册时间</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">最后登录</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">操作</th></tr></thead><tbody>' +
-      d.users.map(u => '<tr style="border-bottom:1px solid var(--border-color,#333)"><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + u.id + '</td><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + escape(u.username) + '</td><td style="padding:10px 12px;font-size:13px"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:' + (u.role === 'admin' ? 'var(--accent,#6366f1)' : 'var(--bg-tertiary,#3a3a4e)') + ';color:#fff">' + (u.role === 'admin' ? '管理员' : '用户') + '</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.created_at ? new Date(u.created_at * 1000).toLocaleString('zh-CN') : '-') + '</td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.last_login ? new Date(u.last_login * 1000).toLocaleString('zh-CN') : '从未登录') + '</td><td style="padding:10px 12px">' +
-        (u.role !== 'admin' ? '<button onclick="deleteUser(' + u.id + ',\'' + escape(u.username) + '\')" style="padding:4px 10px;border:none;border-radius:4px;background:#ef4444;color:#fff;font-size:11px;cursor:pointer">删除</button>' : '<span style="font-size:11px;color:var(--text-tertiary)">-</span>') +
-      '</td></tr>').join('') +
-      '</tbody></table>';
-  } catch(e) {}
-}
-
-async function deleteUser(userId, username) {
-  if (!confirm('确定要删除用户 "' + username + '" 吗？\n此操作不可恢复，该用户的所有数据将被清除。')) return;
-  try {
-    const r = await fetch('/api/admin/users/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({user_id: userId}) });
-    const d = await r.json();
-    if (r.ok) {
-      toast('用户已删除');
-      loadAdminUsers();
-    } else {
-      toast(d.error || '删除失败');
-    }
-  } catch(e) { toast('网络错误'); }
 }
 
 // ===== 事件绑定 =====
 loginSubmitBtn.addEventListener('click', doUserLogin);
 loginPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
-loginUsernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
-registerSubmitBtn.addEventListener('click', doRegister);
-registerConfirmInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doRegister(); });
+adminLoginSubmitBtn.addEventListener('click', doAdminLogin);
+adminPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doAdminLogin(); });
+
+switchToAdmin.addEventListener('click', function(e) { e.preventDefault(); showLoginPage(true); });
+switchToUser.addEventListener('click', function(e) { e.preventDefault(); showLoginPage(false); });
 
 userMenuBtn.addEventListener('click', function(e) {
   e.stopPropagation();
@@ -7061,7 +6793,6 @@ document.addEventListener('click', function() {
   userDropdown.classList.remove('show');
 });
 
-document.getElementById('profileFromMenu').addEventListener('click', showProfileModal);
 openAdminFromMenu.addEventListener('click', function() {
   showAdminDashboard();
 });
@@ -7135,70 +6866,31 @@ if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (
 // 初始化主题
 setTheme(getTheme());
 
-// ===== A3: 最近访问记录（服务端存储，按用户隔离） =====
-let _recentCache = [];
-let _recentLoaded = false;
-
-async function loadRecentFromServer() {
-  if (!isLoggedIn()) {
-    _recentCache = [];
-    _recentLoaded = true;
-    renderRecentProjects();
-    return;
-  }
-  try {
-    const res = await fetch('/api/user/recent');
-    if (res.ok) {
-      const data = await res.json();
-      _recentCache = (data.recent || []).map(r => ({
-        path: r.project_path,
-        name: r.project_name,
-        icon: r.project_icon,
-        time: r.visited_at * 1000
-      }));
-      _recentLoaded = true;
-      renderRecentProjects();
-    }
-  } catch(e) {
-    _recentLoaded = true;
-  }
-}
+// ===== A3: 最近访问记录 =====
+const RECENT_KEY = 'code_explorer_recent';
+const RECENT_MAX = 10;
 
 function getRecentProjects() {
-  return _recentCache;
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_KEY)) || [];
+  } catch { return []; }
 }
 
-async function addRecentProject(project) {
-  // 先更新本地缓存
-  let recent = [..._recentCache];
+function addRecentProject(project) {
+  let recent = getRecentProjects();
+  // 移除已存在的同名项目
   recent = recent.filter(r => r.path !== project.path);
+  // 添加到开头
   recent.unshift({ path: project.path, name: project.name, icon: project.icon, time: Date.now() });
-  if (recent.length > 10) recent = recent.slice(0, 10);
-  _recentCache = recent;
+  // 限制数量
+  if (recent.length > RECENT_MAX) recent = recent.slice(0, RECENT_MAX);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
   renderRecentProjects();
-
-  // 同步到服务端
-  if (isLoggedIn()) {
-    try {
-      await fetch('/api/user/recent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          project_path: project.path,
-          project_name: project.name,
-          project_icon: project.icon
-        })
-      });
-    } catch(e) {}
-  }
 }
 
-async function clearRecentProjects() {
-  if (!isLoggedIn() || !confirm('确定要清空浏览记录吗？')) return;
-  // 后端暂无批量删除API，先清空本地
-  _recentCache = [];
+function clearRecentProjects() {
+  localStorage.removeItem(RECENT_KEY);
   renderRecentProjects();
-  toast('浏览记录已清空');
 }
 
 function renderRecentProjects() {
@@ -7226,96 +6918,35 @@ function renderRecentProjects() {
 
 document.getElementById('clearRecentBtn').addEventListener('click', clearRecentProjects);
 
-// ===== A4: 项目收藏（服务端存储，按用户隔离） =====
-let _bookmarksCache = [];
-let _bookmarksLoaded = false;
-
-async function loadBookmarksFromServer() {
-  if (!isLoggedIn()) {
-    _bookmarksCache = [];
-    _bookmarksLoaded = true;
-    renderBookmarks();
-    updateBookmarkButtons();
-    return;
-  }
-  try {
-    const res = await fetch('/api/user/bookmarks');
-    if (res.ok) {
-      const data = await res.json();
-      _bookmarksCache = (data.bookmarks || []).map(b => ({
-        path: b.project_path,
-        name: b.project_name,
-        icon: b.project_icon,
-        time: b.created_at * 1000
-      }));
-      _bookmarksLoaded = true;
-      renderBookmarks();
-      updateBookmarkButtons();
-    }
-  } catch(e) {
-    _bookmarksLoaded = true;
-  }
-}
+// ===== A4: 项目收藏 =====
+const BOOKMARK_KEY = 'code_explorer_bookmarks';
 
 function getBookmarks() {
-  return _bookmarksCache;
+  try {
+    return JSON.parse(localStorage.getItem(BOOKMARK_KEY)) || [];
+  } catch { return []; }
 }
 
 function isBookmarked(path) {
-  return _bookmarksCache.some(b => b.path === path);
+  return getBookmarks().some(b => b.path === path);
 }
 
-async function toggleBookmark(project) {
-  if (!isLoggedIn()) {
-    toast('请先登录');
-    showLoginPage();
-    return;
+function toggleBookmark(project) {
+  let bookmarks = getBookmarks();
+  if (isBookmarked(project.path)) {
+    bookmarks = bookmarks.filter(b => b.path !== project.path);
+  } else {
+    bookmarks.push({ path: project.path, name: project.name, icon: project.icon, time: Date.now() });
   }
-  try {
-    const res = await fetch('/api/user/bookmarks', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        project_path: project.path,
-        project_name: project.name,
-        project_icon: project.icon
-      })
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.bookmarked) {
-        _bookmarksCache.unshift({ path: project.path, name: project.name, icon: project.icon, time: Date.now() });
-      } else {
-        _bookmarksCache = _bookmarksCache.filter(b => b.path !== project.path);
-      }
-      renderBookmarks();
-      updateBookmarkButtons();
-    }
-  } catch(e) {
-    toast('操作失败');
-  }
-}
-
-async function clearBookmarks() {
-  if (!isLoggedIn() || !confirm('确定要清空所有收藏吗？')) return;
-  // 批量删除：逐个调用 toggle
-  const paths = _bookmarksCache.map(b => b.path);
-  for (const path of paths) {
-    const project = state.projects.find(p => p.path === path);
-    if (project) {
-      try {
-        await fetch('/api/user/bookmarks', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ project_path: path, project_name: project.name, project_icon: project.icon })
-        });
-      } catch(e) {}
-    }
-  }
-  _bookmarksCache = [];
+  localStorage.setItem(BOOKMARK_KEY, JSON.stringify(bookmarks));
   renderBookmarks();
   updateBookmarkButtons();
-  toast('收藏已清空');
+}
+
+function clearBookmarks() {
+  localStorage.removeItem(BOOKMARK_KEY);
+  renderBookmarks();
+  updateBookmarkButtons();
 }
 
 function renderBookmarks() {
@@ -7455,16 +7086,7 @@ function copyCode(btn) {
     }
     // 后台检查 auth 状态（不阻塞渲染）
     checkAuth().then(authed => {
-      if (authed && userMenuBtn) {
-        userMenuBtn.classList.remove('hidden');
-        adjustThemeBtnPosition();
-        if (state.currentUser && document.getElementById('userMenuName')) {
-          document.getElementById('userMenuName').textContent = state.currentUser.username;
-        }
-        if (state.currentUser) {
-          openAdminFromMenu.style.display = state.currentUser.role === 'admin' ? '' : 'none';
-        }
-      }
+      if (authed && userMenuBtn) userMenuBtn.classList.remove('hidden');
       state.isAuthenticated = authed;
     }).catch(() => {});
     return;
@@ -7481,7 +7103,7 @@ function copyCode(btn) {
         <div style="color:var(--accent-red);font-size:16px;margin-bottom:12px">加载耗时较长</div>
         <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px">请尝试刷新页面或登录后访问</div>
         <button onclick="location.reload()" style="padding:10px 20px;background:var(--accent-blue);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-right:10px">刷新页面</button>
-        <button onclick="showLoginPage()" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
+        <button onclick="showLoginPage(false)" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
       </div>
     `;
   }, LOADING_TIMEOUT);
@@ -7500,63 +7122,18 @@ function copyCode(btn) {
     clearTimeout(timeoutTimer);
 
     if (authed) {
-      if (userMenuBtn) { userMenuBtn.classList.remove('hidden'); adjustThemeBtnPosition(); }
-      if (state.currentUser && document.getElementById('userMenuName')) {
-        document.getElementById('userMenuName').textContent = state.currentUser.username;
-      }
+      if (userMenuBtn) userMenuBtn.classList.remove('hidden');
       init();
     } else {
-      showLoginPage();
+      showLoginPage(false);
     }
   } catch(e) {
     clearTimeout(timeoutTimer);
     console.error('启动失败:', e);
-    showLoginPage();
+    showLoginPage(false);
   }
 })();
 </script>
-<!-- 个人资料弹窗 -->
-<div class="profile-overlay" id="profileOverlay" onclick="if(event.target===this) closeProfileModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100000;align-items:center;justify-content:center">
-  <div class="profile-modal" style="background:var(--bg-primary,#1e1e2e);border-radius:12px;padding:28px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <h3 style="margin:0;font-size:18px;color:var(--text-primary)">个人资料</h3>
-      <button onclick="closeProfileModal()" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:20px">&times;</button>
-    </div>
-    <div id="profileContent">
-      <div style="margin-bottom:16px">
-        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">用户名</label>
-        <div id="profileUsername" style="font-size:15px;color:var(--text-primary);font-weight:500"></div>
-      </div>
-      <div style="margin-bottom:16px">
-        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">角色</label>
-        <div id="profileRole" style="font-size:14px;color:var(--text-primary)"></div>
-      </div>
-      <div style="margin-bottom:16px">
-        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">注册时间</label>
-        <div id="profileCreatedAt" style="font-size:14px;color:var(--text-primary)"></div>
-      </div>
-      <div style="margin-bottom:20px">
-        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">最后登录</label>
-        <div id="profileLastLogin" style="font-size:14px;color:var(--text-primary)"></div>
-      </div>
-      <div style="border-top:1px solid var(--border-color,#333);padding-top:16px">
-        <h4 style="margin:0 0 12px;font-size:14px;color:var(--text-primary)">修改密码</h4>
-        <div class="auth-field" style="margin-bottom:10px">
-          <input type="password" id="profileOldPw" placeholder="旧密码" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
-        </div>
-        <div class="auth-field" style="margin-bottom:10px">
-          <input type="password" id="profileNewPw" placeholder="新密码（至少6位）" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
-        </div>
-        <div class="auth-field" style="margin-bottom:10px">
-          <input type="password" id="profileConfirmPw" placeholder="确认新密码" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
-        </div>
-        <button onclick="doChangePassword()" style="width:100%;padding:10px;border:none;border-radius:8px;background:var(--accent,#6366f1);color:#fff;font-size:14px;cursor:pointer">修改密码</button>
-        <div class="auth-error" id="profileError" style="margin-top:8px"></div>
-        <div style="color:var(--success,#22c55e);font-size:13px;margin-top:8px;display:none" id="profileSuccess">密码修改成功</div>
-      </div>
-    </div>
-  </div>
-</div>
 </body>
 </html>
 <!-- force-refresh: 1785070272 -->

@@ -43,6 +43,19 @@ Thumbs.db
 !.env.example
 ecs-env.sh
 code-explorer/ecs-env.sh
+<<<<<<< HEAD
+=======
+
+# 图片文件
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.webp
+*.bmp
+!code-explorer/public/images/covers/*.jpg
+>>>>>>> 893abfaec1736766143a262d5a9654d4419e51f6
 
 # 视频文件
 *.mp4
