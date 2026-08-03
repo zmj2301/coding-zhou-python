@@ -1121,6 +1121,60 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     }
   }
 
+  // ---- 资源下载 API ----
+  if (path === '/api/resources/list') {
+    try {
+      const resp = await fetchAsset('/resource/resources.json', env);
+      if (resp.ok) {
+        const resources = await resp.json();
+        const result = jsonResponse({ resources });
+        addCacheHeader(result.headers, 300);
+        return result;
+      }
+    } catch {}
+    // 兜底：从 GitHub 获取
+    try {
+      const ghResp = await fetchFromGitHub('public/resource/resources.json', env);
+      if (ghResp.ok) {
+        const resources = await ghResp.json();
+        const result = jsonResponse({ resources });
+        addCacheHeader(result.headers, 300);
+        return result;
+      }
+    } catch {}
+    return jsonResponse({ resources: [] });
+  }
+
+  if (path === '/api/resources/download') {
+    const resourceName = url.searchParams.get('path') || '';
+    if (!resourceName) return errorResponse('缺少 path 参数');
+    if (resourceName.includes('..')) return errorResponse('访问被拒绝', 403);
+
+    // 安全检查：只允许下载 resource 目录下的文件
+    const safePath = 'resource/' + resourceName;
+    const assetResp = await fetchAsset('/' + safePath, env);
+    if (assetResp.ok) {
+      const ext = getExt(resourceName);
+      const contentType = CONTENT_TYPE_MAP[ext] || 'application/octet-stream';
+      const headers = new Headers(assetResp.headers);
+      headers.set('Content-Type', contentType);
+      const encodedName = encodeURIComponent(resourceName);
+      headers.set('Content-Disposition', `attachment; filename="${encodedName}"; filename*=UTF-8''${encodedName}`);
+      return new Response(assetResp.body, { status: 200, headers });
+    }
+
+    // 尝试作为目录（列表子文件）
+    try {
+      const listResp = await fetchAsset('/resource/' + resourceName + '/index.html', env);
+      if (listResp.ok) {
+        // 是目录，返回目录内容列表
+        return jsonResponse({ type: 'directory', name: resourceName, message: '这是一个文件夹，请逐个下载文件' });
+      }
+    } catch {}
+
+    return errorResponse('资源不存在', 404);
+  }
+
   return errorResponse('未找到接口', 404);
 }
 

@@ -209,6 +209,35 @@ def init_db():
         db.commit()
     except Exception as e:
         print(f'[init_db] api_keys 迁移跳过: {e}', file=sys.stderr)
+    db.execute('''CREATE TABLE IF NOT EXISTS feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        user_id INTEGER,
+        type TEXT NOT NULL DEFAULT 'other',
+        content TEXT NOT NULL,
+        rating INTEGER NOT NULL DEFAULT 0,
+        project TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'new',
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL DEFAULT 0
+    )''')
+    try:
+        cols = [r[1] for r in db.execute("PRAGMA table_info(feedback)").fetchall()]
+        if 'updated_at' not in cols:
+            db.execute("ALTER TABLE feedback ADD COLUMN updated_at INTEGER NOT NULL DEFAULT 0")
+        db.commit()
+    except Exception as e:
+        print(f'[init_db] feedback 迁移跳过: {e}', file=sys.stderr)
+    db.execute('''CREATE TABLE IF NOT EXISTS feedback_replies (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        feedback_id INTEGER NOT NULL,
+        username TEXT NOT NULL,
+        user_id INTEGER,
+        content TEXT NOT NULL,
+        is_admin INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL,
+        FOREIGN KEY (feedback_id) REFERENCES feedback(id) ON DELETE CASCADE
+    )''')
     db.commit()
     # 检查是否已存在预置管理员
     cur = db.execute("SELECT id FROM users WHERE username = ?", ('zmj2013',))
@@ -1564,6 +1593,57 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             finally:
                 db.close()
 
+        if path == '/api/feedback/list':
+            is_admin = check_admin(self)
+            user = get_current_user(self)
+            db = get_db()
+            try:
+                if is_admin:
+                    cur = db.execute("SELECT * FROM feedback ORDER BY created_at DESC")
+                elif user:
+                    cur = db.execute("SELECT * FROM feedback WHERE user_id = ? ORDER BY created_at DESC", (user['id'],))
+                else:
+                    return self.send_error_json('需要登录', 401)
+                feedback = []
+                for row in cur.fetchall():
+                    item = dict(row)
+                    reply_count = db.execute(
+                        "SELECT COUNT(*) FROM feedback_replies WHERE feedback_id = ?", (item['id'],)
+                    ).fetchone()[0]
+                    item['reply_count'] = reply_count
+                    feedback.append(item)
+                return self.send_json({'feedback': feedback})
+            finally:
+                db.close()
+
+        if path == '/api/feedback/detail':
+            fid = qs.get('id', [''])[0]
+            if not fid:
+                return self.send_error_json('缺少反馈 ID', 400)
+            try:
+                fid = int(fid)
+            except (TypeError, ValueError):
+                return self.send_error_json('无效的反馈 ID', 400)
+            user = get_current_user(self)
+            is_admin = check_admin(self)
+            if not user:
+                return self.send_error_json('需要登录', 401)
+            db = get_db()
+            try:
+                fb = db.execute("SELECT * FROM feedback WHERE id = ?", (fid,)).fetchone()
+                if not fb:
+                    return self.send_error_json('反馈不存在', 404)
+                fb_item = dict(fb)
+                if not is_admin and fb_item['user_id'] != user['id']:
+                    return self.send_error_json('无权查看', 403)
+                replies = db.execute(
+                    "SELECT * FROM feedback_replies WHERE feedback_id = ? ORDER BY created_at ASC", (fid,)
+                ).fetchall()
+                fb_item['replies'] = [dict(r) for r in replies]
+                return self.send_json(fb_item)
+            finally:
+                db.close()
+
         if path == '/api/health':
             return self.send_json({'status': 'ok'})
 
@@ -1884,6 +1964,114 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 db.execute("DELETE FROM users WHERE id = ?", (user_id,))
                 db.commit()
                 return self.send_json({'success': True, 'message': '用户已删除'})
+            finally:
+                db.close()
+
+        if path == '/api/feedback':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            content = (body.get('content', '') or '').strip()
+            ftype = body.get('type', 'other')
+            if ftype not in ('bug', 'feature', 'suggestion', 'praise', 'other'):
+                ftype = 'other'
+            try:
+                rating = int(body.get('rating', 0))
+            except (TypeError, ValueError):
+                rating = 0
+            if not rating:
+                return self.send_error_json('请选择评分', 400)
+            rating = max(1, min(5, rating))
+            project = (body.get('project', '') or '').strip()[:100]
+            if not content:
+                return self.send_error_json('请输入反馈内容', 400)
+            if len(content) < 5:
+                return self.send_error_json('反馈内容至少 5 个字', 400)
+            now = int(time.time())
+            db = get_db()
+            try:
+                cur = db.execute(
+                    "INSERT INTO feedback (username, user_id, type, content, rating, project, status, created_at, updated_at) "
+                    "VALUES (?, ?, ?, ?, ?, ?, 'new', ?, ?)",
+                    (user['username'], user['id'], ftype, content[:2000], rating, project, now, now)
+                )
+                db.commit()
+                feedback_id = cur.lastrowid
+                return self.send_json({'success': True, 'id': feedback_id, 'message': '反馈提交成功'}, 201)
+            finally:
+                db.close()
+
+        if path == '/api/feedback/reply':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            if not check_admin(self):
+                return self.send_error_json('需要管理员权限', 401)
+            feedback_id = body.get('feedback_id')
+            content = (body.get('content', '') or '').strip()
+            if not feedback_id:
+                return self.send_error_json('缺少反馈 ID', 400)
+            if not content:
+                return self.send_error_json('回复内容不能为空', 400)
+            if len(content) < 2:
+                return self.send_error_json('回复内容至少 2 个字', 400)
+            db = get_db()
+            try:
+                fb = db.execute("SELECT id FROM feedback WHERE id = ?", (feedback_id,)).fetchone()
+                if not fb:
+                    return self.send_error_json('反馈不存在', 404)
+                now = int(time.time())
+                cur = db.execute(
+                    "INSERT INTO feedback_replies (feedback_id, username, user_id, content, is_admin, created_at) "
+                    "VALUES (?, ?, ?, ?, 1, ?)",
+                    (feedback_id, user['username'], user['id'], content[:2000], now)
+                )
+                db.execute("UPDATE feedback SET updated_at = ? WHERE id = ?", (now, feedback_id))
+                db.commit()
+                return self.send_json({'success': True, 'reply_id': cur.lastrowid, 'message': '回复成功'})
+            finally:
+                db.close()
+
+        if path == '/api/feedback/status':
+            if not check_admin(self):
+                return self.send_error_json('需要管理员权限', 401)
+            feedback_id = body.get('id')
+            status = body.get('status', '')
+            if not feedback_id:
+                return self.send_error_json('缺少反馈 ID', 400)
+            if status not in ('new', 'processing', 'resolved', 'closed'):
+                return self.send_error_json('无效的状态', 400)
+            db = get_db()
+            try:
+                fb = db.execute("SELECT id FROM feedback WHERE id = ?", (feedback_id,)).fetchone()
+                if not fb:
+                    return self.send_error_json('反馈不存在', 404)
+                now = int(time.time())
+                db.execute("UPDATE feedback SET status = ?, updated_at = ? WHERE id = ?", (status, now, feedback_id))
+                db.commit()
+                return self.send_json({'success': True})
+            finally:
+                db.close()
+
+        if path == '/api/feedback/delete':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            feedback_id = body.get('id')
+            if not feedback_id:
+                return self.send_error_json('缺少反馈 ID', 400)
+            db = get_db()
+            try:
+                fb = db.execute("SELECT * FROM feedback WHERE id = ?", (feedback_id,)).fetchone()
+                if not fb:
+                    return self.send_error_json('反馈不存在', 404)
+                is_admin = check_admin(self)
+                if not is_admin and fb['user_id'] != user['id']:
+                    return self.send_error_json('无权删除', 403)
+                db.execute("DELETE FROM feedback_replies WHERE feedback_id = ?", (feedback_id,))
+                db.execute("DELETE FROM feedback WHERE id = ?", (feedback_id,))
+                db.commit()
+                return self.send_json({'success': True})
             finally:
                 db.close()
 

@@ -521,17 +521,22 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const token = getTokenFromRequest(request);
       const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
       const username = payload?.sub || (payload?.username as string) || '用户';
+      const user_id = payload?.user_id || 0;
       const id = `fb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const now = Math.floor(Date.now() / 1000);
 
       const item = {
         id,
         username,
+        user_id,
         type,
         content: content.slice(0, 2000),
         rating,
         project,
-        created_at: Math.floor(Date.now() / 1000),
-        status: 'new'
+        created_at: now,
+        updated_at: now,
+        status: 'new',
+        replies: []
       };
       await env.CODE_EXPLORER_KV.put(`feedback:${id}`, JSON.stringify(item));
       return jsonResponse({ success: true, id, message: '反馈提交成功' });
@@ -541,8 +546,12 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   }
 
   if (path === '/api/feedback/list') {
+    const authenticated = await checkAuth(request, env);
     const isAdmin = await checkAdmin(request, env);
-    if (!isAdmin) return errorResponse('需要管理员权限', 401);
+    if (!authenticated) return errorResponse('请先登录', 401);
+    const token = getTokenFromRequest(request);
+    const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+    const currentUserId = payload?.user_id || 0;
     const items: any[] = [];
     try {
       let cursor: string | undefined = undefined;
@@ -551,7 +560,13 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         for (const key of list.keys) {
           const raw = await env.CODE_EXPLORER_KV.get(key.name);
           if (raw) {
-            try { items.push(JSON.parse(raw)); } catch {}
+            try {
+              const f = JSON.parse(raw);
+              if (!isAdmin && f.user_id !== currentUserId) continue;
+              f.reply_count = (f.replies || []).length;
+              delete f.replies;
+              items.push(f);
+            } catch {}
           }
         }
         cursor = list.cursor as string | undefined;
@@ -561,13 +576,102 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     return jsonResponse({ feedback: items });
   }
 
-  if (path === '/api/feedback/delete' && request.method === 'POST') {
+  if (path === '/api/feedback/detail') {
+    const fid = url.searchParams.get('id') || '';
+    if (!fid) return errorResponse('缺少反馈 ID', 400);
+    const authenticated = await checkAuth(request, env);
+    if (!authenticated) return errorResponse('请先登录', 401);
+    const token = getTokenFromRequest(request);
+    const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+    const isAdmin = await checkAdmin(request, env);
+    const raw = await env.CODE_EXPLORER_KV.get(`feedback:${fid}`);
+    if (!raw) return errorResponse('反馈不存在', 404);
+    try {
+      const item = JSON.parse(raw);
+      if (!isAdmin && item.user_id !== (payload?.user_id || 0)) {
+        return errorResponse('无权查看', 403);
+      }
+      return jsonResponse(item);
+    } catch {
+      return errorResponse('解析失败', 500);
+    }
+  }
+
+  if (path === '/api/feedback/reply' && request.method === 'POST') {
+    const isAdmin = await checkAdmin(request, env);
+    if (!isAdmin) return errorResponse('需要管理员权限', 401);
+    try {
+      const data: any = await request.json();
+      const feedbackId = (data.feedback_id || '').toString();
+      const content = (data.content || '').toString().trim();
+      if (!feedbackId) return errorResponse('缺少反馈 ID', 400);
+      if (!content) return errorResponse('回复内容不能为空', 400);
+      if (content.length < 2) return errorResponse('回复内容至少 2 个字', 400);
+
+      const raw = await env.CODE_EXPLORER_KV.get(`feedback:${feedbackId}`);
+      if (!raw) return errorResponse('反馈不存在', 404);
+      const item = JSON.parse(raw);
+
+      const token = getTokenFromRequest(request);
+      const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+      const username = payload?.sub || (payload?.username as string) || '管理员';
+      const now = Math.floor(Date.now() / 1000);
+
+      const reply = {
+        id: `reply_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        username,
+        user_id: payload?.user_id || 0,
+        content: content.slice(0, 2000),
+        is_admin: 1,
+        created_at: now
+      };
+      item.replies = item.replies || [];
+      item.replies.push(reply);
+      item.updated_at = now;
+      await env.CODE_EXPLORER_KV.put(`feedback:${feedbackId}`, JSON.stringify(item));
+      return jsonResponse({ success: true, reply_id: reply.id, message: '回复成功' });
+    } catch {
+      return errorResponse('无效的请求', 400);
+    }
+  }
+
+  if (path === '/api/feedback/status' && request.method === 'POST') {
     const isAdmin = await checkAdmin(request, env);
     if (!isAdmin) return errorResponse('需要管理员权限', 401);
     try {
       const data: any = await request.json();
       const id = (data.id || '').toString();
+      const status = (data.status || '').toString();
       if (!id) return errorResponse('缺少反馈 ID', 400);
+      if (!['new', 'processing', 'resolved', 'closed'].includes(status)) return errorResponse('无效的状态', 400);
+      const raw = await env.CODE_EXPLORER_KV.get(`feedback:${id}`);
+      if (!raw) return errorResponse('反馈不存在', 404);
+      const item = JSON.parse(raw);
+      item.status = status;
+      item.updated_at = Math.floor(Date.now() / 1000);
+      await env.CODE_EXPLORER_KV.put(`feedback:${id}`, JSON.stringify(item));
+      return jsonResponse({ success: true });
+    } catch {
+      return errorResponse('无效的请求', 400);
+    }
+  }
+
+  if (path === '/api/feedback/delete' && request.method === 'POST') {
+    const authenticated = await checkAuth(request, env);
+    if (!authenticated) return errorResponse('请先登录', 401);
+    try {
+      const data: any = await request.json();
+      const id = (data.id || '').toString();
+      if (!id) return errorResponse('缺少反馈 ID', 400);
+      const isAdmin = await checkAdmin(request, env);
+      const raw = await env.CODE_EXPLORER_KV.get(`feedback:${id}`);
+      if (!raw) return errorResponse('反馈不存在', 404);
+      const item = JSON.parse(raw);
+      const token = getTokenFromRequest(request);
+      const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+      if (!isAdmin && item.user_id !== (payload?.user_id || 0)) {
+        return errorResponse('无权删除', 403);
+      }
       await env.CODE_EXPLORER_KV.delete(`feedback:${id}`);
       return jsonResponse({ success: true });
     } catch {
@@ -1399,6 +1503,29 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
   // 首页
   if (path === '/' || path === '') {
     return serveHomePage(request, env);
+  }
+
+  // feedback 页面支持（/feedback → /feedback/index.html）
+  if (path === '/feedback') {
+    path = '/feedback/index.html';
+  }
+
+  // feedback 页面强制从 GitHub 代理，避免 Assets 缓存过时
+  if (path.startsWith('/feedback')) {
+    let ghPath;
+    if (path === '/feedback' || path === '/feedback/') {
+      ghPath = 'code-explorer/public/feedback/index.html';
+    } else {
+      ghPath = 'code-explorer/public' + path;
+    }
+    const ghResp = await fetchFromGitHub(ghPath, env);
+    if (ghResp.ok) {
+      const body = await ghResp.text();
+      return new Response(body, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' }
+      });
+    }
   }
 
   // web-games 页面保护

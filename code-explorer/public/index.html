@@ -133,203 +133,62 @@ body::before {
   z-index: 1;
 }
 
-.home-hero {
+/* ===== 轮播 ===== */
+.home-top-row {
   display: flex;
   align-items: center;
-  gap: 32px;
-  padding: 48px 24px 32px;
-  position: relative;
-}
-.home-hero h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  letter-spacing: -0.5px;
-  color: var(--text-primary);
-}
-.home-hero h1 span {
-  color: var(--accent-blue);
-}
-.home-hero .subtitle {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-  font-weight: 400;
-}
-
-.hero-left {
-  flex: 0 0 auto;
-  max-width: 420px;
-}
-
-/* 画廊：三图横排多样式布局 */
-.hero-gallery {
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  min-width: 0;
-  position: relative;
-  padding: 10px 0;
-  justify-content: flex-end;
-}
-.gallery-item {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  flex-shrink: 1;
-  min-width: 0;
-  border: 2px solid var(--border-color);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-.gallery-item:hover {
-  transform: translateY(-4px) scale(1.02);
-  border-color: var(--accent-blue);
-  box-shadow: 0 12px 32px rgba(88,166,255,0.2);
-  z-index: 10;
-}
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s ease;
-}
-.gallery-item:hover img {
-  transform: scale(1.08);
-}
-.gallery-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 16px 14px 12px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.75));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.gallery-item:hover .gallery-overlay {
-  opacity: 1;
-}
-.gallery-label {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-/* 各图不同尺寸与角度，创造视觉层次 */
-.gallery-item-1 {
-  width: 180px;
-  height: 125px;
-  border-radius: 14px;
-  transform: rotate(-1.5deg) translateY(-4px);
-  border-color: rgba(255,107,157,0.4);
-  z-index: 3;
-  box-shadow: 0 6px 20px rgba(255,107,157,0.15);
-}
-.gallery-item-1:hover {
-  transform: rotate(0deg) translateY(-8px) scale(1.03);
-  border-color: #ff6b9d;
-  box-shadow: 0 16px 40px rgba(255,107,157,0.3);
-}
-
-.gallery-item-2 {
-  width: 200px;
-  height: 140px;
-  border-radius: 12px;
-  transform: rotate(1.8deg) translateY(-12px);
-  border-color: rgba(88,166,255,0.4);
-  z-index: 2;
-  box-shadow: 0 8px 24px rgba(88,166,255,0.15);
-}
-.gallery-item-2:hover {
-  transform: rotate(0deg) translateY(-16px) scale(1.03);
-  border-color: var(--accent-blue);
-  box-shadow: 0 20px 48px rgba(88,166,255,0.3);
-}
-
-.gallery-item-3 {
-  width: 160px;
-  height: 108px;
-  border-radius: 16px;
-  transform: rotate(-2.2deg) translateY(2px);
-  border-color: rgba(163,113,247,0.4);
-  z-index: 1;
-  box-shadow: 0 6px 16px rgba(163,113,247,0.12);
-  margin-left: -8px;
-}
-.gallery-item-3:hover {
-  transform: rotate(0deg) translateY(-2px) scale(1.03);
-  border-color: var(--accent-purple);
-  box-shadow: 0 14px 36px rgba(163,113,247,0.3);
-}
-.hero-search {
-  display: flex;
-  align-items: center;
-  max-width: 560px;
+  gap: 24px;
+  padding: 24px 24px 0;
+  max-width: 1100px;
   margin: 0 auto;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 8px 12px;
-  transition: border-color var(--transition), box-shadow var(--transition);
 }
-.hero-search:focus-within {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(88,166,255,0.15);
-}
-.hero-search svg { width: 16px; height: 16px; color: var(--text-tertiary); flex-shrink: 0; }
-.hero-search input {
+.carousel {
+  position: relative;
   flex: 1;
-  padding: 8px 10px;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  font-size: 14px;
-  font-family: var(--font-sans);
-  outline: none;
+  min-width: 0;
+  max-width: 640px;
+  padding: 0;
+  margin: 0;
 }
-.hero-search input::placeholder { color: var(--text-tertiary); }
-
-/* 快速入口按钮 */
-.hero-quick-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 8px 18px;
-  background: linear-gradient(135deg, #f0a030, #e07820);
-  color: #fff;
-  border-radius: 24px;
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 4px 16px rgba(240,160,48,0.35);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  width: fit-content;
+.carousel-slides {
+  position: relative; width: 100%; overflow: hidden;
+  border-radius: 14px; background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
 }
-.hero-quick-btn:hover {
-  background: linear-gradient(135deg, #f8b840, #f0a030);
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 8px 24px rgba(240,160,48,0.5);
-  color: #fff;
+.carousel-slide {
+  display: none; width: 100%;
 }
-.hero-quick-btn svg {
-  width: 14px;
-  height: 14px;
-  stroke: #fff;
-  transition: transform 0.3s;
+.carousel-slide.active {
+  display: block;
 }
-.hero-quick-btn:hover svg { transform: translateX(3px); }
+.carousel-slide img {
+  width: 100%; height: auto; display: block;
+  object-fit: contain; max-height: 360px;
+}
+.carousel-dots {
+  display: flex; justify-content: center; gap: 10px;
+  padding: 14px 0 0;
+}
+.carousel-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--border-color); cursor: pointer;
+  transition: all 0.3s; border: none;
+}
+.carousel-dot.active {
+  background: var(--accent-blue); transform: scale(1.3);
+}
+.carousel-dot:hover {
+  background: var(--text-tertiary);
+}
 
 /* Stats */
 .home-stats {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 12px;
-  padding: 0 24px 28px;
-  flex-wrap: wrap;
+  padding: 0;
+  flex: 0 0 auto;
+  min-width: 180px;
 }
 .stat-item {
   text-align: center;
@@ -367,6 +226,37 @@ body::before {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.section-header .hero-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.section-header .hero-search input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  width: 220px;
+  outline: none;
+  transition: all var(--transition);
+  font-family: var(--font-sans);
+}
+.section-header .hero-search input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.15);
+}
+.section-header .hero-search kbd {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
 }
 .section-header .filter-tabs {
   display: flex;
@@ -2463,22 +2353,21 @@ body::before {
   .toolbar-btn { width: 40px; height: 40px; padding: 8px; }
 
   /* ===== 首页适配 ===== */
-  .home-hero { flex-direction: column; text-align: center; padding: 32px 20px 20px; }
-  .home-hero h1 { font-size: 24px; }
-  .home-hero .subtitle { font-size: 13px; }
-  .hero-left { max-width: 100%; text-align: center; }
-  .hero-search { max-width: 100%; }
-  .hero-search input { font-size: 14px; padding: 12px 14px; }
+  .home-top-row { flex-direction: column; gap: 16px; padding: 16px 16px 0; }
+  .carousel { max-width: 100%; }
+  .carousel-slide img { max-height: 240px; }
+  .home-stats { flex-direction: row; flex-wrap: wrap; gap: 12px; justify-content: center; min-width: 0; }
+  .header-right { flex-wrap: wrap; gap: 8px; }
+  .hero-search { max-width: 100%; margin-left: 0; }
+  .hero-search input { font-size: 14px; padding: 8px 10px; width: 160px; }
   .hero-search kbd { display: none; }
-  .hero-quick-btn { font-size: 13px; padding: 7px 14px; }
-  /* 移动端隐藏封面图，减少加载量 */
-  .hero-gallery { display: none; }
   .section-header { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 16px; }
   .section-header h2 { font-size: 16px; }
   .filter-tabs { gap: 4px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .filter-tabs::-webkit-scrollbar { display: none; }
   .filter-tab { font-size: 12px; padding: 6px 12px; white-space: nowrap; flex-shrink: 0; }
   .home-stats { padding: 8px 16px; flex-wrap: wrap; gap: 12px; font-size: 13px; }
+  .home-top-row { padding: 16px 16px 0; }
 
   /* ===== 项目卡片 ===== */
   .cards-grid { padding: 0 12px 24px; gap: 10px; }
@@ -2743,6 +2632,31 @@ body::before {
     text-decoration: none; font-weight: 500;
   }
   .auth-switch a:hover { text-decoration: underline; }
+  .auth-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    background: var(--bg-secondary, #f0f0f0);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary, #666);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .auth-tab.active {
+    background: var(--accent, #6366f1);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
 
   /* ========== 管理员仪表板 ========== */
   .admin-page {
@@ -2751,9 +2665,7 @@ body::before {
     background: var(--bg-primary);
   }
   .admin-page.active { display: flex; }
-  .admin-page.active ~ .user-menu-btn,
-  .admin-page.active ~ .theme-toggle-btn,
-  .admin-page.active ~ .changelog-btn {
+  .admin-page.active ~ .top-right-bar {
     display: none;
   }
   .admin-page.active ~ .user-dropdown {
@@ -2939,18 +2851,30 @@ body::before {
     .admin-header { padding: 0 16px; }
   }
 
-  /* ========== 用户菜单（右上角） ========== */
-  .user-menu-btn {
+  /* ========== 右上角按钮组 ========== */
+  .top-right-bar {
     position: fixed; top: 12px; right: 12px;
     z-index: 99997;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #58a6ff, #a371f7);
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 600; font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-direction: row-reverse;
+  }
+
+  .user-menu-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    color: var(--text-primary);
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: transform 0.15s;
+    white-space: nowrap;
+  }
+  .user-menu-btn svg {
+    flex-shrink: 0;
   }
   .user-menu-btn:hover { transform: scale(1.05); }
   .user-menu-btn.hidden { display: none; }
@@ -2991,8 +2915,6 @@ body::before {
 
   /* ===== 主题切换按钮 ===== */
   .theme-toggle-btn {
-    position: fixed; top: 12px; right: 56px;
-    z-index: 99997;
     width: 36px; height: 36px;
     border-radius: 50%;
     background: var(--bg-secondary);
@@ -3012,10 +2934,44 @@ body::before {
   [data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
   .theme-toggle-btn .moon-icon { display: none; }
 
+  /* ===== 顶部导航栏 ===== */
+  .top-nav {
+    position: sticky; top: 0; z-index: 9998;
+    height: 56px; background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex; align-items: center;
+    padding: 0 24px; gap: 8px;
+  }
+  .top-nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-right: 24px; white-space: nowrap;
+  }
+  .top-nav-brand-logo {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 700;
+  }
+  .top-nav-links {
+    display: flex; align-items: center; gap: 2px; flex: 1;
+  }
+  .top-nav-link {
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary); text-decoration: none;
+    transition: all 0.15s; cursor: pointer;
+    white-space: nowrap;
+  }
+  .top-nav-link:hover {
+    color: var(--text-primary); background: var(--bg-tertiary);
+  }
+  .top-nav-link.active {
+    color: var(--accent-blue); background: rgba(88,166,255,0.1);
+  }
+
   /* ===== 更新日志按钮 ===== */
   .changelog-btn {
-    position: fixed; top: 12px; right: 100px;
-    z-index: 99997;
     width: 36px; height: 36px;
     border-radius: 50%;
     background: var(--bg-secondary);
@@ -3359,33 +3315,44 @@ body::before {
   </div>
   <div class="auth-right">
     <div class="auth-card">
-      <!-- 用户登录 -->
+      <!-- 登录/注册切换标签 -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="authTabLogin" onclick="showAuthForm('login')">登录</button>
+        <button class="auth-tab" id="authTabRegister" onclick="showAuthForm('register')">注册</button>
+      </div>
+      <!-- 登录表单 -->
       <div id="userLoginForm">
         <h2>欢迎回来</h2>
-        <p class="auth-subtitle">输入访问密码以继续</p>
+        <p class="auth-subtitle">输入账号密码以继续</p>
         <div class="auth-field">
-          <label for="loginPasswordInput">访问密码</label>
+          <label for="loginUsernameInput">用户名</label>
+          <input type="text" id="loginUsernameInput" placeholder="请输入用户名" autocomplete="off">
+        </div>
+        <div class="auth-field">
+          <label for="loginPasswordInput">密码</label>
           <input type="password" id="loginPasswordInput" placeholder="请输入密码" autocomplete="off">
         </div>
         <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
         <div class="auth-error" id="loginError"></div>
-        <div class="auth-switch">
-          使用 <a id="switchToAdmin">管理员身份</a> 登录
-        </div>
       </div>
-      <!-- 管理员登录 -->
-      <div id="adminLoginForm" style="display:none">
-        <h2>管理员登录</h2>
-        <p class="auth-subtitle">输入管理员密码以访问后台</p>
+      <!-- 注册表单 -->
+      <div id="registerForm" style="display:none">
+        <h2>创建账号</h2>
+        <p class="auth-subtitle">注册新账号以访问平台</p>
         <div class="auth-field">
-          <label for="adminPasswordInput">管理员密码</label>
-          <input type="password" id="adminPasswordInput" placeholder="请输入管理员密码" autocomplete="off">
+          <label for="registerUsernameInput">用户名</label>
+          <input type="text" id="registerUsernameInput" placeholder="3-20位字母、数字或下划线" autocomplete="off">
         </div>
-        <button class="auth-btn-primary auth-btn-admin" id="adminLoginSubmitBtn">进入后台</button>
-        <div class="auth-error" id="adminLoginError"></div>
-        <div class="auth-switch">
-          返回 <a id="switchToUser">用户登录</a>
+        <div class="auth-field">
+          <label for="registerPasswordInput">密码</label>
+          <input type="password" id="registerPasswordInput" placeholder="至少6位密码" autocomplete="off">
         </div>
+        <div class="auth-field">
+          <label for="registerConfirmInput">确认密码</label>
+          <input type="password" id="registerConfirmInput" placeholder="再次输入密码" autocomplete="off">
+        </div>
+        <button class="auth-btn-primary" id="registerSubmitBtn">注册</button>
+        <div class="auth-error" id="registerError"></div>
       </div>
     </div>
   </div>
@@ -3424,19 +3391,38 @@ body::before {
   </div>
 </div>
 
-<!-- ========== 用户菜单（右上角头像） ========== -->
-<button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)">
-  <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-  <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-</button>
-<button class="changelog-btn" id="changelogBtn" title="更新日志">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-</button>
-<button class="user-menu-btn hidden" id="userMenuBtn">U</button>
+<!-- ========== 右上角按钮组 ========== -->
+<div class="top-right-bar">
+  <button class="user-menu-btn hidden" id="userMenuBtn" title="用户菜单">
+    <span id="userMenuName" style="font-size:13px;font-weight:500;color:var(--text-primary)">用户</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </button>
+  <button class="changelog-btn" id="changelogBtn" title="更新日志">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+  </button>
+  <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)">
+    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</div>
 <div class="user-dropdown" id="userDropdown">
-  <button class="user-dropdown-item" id="openAdminFromMenu">
+  <button class="user-dropdown-item" id="profileFromMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    个人资料
+  </button>
+  <div class="user-dropdown-divider"></div>
+  <button class="user-dropdown-item" id="openFeedbackMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    提交意见
+  </button>
+  <div class="user-dropdown-divider"></div>
+  <button class="user-dropdown-item" id="openAdminFromMenu" style="display:none">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
     管理员后台
+  </button>
+  <button class="user-dropdown-item" id="openInboxMenu" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+    意见箱
   </button>
   <div class="user-dropdown-divider"></div>
   <button class="user-dropdown-item danger" id="logoutFromMenu">
@@ -3445,44 +3431,43 @@ body::before {
   </button>
 </div>
 
+<!-- ===== 顶部导航栏 ===== -->
+<div class="top-nav">
+  <div class="top-nav-brand">
+    <div class="top-nav-brand-logo">◈</div>
+    Code Explorer
+  </div>
+  <div class="top-nav-links">
+    <a class="top-nav-link active" href="#">首页</a>
+    <a class="top-nav-link" href="/console">API Key</a>
+    <a class="top-nav-link" href="#">资源下载</a>
+    <a class="top-nav-link" href="/web-games/">网页游戏</a>
+  </div>
+</div>
+
 <!-- ==================== HOME PAGE ==================== -->
 <div class="home-page" id="homePage">
-  <div class="home-hero">
-    <div class="hero-left">
-      <h1>Code <span>Explorer</span></h1>
-      <p class="subtitle">浏览、编辑并运行您的 Python 项目集合</p>
-      <div class="hero-search" id="heroSearch">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="heroSearchInput" placeholder="搜索项目或文件..." autocomplete="off">
-        <kbd>Ctrl+P</kbd>
-      </div>
-      <a class="hero-quick-btn" href="/web-games/" target="_blank">
-        🎮 网页游戏中心
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <div class="hero-gallery">
-      <div class="gallery-item gallery-item-1">
-        <img src="/images/covers/fathers_day.jpg" alt="父亲节快乐" loading="lazy">
-        <div class="gallery-overlay">
-          <span class="gallery-label">❤️ 父亲节</span>
+  <div class="home-top-row">
+    <div class="carousel">
+      <div class="carousel-slides">
+        <div class="carousel-slide active">
+          <img src="/images/code_explorer.png" alt="Code Explorer">
+        </div>
+        <div class="carousel-slide">
+          <img src="/images/run_python.png" alt="Run Python">
+        </div>
+        <div class="carousel-slide">
+          <img src="/images/run_scratch.png" alt="Run Scratch">
         </div>
       </div>
-      <div class="gallery-item gallery-item-2">
-        <img src="/images/covers/code_explorer.jpg" alt="编程之夜" loading="lazy">
-        <div class="gallery-overlay">
-          <span class="gallery-label">💻 编程创作</span>
-        </div>
-      </div>
-      <div class="gallery-item gallery-item-3">
-        <img src="/images/covers/python_ai_practice.jpg" alt="科技未来" loading="lazy">
-        <div class="gallery-overlay">
-          <span class="gallery-label">🚀 科技未来</span>
-        </div>
+      <div class="carousel-dots" id="carouselDots">
+        <span class="carousel-dot active" data-index="0"></span>
+        <span class="carousel-dot" data-index="1"></span>
+        <span class="carousel-dot" data-index="2"></span>
       </div>
     </div>
+    <div class="home-stats" id="homeStats"></div>
   </div>
-  <div class="home-stats" id="homeStats"></div>
 
   <!-- 最近访问区域 -->
   <div class="recent-section" id="recentSection">
@@ -3505,6 +3490,10 @@ body::before {
   <div class="section-header">
     <h2>项目列表</h2>
     <div class="header-right">
+      <div class="hero-search" id="heroSearch">
+        <input type="text" id="heroSearchInput" placeholder="搜索项目或文件..." autocomplete="off">
+        <kbd>Ctrl+P</kbd>
+      </div>
       <div class="filter-tabs" id="filterTabs">
         <button class="filter-tab active" data-filter="all">全部</button>
         <button class="filter-tab" data-filter="web-game">网页游戏</button>
@@ -3918,6 +3907,8 @@ const state = {
   flatFiles: [],
   projects: [],        // 项目卡片数据
   currentProject: null,
+  currentUser: null,
+  isAuthenticated: false,
   openTabs: [],
   activeTabIdx: -1,
   expandedDirs: new Set(),
@@ -3935,12 +3926,13 @@ async function api(url, opts = {}) {
     const res = await fetch(url, opts);
     if (res.status === 401) {
       delCookie('wg_token');
+      state.currentUser = null;
       if (userMenuBtn) userMenuBtn.classList.add('hidden');
       if (userDropdown) userDropdown.classList.remove('show');
       hideAdminDashboard();
       const hasProjects = state.projects && state.projects.length > 0;
       if (!hasProjects) {
-        showLoginPage(false);
+        showLoginPage();
         const grid = document.getElementById('cardsGrid');
         if (grid) grid.innerHTML = '';
       } else {
@@ -6107,7 +6099,7 @@ function closeAuthPromptModal() {
 
 function goToLoginFromPrompt() {
   closeAuthPromptModal();
-  showLoginPage(false);
+  showLoginPage();
 }
 
 // ==================== COMMENT FUNCTIONS ====================
@@ -6507,18 +6499,21 @@ function getProjectCardClass(type) {
 const authPage = document.getElementById('authPage');
 const adminPage = document.getElementById('adminPage');
 const userLoginForm = document.getElementById('userLoginForm');
-const adminLoginForm = document.getElementById('adminLoginForm');
+const registerForm = document.getElementById('registerForm');
+const loginUsernameInput = document.getElementById('loginUsernameInput');
 const loginPasswordInput = document.getElementById('loginPasswordInput');
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginError = document.getElementById('loginError');
-const adminPasswordInput = document.getElementById('adminPasswordInput');
-const adminLoginSubmitBtn = document.getElementById('adminLoginSubmitBtn');
-const adminLoginError = document.getElementById('adminLoginError');
-const switchToAdmin = document.getElementById('switchToAdmin');
-const switchToUser = document.getElementById('switchToUser');
+const registerUsernameInput = document.getElementById('registerUsernameInput');
+const registerPasswordInput = document.getElementById('registerPasswordInput');
+const registerConfirmInput = document.getElementById('registerConfirmInput');
+const registerSubmitBtn = document.getElementById('registerSubmitBtn');
+const registerError = document.getElementById('registerError');
 const userMenuBtn = document.getElementById('userMenuBtn');
 const userDropdown = document.getElementById('userDropdown');
 const openAdminFromMenu = document.getElementById('openAdminFromMenu');
+const openFeedbackMenu = document.getElementById('openFeedbackMenu');
+const openInboxMenu = document.getElementById('openInboxMenu');
 const logoutFromMenu = document.getElementById('logoutFromMenu');
 const adminBackBtn = document.getElementById('adminBackBtn');
 const adminRefreshBtn = document.getElementById('adminRefreshBtn');
@@ -6535,23 +6530,31 @@ function delCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
 }
 
-function showLoginPage(isAdmin) {
-  authPage.classList.add('active');
-  if (isAdmin) {
-    userLoginForm.style.display = 'none';
-    adminLoginForm.style.display = 'block';
-    adminLoginError.classList.remove('show');
-    adminLoginError.textContent = '';
-    adminPasswordInput.value = '';
-    setTimeout(() => adminPasswordInput.focus(), 50);
-  } else {
+function showAuthForm(type) {
+  const loginTab = document.getElementById('authTabLogin');
+  const regTab = document.getElementById('authTabRegister');
+  if (type === 'login') {
     userLoginForm.style.display = 'block';
-    adminLoginForm.style.display = 'none';
+    registerForm.style.display = 'none';
+    loginTab.classList.add('active');
+    regTab.classList.remove('active');
     loginError.classList.remove('show');
     loginError.textContent = '';
-    loginPasswordInput.value = '';
-    setTimeout(() => loginPasswordInput.focus(), 50);
+    setTimeout(() => loginUsernameInput.focus(), 50);
+  } else {
+    userLoginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    loginTab.classList.remove('active');
+    regTab.classList.add('active');
+    registerError.classList.remove('show');
+    registerError.textContent = '';
+    setTimeout(() => registerUsernameInput.focus(), 50);
   }
+}
+
+function showLoginPage() {
+  authPage.classList.add('active');
+  showAuthForm('login');
 }
 
 function hideLoginPage() {
@@ -6559,53 +6562,80 @@ function hideLoginPage() {
 }
 
 async function checkAuth() {
-  try { const r = await fetch('/api/auth-check'); const d = await r.json(); return d.authenticated; }
+  try {
+    const r = await fetch('/api/auth-check');
+    const d = await r.json();
+    if (d.authenticated && d.user) {
+      state.currentUser = d.user;
+      const isAdmin = d.user.role === 'admin';
+      if (openAdminFromMenu) openAdminFromMenu.style.display = isAdmin ? '' : 'none';
+      if (openInboxMenu) openInboxMenu.style.display = isAdmin ? '' : 'none';
+    }
+    return d.authenticated;
+  }
   catch(e) { return false; }
 }
 
 async function doUserLogin() {
+  const username = loginUsernameInput.value.trim();
   const pw = loginPasswordInput.value.trim();
-  if (!pw) { loginError.textContent = '请输入密码'; loginError.classList.add('show'); return; }
+  if (!username || !pw) { loginError.textContent = '请输入用户名和密码'; loginError.classList.add('show'); return; }
   loginSubmitBtn.disabled = true; loginSubmitBtn.textContent = '登录中...';
   loginError.classList.remove('show'); loginError.textContent = '';
   try {
-    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
+    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
     const d = await r.json();
     if (r.ok && d.token) {
       setCookie('wg_token', d.token, 7);
+      state.currentUser = d.user;
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
+      if (document.getElementById('userMenuName')) document.getElementById('userMenuName').textContent = d.user.username;
+      const isAdmin = d.user.role === 'admin';
+      openAdminFromMenu.style.display = isAdmin ? '' : 'none';
+      openInboxMenu.style.display = isAdmin ? '' : 'none';
+      loginUsernameInput.value = '';
       loginPasswordInput.value = '';
       loginError.textContent = '';
       init();
     } else {
-      loginError.textContent = d.error || '密码错误';
+      loginError.textContent = d.error || '用户名或密码错误';
       loginError.classList.add('show');
     }
   } catch(e) { loginError.textContent = '网络错误，请重试'; loginError.classList.add('show'); }
   loginSubmitBtn.disabled = false; loginSubmitBtn.textContent = '登录';
 }
 
-async function doAdminLogin() {
-  const pw = adminPasswordInput.value.trim();
-  if (!pw) { adminLoginError.textContent = '请输入管理员密码'; adminLoginError.classList.add('show'); return; }
-  adminLoginSubmitBtn.disabled = true; adminLoginSubmitBtn.textContent = '验证中...';
-  adminLoginError.classList.remove('show'); adminLoginError.textContent = '';
+async function doRegister() {
+  const username = registerUsernameInput.value.trim();
+  const pw = registerPasswordInput.value.trim();
+  const confirm = registerConfirmInput.value.trim();
+  if (!username || !pw || !confirm) { registerError.textContent = '请填写所有字段'; registerError.classList.add('show'); return; }
+  if (pw !== confirm) { registerError.textContent = '两次密码不一致'; registerError.classList.add('show'); return; }
+  if (pw.length < 6) { registerError.textContent = '密码长度至少6位'; registerError.classList.add('show'); return; }
+  registerSubmitBtn.disabled = true; registerSubmitBtn.textContent = '注册中...';
+  registerError.classList.remove('show'); registerError.textContent = '';
   try {
-    const r = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pw}) });
+    const r = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
     const d = await r.json();
-    if (r.ok && d.token) {
-      setCookie('wg_token', d.token, 7);
-      authPage.classList.remove('active');
-      showAdminDashboard();
-      adminPasswordInput.value = '';
-      adminLoginError.textContent = '';
+    if (r.ok) {
+      // 注册成功，自动登录
+      registerError.textContent = '注册成功，正在登录...';
+      registerError.classList.add('show');
+      registerError.style.color = 'var(--success, #22c55e)';
+      registerError.style.borderColor = 'var(--success, #22c55e)';
+      // 自动填充登录表单并登录
+      loginUsernameInput.value = username;
+      loginPasswordInput.value = pw;
+      setTimeout(() => doUserLogin(), 500);
     } else {
-      adminLoginError.textContent = d.error || '密码错误';
-      adminLoginError.classList.add('show');
+      registerError.textContent = d.error || '注册失败';
+      registerError.classList.add('show');
+      registerError.style.color = '';
+      registerError.style.borderColor = '';
     }
-  } catch(e) { adminLoginError.textContent = '网络错误，请重试'; adminLoginError.classList.add('show'); }
-  adminLoginSubmitBtn.disabled = false; adminLoginSubmitBtn.textContent = '进入后台';
+  } catch(e) { registerError.textContent = '网络错误，请重试'; registerError.classList.add('show'); }
+  registerSubmitBtn.disabled = false; registerSubmitBtn.textContent = '注册';
 }
 
 function showAdminDashboard() {
@@ -6621,6 +6651,7 @@ function hideAdminDashboard() {
 async function doLogout() {
   try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
   delCookie('wg_token');
+  state.currentUser = null;
   hideAdminDashboard();
   hideLoginPage();
   userMenuBtn.classList.add('hidden');
@@ -6628,7 +6659,60 @@ async function doLogout() {
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
   document.getElementById('homePage').classList.add('active');
-  showLoginPage(false);
+  showLoginPage();
+}
+
+function showProfileModal() {
+  if (!state.currentUser) return;
+  const overlay = document.getElementById('profileOverlay');
+  overlay.style.display = 'flex';
+  document.getElementById('profileUsername').textContent = state.currentUser.username;
+  document.getElementById('profileRole').textContent = state.currentUser.role === 'admin' ? '管理员' : '普通用户';
+  // 获取用户详细信息
+  fetch('/api/user/profile').then(r => r.json()).then(d => {
+    if (d.user) {
+      document.getElementById('profileCreatedAt').textContent = d.user.created_at ? new Date(d.user.created_at * 1000).toLocaleString('zh-CN') : '未知';
+      document.getElementById('profileLastLogin').textContent = d.user.last_login ? new Date(d.user.last_login * 1000).toLocaleString('zh-CN') : '首次登录';
+    }
+  }).catch(() => {});
+  document.getElementById('profileOldPw').value = '';
+  document.getElementById('profileNewPw').value = '';
+  document.getElementById('profileConfirmPw').value = '';
+  document.getElementById('profileError').classList.remove('show');
+  document.getElementById('profileError').textContent = '';
+  document.getElementById('profileSuccess').style.display = 'none';
+  userDropdown.classList.remove('show');
+}
+
+function closeProfileModal() {
+  document.getElementById('profileOverlay').style.display = 'none';
+}
+
+async function doChangePassword() {
+  const oldPw = document.getElementById('profileOldPw').value.trim();
+  const newPw = document.getElementById('profileNewPw').value.trim();
+  const confirmPw = document.getElementById('profileConfirmPw').value.trim();
+  const errorEl = document.getElementById('profileError');
+  const successEl = document.getElementById('profileSuccess');
+  errorEl.classList.remove('show');
+  errorEl.textContent = '';
+  successEl.style.display = 'none';
+  if (!oldPw || !newPw || !confirmPw) { errorEl.textContent = '请填写所有字段'; errorEl.classList.add('show'); return; }
+  if (newPw !== confirmPw) { errorEl.textContent = '两次密码不一致'; errorEl.classList.add('show'); return; }
+  if (newPw.length < 6) { errorEl.textContent = '新密码长度至少6位'; errorEl.classList.add('show'); return; }
+  try {
+    const r = await fetch('/api/user/change-password', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({old_password:oldPw, new_password:newPw}) });
+    const d = await r.json();
+    if (r.ok) {
+      successEl.style.display = 'block';
+      document.getElementById('profileOldPw').value = '';
+      document.getElementById('profileNewPw').value = '';
+      document.getElementById('profileConfirmPw').value = '';
+    } else {
+      errorEl.textContent = d.error || '修改失败';
+      errorEl.classList.add('show');
+    }
+  } catch(e) { errorEl.textContent = '网络错误'; errorEl.classList.add('show'); }
 }
 
 function renderDashboard(data) {
@@ -6757,6 +6841,13 @@ function renderDashboard(data) {
         </div>
       </div>
     </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">用户管理</div>
+      <div id="adminUserList" style="background:var(--bg-secondary,#2a2a3e);border-radius:8px;overflow:hidden">
+        <div style="padding:16px;text-align:center;color:var(--text-secondary)">加载中...</div>
+      </div>
+    </div>
   `;
 }
 
@@ -6767,23 +6858,56 @@ async function loadDashboard() {
     if (!res.ok) throw new Error((await res.json()).error || '请求失败');
     const data = await res.json();
     renderDashboard(data);
+    // 加载用户列表
+    loadAdminUsers();
   } catch(e) {
     adminDashboardContent.innerHTML = '<div style="text-align:center;padding:40px;color:var(--accent-red)">加载失败: ' + e.message + '</div>';
     if (e.message.includes('管理员未登录')) {
       hideAdminDashboard();
-      showLoginPage(true);
+      showLoginPage();
     }
   }
+}
+
+async function loadAdminUsers() {
+  try {
+    const r = await fetch('/api/admin/users');
+    if (!r.ok) return;
+    const d = await r.json();
+    const container = document.getElementById('adminUserList');
+    if (!d.users || d.users.length === 0) {
+      container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-secondary)">暂无用户</div>';
+      return;
+    }
+    const escape = (s) => { const el=document.createElement('div'); el.textContent=s; return el.innerHTML; };
+    container.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--bg-primary,#1e1e2e)"><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">ID</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">用户名</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">角色</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">注册时间</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">最后登录</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">操作</th></tr></thead><tbody>' +
+      d.users.map(u => '<tr style="border-bottom:1px solid var(--border-color,#333)"><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + u.id + '</td><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + escape(u.username) + '</td><td style="padding:10px 12px;font-size:13px"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:' + (u.role === 'admin' ? 'var(--accent,#6366f1)' : 'var(--bg-tertiary,#3a3a4e)') + ';color:#fff">' + (u.role === 'admin' ? '管理员' : '用户') + '</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.created_at ? new Date(u.created_at * 1000).toLocaleString('zh-CN') : '-') + '</td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.last_login ? new Date(u.last_login * 1000).toLocaleString('zh-CN') : '从未登录') + '</td><td style="padding:10px 12px">' +
+        (u.role !== 'admin' ? '<button onclick="deleteUser(' + u.id + ',\'' + escape(u.username) + '\')" style="padding:4px 10px;border:none;border-radius:4px;background:#ef4444;color:#fff;font-size:11px;cursor:pointer">删除</button>' : '<span style="font-size:11px;color:var(--text-tertiary)">-</span>') +
+      '</td></tr>').join('') +
+      '</tbody></table>';
+  } catch(e) {}
+}
+
+async function deleteUser(userId, username) {
+  if (!confirm('确定要删除用户 "' + username + '" 吗？\n此操作不可恢复，该用户的所有数据将被清除。')) return;
+  try {
+    const r = await fetch('/api/admin/users/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({user_id: userId}) });
+    const d = await r.json();
+    if (r.ok) {
+      toast('用户已删除');
+      loadAdminUsers();
+    } else {
+      toast(d.error || '删除失败');
+    }
+  } catch(e) { toast('网络错误'); }
 }
 
 // ===== 事件绑定 =====
 loginSubmitBtn.addEventListener('click', doUserLogin);
 loginPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
-adminLoginSubmitBtn.addEventListener('click', doAdminLogin);
-adminPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doAdminLogin(); });
-
-switchToAdmin.addEventListener('click', function(e) { e.preventDefault(); showLoginPage(true); });
-switchToUser.addEventListener('click', function(e) { e.preventDefault(); showLoginPage(false); });
+loginUsernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
+registerSubmitBtn.addEventListener('click', doRegister);
+registerConfirmInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doRegister(); });
 
 userMenuBtn.addEventListener('click', function(e) {
   e.stopPropagation();
@@ -6793,6 +6917,13 @@ document.addEventListener('click', function() {
   userDropdown.classList.remove('show');
 });
 
+document.getElementById('profileFromMenu').addEventListener('click', showProfileModal);
+openFeedbackMenu.addEventListener('click', function() {
+  window.location.href = '/feedback';
+});
+openInboxMenu.addEventListener('click', function() {
+  window.location.href = '/feedback?view=inbox';
+});
 openAdminFromMenu.addEventListener('click', function() {
   showAdminDashboard();
 });
@@ -6863,6 +6994,28 @@ const aiAssistantEntry = document.getElementById('aiAssistantEntry');
 if (aiAssistantEntry) aiAssistantEntry.addEventListener('click', openAIAssistant);
 const aiRecommendInput = document.getElementById('aiRecommendInput');
 if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
+
+// ===== 轮播 =====
+(function() {
+  const slides = document.querySelectorAll('.carousel-slide');
+  const dots = document.querySelectorAll('.carousel-dot');
+  if (!slides.length) return;
+  let current = 0, timer = null;
+  function goTo(idx) {
+    slides.forEach(s => s.classList.remove('active'));
+    dots.forEach(d => d.classList.remove('active'));
+    current = (idx + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+  dots.forEach(d => d.addEventListener('click', () => goTo(parseInt(d.dataset.index))));
+  function startAuto() { if (timer) clearInterval(timer); timer = setInterval(() => goTo(current + 1), 5000); }
+  function stopAuto() { clearInterval(timer); timer = null; }
+  startAuto();
+  document.querySelector('.carousel').addEventListener('mouseenter', stopAuto);
+  document.querySelector('.carousel').addEventListener('mouseleave', startAuto);
+})();
+
 // 初始化主题
 setTheme(getTheme());
 
@@ -7086,7 +7239,17 @@ function copyCode(btn) {
     }
     // 后台检查 auth 状态（不阻塞渲染）
     checkAuth().then(authed => {
-      if (authed && userMenuBtn) userMenuBtn.classList.remove('hidden');
+      if (authed && userMenuBtn) {
+        userMenuBtn.classList.remove('hidden');
+        if (state.currentUser && document.getElementById('userMenuName')) {
+          document.getElementById('userMenuName').textContent = state.currentUser.username;
+        }
+        if (state.currentUser) {
+          const isAdmin = state.currentUser.role === 'admin';
+          openAdminFromMenu.style.display = isAdmin ? '' : 'none';
+          openInboxMenu.style.display = isAdmin ? '' : 'none';
+        }
+      }
       state.isAuthenticated = authed;
     }).catch(() => {});
     return;
@@ -7103,7 +7266,7 @@ function copyCode(btn) {
         <div style="color:var(--accent-red);font-size:16px;margin-bottom:12px">加载耗时较长</div>
         <div style="color:var(--text-muted);font-size:13px;margin-bottom:20px">请尝试刷新页面或登录后访问</div>
         <button onclick="location.reload()" style="padding:10px 20px;background:var(--accent-blue);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-right:10px">刷新页面</button>
-        <button onclick="showLoginPage(false)" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
+        <button onclick="showLoginPage()" style="padding:10px 20px;background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;cursor:pointer">登录</button>
       </div>
     `;
   }, LOADING_TIMEOUT);
@@ -7122,18 +7285,63 @@ function copyCode(btn) {
     clearTimeout(timeoutTimer);
 
     if (authed) {
-      if (userMenuBtn) userMenuBtn.classList.remove('hidden');
+      if (userMenuBtn) { userMenuBtn.classList.remove('hidden'); }
+      if (state.currentUser && document.getElementById('userMenuName')) {
+        document.getElementById('userMenuName').textContent = state.currentUser.username;
+      }
       init();
     } else {
-      showLoginPage(false);
+      showLoginPage();
     }
   } catch(e) {
     clearTimeout(timeoutTimer);
     console.error('启动失败:', e);
-    showLoginPage(false);
+    showLoginPage();
   }
 })();
 </script>
+<!-- 个人资料弹窗 -->
+<div class="profile-overlay" id="profileOverlay" onclick="if(event.target===this) closeProfileModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100000;align-items:center;justify-content:center">
+  <div class="profile-modal" style="background:var(--bg-primary,#1e1e2e);border-radius:12px;padding:28px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="margin:0;font-size:18px;color:var(--text-primary)">个人资料</h3>
+      <button onclick="closeProfileModal()" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:20px">&times;</button>
+    </div>
+    <div id="profileContent">
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">用户名</label>
+        <div id="profileUsername" style="font-size:15px;color:var(--text-primary);font-weight:500"></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">角色</label>
+        <div id="profileRole" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">注册时间</label>
+        <div id="profileCreatedAt" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">最后登录</label>
+        <div id="profileLastLogin" style="font-size:14px;color:var(--text-primary)"></div>
+      </div>
+      <div style="border-top:1px solid var(--border-color,#333);padding-top:16px">
+        <h4 style="margin:0 0 12px;font-size:14px;color:var(--text-primary)">修改密码</h4>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileOldPw" placeholder="旧密码" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileNewPw" placeholder="新密码（至少6位）" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <div class="auth-field" style="margin-bottom:10px">
+          <input type="password" id="profileConfirmPw" placeholder="确认新密码" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border-color,#333);background:var(--bg-secondary,#2a2a3e);color:var(--text-primary);font-size:14px;box-sizing:border-box">
+        </div>
+        <button onclick="doChangePassword()" style="width:100%;padding:10px;border:none;border-radius:8px;background:var(--accent,#6366f1);color:#fff;font-size:14px;cursor:pointer">修改密码</button>
+        <div class="auth-error" id="profileError" style="margin-top:8px"></div>
+        <div style="color:var(--success,#22c55e);font-size:13px;margin-top:8px;display:none" id="profileSuccess">密码修改成功</div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 <!-- force-refresh: 1785070272 -->

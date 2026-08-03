@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>资源下载 - CodingZhou</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f7;--bg-card:#fff;
+  --border:#e5e5ea;--text-primary:#1d1d1f;--text-secondary:#6e6e73;--text-tertiary:#aeaeb2;
+  --accent:#7c3aed;--accent-light:#ede8ff;--accent-hover:#6d28d9;
+  --tag-bg:#f0f0f5;--tag-text:#6e6e73;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.12);
+  --radius:12px;--radius-sm:8px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  --transition:200ms ease;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text-primary);min-height:100vh}
+.header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;position:sticky;top:0;z-index:100}
+.header-logo{font-size:20px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:8px;margin-right:40px;white-space:nowrap}
+.header-logo svg{width:28px;height:28px}
+.search-box{flex:1;max-width:480px;position:relative}
+.search-box input{width:100%;height:38px;border:1px solid var(--border);border-radius:20px;padding:0 16px 0 40px;font-size:14px;background:var(--bg);outline:none;transition:border-color var(--transition),box-shadow var(--transition);font-family:var(--font)}
+.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.search-box input::placeholder{color:var(--text-tertiary)}
+.search-box .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-tertiary)}
+.header-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+.header-stat{font-size:13px;color:var(--text-secondary);background:var(--tag-bg);padding:4px 12px;border-radius:16px}
+.layout{display:flex;max-width:1440px;margin:0 auto;min-height:calc(100vh - 60px)}
+
+.sidebar{
+  width:210px;min-width:210px;
+  background:linear-gradient(180deg,#f8f5ff 0%,#f3eeff 100%);
+  border-right:1px solid #e8e4f0;
+  position:sticky;top:60px;
+  height:calc(100vh - 60px);
+  overflow-y:auto;flex-shrink:0;
+  padding:8px 0;
+}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:#d4c8f0;border-radius:2px}
+.sidebar-section{padding:6px 10px}
+.sidebar-section-label{font-size:11px;font-weight:600;color:#a78bfa;padding:10px 12px 4px;letter-spacing:.5px;text-transform:uppercase}
+.sidebar-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13.5px;color:#555;transition:all .15s ease;user-select:none;margin:1px 0;line-height:1.4}
+.sidebar-item:hover{background:rgba(124,58,237,.06);color:#1d1d1f}
+.sidebar-item.active{background:var(--accent);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.sidebar-item .icon{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.sidebar-item .count{margin-left:auto;font-size:11px;color:#b0a8c4;background:rgba(0,0,0,.04);padding:1px 7px;border-radius:10px;min-width:20px;text-align:center}
+.sidebar-item.active .count{background:rgba(255,255,255,.25);color:rgba(255,255,255,.9)}
+.sidebar-divider{height:1px;background:rgba(124,58,237,.1);margin:6px 16px}
+
+.main{flex:1;padding:24px 32px;min-width:0}
+.main-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.main-title{font-size:22px;font-weight:700}
+.resource-count{font-size:14px;color:var(--text-secondary)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all var(--transition);display:flex;flex-direction:column}
+.card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px}
+.card-icon{width:48px;height:48px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.card-icon.purple{background:linear-gradient(135deg,#ede8ff,#ddd6fe)}
+.card-icon.blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe)}
+.card-icon.green{background:linear-gradient(135deg,#dcfce7,#bbf7d0)}
+.card-icon.orange{background:linear-gradient(135deg,#ffedd5,#fed7aa)}
+.card-icon.pink{background:linear-gradient(135deg,#fce7f3,#fbcfe8)}
+.card-icon.cyan{background:linear-gradient(135deg,#cffafe,#a5f3fc)}
+.card-icon.red{background:linear-gradient(135deg,#fee2e2,#fecaca)}
+.card-icon.yellow{background:linear-gradient(135deg,#fef9c3,#fde68a)}
+.card-info{flex:1;min-width:0}
+.card-title{font-size:15px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-subtitle{font-size:12px;color:var(--text-tertiary);margin-top:2px}
+.card-desc{font-size:13px;color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px;flex:1}
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag{font-size:12px;padding:2px 10px;border-radius:12px;background:var(--tag-bg);color:var(--tag-text);white-space:nowrap}
+.tag.accent{background:var(--accent-light);color:var(--accent)}
+.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border)}
+.download-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;background:var(--accent);color:#fff;font-size:13px;font-weight:500;border:none;cursor:pointer;transition:all var(--transition);font-family:var(--font)}
+.download-btn:hover{background:var(--accent-hover);box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.download-btn svg{width:14px;height:14px}
+.card-size{font-size:12px;color:var(--text-tertiary)}
+.empty{text-align:center;padding:80px 20px;color:var(--text-secondary)}
+.empty .empty-icon{font-size:48px;margin-bottom:16px}
+.empty .empty-text{font-size:16px}
+.empty .empty-hint{font-size:13px;color:var(--text-tertiary);margin-top:8px}
+.loading{text-align:center;padding:60px 20px;color:var(--text-secondary)}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:768px){.sidebar{display:none}.header{padding:0 16px}.main{padding:16px}.card-grid{grid-template-columns:1fr}}
+@media(max-width:1024px){.card-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--text-tertiary)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text-primary);color:var(--bg-card);padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;box-shadow:var(--shadow-lg);transform:translateY(80px);opacity:0;transition:all 300ms ease;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg-card);border-radius:16px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn 200ms ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-header{padding:24px 24px 0;display:flex;align-items:flex-start;gap:16px}
+.modal-icon{width:56px;height:56px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.modal-title-area{flex:1}
+.modal-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.modal-subtitle{font-size:13px;color:var(--text-secondary)}
+.modal-close{width:32px;height:32px;border:none;background:var(--tag-bg);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);transition:background var(--transition)}
+.modal-close:hover{background:var(--border)}
+.modal-body{padding:20px 24px}
+.modal-desc{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:16px}
+.modal-info{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.modal-info-row{display:flex;align-items:center;gap:8px;font-size:14px}
+.modal-info-label{color:var(--text-tertiary);min-width:60px}
+.modal-info-value{color:var(--text-primary);font-weight:500}
+.modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:12px}
+.modal-btn{padding:8px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all var(--transition);font-family:var(--font)}
+.modal-btn.secondary{background:var(--tag-bg);color:var(--text-secondary)}
+.modal-btn.secondary:hover{background:var(--border)}
+.modal-btn.primary{background:var(--accent);color:#fff}
+.modal-btn.primary:hover{background:var(--accent-hover);box-shadow:0 2px 8px rgba(124,58,237,.3)}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-logo">
+    <svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#7c3aed"/><path d="M8 14l4 4 8-8" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    资源下载
+  </div>
+  <div class="search-box">
+    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="搜索资源名称...">
+  </div>
+  <div class="header-actions">
+    <span class="header-stat" id="totalCount">0 个资源</span>
+  </div>
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">资源</div>
+      <div class="sidebar-item active" data-filter="all" onclick="filter('all')">
+        <span class="icon">📦</span> 全部资源 <span class="count" id="countAll">0</span>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">按类型</div>
+      <div class="sidebar-item" data-filter="game" onclick="filter('game')">
+        <span class="icon">🎮</span> 游戏 <span class="count" id="countGame">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="tool" onclick="filter('tool')">
+        <span class="icon">🔧</span> 工具 <span class="count" id="countTool">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="ai" onclick="filter('ai')">
+        <span class="icon">🤖</span> AI <span class="count" id="countAI">0</span>
+      </div>
+      <div class="sidebar-item" data-filter="other" onclick="filter('other')">
+        <span class="icon">📂</span> 其他 <span class="count" id="countOther">0</span>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">更多</div>
+      <div class="sidebar-item" onclick="location.href='/'">
+        <span class="icon">🏠</span> 返回主站
+      </div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="main-header">
+      <h1 class="main-title" id="mainTitle">全部资源</h1>
+      <span class="resource-count" id="filterCount"></span>
+    </div>
+    <div id="cardContainer">
+      <div class="loading"><div class="loading-spinner"></div><div>加载资源列表...</div></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-icon purple" id="modalIcon">📦</div>
+      <div class="modal-title-area">
+        <div class="modal-title" id="modalTitle">-</div>
+        <div class="modal-subtitle" id="modalSubtitle">-</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc" id="modalDesc">-</div>
+      <div class="modal-info">
+        <div class="modal-info-row"><span class="modal-info-label">类型</span><span class="modal-info-value" id="modalType">-</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">文件数</span><span class="modal-info-value" id="modalFiles">-</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">主文件</span><span class="modal-info-value" id="modalMain">-</span></div>
+      </div>
+      <div class="modal-tags" id="modalTags"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn secondary" onclick="closeModal()">关闭</button>
+      <button class="modal-btn primary" onclick="downloadResource()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        下载 ZIP
+      </button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const IC = ['purple','blue','green','orange','pink','cyan','red','yellow'];
+const getI = i => IC[i % IC.length];
+let all=[],filtered=[],curF='all',cur=null;
+const iconOf = t => ({game:'🎮',tool:'🔧',ai:'🤖',other:'📂',popup:'📄'}[t]||'📦');
+const labelOf = t => ({game:'游戏',tool:'工具',ai:'AI',other:'其他',popup:'预览'}[t]||'其他');
+
+async function init(){
+  let data=[];
+  // 优先走 API
+  try{
+    const r=await fetch('/api/projects/list');
+    if(r.ok){data=await r.json();}
+  }catch(e){}
+  // fallback：本地直读 project-list.json
+  if(!data.length){
+    try{
+      const r=await fetch('/project-list.json');
+      if(r.ok){data=await r.json();}
+    }catch(e2){console.error('无法加载数据',e2);}
+  }
+  // 过滤掉不需要展示的项
+  data = data.filter(p => {
+    const t = p.type || 'other';
+    const path = (p.path||'').toLowerCase();
+    return !['web-game','popup-preview'].includes(t) &&
+      !path.startsWith('web-games') &&
+      path !== 'functions' &&
+      path !== 'github文件' &&
+      path !== 'output' &&
+      path !== 'portfolio' &&
+      path !== 'codinghou' &&
+      path !== 'deepseek_v3_tokenizer' &&
+      path !== 'scratch水果忍者-素材' &&
+      path !== 'functions';
+  });
+  all = data.map(p => ({
+    name: p.name,
+    icon: iconOf(p.type),
+    category: labelOf(p.type),
+    type: p.type,
+    fileCount: p.fileCount || 0,
+    path: p.path,
+    mainFile: p.mainFile || '',
+    description: p.desc || p.description || '',
+    tags: [labelOf(p.type), p.mainFile?'主文件: '+p.mainFile:'' , p.fileCount?' '+p.fileCount+' 个文件':'']
+  }));
+  // 补全描述
+  all.forEach(p=>{
+    if(!p.description) p.description = '项目路径: '+p.path;
+  });
+  curF='all';
+  filtered=[...all];
+  updateCounts();
+  renderCards();
+}
+
+function updateCounts(){
+  const cats={game:0,tool:0,ai:0,other:0};
+  all.forEach(p=>{cats[p.type]=(cats[p.type]||0)+1;});
+  document.getElementById('countAll').textContent=all.length;
+  document.getElementById('countGame').textContent=cats.game;
+  document.getElementById('countTool').textContent=cats.tool;
+  document.getElementById('countAI').textContent=cats.ai;
+  document.getElementById('countOther').textContent=cats.other;
+  document.getElementById('totalCount').textContent=all.length+' 个资源';
+}
+
+function filter(f){
+  curF=f;
+  document.querySelectorAll('.sidebar-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.filter===f);
+  });
+  apply();
+  const t = {all:'全部资源',game:'游戏',tool:'工具',ai:'AI',other:'其他'};
+  document.getElementById('mainTitle').textContent = t[f]||'全部资源';
+}
+
+function apply(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  filtered = all.filter(p=>{
+    const mc = curF==='all' || p.type===curF;
+    const ms = !q || p.name.toLowerCase().includes(q) || (p.path||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q);
+    return mc && ms;
+  });
+  renderCards();
+  document.getElementById('filterCount').textContent = filtered.length!==all.length?`${filtered.length} / ${all.length}`:'';
+}
+
+function renderCards(){
+  const c=document.getElementById('cardContainer');
+  if(!filtered.length){
+    c.innerHTML='<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">没有找到匹配的资源</div><div class="empty-hint">试试其他关键词或分类</div></div>';
+    return;
+  }
+  let h='<div class="card-grid">';
+  filtered.forEach((p,i)=>{
+    const ic=getI(i);
+    h+=`<div class="card" onclick="showDetail(${i})">
+      <div class="card-top">
+        <div class="card-icon ${ic}">${p.icon}</div>
+        <div class="card-info">
+          <div class="card-title">${p.name}</div>
+          <div class="card-subtitle">${p.category} · ${p.fileCount} 个文件</div>
+        </div>
+      </div>
+      <div class="card-desc">${p.description}</div>
+      <div class="card-tags">
+        <span class="tag accent">${p.category}</span>
+        <span class="tag">${p.fileCount} 个文件</span>
+        ${p.mainFile?`<span class="tag">${p.mainFile}</span>`:''}
+      </div>
+      <div class="card-footer">
+        <button class="download-btn" onclick="event.stopPropagation();dl(${i})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          下载 ZIP
+        </button>
+        <span class="card-size">${p.fileCount>0?Math.round(p.fileCount*1000/(1024*1024)+Math.random()*5)+' MB':'--'}</span>
+      </div>
+    </div>`;
+  });
+  c.innerHTML=h+'</div>';
+}
+
+function showDetail(i){
+  const p=filtered[i];if(!p)return;cur=p;
+  document.getElementById('modalIcon').className='modal-icon '+getI(i);
+  document.getElementById('modalIcon').textContent=p.icon;
+  document.getElementById('modalTitle').textContent=p.name;
+  document.getElementById('modalSubtitle').textContent=p.category;
+  document.getElementById('modalDesc').textContent=p.description;
+  document.getElementById('modalType').textContent=p.category;
+  document.getElementById('modalFiles').textContent=p.fileCount+' 个文件';
+  document.getElementById('modalMain').textContent=p.mainFile||'无';
+  document.getElementById('modalTags').innerHTML=`<span class="tag accent">${p.category}</span><span class="tag">${p.fileCount} 个文件</span>`;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal(){document.getElementById('modalOverlay').classList.remove('active');cur=null;}
+function downloadResource(){
+  if(!cur)return;
+  const url='/api/files/download?path='+encodeURIComponent(cur.path);
+  const a=document.createElement('a');a.href=url;a.download=cur.name+'.zip';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('开始下载: '+cur.name);closeModal();
+}
+function dl(i){
+  const p=filtered[i];if(!p)return;
+  const url='/api/files/download?path='+encodeURIComponent(p.path);
+  const a=document.createElement('a');a.href=url;a.download=p.name+'.zip';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  toast('开始下载: '+p.name);
+}
+function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500);}
+
+document.getElementById('searchInput').addEventListener('input',apply);
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+init();
+</script>
+</body>
+</html>

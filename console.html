@@ -678,6 +678,92 @@ body > * { position: relative; z-index: 1; }
 .apikey-createbtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .apikey-createbtn:active { transform: translateY(0); }
 
+.apikey-head-actions {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.apikey-quickbtn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-blue); color: #fff;
+  border: none; padding: 10px 18px; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+  font-family: var(--font-sans);
+}
+.apikey-quickbtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.apikey-quickbtn:active { transform: translateY(0); }
+
+/* 快速接入弹窗 */
+.apikey-quickbtn, .apikey-quick-modal { display: none; }
+.quick-tabs {
+  display: flex; gap: 4px; margin-bottom: 12px;
+  background: var(--bg-tertiary); border-radius: 8px; padding: 3px;
+}
+.quick-tab {
+  flex: 1; padding: 7px 12px; border: none; border-radius: 6px;
+  background: transparent; color: var(--text-secondary);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-sans);
+}
+.quick-tab.active { background: var(--bg-secondary); color: var(--text-primary); }
+.quick-tab:hover:not(.active) { color: var(--text-primary); }
+.quick-code-block { display: none; }
+.quick-code-block.active { display: block; }
+.quick-code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; background: var(--bg-tertiary);
+  border: 1px solid var(--border-color); border-bottom: none;
+  border-radius: 8px 8px 0 0; font-size: 12px; color: var(--text-secondary);
+}
+.quick-copy {
+  padding: 3px 10px; border: 1px solid var(--border-color);
+  border-radius: 5px; background: transparent; color: var(--text-tertiary);
+  cursor: pointer; font-size: 11px; transition: all 0.15s; font-family: var(--font-sans);
+}
+.quick-copy:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+.quick-code-block pre {
+  margin: 0; padding: 14px; background: var(--bg-primary);
+  border: 1px solid var(--border-color); border-radius: 0 0 8px 8px;
+  overflow-x: auto; max-height: 320px;
+}
+.quick-code-block code {
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7;
+  color: var(--text-primary); white-space: pre;
+}
+
+/* ===== 快速接入指南页 ===== */
+.guide-intro {
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;
+  font-size: 14px; line-height: 1.7; color: var(--text-secondary);
+}
+.guide-intro code {
+  background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 13px;
+}
+.guide-section { margin-bottom: 28px; }
+.guide-section p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.guide-h3 {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.guide-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.guide-table th, .guide-table td {
+  text-align: left; padding: 10px 14px;
+  border: 1px solid var(--border-color);
+}
+.guide-table th {
+  background: var(--bg-tertiary); font-weight: 600; color: var(--text-secondary);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.guide-table td { color: var(--text-secondary); }
+.guide-table td:first-child { white-space: nowrap; color: var(--text-primary); }
+.guide-table code {
+  background: var(--bg-tertiary); padding: 1px 5px; border-radius: 3px;
+  font-family: var(--font-mono); font-size: 12px;
+}
+
 .apikey-viewswitch { display: flex; gap: 8px; margin-bottom: 20px; }
 .apikey-viewpill {
   padding: 7px 16px; border-radius: 99px;
@@ -818,6 +904,8 @@ select.apikey-input { cursor: pointer; appearance: none; padding-right: 34px; }
   .apikey-head { flex-direction: column; gap: 14px; }
   .apikey-row { flex-direction: column; align-items: flex-start; }
   .apikey-actions { flex-direction: row; align-items: center; width: 100%; }
+  .guide-table { font-size: 12px; }
+  .guide-table th, .guide-table td { padding: 8px 10px; }
 }
 </style>
 </head>
@@ -863,6 +951,10 @@ select.apikey-input { cursor: pointer; appearance: none; padding-right: 34px; }
       <a class="console-nav-item" data-tab="apikeys" onclick="switchTab('apikeys')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
         <span>新建 API</span>
+      </a>
+      <a class="console-nav-item" data-tab="quickguide" onclick="switchTab('quickguide')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span>快速接入</span>
       </a>
     </nav>
     <div class="console-main">
@@ -1152,6 +1244,8 @@ function switchTab(tab) {
     loadPool();
   } else if (tab === 'apikeys') {
     loadApiKeys();
+  } else if (tab === 'quickguide') {
+    loadQuickGuide();
   }
 }
 
@@ -1237,9 +1331,10 @@ function renderApiKeys(keys) {
         <p>创建和管理 API key，用于在外部程序或脚本中调用 AI 推荐接口。完整 key 仅在创建时显示一次。</p>
       </div>
       <button class="apikey-createbtn" onclick="openCreateModal()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-        Create new secret key
-      </button>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          Create new secret key
+        </button>
+      </div>
     </div>
     ${viewSwitch}
     <div class="apikey-list">${keyRows}</div>
@@ -1301,6 +1396,7 @@ function renderApiKeys(keys) {
           <button class="apikey-btn-primary" onclick="$('successModal').style.display='none';loadApiKeys()">我已保存</button>
         </div>
       </div>
+    </div>
     </div>`;
 }
 
@@ -1309,6 +1405,29 @@ function openCreateModal() {
   $('customDateWrap').style.display = 'none';
   $('createModal').style.display = 'flex';
   $('fName').focus();
+}
+
+function openQuickModal() {
+  $('quickModal').style.display = 'flex';
+  // 默认选中第一个 tab
+  switchQuickTab('python');
+}
+
+function switchQuickTab(lang) {
+  document.querySelectorAll('.quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
+  document.querySelectorAll('.quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+}
+
+function copyQuickCode(lang) {
+  const block = document.querySelector(`.quick-code-block[data-lang="${lang}"]`);
+  const code = block.querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '代码已复制到剪贴板';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  });
 }
 
 function getExpireTs() {
@@ -1385,6 +1504,168 @@ async function toggleApiKey(id) {
     if (data.success) { loadApiKeys(); } else { alert(data.error || '操作失败'); }
   } catch (e) { alert('网络错误: ' + e.message); }
 }
-</script>
+
+// ===== 快速接入指南 =====
+function loadQuickGuide() {
+  const content = $('content');
+  content.innerHTML = `
+    <div class="admin-section">
+      <div class="admin-section-title">快速接入指南</div>
+      <div class="guide-intro">
+        <p>使用 API Key 通过 <code>/api/recommend</code> 接口调用 AI 推荐功能。支持 <strong>Authorization Bearer</strong> 头认证。</p>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">1. 创建 API Key</h3>
+        <p>前往左侧「<a href="javascript:switchTab(\'apikeys\')" style="color:var(--accent-blue)">新建 API</a>」页面创建密钥，创建后完整 key 仅显示一次，请立即保存。</p>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">2. 接口说明</h3>
+        <table class="guide-table">
+          <tr><td>接口地址</td><td><code>POST https://codingzhou.dpdns.org/api/recommend</code></td></tr>
+          <tr><td>认证方式</td><td><code>Authorization: Bearer sk-xxx</code> 或请求体中 <code>api_key: "sk-xxx"</code></td></tr>
+          <tr><td>Content-Type</td><td><code>application/json</code></td></tr>
+          <tr><td>请求体</td><td><code>{"messages": [{"role": "user", "content": "..."}]}</code></td></tr>
+          <tr><td>返回格式</td><td><code>{"success": true, "response": "...", "recommendations": [...]}</code></td></tr>
+        </table>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">3. 代码示例</h3>
+        <div class="quick-tabs" id="guideTabs">
+          <button class="quick-tab active" data-lang="python" onclick="switchGuideTab('python')">Python</button>
+          <button class="quick-tab" data-lang="curl" onclick="switchGuideTab('curl')">curl</button>
+          <button class="quick-tab" data-lang="js" onclick="switchGuideTab('js')">JavaScript</button>
+          <button class="quick-tab" data-lang="node" onclick="switchGuideTab('node')">Node.js</button>
+        </div>
+        <div class="quick-code" id="guideCode">
+          <div class="quick-code-block active" data-lang="python">
+            <div class="quick-code-header">
+              <span>Python</span>
+              <button class="quick-copy" onclick="copyGuideCode('python')">复制代码</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的密钥"
+url = "https://codingzhou.dpdns.org/api/recommend"
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json"
+}
+data = {
+    "messages": [
+        {"role": "user", "content": "推荐几个Python项目"}
+    ]
+}
+resp = requests.post(url, json=data, headers=headers)
+result = resp.json()
+if result.get("success"):
+    print(result["response"])
+else:
+    print("错误:", result.get("error"))</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl</span>
+              <button class="quick-copy" onclick="copyGuideCode('curl')">复制代码</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.dpdns.org/api/recommend \\
+  -H "Authorization: Bearer sk-你的密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "messages": [
+      {"role": "user", "content": "推荐几个Python项目"}
+    ]
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript (fetch)</span>
+              <button class="quick-copy" onclick="copyGuideCode('js')">复制代码</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的密钥";
+const resp = await fetch("https://codingzhou.dpdns.org/api/recommend", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    messages: [
+      { role: "user", content: "推荐几个Python项目" }
+    ]
+  })
+});
+const data = await resp.json();
+if (data.success) console.log(data.response);
+else console.error("错误:", data.error);</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="node">
+            <div class="quick-code-header">
+              <span>Node.js (axios)</span>
+              <button class="quick-copy" onclick="copyGuideCode('node')">复制代码</button>
+            </div>
+            <pre><code>const axios = require("axios");
+
+const API_KEY = "sk-你的密钥";
+const resp = await axios.post("https://codingzhou.dpdns.org/api/recommend", {
+  messages: [
+    { role: "user", content: "推荐几个Python项目" }
+  ]
+}, {
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`
+  }
+});
+const data = resp.data;
+if (data.success) console.log(data.response);
+else console.error("错误:", data.error);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">4. 错误码说明</h3>
+        <table class="guide-table">
+          <tr><th>HTTP 状态码</th><th>错误信息</th><th>说明</th></tr>
+          <tr><td><code>401</code></td><td>请先登录或提供有效的 API Key</td><td>未提供认证信息或 key 无效</td></tr>
+          <tr><td><code>401</code></td><td>请先登录</td><td>API Key 已过期或被禁用</td></tr>
+          <tr><td><code>400</code></td><td>请输入消息</td><td>请求体中缺少 <code>messages</code> 字段</td></tr>
+          <tr><td><code>500</code></td><td>AI 请求失败: ...</td><td>上游 AI 服务异常，请稍后重试</td></tr>
+          <tr><td><code>429</code></td><td>请求过于频繁</td><td>超过每日调用限额（如设置了 daily_limit）</td></tr>
+          <tr><td><code>403</code></td><td>无权限查看全部 Key</td><td>非管理员尝试查看所有用户的 key</td></tr>
+        </table>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">5. 限制说明</h3>
+        <table class="guide-table">
+          <tr><th>限制项</th><th>说明</th></tr>
+          <tr><td>共享池上限</td><td>全平台每天共享池总量为 <strong id="poolLimit">945</strong> 次调用，所有用户共用</td></tr>
+          <tr><td>Key 每日限额</td><td>创建 key 时可设置每日调用次数上限，超出后返回 429</td></tr>
+          <tr><td>Key 有效期</td><td>创建 key 时可设置过期时间，过期后认证失败</td></tr>
+          <tr><td>Key 管理</td><td>key 可随时在控制台禁用或删除，禁用后立即失效</td></tr>
+        </table>
+      </div>
+    </div>`;
+}
+
+function switchGuideTab(lang) {
+  document.querySelectorAll('#guideTabs .quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
+  document.querySelectorAll('#guideCode .quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+}
+
+function copyGuideCode(lang) {
+  const block = document.querySelector('#guideCode .quick-code-block[data-lang="' + lang + '"]');
+  const code = block.querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '代码已复制';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  });
+}
 </body>
 </html>

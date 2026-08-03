@@ -133,203 +133,62 @@ body::before {
   z-index: 1;
 }
 
-.home-hero {
+/* ===== 轮播 ===== */
+.home-top-row {
   display: flex;
   align-items: center;
-  gap: 32px;
-  padding: 48px 24px 32px;
-  position: relative;
-}
-.home-hero h1 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  letter-spacing: -0.5px;
-  color: var(--text-primary);
-}
-.home-hero h1 span {
-  color: var(--accent-blue);
-}
-.home-hero .subtitle {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-  font-weight: 400;
-}
-
-.hero-left {
-  flex: 0 0 auto;
-  max-width: 420px;
-}
-
-/* 画廊：三图横排多样式布局 */
-.hero-gallery {
-  flex: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  min-width: 0;
-  position: relative;
-  padding: 10px 0;
-  justify-content: flex-end;
-}
-.gallery-item {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  flex-shrink: 1;
-  min-width: 0;
-  border: 2px solid var(--border-color);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-.gallery-item:hover {
-  transform: translateY(-4px) scale(1.02);
-  border-color: var(--accent-blue);
-  box-shadow: 0 12px 32px rgba(88,166,255,0.2);
-  z-index: 10;
-}
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.6s ease;
-}
-.gallery-item:hover img {
-  transform: scale(1.08);
-}
-.gallery-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 16px 14px 12px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.75));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.gallery-item:hover .gallery-overlay {
-  opacity: 1;
-}
-.gallery-label {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-/* 各图不同尺寸与角度，创造视觉层次 */
-.gallery-item-1 {
-  width: 180px;
-  height: 125px;
-  border-radius: 14px;
-  transform: rotate(-1.5deg) translateY(-4px);
-  border-color: rgba(255,107,157,0.4);
-  z-index: 3;
-  box-shadow: 0 6px 20px rgba(255,107,157,0.15);
-}
-.gallery-item-1:hover {
-  transform: rotate(0deg) translateY(-8px) scale(1.03);
-  border-color: #ff6b9d;
-  box-shadow: 0 16px 40px rgba(255,107,157,0.3);
-}
-
-.gallery-item-2 {
-  width: 200px;
-  height: 140px;
-  border-radius: 12px;
-  transform: rotate(1.8deg) translateY(-12px);
-  border-color: rgba(88,166,255,0.4);
-  z-index: 2;
-  box-shadow: 0 8px 24px rgba(88,166,255,0.15);
-}
-.gallery-item-2:hover {
-  transform: rotate(0deg) translateY(-16px) scale(1.03);
-  border-color: var(--accent-blue);
-  box-shadow: 0 20px 48px rgba(88,166,255,0.3);
-}
-
-.gallery-item-3 {
-  width: 160px;
-  height: 108px;
-  border-radius: 16px;
-  transform: rotate(-2.2deg) translateY(2px);
-  border-color: rgba(163,113,247,0.4);
-  z-index: 1;
-  box-shadow: 0 6px 16px rgba(163,113,247,0.12);
-  margin-left: -8px;
-}
-.gallery-item-3:hover {
-  transform: rotate(0deg) translateY(-2px) scale(1.03);
-  border-color: var(--accent-purple);
-  box-shadow: 0 14px 36px rgba(163,113,247,0.3);
-}
-.hero-search {
-  display: flex;
-  align-items: center;
-  max-width: 560px;
+  gap: 24px;
+  padding: 24px 24px 0;
+  max-width: 1100px;
   margin: 0 auto;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 8px 12px;
-  transition: border-color var(--transition), box-shadow var(--transition);
 }
-.hero-search:focus-within {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(88,166,255,0.15);
-}
-.hero-search svg { width: 16px; height: 16px; color: var(--text-tertiary); flex-shrink: 0; }
-.hero-search input {
+.carousel {
+  position: relative;
   flex: 1;
-  padding: 8px 10px;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  font-size: 14px;
-  font-family: var(--font-sans);
-  outline: none;
+  min-width: 0;
+  max-width: 640px;
+  padding: 0;
+  margin: 0;
 }
-.hero-search input::placeholder { color: var(--text-tertiary); }
-
-/* 快速入口按钮 */
-.hero-quick-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 8px 18px;
-  background: linear-gradient(135deg, #f0a030, #e07820);
-  color: #fff;
-  border-radius: 24px;
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 4px 16px rgba(240,160,48,0.35);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  width: fit-content;
+.carousel-slides {
+  position: relative; width: 100%; overflow: hidden;
+  border-radius: 14px; background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
 }
-.hero-quick-btn:hover {
-  background: linear-gradient(135deg, #f8b840, #f0a030);
-  transform: translateY(-2px) scale(1.04);
-  box-shadow: 0 8px 24px rgba(240,160,48,0.5);
-  color: #fff;
+.carousel-slide {
+  display: none; width: 100%;
 }
-.hero-quick-btn svg {
-  width: 14px;
-  height: 14px;
-  stroke: #fff;
-  transition: transform 0.3s;
+.carousel-slide.active {
+  display: block;
 }
-.hero-quick-btn:hover svg { transform: translateX(3px); }
+.carousel-slide img {
+  width: 100%; height: auto; display: block;
+  object-fit: contain; max-height: 360px;
+}
+.carousel-dots {
+  display: flex; justify-content: center; gap: 10px;
+  padding: 14px 0 0;
+}
+.carousel-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--border-color); cursor: pointer;
+  transition: all 0.3s; border: none;
+}
+.carousel-dot.active {
+  background: var(--accent-blue); transform: scale(1.3);
+}
+.carousel-dot:hover {
+  background: var(--text-tertiary);
+}
 
 /* Stats */
 .home-stats {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 12px;
-  padding: 0 24px 28px;
-  flex-wrap: wrap;
+  padding: 0;
+  flex: 0 0 auto;
+  min-width: 180px;
 }
 .stat-item {
   text-align: center;
@@ -367,6 +226,37 @@ body::before {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.section-header .hero-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.section-header .hero-search input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  width: 220px;
+  outline: none;
+  transition: all var(--transition);
+  font-family: var(--font-sans);
+}
+.section-header .hero-search input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.15);
+}
+.section-header .hero-search kbd {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
 }
 .section-header .filter-tabs {
   display: flex;
@@ -2463,22 +2353,21 @@ body::before {
   .toolbar-btn { width: 40px; height: 40px; padding: 8px; }
 
   /* ===== 首页适配 ===== */
-  .home-hero { flex-direction: column; text-align: center; padding: 32px 20px 20px; }
-  .home-hero h1 { font-size: 24px; }
-  .home-hero .subtitle { font-size: 13px; }
-  .hero-left { max-width: 100%; text-align: center; }
-  .hero-search { max-width: 100%; }
-  .hero-search input { font-size: 14px; padding: 12px 14px; }
+  .home-top-row { flex-direction: column; gap: 16px; padding: 16px 16px 0; }
+  .carousel { max-width: 100%; }
+  .carousel-slide img { max-height: 240px; }
+  .home-stats { flex-direction: row; flex-wrap: wrap; gap: 12px; justify-content: center; min-width: 0; }
+  .header-right { flex-wrap: wrap; gap: 8px; }
+  .hero-search { max-width: 100%; margin-left: 0; }
+  .hero-search input { font-size: 14px; padding: 8px 10px; width: 160px; }
   .hero-search kbd { display: none; }
-  .hero-quick-btn { font-size: 13px; padding: 7px 14px; }
-  /* 移动端隐藏封面图，减少加载量 */
-  .hero-gallery { display: none; }
   .section-header { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 16px; }
   .section-header h2 { font-size: 16px; }
   .filter-tabs { gap: 4px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .filter-tabs::-webkit-scrollbar { display: none; }
   .filter-tab { font-size: 12px; padding: 6px 12px; white-space: nowrap; flex-shrink: 0; }
   .home-stats { padding: 8px 16px; flex-wrap: wrap; gap: 12px; font-size: 13px; }
+  .home-top-row { padding: 16px 16px 0; }
 
   /* ===== 项目卡片 ===== */
   .cards-grid { padding: 0 12px 24px; gap: 10px; }
@@ -2974,7 +2863,6 @@ body::before {
 
   .user-menu-btn {
     padding: 6px 12px;
-    max-width: 200px;
     border-radius: 8px;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
@@ -2984,15 +2872,6 @@ body::before {
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: transform 0.15s;
     white-space: nowrap;
-    overflow: hidden;
-    flex-shrink: 1;
-    min-width: 0;
-  }
-  .user-menu-btn span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-    flex-shrink: 1;
   }
   .user-menu-btn svg {
     flex-shrink: 0;
@@ -3054,6 +2933,42 @@ body::before {
   [data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
   [data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
   .theme-toggle-btn .moon-icon { display: none; }
+
+  /* ===== 顶部导航栏 ===== */
+  .top-nav {
+    position: sticky; top: 0; z-index: 9998;
+    height: 56px; background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex; align-items: center;
+    padding: 0 24px; gap: 8px;
+  }
+  .top-nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 700; color: var(--text-primary);
+    margin-right: 24px; white-space: nowrap;
+  }
+  .top-nav-brand-logo {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 700;
+  }
+  .top-nav-links {
+    display: flex; align-items: center; gap: 2px; flex: 1;
+  }
+  .top-nav-link {
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary); text-decoration: none;
+    transition: all 0.15s; cursor: pointer;
+    white-space: nowrap;
+  }
+  .top-nav-link:hover {
+    color: var(--text-primary); background: var(--bg-tertiary);
+  }
+  .top-nav-link.active {
+    color: var(--accent-blue); background: rgba(88,166,255,0.1);
+  }
 
   /* ===== 更新日志按钮 ===== */
   .changelog-btn {
@@ -3516,44 +3431,43 @@ body::before {
   </button>
 </div>
 
+<!-- ===== 顶部导航栏 ===== -->
+<div class="top-nav">
+  <div class="top-nav-brand">
+    <div class="top-nav-brand-logo">◈</div>
+    Code Explorer
+  </div>
+  <div class="top-nav-links">
+    <a class="top-nav-link active" href="#">首页</a>
+    <a class="top-nav-link" href="/console">API Key</a>
+    <a class="top-nav-link" href="#">资源下载</a>
+    <a class="top-nav-link" href="/web-games/">网页游戏</a>
+  </div>
+</div>
+
 <!-- ==================== HOME PAGE ==================== -->
 <div class="home-page" id="homePage">
-  <div class="home-hero">
-    <div class="hero-left">
-      <h1>Code <span>Explorer</span></h1>
-      <p class="subtitle">浏览、编辑并运行您的 Python 项目集合</p>
-      <div class="hero-search" id="heroSearch">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="heroSearchInput" placeholder="搜索项目或文件..." autocomplete="off">
-        <kbd>Ctrl+P</kbd>
-      </div>
-      <a class="hero-quick-btn" href="/web-games/" target="_blank">
-        🎮 网页游戏中心
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <div class="hero-gallery">
-      <div class="gallery-item gallery-item-1">
-        <img src="/images/covers/fathers_day.jpg" alt="父亲节快乐" loading="lazy">
-        <div class="gallery-overlay">
-          <span class="gallery-label">❤️ 父亲节</span>
+  <div class="home-top-row">
+    <div class="carousel">
+      <div class="carousel-slides">
+        <div class="carousel-slide active">
+          <img src="/images/code_explorer.png" alt="Code Explorer">
+        </div>
+        <div class="carousel-slide">
+          <img src="/images/run_python.png" alt="Run Python">
+        </div>
+        <div class="carousel-slide">
+          <img src="/images/run_scratch.png" alt="Run Scratch">
         </div>
       </div>
-      <div class="gallery-item gallery-item-2">
-        <img src="/images/covers/code_explorer.jpg" alt="编程之夜" loading="lazy">
-        <div class="gallery-overlay">
-          <span class="gallery-label">💻 编程创作</span>
-        </div>
-      </div>
-      <div class="gallery-item gallery-item-3">
-        <img src="/images/covers/python_ai_practice.jpg" alt="科技未来" loading="lazy">
-        <div class="gallery-overlay">
-          <span class="gallery-label">🚀 科技未来</span>
-        </div>
+      <div class="carousel-dots" id="carouselDots">
+        <span class="carousel-dot active" data-index="0"></span>
+        <span class="carousel-dot" data-index="1"></span>
+        <span class="carousel-dot" data-index="2"></span>
       </div>
     </div>
+    <div class="home-stats" id="homeStats"></div>
   </div>
-  <div class="home-stats" id="homeStats"></div>
 
   <!-- 最近访问区域 -->
   <div class="recent-section" id="recentSection">
@@ -3576,6 +3490,10 @@ body::before {
   <div class="section-header">
     <h2>项目列表</h2>
     <div class="header-right">
+      <div class="hero-search" id="heroSearch">
+        <input type="text" id="heroSearchInput" placeholder="搜索项目或文件..." autocomplete="off">
+        <kbd>Ctrl+P</kbd>
+      </div>
       <div class="filter-tabs" id="filterTabs">
         <button class="filter-tab active" data-filter="all">全部</button>
         <button class="filter-tab" data-filter="web-game">网页游戏</button>
@@ -7076,6 +6994,28 @@ const aiAssistantEntry = document.getElementById('aiAssistantEntry');
 if (aiAssistantEntry) aiAssistantEntry.addEventListener('click', openAIAssistant);
 const aiRecommendInput = document.getElementById('aiRecommendInput');
 if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
+
+// ===== 轮播 =====
+(function() {
+  const slides = document.querySelectorAll('.carousel-slide');
+  const dots = document.querySelectorAll('.carousel-dot');
+  if (!slides.length) return;
+  let current = 0, timer = null;
+  function goTo(idx) {
+    slides.forEach(s => s.classList.remove('active'));
+    dots.forEach(d => d.classList.remove('active'));
+    current = (idx + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+  dots.forEach(d => d.addEventListener('click', () => goTo(parseInt(d.dataset.index))));
+  function startAuto() { if (timer) clearInterval(timer); timer = setInterval(() => goTo(current + 1), 5000); }
+  function stopAuto() { clearInterval(timer); timer = null; }
+  startAuto();
+  document.querySelector('.carousel').addEventListener('mouseenter', stopAuto);
+  document.querySelector('.carousel').addEventListener('mouseleave', startAuto);
+})();
+
 // 初始化主题
 setTheme(getTheme());
 
