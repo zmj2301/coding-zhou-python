@@ -1,0 +1,2970 @@
+[
+  {
+    "name": "Python五子棋教程-字体文件",
+    "type": "directory",
+    "path": "Python五子棋教程-字体文件",
+    "children": [
+      {
+        "name": "font.ttf",
+        "type": "file",
+        "path": "Python五子棋教程-字体文件/font.ttf",
+        "ext": ".ttf",
+        "lastModified": 1785662856672
+      }
+    ]
+  },
+  {
+    "name": "Python人生重开模拟器-json文件",
+    "type": "directory",
+    "path": "Python人生重开模拟器-json文件",
+    "children": [
+      {
+        "name": "age.json",
+        "type": "file",
+        "path": "Python人生重开模拟器-json文件/age.json",
+        "ext": ".json",
+        "lastModified": 1785662679598
+      },
+      {
+        "name": "events.json",
+        "type": "file",
+        "path": "Python人生重开模拟器-json文件/events.json",
+        "ext": ".json",
+        "lastModified": 1785662643832
+      }
+    ]
+  },
+  {
+    "name": "Python坦克大战-素材",
+    "type": "directory",
+    "path": "Python坦克大战-素材",
+    "children": [
+      {
+        "name": "audios",
+        "type": "directory",
+        "path": "Python坦克大战-素材/audios",
+        "children": [
+          {
+            "name": "add.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/add.wav",
+            "ext": ".wav",
+            "lastModified": 1785664827723
+          },
+          {
+            "name": "bang.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/bang.wav",
+            "ext": ".wav",
+            "lastModified": 1785664827441
+          },
+          {
+            "name": "bg.m4a",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/bg.m4a",
+            "ext": ".m4a",
+            "lastModified": 1785664827934
+          },
+          {
+            "name": "bg.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/bg.wav",
+            "ext": ".wav",
+            "lastModified": 1785664961397
+          },
+          {
+            "name": "biubiubiu.mp3",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/biubiubiu.mp3",
+            "ext": ".mp3",
+            "lastModified": 1785664828407
+          },
+          {
+            "name": "biubiubiu.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/biubiubiu.wav",
+            "ext": ".wav",
+            "lastModified": 1785664830814
+          },
+          {
+            "name": "blast.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/blast.wav",
+            "ext": ".wav",
+            "lastModified": 1785664831303
+          },
+          {
+            "name": "eat.mp3",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/eat.mp3",
+            "ext": ".mp3",
+            "lastModified": 1785664832271
+          },
+          {
+            "name": "end.m4a",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/end.m4a",
+            "ext": ".m4a",
+            "lastModified": 1785664833239
+          },
+          {
+            "name": "end.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/end.wav",
+            "ext": ".wav",
+            "lastModified": 1785664838191
+          },
+          {
+            "name": "fire.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/fire.wav",
+            "ext": ".wav",
+            "lastModified": 1785664840018
+          },
+          {
+            "name": "Gunfire.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/Gunfire.wav",
+            "ext": ".wav",
+            "lastModified": 1785664839988
+          },
+          {
+            "name": "hit.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/hit.wav",
+            "ext": ".wav",
+            "lastModified": 1785664840414
+          },
+          {
+            "name": "OMG.mp3",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/OMG.mp3",
+            "ext": ".mp3",
+            "lastModified": 1785664841134
+          },
+          {
+            "name": "start.wav",
+            "type": "file",
+            "path": "Python坦克大战-素材/audios/start.wav",
+            "ext": ".wav",
+            "lastModified": 1785664865003
+          }
+        ]
+      },
+      {
+        "name": "font",
+        "type": "directory",
+        "path": "Python坦克大战-素材/font",
+        "children": [
+          {
+            "name": "simkai.ttf",
+            "type": "file",
+            "path": "Python坦克大战-素材/font/simkai.ttf",
+            "ext": ".ttf",
+            "lastModified": 1785665073699
+          },
+          {
+            "name": "STHeiti-Light-3.ttc",
+            "type": "file",
+            "path": "Python坦克大战-素材/font/STHeiti-Light-3.ttc",
+            "ext": ".ttc",
+            "lastModified": 1785665221866
+          }
+        ]
+      },
+      {
+        "name": "img",
+        "type": "directory",
+        "path": "Python坦克大战-素材/img",
+        "children": [
+          {
+            "name": "bullet",
+            "type": "directory",
+            "path": "Python坦克大战-素材/img/bullet",
+            "children": [
+              {
+                "name": "bullet_down.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/bullet/bullet_down.png",
+                "ext": ".png",
+                "lastModified": 1785665151717
+              },
+              {
+                "name": "bullet_left.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/bullet/bullet_left.png",
+                "ext": ".png",
+                "lastModified": 1785665151708
+              },
+              {
+                "name": "bullet_right.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/bullet/bullet_right.png",
+                "ext": ".png",
+                "lastModified": 1785665151749
+              },
+              {
+                "name": "bullet_up.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/bullet/bullet_up.png",
+                "ext": ".png",
+                "lastModified": 1785665151946
+              }
+            ]
+          },
+          {
+            "name": "enemyTank",
+            "type": "directory",
+            "path": "Python坦克大战-素材/img/enemyTank",
+            "children": [
+              {
+                "name": "enemy_1_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_1_0.png",
+                "ext": ".png",
+                "lastModified": 1785665152104
+              },
+              {
+                "name": "enemy_1_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_1_1.png",
+                "ext": ".png",
+                "lastModified": 1785665152109
+              },
+              {
+                "name": "enemy_1_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_1_2.png",
+                "ext": ".png",
+                "lastModified": 1785665152092
+              },
+              {
+                "name": "enemy_1_3.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_1_3.png",
+                "ext": ".png",
+                "lastModified": 1785665152259
+              },
+              {
+                "name": "enemy_2_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_2_0.png",
+                "ext": ".png",
+                "lastModified": 1785665152553
+              },
+              {
+                "name": "enemy_2_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_2_1.png",
+                "ext": ".png",
+                "lastModified": 1785665152533
+              },
+              {
+                "name": "enemy_2_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_2_2.png",
+                "ext": ".png",
+                "lastModified": 1785665152567
+              },
+              {
+                "name": "enemy_2_3.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_2_3.png",
+                "ext": ".png",
+                "lastModified": 1785665152613
+              },
+              {
+                "name": "enemy_3_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_3_0.png",
+                "ext": ".png",
+                "lastModified": 1785665153406
+              },
+              {
+                "name": "enemy_3_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_3_1.png",
+                "ext": ".png",
+                "lastModified": 1785665152980
+              },
+              {
+                "name": "enemy_3_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_3_2.png",
+                "ext": ".png",
+                "lastModified": 1785665153050
+              },
+              {
+                "name": "enemy_3_3.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_3_3.png",
+                "ext": ".png",
+                "lastModified": 1785665153087
+              },
+              {
+                "name": "enemy_4_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_4_0.png",
+                "ext": ".png",
+                "lastModified": 1785665153659
+              },
+              {
+                "name": "enemy_4_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_4_1.png",
+                "ext": ".png",
+                "lastModified": 1785665153461
+              },
+              {
+                "name": "enemy_4_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_4_2.png",
+                "ext": ".png",
+                "lastModified": 1785665153489
+              },
+              {
+                "name": "enemy_4_3.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/enemyTank/enemy_4_3.png",
+                "ext": ".png",
+                "lastModified": 1785665153813
+              }
+            ]
+          },
+          {
+            "name": "explosion",
+            "type": "directory",
+            "path": "Python坦克大战-素材/img/explosion",
+            "children": [
+              {
+                "name": "expl0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/explosion/expl0.png",
+                "ext": ".png",
+                "lastModified": 1785665153819
+              },
+              {
+                "name": "expl1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/explosion/expl1.png",
+                "ext": ".png",
+                "lastModified": 1785665153824
+              },
+              {
+                "name": "expl2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/explosion/expl2.png",
+                "ext": ".png",
+                "lastModified": 1785665153989
+              },
+              {
+                "name": "expl3.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/explosion/expl3.png",
+                "ext": ".png",
+                "lastModified": 1785665154206
+              },
+              {
+                "name": "expl4.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/explosion/expl4.png",
+                "ext": ".png",
+                "lastModified": 1785665154169
+              }
+            ]
+          },
+          {
+            "name": "food",
+            "type": "directory",
+            "path": "Python坦克大战-素材/img/food",
+            "children": [
+              {
+                "name": "coin.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/coin.png",
+                "ext": ".png",
+                "lastModified": 1785665154203
+              },
+              {
+                "name": "food_accelerate.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_accelerate.png",
+                "ext": ".png",
+                "lastModified": 1785665154358
+              },
+              {
+                "name": "food_boom.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_boom.png",
+                "ext": ".png",
+                "lastModified": 1785665154407
+              },
+              {
+                "name": "food_ironwall.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_ironwall.png",
+                "ext": ".png",
+                "lastModified": 1785665154591
+              },
+              {
+                "name": "food_level_up.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_level_up.png",
+                "ext": ".png",
+                "lastModified": 1785665154569
+              },
+              {
+                "name": "food_life.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_life.png",
+                "ext": ".png",
+                "lastModified": 1785665154815
+              },
+              {
+                "name": "food_powerbullet.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_powerbullet.png",
+                "ext": ".png",
+                "lastModified": 1785665154699
+              },
+              {
+                "name": "food_protect.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_protect.png",
+                "ext": ".png",
+                "lastModified": 1785665154957
+              },
+              {
+                "name": "food_sleep.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_sleep.png",
+                "ext": ".png",
+                "lastModified": 1785665154933
+              },
+              {
+                "name": "food_xuan.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/food_xuan.png",
+                "ext": ".png",
+                "lastModified": 1785665155425
+              },
+              {
+                "name": "tree.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/tree.png",
+                "ext": ".png",
+                "lastModified": 1785665155052
+              },
+              {
+                "name": "tree2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/food/tree2.png",
+                "ext": ".png",
+                "lastModified": 1785665155207
+              }
+            ]
+          },
+          {
+            "name": "home",
+            "type": "directory",
+            "path": "Python坦克大战-素材/img/home",
+            "children": [
+              {
+                "name": "home1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/home/home1.png",
+                "ext": ".png",
+                "lastModified": 1785665155432
+              },
+              {
+                "name": "home2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/home/home2.png",
+                "ext": ".png",
+                "lastModified": 1785665155523
+              },
+              {
+                "name": "home_destroyed.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/home/home_destroyed.png",
+                "ext": ".png",
+                "lastModified": 1785665155579
+              }
+            ]
+          },
+          {
+            "name": "myTank",
+            "type": "directory",
+            "path": "Python坦克大战-素材/img/myTank",
+            "children": [
+              {
+                "name": "tank_T1_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T1_0.png",
+                "ext": ".png",
+                "lastModified": 1785665155719
+              },
+              {
+                "name": "tank_T1_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T1_1.png",
+                "ext": ".png",
+                "lastModified": 1785665155802
+              },
+              {
+                "name": "tank_T1_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T1_2.png",
+                "ext": ".png",
+                "lastModified": 1785665155903
+              },
+              {
+                "name": "tank_T2_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T2_0.png",
+                "ext": ".png",
+                "lastModified": 1785665155886
+              },
+              {
+                "name": "tank_T2_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T2_1.png",
+                "ext": ".png",
+                "lastModified": 1785665155963
+              },
+              {
+                "name": "tank_T2_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T2_2.png",
+                "ext": ".png",
+                "lastModified": 1785665156069
+              },
+              {
+                "name": "tank_T3_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T3_0.png",
+                "ext": ".png",
+                "lastModified": 1785665156083
+              },
+              {
+                "name": "tank_T3_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T3_1.png",
+                "ext": ".png",
+                "lastModified": 1785665156303
+              },
+              {
+                "name": "tank_T3_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T3_2.png",
+                "ext": ".png",
+                "lastModified": 1785665156289
+              },
+              {
+                "name": "tank_T4_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T4_0.png",
+                "ext": ".png",
+                "lastModified": 1785665156365
+              },
+              {
+                "name": "tank_T4_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T4_1.png",
+                "ext": ".png",
+                "lastModified": 1785665156450
+              },
+              {
+                "name": "tank_T4_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T4_2.png",
+                "ext": ".png",
+                "lastModified": 1785665156361
+              },
+              {
+                "name": "tank_T5_0.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T5_0.png",
+                "ext": ".png",
+                "lastModified": 1785665156547
+              },
+              {
+                "name": "tank_T5_1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T5_1.png",
+                "ext": ".png",
+                "lastModified": 1785665156762
+              },
+              {
+                "name": "tank_T5_2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/myTank/tank_T5_2.png",
+                "ext": ".png",
+                "lastModified": 1785665156827
+              }
+            ]
+          },
+          {
+            "name": "others",
+            "type": "directory",
+            "path": "Python坦克大战-素材/img/others",
+            "children": [
+              {
+                "name": "appear.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/appear.png",
+                "ext": ".png",
+                "lastModified": 1785665156992
+              },
+              {
+                "name": "background.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/background.png",
+                "ext": ".png",
+                "lastModified": 1785665175191
+              },
+              {
+                "name": "bar_progress.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/bar_progress.png",
+                "ext": ".png",
+                "lastModified": 1785665156932
+              },
+              {
+                "name": "bar_top.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/bar_top.png",
+                "ext": ".png",
+                "lastModified": 1785665157035
+              },
+              {
+                "name": "bg_start.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/bg_start.png",
+                "ext": ".png",
+                "lastModified": 1785665158192
+              },
+              {
+                "name": "boom_dynamic.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/boom_dynamic.png",
+                "ext": ".png",
+                "lastModified": 1785665157548
+              },
+              {
+                "name": "boom_static.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/boom_static.png",
+                "ext": ".png",
+                "lastModified": 1785665157291
+              },
+              {
+                "name": "close.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/close.png",
+                "ext": ".png",
+                "lastModified": 1785665157376
+              },
+              {
+                "name": "gameover.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/gameover.png",
+                "ext": ".png",
+                "lastModified": 1785665157533
+              },
+              {
+                "name": "level1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/level1.png",
+                "ext": ".png",
+                "lastModified": 1785665162997
+              },
+              {
+                "name": "level2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/level2.png",
+                "ext": ".png",
+                "lastModified": 1785665162998
+              },
+              {
+                "name": "level3.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/level3.png",
+                "ext": ".png",
+                "lastModified": 1785665162991
+              },
+              {
+                "name": "level4.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/level4.png",
+                "ext": ".png",
+                "lastModified": 1785665162992
+              },
+              {
+                "name": "level5.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/level5.png",
+                "ext": ".png",
+                "lastModified": 1785665164252
+              },
+              {
+                "name": "level6.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/level6.png",
+                "ext": ".png",
+                "lastModified": 1785665168293
+              },
+              {
+                "name": "logo.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/logo.png",
+                "ext": ".png",
+                "lastModified": 1785665164470
+              },
+              {
+                "name": "mask.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/mask.png",
+                "ext": ".png",
+                "lastModified": 1785665163445
+              },
+              {
+                "name": "mine.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/mine.png",
+                "ext": ".png",
+                "lastModified": 1785665163346
+              },
+              {
+                "name": "open.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/open.png",
+                "ext": ".png",
+                "lastModified": 1785665163475
+              },
+              {
+                "name": "over.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/over.png",
+                "ext": ".png",
+                "lastModified": 1785665168324
+              },
+              {
+                "name": "protect.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/protect.png",
+                "ext": ".png",
+                "lastModified": 1785665163829
+              },
+              {
+                "name": "tip.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/others/tip.png",
+                "ext": ".png",
+                "lastModified": 1785665163831
+              }
+            ]
+          },
+          {
+            "name": "scene",
+            "type": "directory",
+            "path": "Python坦克大战-素材/img/scene",
+            "children": [
+              {
+                "name": "brick.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/brick.png",
+                "ext": ".png",
+                "lastModified": 1785665164219
+              },
+              {
+                "name": "brick1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/brick1.png",
+                "ext": ".png",
+                "lastModified": 1785665164246
+              },
+              {
+                "name": "brick2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/brick2.png",
+                "ext": ".png",
+                "lastModified": 1785665164604
+              },
+              {
+                "name": "ice.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/ice.png",
+                "ext": ".png",
+                "lastModified": 1785665165001
+              },
+              {
+                "name": "iron.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/iron.png",
+                "ext": ".png",
+                "lastModified": 1785665164588
+              },
+              {
+                "name": "river1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/river1.png",
+                "ext": ".png",
+                "lastModified": 1785665164743
+              },
+              {
+                "name": "river2.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/river2.png",
+                "ext": ".png",
+                "lastModified": 1785665164982
+              },
+              {
+                "name": "tree.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/tree.png",
+                "ext": ".png",
+                "lastModified": 1785665164913
+              },
+              {
+                "name": "tree1.jpg",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/tree1.jpg",
+                "ext": ".jpg",
+                "lastModified": 1785665165126
+              },
+              {
+                "name": "tree1.png",
+                "type": "file",
+                "path": "Python坦克大战-素材/img/scene/tree1.png",
+                "ext": ".png",
+                "lastModified": 1785665165216
+              }
+            ]
+          },
+          {
+            "name": "kuang.png",
+            "type": "file",
+            "path": "Python坦克大战-素材/img/kuang.png",
+            "ext": ".png",
+            "lastModified": 1785664987637
+          },
+          {
+            "name": "renwubg .png",
+            "type": "file",
+            "path": "Python坦克大战-素材/img/renwubg .png",
+            "ext": ".png",
+            "lastModified": 1785664988439
+          },
+          {
+            "name": "renwubg.png",
+            "type": "file",
+            "path": "Python坦克大战-素材/img/renwubg.png",
+            "ext": ".png",
+            "lastModified": 1785664989252
+          },
+          {
+            "name": "tank0.png",
+            "type": "file",
+            "path": "Python坦克大战-素材/img/tank0.png",
+            "ext": ".png",
+            "lastModified": 1785665074145
+          },
+          {
+            "name": "tank1.png",
+            "type": "file",
+            "path": "Python坦克大战-素材/img/tank1.png",
+            "ext": ".png",
+            "lastModified": 1785665074577
+          },
+          {
+            "name": "tank2.png",
+            "type": "file",
+            "path": "Python坦克大战-素材/img/tank2.png",
+            "ext": ".png",
+            "lastModified": 1785665075042
+          },
+          {
+            "name": "tank3.png",
+            "type": "file",
+            "path": "Python坦克大战-素材/img/tank3.png",
+            "ext": ".png",
+            "lastModified": 1785665075481
+          },
+          {
+            "name": "tank4.png",
+            "type": "file",
+            "path": "Python坦克大战-素材/img/tank4.png",
+            "ext": ".png",
+            "lastModified": 1785665075730
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Python复刻我的世界-素材",
+    "type": "directory",
+    "path": "Python复刻我的世界-素材",
+    "children": [
+      {
+        "name": "assets",
+        "type": "directory",
+        "path": "Python复刻我的世界-素材/assets",
+        "children": [
+          {
+            "name": "arm.blend",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/arm.blend",
+            "ext": ".blend",
+            "lastModified": 1785664662548
+          },
+          {
+            "name": "arm.blend1",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/arm.blend1",
+            "ext": ".blend1",
+            "lastModified": 1785664657861
+          },
+          {
+            "name": "arm.mtl",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/arm.mtl",
+            "ext": ".mtl",
+            "lastModified": 1785664653688
+          },
+          {
+            "name": "arm.obj",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/arm.obj",
+            "ext": ".obj",
+            "lastModified": 1785664653703
+          },
+          {
+            "name": "arm_texture.png",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/arm_texture.png",
+            "ext": ".png",
+            "lastModified": 1785664654021
+          },
+          {
+            "name": "arm_texture.psd",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/arm_texture.psd",
+            "ext": ".psd",
+            "lastModified": 1785664723089
+          },
+          {
+            "name": "block.mtl",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/block.mtl",
+            "ext": ".mtl",
+            "lastModified": 1785664654414
+          },
+          {
+            "name": "block.obj",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/block.obj",
+            "ext": ".obj",
+            "lastModified": 1785664654829
+          },
+          {
+            "name": "block_textures.psd",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/block_textures.psd",
+            "ext": ".psd",
+            "lastModified": 1785664659949
+          },
+          {
+            "name": "brick_block.png",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/brick_block.png",
+            "ext": ".png",
+            "lastModified": 1785664660261
+          },
+          {
+            "name": "dirt_block.png",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/dirt_block.png",
+            "ext": ".png",
+            "lastModified": 1785664660387
+          },
+          {
+            "name": "Grass_block.blend",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/Grass_block.blend",
+            "ext": ".blend",
+            "lastModified": 1785664685649
+          },
+          {
+            "name": "grass_block.png",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/grass_block.png",
+            "ext": ".png",
+            "lastModified": 1785664660720
+          },
+          {
+            "name": "punch.xmp",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/punch.xmp",
+            "ext": ".xmp",
+            "lastModified": 1785664661075
+          },
+          {
+            "name": "punch_sound.wav",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/punch_sound.wav",
+            "ext": ".wav",
+            "lastModified": 1785664662226
+          },
+          {
+            "name": "Sans.png",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/Sans.png",
+            "ext": ".png",
+            "lastModified": 1785664662532
+          },
+          {
+            "name": "skybox.png",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/skybox.png",
+            "ext": ".png",
+            "lastModified": 1785664694424
+          },
+          {
+            "name": "stone_block.png",
+            "type": "file",
+            "path": "Python复刻我的世界-素材/assets/stone_block.png",
+            "ext": ".png",
+            "lastModified": 1785664663127
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Python成语接龙-素材",
+    "type": "directory",
+    "path": "Python成语接龙-素材",
+    "children": [
+      {
+        "name": "data",
+        "type": "directory",
+        "path": "Python成语接龙-素材/data",
+        "children": [
+          {
+            "name": "ci.csv",
+            "type": "file",
+            "path": "Python成语接龙-素材/data/ci.csv",
+            "ext": ".csv",
+            "lastModified": 1785663608624
+          },
+          {
+            "name": "ci.json",
+            "type": "file",
+            "path": "Python成语接龙-素材/data/ci.json",
+            "ext": ".json",
+            "lastModified": 1785663775714
+          },
+          {
+            "name": "idiom.json",
+            "type": "file",
+            "path": "Python成语接龙-素材/data/idiom.json",
+            "ext": ".json",
+            "lastModified": 1785664653283
+          },
+          {
+            "name": "word.json",
+            "type": "file",
+            "path": "Python成语接龙-素材/data/word.json",
+            "ext": ".json",
+            "lastModified": 1785664723592
+          },
+          {
+            "name": "xiehouyu.json",
+            "type": "file",
+            "path": "Python成语接龙-素材/data/xiehouyu.json",
+            "ext": ".json",
+            "lastModified": 1785664642179
+          }
+        ]
+      },
+      {
+        "name": "成语列表.txt",
+        "type": "file",
+        "path": "Python成语接龙-素材/成语列表.txt",
+        "ext": ".txt",
+        "lastModified": 1785662472162
+      },
+      {
+        "name": "汉字列表.txt",
+        "type": "file",
+        "path": "Python成语接龙-素材/汉字列表.txt",
+        "ext": ".txt",
+        "lastModified": 1785662451309
+      },
+      {
+        "name": "汉字拼音.txt",
+        "type": "file",
+        "path": "Python成语接龙-素材/汉字拼音.txt",
+        "ext": ".txt",
+        "lastModified": 1785662451310
+      }
+    ]
+  },
+  {
+    "name": "Python排座位软件-excel模版",
+    "type": "directory",
+    "path": "Python排座位软件-excel模版",
+    "children": [
+      {
+        "name": "seat_example.xlsx",
+        "type": "file",
+        "path": "Python排座位软件-excel模版/seat_example.xlsx",
+        "ext": ".xlsx",
+        "lastModified": 1785662636637
+      }
+    ]
+  },
+  {
+    "name": "Python梦境大师",
+    "type": "directory",
+    "path": "Python梦境大师",
+    "children": [
+      {
+        "name": "Python梦境大师源代码.py",
+        "type": "file",
+        "path": "Python梦境大师/Python梦境大师源代码.py",
+        "ext": ".py",
+        "lastModified": 1785662636264
+      }
+    ]
+  },
+  {
+    "name": "Python超级马里奥-素材",
+    "type": "directory",
+    "path": "Python超级马里奥-素材",
+    "children": [
+      {
+        "name": "assets",
+        "type": "directory",
+        "path": "Python超级马里奥-素材/assets",
+        "children": [
+          {
+            "name": "Enemy",
+            "type": "directory",
+            "path": "Python超级马里奥-素材/assets/Enemy",
+            "children": [
+              {
+                "name": "Cuckold",
+                "type": "directory",
+                "path": "Python超级马里奥-素材/assets/Enemy/Cuckold",
+                "children": [
+                  {
+                    "name": "death.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/Enemy/Cuckold/death.png",
+                    "ext": ".png",
+                    "lastModified": 1785665165359
+                  },
+                  {
+                    "name": "run.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/Enemy/Cuckold/run.png",
+                    "ext": ".png",
+                    "lastModified": 1785665165360
+                  }
+                ]
+              },
+              {
+                "name": "Goomba",
+                "type": "directory",
+                "path": "Python超级马里奥-素材/assets/Enemy/Goomba",
+                "children": [
+                  {
+                    "name": "death.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/Enemy/Goomba/death.png",
+                    "ext": ".png",
+                    "lastModified": 1785665165454
+                  },
+                  {
+                    "name": "run.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/Enemy/Goomba/run.png",
+                    "ext": ".png",
+                    "lastModified": 1785665165525
+                  }
+                ]
+              },
+              {
+                "name": "Kuba",
+                "type": "directory",
+                "path": "Python超级马里奥-素材/assets/Enemy/Kuba",
+                "children": [
+                  {
+                    "name": "normal.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/Enemy/Kuba/normal.png",
+                    "ext": ".png",
+                    "lastModified": 1785665165740
+                  }
+                ]
+              },
+              {
+                "name": "Toucan",
+                "type": "directory",
+                "path": "Python超级马里奥-素材/assets/Enemy/Toucan",
+                "children": [
+                  {
+                    "name": "normal.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/Enemy/Toucan/normal.png",
+                    "ext": ".png",
+                    "lastModified": 1785665165683
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "MainCharacters",
+            "type": "directory",
+            "path": "Python超级马里奥-素材/assets/MainCharacters",
+            "children": [
+              {
+                "name": "Mario",
+                "type": "directory",
+                "path": "Python超级马里奥-素材/assets/MainCharacters/Mario",
+                "children": [
+                  {
+                    "name": "death.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/MainCharacters/Mario/death.png",
+                    "ext": ".png",
+                    "lastModified": 1785665165785
+                  },
+                  {
+                    "name": "idle.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/MainCharacters/Mario/idle.png",
+                    "ext": ".png",
+                    "lastModified": 1785665165847
+                  },
+                  {
+                    "name": "jump.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/MainCharacters/Mario/jump.png",
+                    "ext": ".png",
+                    "lastModified": 1785665166127
+                  },
+                  {
+                    "name": "run.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/MainCharacters/Mario/run.png",
+                    "ext": ".png",
+                    "lastModified": 1785665166140
+                  },
+                  {
+                    "name": "swim.png",
+                    "type": "file",
+                    "path": "Python超级马里奥-素材/assets/MainCharacters/Mario/swim.png",
+                    "ext": ".png",
+                    "lastModified": 1785665166143
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Terrain",
+            "type": "directory",
+            "path": "Python超级马里奥-素材/assets/Terrain",
+            "children": [
+              {
+                "name": "asparagus.png",
+                "type": "file",
+                "path": "Python超级马里奥-素材/assets/Terrain/asparagus.png",
+                "ext": ".png",
+                "lastModified": 1785665150479
+              },
+              {
+                "name": "coins.png",
+                "type": "file",
+                "path": "Python超级马里奥-素材/assets/Terrain/coins.png",
+                "ext": ".png",
+                "lastModified": 1785665150884
+              },
+              {
+                "name": "Flag.png",
+                "type": "file",
+                "path": "Python超级马里奥-素材/assets/Terrain/Flag.png",
+                "ext": ".png",
+                "lastModified": 1785665150982
+              },
+              {
+                "name": "flower.png",
+                "type": "file",
+                "path": "Python超级马里奥-素材/assets/Terrain/flower.png",
+                "ext": ".png",
+                "lastModified": 1785665151177
+              },
+              {
+                "name": "Ground.png",
+                "type": "file",
+                "path": "Python超级马里奥-素材/assets/Terrain/Ground.png",
+                "ext": ".png",
+                "lastModified": 1785665151187
+              },
+              {
+                "name": "Ladder.png",
+                "type": "file",
+                "path": "Python超级马里奥-素材/assets/Terrain/Ladder.png",
+                "ext": ".png",
+                "lastModified": 1785665151340
+              },
+              {
+                "name": "Question_mark.png",
+                "type": "file",
+                "path": "Python超级马里奥-素材/assets/Terrain/Question_mark.png",
+                "ext": ".png",
+                "lastModified": 1785665151406
+              },
+              {
+                "name": "star.png",
+                "type": "file",
+                "path": "Python超级马里奥-素材/assets/Terrain/star.png",
+                "ext": ".png",
+                "lastModified": 1785665151564
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Python趣味黑客",
+    "type": "directory",
+    "path": "Python趣味黑客",
+    "children": [
+      {
+        "name": "破解wifi密码文件",
+        "type": "directory",
+        "path": "Python趣味黑客/破解wifi密码文件",
+        "children": [
+          {
+            "name": "birthday.txt",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/birthday.txt",
+            "ext": ".txt",
+            "lastModified": 1785664825029
+          },
+          {
+            "name": "birthday_ddmmyyyy.txt",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/birthday_ddmmyyyy.txt",
+            "ext": ".txt",
+            "lastModified": 1785664724236
+          },
+          {
+            "name": "birthday_lddmmyyyy.txt",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/birthday_lddmmyyyy.txt",
+            "ext": ".txt",
+            "lastModified": 1785664987219
+          },
+          {
+            "name": "birthday_Uddmmyyyy.txt",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/birthday_Uddmmyyyy.txt",
+            "ext": ".txt",
+            "lastModified": 1785664914961
+          },
+          {
+            "name": "common.txt",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/common.txt",
+            "ext": ".txt",
+            "lastModified": 1785664825622
+          },
+          {
+            "name": "normalize.py",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/normalize.py",
+            "ext": ".py",
+            "lastModified": 1785664825540
+          },
+          {
+            "name": "other-0.txt",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/other-0.txt",
+            "ext": ".txt",
+            "lastModified": 1785664825923
+          },
+          {
+            "name": "other-1.txt",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/other-1.txt",
+            "ext": ".txt",
+            "lastModified": 1785664931084
+          },
+          {
+            "name": "other-2.txt",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/other-2.txt",
+            "ext": ".txt",
+            "lastModified": 1785664826754
+          },
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "Python趣味黑客/破解wifi密码文件/README.md",
+            "ext": ".md",
+            "lastModified": 1785664827146
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Python飞机大战-素材",
+    "type": "directory",
+    "path": "Python飞机大战-素材",
+    "children": [
+      {
+        "name": "img",
+        "type": "directory",
+        "path": "Python飞机大战-素材/img",
+        "children": [
+          {
+            "name": "background.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/background.png",
+            "ext": ".png",
+            "lastModified": 1785664620659
+          },
+          {
+            "name": "background0.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/background0.png",
+            "ext": ".png",
+            "lastModified": 1785664621104
+          },
+          {
+            "name": "bullet.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/bullet.png",
+            "ext": ".png",
+            "lastModified": 1785664621464
+          },
+          {
+            "name": "expl0.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl0.png",
+            "ext": ".png",
+            "lastModified": 1785664621917
+          },
+          {
+            "name": "expl1.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl1.png",
+            "ext": ".png",
+            "lastModified": 1785664622263
+          },
+          {
+            "name": "expl2.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl2.png",
+            "ext": ".png",
+            "lastModified": 1785664622552
+          },
+          {
+            "name": "expl3.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl3.png",
+            "ext": ".png",
+            "lastModified": 1785664622937
+          },
+          {
+            "name": "expl4.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl4.png",
+            "ext": ".png",
+            "lastModified": 1785664623419
+          },
+          {
+            "name": "expl5.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl5.png",
+            "ext": ".png",
+            "lastModified": 1785664623955
+          },
+          {
+            "name": "expl6.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl6.png",
+            "ext": ".png",
+            "lastModified": 1785664624276
+          },
+          {
+            "name": "expl7.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl7.png",
+            "ext": ".png",
+            "lastModified": 1785664624269
+          },
+          {
+            "name": "expl8.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/expl8.png",
+            "ext": ".png",
+            "lastModified": 1785664624597
+          },
+          {
+            "name": "gun.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/gun.png",
+            "ext": ".png",
+            "lastModified": 1785664624584
+          },
+          {
+            "name": "player.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player.png",
+            "ext": ".png",
+            "lastModified": 1785664625088
+          },
+          {
+            "name": "player0.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player0.png",
+            "ext": ".png",
+            "lastModified": 1785664625009
+          },
+          {
+            "name": "player1.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player1.png",
+            "ext": ".png",
+            "lastModified": 1785664625360
+          },
+          {
+            "name": "player2.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player2.png",
+            "ext": ".png",
+            "lastModified": 1785664625564
+          },
+          {
+            "name": "player_expl0.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl0.png",
+            "ext": ".png",
+            "lastModified": 1785664625697
+          },
+          {
+            "name": "player_expl1.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl1.png",
+            "ext": ".png",
+            "lastModified": 1785664625891
+          },
+          {
+            "name": "player_expl2.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl2.png",
+            "ext": ".png",
+            "lastModified": 1785664625944
+          },
+          {
+            "name": "player_expl3.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl3.png",
+            "ext": ".png",
+            "lastModified": 1785664626182
+          },
+          {
+            "name": "player_expl4.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl4.png",
+            "ext": ".png",
+            "lastModified": 1785664626263
+          },
+          {
+            "name": "player_expl5.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl5.png",
+            "ext": ".png",
+            "lastModified": 1785664626755
+          },
+          {
+            "name": "player_expl6.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl6.png",
+            "ext": ".png",
+            "lastModified": 1785664626630
+          },
+          {
+            "name": "player_expl7.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl7.png",
+            "ext": ".png",
+            "lastModified": 1785664626946
+          },
+          {
+            "name": "player_expl8.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/player_expl8.png",
+            "ext": ".png",
+            "lastModified": 1785664627066
+          },
+          {
+            "name": "rock.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/rock.png",
+            "ext": ".png",
+            "lastModified": 1785664627288
+          },
+          {
+            "name": "rock0.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/rock0.png",
+            "ext": ".png",
+            "lastModified": 1785664627422
+          },
+          {
+            "name": "rock1.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/rock1.png",
+            "ext": ".png",
+            "lastModified": 1785664627791
+          },
+          {
+            "name": "rock2.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/rock2.png",
+            "ext": ".png",
+            "lastModified": 1785664627766
+          },
+          {
+            "name": "rock3.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/rock3.png",
+            "ext": ".png",
+            "lastModified": 1785664628146
+          },
+          {
+            "name": "rock4.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/rock4.png",
+            "ext": ".png",
+            "lastModified": 1785664628126
+          },
+          {
+            "name": "rock5.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/rock5.png",
+            "ext": ".png",
+            "lastModified": 1785664628574
+          },
+          {
+            "name": "rock6.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/rock6.png",
+            "ext": ".png",
+            "lastModified": 1785664628526
+          },
+          {
+            "name": "shield.png",
+            "type": "file",
+            "path": "Python飞机大战-素材/img/shield.png",
+            "ext": ".png",
+            "lastModified": 1785664628900
+          }
+        ]
+      },
+      {
+        "name": "sound",
+        "type": "directory",
+        "path": "Python飞机大战-素材/sound",
+        "children": [
+          {
+            "name": "background.ogg",
+            "type": "file",
+            "path": "Python飞机大战-素材/sound/background.ogg",
+            "ext": ".ogg",
+            "lastModified": 1785664723590
+          },
+          {
+            "name": "expl0.wav",
+            "type": "file",
+            "path": "Python飞机大战-素材/sound/expl0.wav",
+            "ext": ".wav",
+            "lastModified": 1785664629171
+          },
+          {
+            "name": "expl1.wav",
+            "type": "file",
+            "path": "Python飞机大战-素材/sound/expl1.wav",
+            "ext": ".wav",
+            "lastModified": 1785664631517
+          },
+          {
+            "name": "pow0.wav",
+            "type": "file",
+            "path": "Python飞机大战-素材/sound/pow0.wav",
+            "ext": ".wav",
+            "lastModified": 1785664631976
+          },
+          {
+            "name": "pow1.wav",
+            "type": "file",
+            "path": "Python飞机大战-素材/sound/pow1.wav",
+            "ext": ".wav",
+            "lastModified": 1785664632951
+          },
+          {
+            "name": "rumble.ogg",
+            "type": "file",
+            "path": "Python飞机大战-素材/sound/rumble.ogg",
+            "ext": ".ogg",
+            "lastModified": 1785664638240
+          },
+          {
+            "name": "shoot.wav",
+            "type": "file",
+            "path": "Python飞机大战-素材/sound/shoot.wav",
+            "ext": ".wav",
+            "lastModified": 1785664638685
+          }
+        ]
+      },
+      {
+        "name": "font.ttf",
+        "type": "file",
+        "path": "Python飞机大战-素材/font.ttf",
+        "ext": ".ttf",
+        "lastModified": 1785662693101
+      },
+      {
+        "name": "player.ico",
+        "type": "file",
+        "path": "Python飞机大战-素材/player.ico",
+        "ext": ".ico",
+        "lastModified": 1785662636406
+      }
+    ]
+  },
+  {
+    "name": "Scratch AI聊天",
+    "type": "directory",
+    "path": "Scratch AI聊天",
+    "children": [
+      {
+        "name": "AI图标",
+        "type": "directory",
+        "path": "Scratch AI聊天/AI图标",
+        "children": [
+          {
+            "name": "deepseek.webp",
+            "type": "file",
+            "path": "Scratch AI聊天/AI图标/deepseek.webp",
+            "ext": ".webp",
+            "lastModified": 1785665076050
+          },
+          {
+            "name": "google.jpg",
+            "type": "file",
+            "path": "Scratch AI聊天/AI图标/google.jpg",
+            "ext": ".jpg",
+            "lastModified": 1785665076403
+          },
+          {
+            "name": "Kimi.png",
+            "type": "file",
+            "path": "Scratch AI聊天/AI图标/Kimi.png",
+            "ext": ".png",
+            "lastModified": 1785665076783
+          },
+          {
+            "name": "豆包.jpeg",
+            "type": "file",
+            "path": "Scratch AI聊天/AI图标/豆包.jpeg",
+            "ext": ".jpeg",
+            "lastModified": 1785665077170
+          }
+        ]
+      },
+      {
+        "name": "素材",
+        "type": "directory",
+        "path": "Scratch AI聊天/素材",
+        "children": [
+          {
+            "name": "Deepseek.svg",
+            "type": "file",
+            "path": "Scratch AI聊天/素材/Deepseek.svg",
+            "ext": ".svg",
+            "lastModified": 1785665078323
+          },
+          {
+            "name": "Scratch猫医生.png",
+            "type": "file",
+            "path": "Scratch AI聊天/素材/Scratch猫医生.png",
+            "ext": ".png",
+            "lastModified": 1785665079651
+          },
+          {
+            "name": "title1.svg",
+            "type": "file",
+            "path": "Scratch AI聊天/素材/title1.svg",
+            "ext": ".svg",
+            "lastModified": 1785665080773
+          },
+          {
+            "name": "title2.png",
+            "type": "file",
+            "path": "Scratch AI聊天/素材/title2.png",
+            "ext": ".png",
+            "lastModified": 1785665081902
+          },
+          {
+            "name": "开始游戏.svg",
+            "type": "file",
+            "path": "Scratch AI聊天/素材/开始游戏.svg",
+            "ext": ".svg",
+            "lastModified": 1785665114466
+          },
+          {
+            "name": "背景.png",
+            "type": "file",
+            "path": "Scratch AI聊天/素材/背景.png",
+            "ext": ".png",
+            "lastModified": 1785665109631
+          },
+          {
+            "name": "题目库.txt",
+            "type": "file",
+            "path": "Scratch AI聊天/素材/题目库.txt",
+            "ext": ".txt",
+            "lastModified": 1785665110123
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Scratch乒乓游戏-奥运配色",
+    "type": "directory",
+    "path": "Scratch乒乓游戏-奥运配色",
+    "children": [
+      {
+        "name": "乒乓游戏-奥运配色-素材.sb3",
+        "type": "file",
+        "path": "Scratch乒乓游戏-奥运配色/乒乓游戏-奥运配色-素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663065769
+      },
+      {
+        "name": "乒乓音效1.wav",
+        "type": "file",
+        "path": "Scratch乒乓游戏-奥运配色/乒乓音效1.wav",
+        "ext": ".wav",
+        "lastModified": 1785663064636
+      },
+      {
+        "name": "乒乓音效2.wav",
+        "type": "file",
+        "path": "Scratch乒乓游戏-奥运配色/乒乓音效2.wav",
+        "ext": ".wav",
+        "lastModified": 1785663064777
+      },
+      {
+        "name": "奖杯.svg",
+        "type": "file",
+        "path": "Scratch乒乓游戏-奥运配色/奖杯.svg",
+        "ext": ".svg",
+        "lastModified": 1785663064838
+      }
+    ]
+  },
+  {
+    "name": "Scratch五子棋-素材",
+    "type": "directory",
+    "path": "Scratch五子棋-素材",
+    "children": [
+      {
+        "name": "五子棋-素材.sb3",
+        "type": "file",
+        "path": "Scratch五子棋-素材/五子棋-素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663165584
+      }
+    ]
+  },
+  {
+    "name": "Scratch恶魔轮盘-素材",
+    "type": "directory",
+    "path": "Scratch恶魔轮盘-素材",
+    "children": [
+      {
+        "name": "恶魔轮盘封面.png",
+        "type": "file",
+        "path": "Scratch恶魔轮盘-素材/恶魔轮盘封面.png",
+        "ext": ".png",
+        "lastModified": 1785663038699
+      },
+      {
+        "name": "恶魔轮盘按钮.png",
+        "type": "file",
+        "path": "Scratch恶魔轮盘-素材/恶魔轮盘按钮.png",
+        "ext": ".png",
+        "lastModified": 1785662886975
+      }
+    ]
+  },
+  {
+    "name": "Scratch恶魔轮盘-道具与坐标",
+    "type": "directory",
+    "path": "Scratch恶魔轮盘-道具与坐标",
+    "children": [
+      {
+        "name": "敌人道具X坐标.txt",
+        "type": "file",
+        "path": "Scratch恶魔轮盘-道具与坐标/敌人道具X坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785662862455
+      },
+      {
+        "name": "敌人道具Y坐标.txt",
+        "type": "file",
+        "path": "Scratch恶魔轮盘-道具与坐标/敌人道具Y坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785662863334
+      },
+      {
+        "name": "玩家道具.sprite3",
+        "type": "file",
+        "path": "Scratch恶魔轮盘-道具与坐标/玩家道具.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662874615
+      },
+      {
+        "name": "玩家道具x坐标.txt",
+        "type": "file",
+        "path": "Scratch恶魔轮盘-道具与坐标/玩家道具x坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785662867833
+      },
+      {
+        "name": "玩家道具Y坐标.txt",
+        "type": "file",
+        "path": "Scratch恶魔轮盘-道具与坐标/玩家道具Y坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785662868564
+      }
+    ]
+  },
+  {
+    "name": "Scratch我的世界-素材",
+    "type": "directory",
+    "path": "Scratch我的世界-素材",
+    "children": [
+      {
+        "name": "角色",
+        "type": "directory",
+        "path": "Scratch我的世界-素材/角色",
+        "children": [
+          {
+            "name": "光标.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/光标.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665141492
+          },
+          {
+            "name": "史蒂夫.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/史蒂夫.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665145098
+          },
+          {
+            "name": "史蒂夫头.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/史蒂夫头.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665145972
+          },
+          {
+            "name": "史蒂夫胳膊.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/史蒂夫胳膊.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665144531
+          },
+          {
+            "name": "史蒂夫腿.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/史蒂夫腿.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665145367
+          },
+          {
+            "name": "图块.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/图块.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665146831
+          },
+          {
+            "name": "按钮.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/按钮.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665141309
+          },
+          {
+            "name": "氧气.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/氧气.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665149601
+          },
+          {
+            "name": "火焰.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/火焰.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665142731
+          },
+          {
+            "name": "物品栏.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/物品栏.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665147408
+          },
+          {
+            "name": "物品栏框.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/物品栏框.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665147170
+          },
+          {
+            "name": "生物.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/生物.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665156469
+          },
+          {
+            "name": "盔甲.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/盔甲.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665144159
+          },
+          {
+            "name": "箭头.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/箭头.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665143663
+          },
+          {
+            "name": "血量条.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/血量条.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665148465
+          },
+          {
+            "name": "计数.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/计数.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665142227
+          },
+          {
+            "name": "饥饿度.sprite3",
+            "type": "file",
+            "path": "Scratch我的世界-素材/角色/饥饿度.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665142751
+          }
+        ]
+      },
+      {
+        "name": "图块名称.txt",
+        "type": "file",
+        "path": "Scratch我的世界-素材/图块名称.txt",
+        "ext": ".txt",
+        "lastModified": 1785663076360
+      },
+      {
+        "name": "图块是否可以穿过.txt",
+        "type": "file",
+        "path": "Scratch我的世界-素材/图块是否可以穿过.txt",
+        "ext": ".txt",
+        "lastModified": 1785663076548
+      },
+      {
+        "name": "图块是否应用光照.txt",
+        "type": "file",
+        "path": "Scratch我的世界-素材/图块是否应用光照.txt",
+        "ext": ".txt",
+        "lastModified": 1785663076652
+      },
+      {
+        "name": "图块血量.txt",
+        "type": "file",
+        "path": "Scratch我的世界-素材/图块血量.txt",
+        "ext": ".txt",
+        "lastModified": 1785663076876
+      },
+      {
+        "name": "孔明灯.png",
+        "type": "file",
+        "path": "Scratch我的世界-素材/孔明灯.png",
+        "ext": ".png",
+        "lastModified": 1785663096156
+      },
+      {
+        "name": "我的世界-素材.sb3",
+        "type": "file",
+        "path": "Scratch我的世界-素材/我的世界-素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663166345
+      },
+      {
+        "name": "背景.sprite3",
+        "type": "file",
+        "path": "Scratch我的世界-素材/背景.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663076038
+      }
+    ]
+  },
+  {
+    "name": "Scratch打字教程-坐标文件",
+    "type": "directory",
+    "path": "Scratch打字教程-坐标文件",
+    "children": [
+      {
+        "name": "按键x坐标.txt",
+        "type": "file",
+        "path": "Scratch打字教程-坐标文件/按键x坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785662852098
+      },
+      {
+        "name": "按键y坐标.txt",
+        "type": "file",
+        "path": "Scratch打字教程-坐标文件/按键y坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785662852523
+      }
+    ]
+  },
+  {
+    "name": "Scratch探究刘谦魔术-素材&成品",
+    "type": "directory",
+    "path": "Scratch探究刘谦魔术-素材&成品",
+    "children": [
+      {
+        "name": "探究刘谦2024龙年魔术 - 素材.sb3",
+        "type": "file",
+        "path": "Scratch探究刘谦魔术-素材&成品/探究刘谦2024龙年魔术 - 素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663140769
+      },
+      {
+        "name": "探究刘谦2024龙年魔术.sb3",
+        "type": "file",
+        "path": "Scratch探究刘谦魔术-素材&成品/探究刘谦2024龙年魔术.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663140766
+      }
+    ]
+  },
+  {
+    "name": "Scratch探究马年春晚魔术",
+    "type": "directory",
+    "path": "Scratch探究马年春晚魔术",
+    "children": [
+      {
+        "name": "春晚魔术专用计算器.sb3",
+        "type": "file",
+        "path": "Scratch探究马年春晚魔术/春晚魔术专用计算器.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663076036
+      }
+    ]
+  },
+  {
+    "name": "Scratch斗地主素材",
+    "type": "directory",
+    "path": "Scratch斗地主素材",
+    "children": [
+      {
+        "name": "Scratch斗地主BGM.mp3",
+        "type": "file",
+        "path": "Scratch斗地主素材/Scratch斗地主BGM.mp3",
+        "ext": ".mp3",
+        "lastModified": 1785662950745
+      },
+      {
+        "name": "素材.sb3",
+        "type": "file",
+        "path": "Scratch斗地主素材/素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663070314
+      }
+    ]
+  },
+  {
+    "name": "Scratch植物大战僵尸-素材",
+    "type": "directory",
+    "path": "Scratch植物大战僵尸-素材",
+    "children": [
+      {
+        "name": "新增单独素材",
+        "type": "directory",
+        "path": "Scratch植物大战僵尸-素材/新增单独素材",
+        "children": [
+          {
+            "name": "僵尸燃烧造型.rar",
+            "type": "file",
+            "path": "Scratch植物大战僵尸-素材/新增单独素材/僵尸燃烧造型.rar",
+            "ext": ".rar",
+            "lastModified": 1785665150902
+          },
+          {
+            "name": "卷心菜.sprite3",
+            "type": "file",
+            "path": "Scratch植物大战僵尸-素材/新增单独素材/卷心菜.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665150080
+          },
+          {
+            "name": "卷心菜投手.sprite3",
+            "type": "file",
+            "path": "Scratch植物大战僵尸-素材/新增单独素材/卷心菜投手.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1785665150903
+          },
+          {
+            "name": "铲子.svg",
+            "type": "file",
+            "path": "Scratch植物大战僵尸-素材/新增单独素材/铲子.svg",
+            "ext": ".svg",
+            "lastModified": 1785665149255
+          },
+          {
+            "name": "高坚果造型.rar",
+            "type": "file",
+            "path": "Scratch植物大战僵尸-素材/新增单独素材/高坚果造型.rar",
+            "ext": ".rar",
+            "lastModified": 1785665149508
+          }
+        ]
+      },
+      {
+        "name": "PVZ Fangame Demo-完整素材.sb3",
+        "type": "file",
+        "path": "Scratch植物大战僵尸-素材/PVZ Fangame Demo-完整素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785664567825
+      },
+      {
+        "name": "植物大战僵尸-动态抛物线-素材.sb3",
+        "type": "file",
+        "path": "Scratch植物大战僵尸-素材/植物大战僵尸-动态抛物线-素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663342315
+      }
+    ]
+  },
+  {
+    "name": "Scratch母亲节-素材",
+    "type": "directory",
+    "path": "Scratch母亲节-素材",
+    "children": [
+      {
+        "name": "母亲节射击游戏 - 素材.sb3",
+        "type": "file",
+        "path": "Scratch母亲节-素材/母亲节射击游戏 - 素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663064078
+      },
+      {
+        "name": "母亲节照片.sprite3",
+        "type": "file",
+        "path": "Scratch母亲节-素材/母亲节照片.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663064376
+      },
+      {
+        "name": "水壶.sprite3",
+        "type": "file",
+        "path": "Scratch母亲节-素材/水壶.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663064219
+      },
+      {
+        "name": "花盆.sprite3",
+        "type": "file",
+        "path": "Scratch母亲节-素材/花盆.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663074955
+      }
+    ]
+  },
+  {
+    "name": "Scratch水果忍者-素材",
+    "type": "directory",
+    "path": "Scratch水果忍者-素材",
+    "children": [
+      {
+        "name": "水果忍者-初始素材.sb3",
+        "type": "file",
+        "path": "Scratch水果忍者-素材/水果忍者-初始素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663140768
+      }
+    ]
+  },
+  {
+    "name": "Scratch海龟汤推理小游戏",
+    "type": "directory",
+    "path": "Scratch海龟汤推理小游戏",
+    "children": [
+      {
+        "name": "AI图标",
+        "type": "directory",
+        "path": "Scratch海龟汤推理小游戏/AI图标",
+        "children": [
+          {
+            "name": "ChatGPT_logo.svg.png",
+            "type": "file",
+            "path": "Scratch海龟汤推理小游戏/AI图标/ChatGPT_logo.svg.png",
+            "ext": ".png",
+            "lastModified": 1785665111450
+          },
+          {
+            "name": "Deepseek.png",
+            "type": "file",
+            "path": "Scratch海龟汤推理小游戏/AI图标/Deepseek.png",
+            "ext": ".png",
+            "lastModified": 1785665111814
+          },
+          {
+            "name": "deepseek.webp",
+            "type": "file",
+            "path": "Scratch海龟汤推理小游戏/AI图标/deepseek.webp",
+            "ext": ".webp",
+            "lastModified": 1785665112421
+          },
+          {
+            "name": "google.jpg",
+            "type": "file",
+            "path": "Scratch海龟汤推理小游戏/AI图标/google.jpg",
+            "ext": ".jpg",
+            "lastModified": 1785665112720
+          },
+          {
+            "name": "Kimi.png",
+            "type": "file",
+            "path": "Scratch海龟汤推理小游戏/AI图标/Kimi.png",
+            "ext": ".png",
+            "lastModified": 1785665112959
+          },
+          {
+            "name": "豆包.jpeg",
+            "type": "file",
+            "path": "Scratch海龟汤推理小游戏/AI图标/豆包.jpeg",
+            "ext": ".jpeg",
+            "lastModified": 1785665113360
+          }
+        ]
+      },
+      {
+        "name": "名人列表.txt",
+        "type": "file",
+        "path": "Scratch海龟汤推理小游戏/名人列表.txt",
+        "ext": ".txt",
+        "lastModified": 1785662954960
+      }
+    ]
+  },
+  {
+    "name": "Scratch消消乐教程-新增素材",
+    "type": "directory",
+    "path": "Scratch消消乐教程-新增素材",
+    "children": [
+      {
+        "name": "缤纷动物.sprite3",
+        "type": "file",
+        "path": "Scratch消消乐教程-新增素材/缤纷动物.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663170857
+      },
+      {
+        "name": "背景4.jpg",
+        "type": "file",
+        "path": "Scratch消消乐教程-新增素材/背景4.jpg",
+        "ext": ".jpg",
+        "lastModified": 1785663165565
+      },
+      {
+        "name": "蛋仔.sprite3",
+        "type": "file",
+        "path": "Scratch消消乐教程-新增素材/蛋仔.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663234655
+      }
+    ]
+  },
+  {
+    "name": "Scratch猫猫托儿所素材",
+    "type": "directory",
+    "path": "Scratch猫猫托儿所素材",
+    "children": [
+      {
+        "name": "猫猫托儿所-素材.sb3",
+        "type": "file",
+        "path": "Scratch猫猫托儿所素材/猫猫托儿所-素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663141610
+      }
+    ]
+  },
+  {
+    "name": "Scratch端午主题-别惹粽子",
+    "type": "directory",
+    "path": "Scratch端午主题-别惹粽子",
+    "children": [
+      {
+        "name": "别惹粽子-教程素材.sb3",
+        "type": "file",
+        "path": "Scratch端午主题-别惹粽子/别惹粽子-教程素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785662861185
+      },
+      {
+        "name": "护盾.png",
+        "type": "file",
+        "path": "Scratch端午主题-别惹粽子/护盾.png",
+        "ext": ".png",
+        "lastModified": 1785662862121
+      }
+    ]
+  },
+  {
+    "name": "Scratch羊了个羊教程-坐标文件",
+    "type": "directory",
+    "path": "Scratch羊了个羊教程-坐标文件",
+    "children": [
+      {
+        "name": "卡片x坐标.txt",
+        "type": "file",
+        "path": "Scratch羊了个羊教程-坐标文件/卡片x坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785663144973
+      },
+      {
+        "name": "卡片y坐标.txt",
+        "type": "file",
+        "path": "Scratch羊了个羊教程-坐标文件/卡片y坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785663145097
+      },
+      {
+        "name": "卡片层数.txt",
+        "type": "file",
+        "path": "Scratch羊了个羊教程-坐标文件/卡片层数.txt",
+        "ext": ".txt",
+        "lastModified": 1785663145368
+      },
+      {
+        "name": "国庆x坐标.txt",
+        "type": "file",
+        "path": "Scratch羊了个羊教程-坐标文件/国庆x坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785663144750
+      },
+      {
+        "name": "国庆y坐标.txt",
+        "type": "file",
+        "path": "Scratch羊了个羊教程-坐标文件/国庆y坐标.txt",
+        "ext": ".txt",
+        "lastModified": 1785663144975
+      },
+      {
+        "name": "国庆层数.txt",
+        "type": "file",
+        "path": "Scratch羊了个羊教程-坐标文件/国庆层数.txt",
+        "ext": ".txt",
+        "lastModified": 1785663144895
+      }
+    ]
+  },
+  {
+    "name": "Scratch考古小游戏-素材",
+    "type": "directory",
+    "path": "Scratch考古小游戏-素材",
+    "children": [
+      {
+        "name": "恐龙骨骼解谜",
+        "type": "directory",
+        "path": "Scratch考古小游戏-素材/恐龙骨骼解谜",
+        "children": [
+          {
+            "name": "剑龙.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/剑龙.png",
+            "ext": ".png",
+            "lastModified": 1785665118333
+          },
+          {
+            "name": "剑龙化石.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/剑龙化石.png",
+            "ext": ".png",
+            "lastModified": 1785665118335
+          },
+          {
+            "name": "恐龙-主背景.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/恐龙-主背景.png",
+            "ext": ".png",
+            "lastModified": 1785665148894
+          },
+          {
+            "name": "恐龙启动页.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/恐龙启动页.png",
+            "ext": ".png",
+            "lastModified": 1785665140989
+          },
+          {
+            "name": "恐龙开始.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/恐龙开始.png",
+            "ext": ".png",
+            "lastModified": 1785665135291
+          },
+          {
+            "name": "恐龙骨骼-初始提示.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/恐龙骨骼-初始提示.png",
+            "ext": ".png",
+            "lastModified": 1785665118672
+          },
+          {
+            "name": "恐龙骨骼-完成.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/恐龙骨骼-完成.png",
+            "ext": ".png",
+            "lastModified": 1785665139512
+          },
+          {
+            "name": "恐龙骨骼-正确.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/恐龙骨骼-正确.png",
+            "ext": ".png",
+            "lastModified": 1785665135288
+          },
+          {
+            "name": "恐龙骨骼-错误.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/恐龙骨骼-错误.png",
+            "ext": ".png",
+            "lastModified": 1785665119328
+          },
+          {
+            "name": "甲龙.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/甲龙.png",
+            "ext": ".png",
+            "lastModified": 1785665117035
+          },
+          {
+            "name": "甲龙化石.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/甲龙化石.png",
+            "ext": ".png",
+            "lastModified": 1785665117037
+          },
+          {
+            "name": "翼龙.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/翼龙.png",
+            "ext": ".png",
+            "lastModified": 1785665138923
+          },
+          {
+            "name": "翼龙化石.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/翼龙化石.png",
+            "ext": ".png",
+            "lastModified": 1785665139657
+          },
+          {
+            "name": "雷龙.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/雷龙.png",
+            "ext": ".png",
+            "lastModified": 1785665136037
+          },
+          {
+            "name": "雷龙化石.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/雷龙化石.png",
+            "ext": ".png",
+            "lastModified": 1785665137486
+          },
+          {
+            "name": "霸王龙.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/霸王龙.png",
+            "ext": ".png",
+            "lastModified": 1785665115754
+          },
+          {
+            "name": "霸王龙化石.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/恐龙骨骼解谜/霸王龙化石.png",
+            "ext": ".png",
+            "lastModified": 1785665115756
+          }
+        ]
+      },
+      {
+        "name": "文物",
+        "type": "directory",
+        "path": "Scratch考古小游戏-素材/文物",
+        "children": [
+          {
+            "name": "瓷器.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/文物/瓷器.png",
+            "ext": ".png",
+            "lastModified": 1785665139800
+          },
+          {
+            "name": "花瓶.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/文物/花瓶.png",
+            "ext": ".png",
+            "lastModified": 1785665141284
+          },
+          {
+            "name": "锅鼎.png",
+            "type": "file",
+            "path": "Scratch考古小游戏-素材/文物/锅鼎.png",
+            "ext": ".png",
+            "lastModified": 1785665139962
+          }
+        ]
+      },
+      {
+        "name": "启动页.png",
+        "type": "file",
+        "path": "Scratch考古小游戏-素材/启动页.png",
+        "ext": ".png",
+        "lastModified": 1785663008357
+      },
+      {
+        "name": "土坑.svg",
+        "type": "file",
+        "path": "Scratch考古小游戏-素材/土坑.svg",
+        "ext": ".svg",
+        "lastModified": 1785662998599
+      },
+      {
+        "name": "寻宝.png",
+        "type": "file",
+        "path": "Scratch考古小游戏-素材/寻宝.png",
+        "ext": ".png",
+        "lastModified": 1785663004689
+      },
+      {
+        "name": "恐龙拼图.png",
+        "type": "file",
+        "path": "Scratch考古小游戏-素材/恐龙拼图.png",
+        "ext": ".png",
+        "lastModified": 1785662997141
+      },
+      {
+        "name": "挖掘.png",
+        "type": "file",
+        "path": "Scratch考古小游戏-素材/挖掘.png",
+        "ext": ".png",
+        "lastModified": 1785662999507
+      },
+      {
+        "name": "文物挖掘背景.jpg",
+        "type": "file",
+        "path": "Scratch考古小游戏-素材/文物挖掘背景.jpg",
+        "ext": ".jpg",
+        "lastModified": 1785663004051
+      },
+      {
+        "name": "胜利.png",
+        "type": "file",
+        "path": "Scratch考古小游戏-素材/胜利.png",
+        "ext": ".png",
+        "lastModified": 1785662997875
+      },
+      {
+        "name": "获取提示.png",
+        "type": "file",
+        "path": "Scratch考古小游戏-素材/获取提示.png",
+        "ext": ".png",
+        "lastModified": 1785662996423
+      }
+    ]
+  },
+  {
+    "name": "Scratch联机成语接龙-素材",
+    "type": "directory",
+    "path": "Scratch联机成语接龙-素材",
+    "children": [
+      {
+        "name": "成语列表.txt",
+        "type": "file",
+        "path": "Scratch联机成语接龙-素材/成语列表.txt",
+        "ext": ".txt",
+        "lastModified": 1785663037069
+      },
+      {
+        "name": "汉字拼音.txt",
+        "type": "file",
+        "path": "Scratch联机成语接龙-素材/汉字拼音.txt",
+        "ext": ".txt",
+        "lastModified": 1785663009511
+      },
+      {
+        "name": "汉字编码.txt",
+        "type": "file",
+        "path": "Scratch联机成语接龙-素材/汉字编码.txt",
+        "ext": ".txt",
+        "lastModified": 1785663009510
+      },
+      {
+        "name": "联机成语接龙 - 素材.sb3",
+        "type": "file",
+        "path": "Scratch联机成语接龙-素材/联机成语接龙 - 素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1785663141268
+      }
+    ]
+  },
+  {
+    "name": "Scratch联机枪战",
+    "type": "directory",
+    "path": "Scratch联机枪战",
+    "children": [
+      {
+        "name": "手榴弹.sprite3",
+        "type": "file",
+        "path": "Scratch联机枪战/手榴弹.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663055986
+      }
+    ]
+  },
+  {
+    "name": "Scratch节奏盒子-素材",
+    "type": "directory",
+    "path": "Scratch节奏盒子-素材",
+    "children": [
+      {
+        "name": "乐器角色.sprite3",
+        "type": "file",
+        "path": "Scratch节奏盒子-素材/乐器角色.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663141615
+      },
+      {
+        "name": "按键.sprite3",
+        "type": "file",
+        "path": "Scratch节奏盒子-素材/按键.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662980489
+      },
+      {
+        "name": "移动按键.sprite3",
+        "type": "file",
+        "path": "Scratch节奏盒子-素材/移动按键.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785663003409
+      },
+      {
+        "name": "重置按钮.sprite3",
+        "type": "file",
+        "path": "Scratch节奏盒子-素材/重置按钮.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662996421
+      },
+      {
+        "name": "默认角色.sprite3",
+        "type": "file",
+        "path": "Scratch节奏盒子-素材/默认角色.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662982612
+      }
+    ]
+  },
+  {
+    "name": "Scratch高考模拟器素材",
+    "type": "directory",
+    "path": "Scratch高考模拟器素材",
+    "children": [
+      {
+        "name": "开始.svg",
+        "type": "file",
+        "path": "Scratch高考模拟器素材/开始.svg",
+        "ext": ".svg",
+        "lastModified": 1785662952369
+      },
+      {
+        "name": "标题.svg",
+        "type": "file",
+        "path": "Scratch高考模拟器素材/标题.svg",
+        "ext": ".svg",
+        "lastModified": 1785662951559
+      },
+      {
+        "name": "背景.svg",
+        "type": "file",
+        "path": "Scratch高考模拟器素材/背景.svg",
+        "ext": ".svg",
+        "lastModified": 1785662903064
+      },
+      {
+        "name": "选项A.svg",
+        "type": "file",
+        "path": "Scratch高考模拟器素材/选项A.svg",
+        "ext": ".svg",
+        "lastModified": 1785662956661
+      },
+      {
+        "name": "选项B.svg",
+        "type": "file",
+        "path": "Scratch高考模拟器素材/选项B.svg",
+        "ext": ".svg",
+        "lastModified": 1785662955041
+      }
+    ]
+  },
+  {
+    "name": "Scratch黑神话悟空像素版-素材",
+    "type": "directory",
+    "path": "Scratch黑神话悟空像素版-素材",
+    "children": [
+      {
+        "name": "地面.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/地面.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662956601
+      },
+      {
+        "name": "敌人.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/敌人.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662956162
+      },
+      {
+        "name": "敌人攻击特效.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/敌人攻击特效.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662986904
+      },
+      {
+        "name": "玩家.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/玩家.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662975564
+      },
+      {
+        "name": "玩家体力条.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/玩家体力条.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662976010
+      },
+      {
+        "name": "玩家血量条.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/玩家血量条.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662976338
+      },
+      {
+        "name": "结束画面.svg",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/结束画面.svg",
+        "ext": ".svg",
+        "lastModified": 1785663037085
+      },
+      {
+        "name": "背景中景.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/背景中景.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662955603
+      },
+      {
+        "name": "背景远景.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/背景远景.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662955432
+      },
+      {
+        "name": "葫芦.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/葫芦.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662974414
+      },
+      {
+        "name": "被攻击.png",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/被攻击.png",
+        "ext": ".png",
+        "lastModified": 1785662955769
+      },
+      {
+        "name": "金池长老.sprite3",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/金池长老.sprite3",
+        "ext": ".sprite3",
+        "lastModified": 1785662975008
+      },
+      {
+        "name": "黑神话悟空寺庙背景1.png",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/黑神话悟空寺庙背景1.png",
+        "ext": ".png",
+        "lastModified": 1785662959551
+      },
+      {
+        "name": "黑神话悟空寺庙背景2.png",
+        "type": "file",
+        "path": "Scratch黑神话悟空像素版-素材/黑神话悟空寺庙背景2.png",
+        "ext": ".png",
+        "lastModified": 1785662960040
+      }
+    ]
+  }
+]

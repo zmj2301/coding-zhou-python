@@ -1009,6 +1009,13 @@
             "path": "relax_exe/logs/app_20260802_095556.log",
             "ext": ".log",
             "lastModified": 1785636046468
+          },
+          {
+            "name": "app_20260803_103812.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260803_103812.log",
+            "ext": ".log",
+            "lastModified": 1785724735688
           }
         ]
       },
@@ -1152,7 +1159,7 @@
     "type": "file",
     "path": "config.json",
     "ext": ".json",
-    "lastModified": 1785635847448
+    "lastModified": 1785724734626
   },
   {
     "name": "flip_countdown_preview.html",

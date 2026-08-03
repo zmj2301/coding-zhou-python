@@ -1,5 +1,33 @@
 [
   {
+    "name": "img",
+    "type": "directory",
+    "path": "img",
+    "children": [
+      {
+        "name": "Ordinary_enemy.png",
+        "type": "file",
+        "path": "img/Ordinary_enemy.png",
+        "ext": ".png",
+        "lastModified": 1785726642636
+      },
+      {
+        "name": "park.png",
+        "type": "file",
+        "path": "img/park.png",
+        "ext": ".png",
+        "lastModified": 1785726642635
+      }
+    ]
+  },
+  {
+    "name": "generate_imgs.py",
+    "type": "file",
+    "path": "generate_imgs.py",
+    "ext": ".py",
+    "lastModified": 1785655863184
+  },
+  {
     "name": "README.md",
     "type": "file",
     "path": "README.md",

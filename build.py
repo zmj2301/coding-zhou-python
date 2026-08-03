@@ -79,6 +79,14 @@ def main():
         print('  跳过: console.html 不存在')
 
     print()
+    print('步骤 2.3: 复制反馈页 feedback.html...')
+    feedback_src = CODE_EXPLORER_DIR / 'feedback.html'
+    if feedback_src.exists():
+        copy_file(feedback_src, PUBLIC_DIR / 'feedback.html')
+    else:
+        print('  跳过: feedback.html 不存在')
+
+    print()
     print('步骤 2.2: 复制 images 目录...')
     images_src = CODE_EXPLORER_DIR / 'code-explorer' / 'public' / 'images'
     if images_src.exists():

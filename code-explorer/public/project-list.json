@@ -1,14 +1,26 @@
 [
   {
+    "name": "02 侯老师编程网站相关素材",
+    "path": "02 侯老师编程网站相关素材",
+    "type": "other",
+    "label": "其他",
+    "desc": "",
+    "mainFile": "Python梦境大师源代码.py",
+    "fileCount": 358,
+    "lastModified": 1785666670779,
+    "themeColor": "hsl(173, 37%, 60%)",
+    "popupUrl": null
+  },
+  {
     "name": "codinghou",
     "path": "codinghou",
     "type": "other",
     "label": "其他",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 70,
-    "lastModified": 1784382122776,
-    "themeColor": "hsl(173, 37%, 60%)",
+    "fileCount": 240,
+    "lastModified": 1785671390122,
+    "themeColor": "hsl(160, 40%, 63%)",
     "popupUrl": null
   },
   {
@@ -20,7 +32,7 @@
     "mainFile": "main.py",
     "fileCount": 1857,
     "lastModified": 1784863311843,
-    "themeColor": "hsl(160, 40%, 63%)",
+    "themeColor": "hsl(170, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -30,9 +42,9 @@
     "label": "弹出预览",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 1,
-    "lastModified": 1781879401871,
-    "themeColor": "hsl(170, 42%, 65%)",
+    "fileCount": 2,
+    "lastModified": 1785552447329,
+    "themeColor": "hsl(157, 30%, 58%)",
     "popupUrl": "/fathers-day/index.html"
   },
   {
@@ -44,7 +56,7 @@
     "mainFile": "_middleware.ts",
     "fileCount": 18,
     "lastModified": 1784382126871,
-    "themeColor": "hsl(157, 30%, 58%)",
+    "themeColor": "hsl(225, 33%, 66%)",
     "popupUrl": null
   },
   {
@@ -56,7 +68,7 @@
     "mainFile": "",
     "fileCount": 0,
     "lastModified": 1782475629988,
-    "themeColor": "hsl(225, 33%, 66%)",
+    "themeColor": "hsl(220, 35%, 63%)",
     "popupUrl": null
   },
   {
@@ -68,7 +80,7 @@
     "mainFile": "README.md",
     "fileCount": 3,
     "lastModified": 1785285237261,
-    "themeColor": "hsl(220, 35%, 63%)",
+    "themeColor": "hsl(241, 33%, 66%)",
     "popupUrl": null
   },
   {
@@ -78,9 +90,9 @@
     "label": "其他",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 1,
-    "lastModified": 1781953762194,
-    "themeColor": "hsl(241, 33%, 66%)",
+    "fileCount": 2,
+    "lastModified": 1785552449812,
+    "themeColor": "hsl(216, 40%, 63%)",
     "popupUrl": null
   },
   {
@@ -90,9 +102,9 @@
     "label": "游戏",
     "desc": "",
     "mainFile": "3D_shoot.py",
-    "fileCount": 10,
-    "lastModified": 1784382123438,
-    "themeColor": "hsl(216, 40%, 63%)",
+    "fileCount": 11,
+    "lastModified": 1785552070048,
+    "themeColor": "hsl(183, 37%, 65%)",
     "popupUrl": null
   },
   {
@@ -102,9 +114,9 @@
     "label": "AI",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 62,
-    "lastModified": 1784382123662,
-    "themeColor": "hsl(183, 37%, 65%)",
+    "fileCount": 63,
+    "lastModified": 1785552161208,
+    "themeColor": "hsl(193, 33%, 61%)",
     "popupUrl": null
   },
   {
@@ -114,8 +126,8 @@
     "label": "AI",
     "desc": "",
     "mainFile": "Chinese_chess.py",
-    "fileCount": 55,
-    "lastModified": 1784382041812,
+    "fileCount": 71,
+    "lastModified": 1785655850443,
     "themeColor": "hsl(182, 32%, 60%)",
     "popupUrl": null
   },
@@ -126,8 +138,8 @@
     "label": "AI",
     "desc": "",
     "mainFile": "Chinese_chess.py",
-    "fileCount": 9,
-    "lastModified": 1784382041807,
+    "fileCount": 25,
+    "lastModified": 1785658015062,
     "themeColor": "hsl(200, 42%, 65%)",
     "popupUrl": null
   },
@@ -138,8 +150,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "chat_ai.py",
-    "fileCount": 9,
-    "lastModified": 1784382041816,
+    "fileCount": 10,
+    "lastModified": 1785552175313,
     "themeColor": "hsl(189, 43%, 66%)",
     "popupUrl": null
   },
@@ -150,8 +162,8 @@
     "label": "游戏",
     "desc": "",
     "mainFile": "mc_farmer.py",
-    "fileCount": 5,
-    "lastModified": 1782530332878,
+    "fileCount": 99,
+    "lastModified": 1785657963725,
     "themeColor": "hsl(197, 42%, 60%)",
     "popupUrl": null
   },
@@ -174,8 +186,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 17,
-    "lastModified": 1781832722379,
+    "fileCount": 18,
+    "lastModified": 1785552080524,
     "themeColor": "hsl(189, 39%, 62%)",
     "popupUrl": null
   },
@@ -185,9 +197,9 @@
     "type": "game",
     "label": "游戏",
     "desc": "",
-    "mainFile": "tafang.py",
-    "fileCount": 5,
-    "lastModified": 1784382121205,
+    "mainFile": "generate_imgs.py",
+    "fileCount": 9,
+    "lastModified": 1785655872030,
     "themeColor": "hsl(218, 37%, 65%)",
     "popupUrl": null
   },
@@ -198,8 +210,8 @@
     "label": "其他",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 6,
-    "lastModified": 1784382123662,
+    "fileCount": 7,
+    "lastModified": 1785552134266,
     "themeColor": "hsl(268, 40%, 63%)",
     "popupUrl": null
   },
@@ -210,8 +222,8 @@
     "label": "AI",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 2,
-    "lastModified": 1784382121204,
+    "fileCount": 3,
+    "lastModified": 1785552139151,
     "themeColor": "hsl(234, 39%, 62%)",
     "popupUrl": null
   },
@@ -222,8 +234,8 @@
     "label": "游戏",
     "desc": "",
     "mainFile": "a.py",
-    "fileCount": 17,
-    "lastModified": 1784382123663,
+    "fileCount": 18,
+    "lastModified": 1785552074927,
     "themeColor": "hsl(356, 31%, 59%)",
     "popupUrl": null
   },
@@ -234,8 +246,8 @@
     "label": "游戏",
     "desc": "",
     "mainFile": "ChatGPT copy.py",
-    "fileCount": 17,
-    "lastModified": 1773997183247,
+    "fileCount": 18,
+    "lastModified": 1785552152826,
     "themeColor": "hsl(352, 42%, 65%)",
     "popupUrl": null
   },
@@ -246,8 +258,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 11,
-    "lastModified": 1777962920504,
+    "fileCount": 12,
+    "lastModified": 1785552108274,
     "themeColor": "hsl(196, 31%, 59%)",
     "popupUrl": null
   },
@@ -258,8 +270,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "ai.py",
-    "fileCount": 13,
-    "lastModified": 1784382124359,
+    "fileCount": 14,
+    "lastModified": 1785552103099,
     "themeColor": "hsl(2, 42%, 65%)",
     "popupUrl": null
   },
@@ -270,8 +282,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 4,
-    "lastModified": 1784382124359,
+    "fileCount": 5,
+    "lastModified": 1785552085038,
     "themeColor": "hsl(322, 37%, 65%)",
     "popupUrl": null
   },
@@ -294,8 +306,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "stroop_trainer.py",
-    "fileCount": 8,
-    "lastModified": 1782530332910,
+    "fileCount": 9,
+    "lastModified": 1785552197110,
     "themeColor": "hsl(326, 36%, 59%)",
     "popupUrl": null
   },
@@ -318,21 +330,9 @@
     "label": "其他",
     "desc": "",
     "mainFile": "cmd命令运行.py",
-    "fileCount": 6,
-    "lastModified": 1784382126778,
+    "fileCount": 7,
+    "lastModified": 1785552232505,
     "themeColor": "hsl(194, 44%, 62%)",
-    "popupUrl": null
-  },
-  {
-    "name": "Python冰火两重天",
-    "path": "Python冰火两重天",
-    "type": "game",
-    "label": "游戏",
-    "desc": "",
-    "mainFile": "main.py",
-    "fileCount": 4,
-    "lastModified": 1784382121209,
-    "themeColor": "hsl(118, 36%, 64%)",
     "popupUrl": null
   },
   {
@@ -342,9 +342,9 @@
     "label": "工具",
     "desc": "",
     "mainFile": "image.py",
-    "fileCount": 4,
-    "lastModified": 1784382121267,
-    "themeColor": "hsl(181, 42%, 65%)",
+    "fileCount": 5,
+    "lastModified": 1785552260533,
+    "themeColor": "hsl(118, 36%, 64%)",
     "popupUrl": null
   },
   {
@@ -354,9 +354,9 @@
     "label": "工具",
     "desc": "",
     "mainFile": "判断字符串是否是数字.py",
-    "fileCount": 3,
-    "lastModified": 1770617952227,
-    "themeColor": "hsl(266, 44%, 67%)",
+    "fileCount": 4,
+    "lastModified": 1785552249731,
+    "themeColor": "hsl(181, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -366,9 +366,9 @@
     "label": "游戏",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 9,
-    "lastModified": 1784382121290,
-    "themeColor": "hsl(204, 30%, 63%)",
+    "fileCount": 76,
+    "lastModified": 1785669030790,
+    "themeColor": "hsl(266, 44%, 67%)",
     "popupUrl": null
   },
   {
@@ -380,7 +380,7 @@
     "mainFile": "main.py",
     "fileCount": 21,
     "lastModified": 1784382124410,
-    "themeColor": "hsl(154, 34%, 62%)",
+    "themeColor": "hsl(204, 30%, 63%)",
     "popupUrl": null
   },
   {
@@ -390,9 +390,9 @@
     "label": "AI",
     "desc": "",
     "mainFile": "TTS.py",
-    "fileCount": 2,
-    "lastModified": 1777974967259,
-    "themeColor": "hsl(224, 33%, 66%)",
+    "fileCount": 3,
+    "lastModified": 1785552267551,
+    "themeColor": "hsl(154, 34%, 62%)",
     "popupUrl": null
   },
   {
@@ -402,9 +402,9 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 145,
-    "lastModified": 1785156831032,
-    "themeColor": "hsl(222, 42%, 65%)",
+    "fileCount": 150,
+    "lastModified": 1785552289471,
+    "themeColor": "hsl(224, 33%, 66%)",
     "popupUrl": null
   },
   {
@@ -413,10 +413,10 @@
     "type": "game",
     "label": "游戏",
     "desc": "",
-    "mainFile": "koutu.py",
-    "fileCount": 8,
-    "lastModified": 1784382125458,
-    "themeColor": "hsl(196, 44%, 62%)",
+    "mainFile": "index.html",
+    "fileCount": 2082,
+    "lastModified": 1785669030780,
+    "themeColor": "hsl(222, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -426,9 +426,9 @@
     "label": "游戏",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 3,
-    "lastModified": 1784382121298,
-    "themeColor": "hsl(22, 37%, 65%)",
+    "fileCount": 35,
+    "lastModified": 1785673259602,
+    "themeColor": "hsl(196, 44%, 62%)",
     "popupUrl": null
   },
   {
@@ -438,9 +438,9 @@
     "label": "游戏",
     "desc": "",
     "mainFile": "found_ask_root.py",
-    "fileCount": 17,
-    "lastModified": 1784382125460,
-    "themeColor": "hsl(202, 42%, 65%)",
+    "fileCount": 18,
+    "lastModified": 1785552211643,
+    "themeColor": "hsl(22, 37%, 65%)",
     "popupUrl": null
   },
   {
@@ -450,9 +450,9 @@
     "label": "其他",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 2,
-    "lastModified": 1784382125462,
-    "themeColor": "hsl(226, 34%, 62%)",
+    "fileCount": 3,
+    "lastModified": 1785552205996,
+    "themeColor": "hsl(202, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -464,7 +464,7 @@
     "mainFile": "camera_rtsp.py",
     "fileCount": 7,
     "lastModified": 1778029176241,
-    "themeColor": "hsl(201, 35%, 58%)",
+    "themeColor": "hsl(226, 34%, 62%)",
     "popupUrl": null
   },
   {
@@ -474,8 +474,20 @@
     "label": "游戏",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 14,
-    "lastModified": 1784382125477,
+    "fileCount": 100,
+    "lastModified": 1785669300040,
+    "themeColor": "hsl(201, 35%, 58%)",
+    "popupUrl": null
+  },
+  {
+    "name": "Scratch水果忍者-素材",
+    "path": "Scratch水果忍者-素材",
+    "type": "game",
+    "label": "游戏",
+    "desc": "",
+    "mainFile": "水果忍者-初始素材.sb3",
+    "fileCount": 1,
+    "lastModified": 1781834231387,
     "themeColor": "hsl(274, 41%, 64%)",
     "popupUrl": null
   },
@@ -486,8 +498,8 @@
     "label": "网页游戏",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 1,
-    "lastModified": 1781651102327,
+    "fileCount": 2,
+    "lastModified": 1785552387167,
     "themeColor": "hsl(210, 33%, 61%)",
     "webGameUrl": "/web-games/chinese-chess/",
     "hasSubProjects": false
@@ -499,8 +511,8 @@
     "label": "网页游戏",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 1,
-    "lastModified": 1781651449343,
+    "fileCount": 2,
+    "lastModified": 1785552391251,
     "themeColor": "hsl(199, 36%, 59%)",
     "webGameUrl": "/web-games/idiom-chain/",
     "hasSubProjects": false
@@ -512,8 +524,8 @@
     "label": "网页游戏",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 1,
-    "lastModified": 1781651307546,
+    "fileCount": 2,
+    "lastModified": 1785552399463,
     "themeColor": "hsl(122, 30%, 63%)",
     "webGameUrl": "/web-games/math-war/",
     "hasSubProjects": false
@@ -525,8 +537,8 @@
     "label": "网页游戏",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 1,
-    "lastModified": 1781651204500,
+    "fileCount": 2,
+    "lastModified": 1785552401962,
     "themeColor": "hsl(236, 35%, 63%)",
     "webGameUrl": "/web-games/my-world/",
     "hasSubProjects": false
@@ -538,8 +550,8 @@
     "label": "网页游戏",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 1,
-    "lastModified": 1781650790188,
+    "fileCount": 2,
+    "lastModified": 1785552405590,
     "themeColor": "hsl(144, 44%, 67%)",
     "webGameUrl": "/web-games/plane-war/",
     "hasSubProjects": false
@@ -564,8 +576,8 @@
     "label": "其他",
     "desc": "",
     "mainFile": "auto_scraper.py",
-    "fileCount": 52,
-    "lastModified": 1784382126605,
+    "fileCount": 53,
+    "lastModified": 1785552295876,
     "themeColor": "hsl(211, 38%, 61%)",
     "popupUrl": null
   },
@@ -576,8 +588,8 @@
     "label": "其他",
     "desc": "",
     "mainFile": "server.py",
-    "fileCount": 1,
-    "lastModified": 1784382126898,
+    "fileCount": 2,
+    "lastModified": 1785552044400,
     "themeColor": "hsl(213, 38%, 66%)",
     "popupUrl": null
   },
@@ -587,9 +599,9 @@
     "type": "game",
     "label": "游戏",
     "desc": "",
-    "mainFile": "game_state.py",
-    "fileCount": 25,
-    "lastModified": 1784382126646,
+    "mainFile": "plane_war.py",
+    "fileCount": 48,
+    "lastModified": 1785669687611,
     "themeColor": "hsl(151, 32%, 65%)",
     "popupUrl": null
   },
@@ -636,8 +648,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "get_conent.py",
-    "fileCount": 5,
-    "lastModified": 1785285998053,
+    "fileCount": 6,
+    "lastModified": 1785552060139,
     "themeColor": "hsl(173, 37%, 60%)",
     "popupUrl": null
   },
@@ -660,8 +672,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "index.html",
-    "fileCount": 4,
-    "lastModified": 1780150661743,
+    "fileCount": 5,
+    "lastModified": 1785552047526,
     "themeColor": "hsl(170, 42%, 65%)",
     "popupUrl": null
   },

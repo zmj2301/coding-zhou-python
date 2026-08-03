@@ -10,6 +10,111 @@
         "path": "img/test.py",
         "ext": ".py",
         "lastModified": 1777621244719
+      },
+      {
+        "name": "棋盘.png",
+        "type": "file",
+        "path": "img/棋盘.png",
+        "ext": ".png",
+        "lastModified": 1785656161508
+      },
+      {
+        "name": "红_仕.png",
+        "type": "file",
+        "path": "img/红_仕.png",
+        "ext": ".png",
+        "lastModified": 1785656161510
+      },
+      {
+        "name": "红_兵.png",
+        "type": "file",
+        "path": "img/红_兵.png",
+        "ext": ".png",
+        "lastModified": 1785656161511
+      },
+      {
+        "name": "红_帥.png",
+        "type": "file",
+        "path": "img/红_帥.png",
+        "ext": ".png",
+        "lastModified": 1785656161513
+      },
+      {
+        "name": "红_炮.png",
+        "type": "file",
+        "path": "img/红_炮.png",
+        "ext": ".png",
+        "lastModified": 1785656161516
+      },
+      {
+        "name": "红_相.png",
+        "type": "file",
+        "path": "img/红_相.png",
+        "ext": ".png",
+        "lastModified": 1785656161518
+      },
+      {
+        "name": "红_車.png",
+        "type": "file",
+        "path": "img/红_車.png",
+        "ext": ".png",
+        "lastModified": 1785656161520
+      },
+      {
+        "name": "红_馬.png",
+        "type": "file",
+        "path": "img/红_馬.png",
+        "ext": ".png",
+        "lastModified": 1785656161521
+      },
+      {
+        "name": "黑_卒.png",
+        "type": "file",
+        "path": "img/黑_卒.png",
+        "ext": ".png",
+        "lastModified": 1785656161522
+      },
+      {
+        "name": "黑_士.png",
+        "type": "file",
+        "path": "img/黑_士.png",
+        "ext": ".png",
+        "lastModified": 1785656161524
+      },
+      {
+        "name": "黑_将.png",
+        "type": "file",
+        "path": "img/黑_将.png",
+        "ext": ".png",
+        "lastModified": 1785656161525
+      },
+      {
+        "name": "黑_炮.png",
+        "type": "file",
+        "path": "img/黑_炮.png",
+        "ext": ".png",
+        "lastModified": 1785656161526
+      },
+      {
+        "name": "黑_象.png",
+        "type": "file",
+        "path": "img/黑_象.png",
+        "ext": ".png",
+        "lastModified": 1785656161528
+      },
+      {
+        "name": "黑_車.png",
+        "type": "file",
+        "path": "img/黑_車.png",
+        "ext": ".png",
+        "lastModified": 1785656161529
+      },
+      {
+        "name": "黑_馬.png",
+        "type": "file",
+        "path": "img/黑_馬.png",
+        "ext": ".png",
+        "lastModified": 1785656161531
       }
     ]
   },
@@ -32,7 +137,7 @@
     "type": "file",
     "path": "Chinese_chess.py",
     "ext": ".py",
-    "lastModified": 1785199351573
+    "lastModified": 1785658013148
   },
   {
     "name": "download_git.py",
@@ -40,6 +145,13 @@
     "path": "download_git.py",
     "ext": ".py",
     "lastModified": 1777621244710
+  },
+  {
+    "name": "font.ttf",
+    "type": "file",
+    "path": "font.ttf",
+    "ext": ".ttf",
+    "lastModified": 1671516874000
   },
   {
     "name": "parse_answer.py",

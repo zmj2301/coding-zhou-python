@@ -1,5 +1,229 @@
 [
   {
+    "name": "img",
+    "type": "directory",
+    "path": "img",
+    "children": [
+      {
+        "name": "0.png",
+        "type": "file",
+        "path": "img/0.png",
+        "ext": ".png",
+        "lastModified": 1785673259607
+      },
+      {
+        "name": "1.png",
+        "type": "file",
+        "path": "img/1.png",
+        "ext": ".png",
+        "lastModified": 1785673259607
+      },
+      {
+        "name": "2.png",
+        "type": "file",
+        "path": "img/2.png",
+        "ext": ".png",
+        "lastModified": 1785673259607
+      },
+      {
+        "name": "3.png",
+        "type": "file",
+        "path": "img/3.png",
+        "ext": ".png",
+        "lastModified": 1785673259607
+      },
+      {
+        "name": "e969f5b93cba769be7fe37e92a91d9da.png",
+        "type": "file",
+        "path": "img/e969f5b93cba769be7fe37e92a91d9da.png",
+        "ext": ".png",
+        "lastModified": 1785673259605
+      },
+      {
+        "name": "ece1a28a8e6979b603289604a6f6a95c.png",
+        "type": "file",
+        "path": "img/ece1a28a8e6979b603289604a6f6a95c.png",
+        "ext": ".png",
+        "lastModified": 1785673259604
+      },
+      {
+        "name": "右1.png",
+        "type": "file",
+        "path": "img/右1.png",
+        "ext": ".png",
+        "lastModified": 1785673259605
+      },
+      {
+        "name": "右2.png",
+        "type": "file",
+        "path": "img/右2.png",
+        "ext": ".png",
+        "lastModified": 1785673259607
+      },
+      {
+        "name": "右3.png",
+        "type": "file",
+        "path": "img/右3.png",
+        "ext": ".png",
+        "lastModified": 1785673259603
+      },
+      {
+        "name": "右4.png",
+        "type": "file",
+        "path": "img/右4.png",
+        "ext": ".png",
+        "lastModified": 1785673259605
+      },
+      {
+        "name": "左1.png",
+        "type": "file",
+        "path": "img/左1.png",
+        "ext": ".png",
+        "lastModified": 1785673259604
+      },
+      {
+        "name": "左2.png",
+        "type": "file",
+        "path": "img/左2.png",
+        "ext": ".png",
+        "lastModified": 1785673259606
+      },
+      {
+        "name": "左3.png",
+        "type": "file",
+        "path": "img/左3.png",
+        "ext": ".png",
+        "lastModified": 1785673259605
+      },
+      {
+        "name": "左4.png",
+        "type": "file",
+        "path": "img/左4.png",
+        "ext": ".png",
+        "lastModified": 1785673259604
+      },
+      {
+        "name": "打字模式.png",
+        "type": "file",
+        "path": "img/打字模式.png",
+        "ext": ".png",
+        "lastModified": 1785726556694
+      },
+      {
+        "name": "打字模式文字.png",
+        "type": "file",
+        "path": "img/打字模式文字.png",
+        "ext": ".png",
+        "lastModified": 1785726556695
+      },
+      {
+        "name": "果汁1.png",
+        "type": "file",
+        "path": "img/果汁1.png",
+        "ext": ".png",
+        "lastModified": 1785673259607
+      },
+      {
+        "name": "果汁2.png",
+        "type": "file",
+        "path": "img/果汁2.png",
+        "ext": ".png",
+        "lastModified": 1785673259605
+      },
+      {
+        "name": "果汁3.png",
+        "type": "file",
+        "path": "img/果汁3.png",
+        "ext": ".png",
+        "lastModified": 1785673259606
+      },
+      {
+        "name": "果汁4.png",
+        "type": "file",
+        "path": "img/果汁4.png",
+        "ext": ".png",
+        "lastModified": 1785673259606
+      },
+      {
+        "name": "水果1.png",
+        "type": "file",
+        "path": "img/水果1.png",
+        "ext": ".png",
+        "lastModified": 1785673259608
+      },
+      {
+        "name": "水果2.png",
+        "type": "file",
+        "path": "img/水果2.png",
+        "ext": ".png",
+        "lastModified": 1785673259608
+      },
+      {
+        "name": "水果3.png",
+        "type": "file",
+        "path": "img/水果3.png",
+        "ext": ".png",
+        "lastModified": 1785673259606
+      },
+      {
+        "name": "水果4.png",
+        "type": "file",
+        "path": "img/水果4.png",
+        "ext": ".png",
+        "lastModified": 1785673259606
+      },
+      {
+        "name": "炸弹1.png",
+        "type": "file",
+        "path": "img/炸弹1.png",
+        "ext": ".png",
+        "lastModified": 1785673259605
+      },
+      {
+        "name": "炸弹2.png",
+        "type": "file",
+        "path": "img/炸弹2.png",
+        "ext": ".png",
+        "lastModified": 1785673259604
+      },
+      {
+        "name": "禅模式.png",
+        "type": "file",
+        "path": "img/禅模式.png",
+        "ext": ".png",
+        "lastModified": 1785726556696
+      },
+      {
+        "name": "禅模式文字.png",
+        "type": "file",
+        "path": "img/禅模式文字.png",
+        "ext": ".png",
+        "lastModified": 1785726556697
+      },
+      {
+        "name": "经典模式.png",
+        "type": "file",
+        "path": "img/经典模式.png",
+        "ext": ".png",
+        "lastModified": 1785726556698
+      },
+      {
+        "name": "背景.png",
+        "type": "file",
+        "path": "img/背景.png",
+        "ext": ".png",
+        "lastModified": 1785673259603
+      },
+      {
+        "name": "返回模式.png",
+        "type": "file",
+        "path": "img/返回模式.png",
+        "ext": ".png",
+        "lastModified": 1785726556699
+      }
+    ]
+  },
+  {
     "name": "main.py",
     "type": "file",
     "path": "main.py",

@@ -1,106 +1,316 @@
 [
   {
-    "name": "svg-img",
+    "name": "img_plane",
     "type": "directory",
-    "path": "svg-img",
+    "path": "img_plane",
     "children": [
       {
-        "name": "background-start.svg",
+        "name": "background.png",
         "type": "file",
-        "path": "svg-img/background-start.svg",
-        "ext": ".svg",
-        "lastModified": 1755958995421
+        "path": "img_plane/background.png",
+        "ext": ".png",
+        "lastModified": 1785669263624
       },
       {
-        "name": "background_load.svg",
+        "name": "background_itme.png",
         "type": "file",
-        "path": "svg-img/background_load.svg",
-        "ext": ".svg",
-        "lastModified": 1756380681593
+        "path": "img_plane/background_itme.png",
+        "ext": ".png",
+        "lastModified": 1785669263645
       },
       {
-        "name": "white1.svg",
+        "name": "bullet.png",
         "type": "file",
-        "path": "svg-img/white1.svg",
-        "ext": ".svg",
-        "lastModified": 1756301282884
+        "path": "img_plane/bullet.png",
+        "ext": ".png",
+        "lastModified": 1785669263625
       },
       {
-        "name": "white10.svg",
+        "name": "expl0.png",
         "type": "file",
-        "path": "svg-img/white10.svg",
-        "ext": ".svg",
-        "lastModified": 1756301370381
+        "path": "img_plane/expl0.png",
+        "ext": ".png",
+        "lastModified": 1785669263629
       },
       {
-        "name": "white2.svg",
+        "name": "expl1.png",
         "type": "file",
-        "path": "svg-img/white2.svg",
-        "ext": ".svg",
-        "lastModified": 1756301333265
+        "path": "img_plane/expl1.png",
+        "ext": ".png",
+        "lastModified": 1785669263629
       },
       {
-        "name": "white3.svg",
+        "name": "expl2.png",
         "type": "file",
-        "path": "svg-img/white3.svg",
-        "ext": ".svg",
-        "lastModified": 1756301343435
+        "path": "img_plane/expl2.png",
+        "ext": ".png",
+        "lastModified": 1785669263629
       },
       {
-        "name": "white4.svg",
+        "name": "expl3.png",
         "type": "file",
-        "path": "svg-img/white4.svg",
-        "ext": ".svg",
-        "lastModified": 1756301347563
+        "path": "img_plane/expl3.png",
+        "ext": ".png",
+        "lastModified": 1785669263630
       },
       {
-        "name": "white5.svg",
+        "name": "expl4.png",
         "type": "file",
-        "path": "svg-img/white5.svg",
-        "ext": ".svg",
-        "lastModified": 1756301351617
+        "path": "img_plane/expl4.png",
+        "ext": ".png",
+        "lastModified": 1785669263630
       },
       {
-        "name": "white6.svg",
+        "name": "expl5.png",
         "type": "file",
-        "path": "svg-img/white6.svg",
-        "ext": ".svg",
-        "lastModified": 1756301354411
+        "path": "img_plane/expl5.png",
+        "ext": ".png",
+        "lastModified": 1785669263631
       },
       {
-        "name": "white7.svg",
+        "name": "expl6.png",
         "type": "file",
-        "path": "svg-img/white7.svg",
-        "ext": ".svg",
-        "lastModified": 1756301357480
+        "path": "img_plane/expl6.png",
+        "ext": ".png",
+        "lastModified": 1785669263631
       },
       {
-        "name": "white8.svg",
+        "name": "expl7.png",
         "type": "file",
-        "path": "svg-img/white8.svg",
-        "ext": ".svg",
-        "lastModified": 1756301360629
+        "path": "img_plane/expl7.png",
+        "ext": ".png",
+        "lastModified": 1785669263631
       },
       {
-        "name": "white9.svg",
+        "name": "expl8.png",
         "type": "file",
-        "path": "svg-img/white9.svg",
-        "ext": ".svg",
-        "lastModified": 1756301364353
+        "path": "img_plane/expl8.png",
+        "ext": ".png",
+        "lastModified": 1785669263632
       },
       {
-        "name": "钩爪_关.svg",
+        "name": "gun.png",
         "type": "file",
-        "path": "svg-img/钩爪_关.svg",
-        "ext": ".svg",
-        "lastModified": 1756029973117
+        "path": "img_plane/gun.png",
+        "ext": ".png",
+        "lastModified": 1785669263645
       },
       {
-        "name": "钩爪_开.svg",
+        "name": "gun_2.png",
         "type": "file",
-        "path": "svg-img/钩爪_开.svg",
-        "ext": ".svg",
-        "lastModified": 1756029963503
+        "path": "img_plane/gun_2.png",
+        "ext": ".png",
+        "lastModified": 1785669263645
+      },
+      {
+        "name": "player.png",
+        "type": "file",
+        "path": "img_plane/player.png",
+        "ext": ".png",
+        "lastModified": 1785669263624
+      },
+      {
+        "name": "player_expl0.png",
+        "type": "file",
+        "path": "img_plane/player_expl0.png",
+        "ext": ".png",
+        "lastModified": 1785669263632
+      },
+      {
+        "name": "player_expl1.png",
+        "type": "file",
+        "path": "img_plane/player_expl1.png",
+        "ext": ".png",
+        "lastModified": 1785669263633
+      },
+      {
+        "name": "player_expl2.png",
+        "type": "file",
+        "path": "img_plane/player_expl2.png",
+        "ext": ".png",
+        "lastModified": 1785669263633
+      },
+      {
+        "name": "player_expl3.png",
+        "type": "file",
+        "path": "img_plane/player_expl3.png",
+        "ext": ".png",
+        "lastModified": 1785669263634
+      },
+      {
+        "name": "player_expl4.png",
+        "type": "file",
+        "path": "img_plane/player_expl4.png",
+        "ext": ".png",
+        "lastModified": 1785669263634
+      },
+      {
+        "name": "player_expl5.png",
+        "type": "file",
+        "path": "img_plane/player_expl5.png",
+        "ext": ".png",
+        "lastModified": 1785669263635
+      },
+      {
+        "name": "player_expl6.png",
+        "type": "file",
+        "path": "img_plane/player_expl6.png",
+        "ext": ".png",
+        "lastModified": 1785669263635
+      },
+      {
+        "name": "player_expl7.png",
+        "type": "file",
+        "path": "img_plane/player_expl7.png",
+        "ext": ".png",
+        "lastModified": 1785669263636
+      },
+      {
+        "name": "player_expl8.png",
+        "type": "file",
+        "path": "img_plane/player_expl8.png",
+        "ext": ".png",
+        "lastModified": 1785669263636
+      },
+      {
+        "name": "rock0.png",
+        "type": "file",
+        "path": "img_plane/rock0.png",
+        "ext": ".png",
+        "lastModified": 1785669263625
+      },
+      {
+        "name": "rock1.png",
+        "type": "file",
+        "path": "img_plane/rock1.png",
+        "ext": ".png",
+        "lastModified": 1785669263626
+      },
+      {
+        "name": "rock2.png",
+        "type": "file",
+        "path": "img_plane/rock2.png",
+        "ext": ".png",
+        "lastModified": 1785669263626
+      },
+      {
+        "name": "rock3.png",
+        "type": "file",
+        "path": "img_plane/rock3.png",
+        "ext": ".png",
+        "lastModified": 1785669263627
+      },
+      {
+        "name": "rock4.png",
+        "type": "file",
+        "path": "img_plane/rock4.png",
+        "ext": ".png",
+        "lastModified": 1785669263627
+      },
+      {
+        "name": "rock5.png",
+        "type": "file",
+        "path": "img_plane/rock5.png",
+        "ext": ".png",
+        "lastModified": 1785669263628
+      },
+      {
+        "name": "rock6.png",
+        "type": "file",
+        "path": "img_plane/rock6.png",
+        "ext": ".png",
+        "lastModified": 1785669263628
+      },
+      {
+        "name": "rock7.png",
+        "type": "file",
+        "path": "img_plane/rock7.png",
+        "ext": ".png",
+        "lastModified": 1785669263628
+      },
+      {
+        "name": "shield.png",
+        "type": "file",
+        "path": "img_plane/shield.png",
+        "ext": ".png",
+        "lastModified": 1785669263644
+      },
+      {
+        "name": "start.png",
+        "type": "file",
+        "path": "img_plane/start.png",
+        "ext": ".png",
+        "lastModified": 1785669263650
+      }
+    ]
+  },
+  {
+    "name": "sound",
+    "type": "directory",
+    "path": "sound",
+    "children": [
+      {
+        "name": "background.ogg",
+        "type": "file",
+        "path": "sound/background.ogg",
+        "ext": ".ogg",
+        "lastModified": 1785669285669
+      },
+      {
+        "name": "background.wav",
+        "type": "file",
+        "path": "sound/background.wav",
+        "ext": ".wav",
+        "lastModified": 1785669285669
+      },
+      {
+        "name": "expl0.wav",
+        "type": "file",
+        "path": "sound/expl0.wav",
+        "ext": ".wav",
+        "lastModified": 1785669285554
+      },
+      {
+        "name": "expl1.wav",
+        "type": "file",
+        "path": "sound/expl1.wav",
+        "ext": ".wav",
+        "lastModified": 1785669285557
+      },
+      {
+        "name": "pow0.wav",
+        "type": "file",
+        "path": "sound/pow0.wav",
+        "ext": ".wav",
+        "lastModified": 1785669285560
+      },
+      {
+        "name": "pow1.wav",
+        "type": "file",
+        "path": "sound/pow1.wav",
+        "ext": ".wav",
+        "lastModified": 1785669285563
+      },
+      {
+        "name": "rumble.ogg",
+        "type": "file",
+        "path": "sound/rumble.ogg",
+        "ext": ".ogg",
+        "lastModified": 1785669285572
+      },
+      {
+        "name": "rumble.wav",
+        "type": "file",
+        "path": "sound/rumble.wav",
+        "ext": ".wav",
+        "lastModified": 1785669285572
+      },
+      {
+        "name": "shoot.wav",
+        "type": "file",
+        "path": "sound/shoot.wav",
+        "ext": ".wav",
+        "lastModified": 1785669285551
       }
     ]
   },
@@ -110,27 +320,6 @@
     "path": "arrive.md",
     "ext": ".md",
     "lastModified": 1781683308063
-  },
-  {
-    "name": "game_state.py",
-    "type": "file",
-    "path": "game_state.py",
-    "ext": ".py",
-    "lastModified": 1781685427341
-  },
-  {
-    "name": "level.json",
-    "type": "file",
-    "path": "level.json",
-    "ext": ".json",
-    "lastModified": 1775829094067
-  },
-  {
-    "name": "oral_calculation_practice.py",
-    "type": "file",
-    "path": "oral_calculation_practice.py",
-    "ext": ".py",
-    "lastModified": 1781833356365
   },
   {
     "name": "plane_war.py",
@@ -145,34 +334,6 @@
     "path": "README.md",
     "ext": ".md",
     "lastModified": 1785552054219
-  },
-  {
-    "name": "resource_manager.py",
-    "type": "file",
-    "path": "resource_manager.py",
-    "ext": ".py",
-    "lastModified": 1781685112376
-  },
-  {
-    "name": "svg.py",
-    "type": "file",
-    "path": "svg.py",
-    "ext": ".py",
-    "lastModified": 1749865558976
-  },
-  {
-    "name": "text.py",
-    "type": "file",
-    "path": "text.py",
-    "ext": ".py",
-    "lastModified": 1775866925377
-  },
-  {
-    "name": "user_data.json",
-    "type": "file",
-    "path": "user_data.json",
-    "ext": ".json",
-    "lastModified": 1781836261215
   },
   {
     "name": "work.md",
