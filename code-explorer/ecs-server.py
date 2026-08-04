@@ -238,6 +238,16 @@ def init_db():
         created_at INTEGER NOT NULL,
         FOREIGN KEY (feedback_id) REFERENCES feedback(id) ON DELETE CASCADE
     )''')
+    db.execute('''CREATE TABLE IF NOT EXISTS scratch_projects (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        filename TEXT NOT NULL,
+        file_size INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )''')
     db.commit()
     # 检查是否已存在预置管理员
     cur = db.execute("SELECT id FROM users WHERE username = ?", ('zmj2013',))
@@ -1536,6 +1546,47 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             finally:
                 db.close()
 
+        if path == '/api/scratch/projects':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT id, name, filename, file_size, created_at, updated_at FROM scratch_projects WHERE user_id = ? ORDER BY updated_at DESC", (user['id'],))
+                projects = [dict(r) for r in cur.fetchall()]
+                return self.send_json(projects)
+            finally:
+                db.close()
+
+        if path.startswith('/api/scratch/projects/') and path.endswith('/download'):
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            try:
+                project_id = int(path.split('/')[4])
+            except (ValueError, IndexError):
+                return self.send_error_json('无效的项目ID', 400)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT * FROM scratch_projects WHERE id = ? AND user_id = ?", (project_id, user['id']))
+                project = cur.fetchone()
+                if not project:
+                    return self.send_error_json('项目不存在', 404)
+                project = dict(project)
+                file_path = BASE_DIR / 'scratch' / 'projects' / str(user['id']) / project['filename']
+                if not file_path.exists():
+                    return self.send_error_json('文件不存在', 404)
+                body = file_path.read_bytes()
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/octet-stream')
+                self.send_header('Content-Disposition', f'attachment; filename="{project["name"]}.sb3"')
+                self.send_header('Content-Length', str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            finally:
+                db.close()
+
         if path == '/api/api-keys':
             user = get_current_user(self)
             if not user:
@@ -1830,7 +1881,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     return self.send_error_json('文件不存在', 404)
                 body = local_path.read_bytes()
                 ext = os.path.splitext(file_path)[1].lower()
-                ct_map = {'.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml'}
+                ct_map = {'.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.webp': 'image/webp', '.bmp': 'image/bmp', '.ico': 'image/x-icon', '.svg': 'image/svg+xml'}
                 content_type = ct_map.get(ext, 'application/octet-stream')
                 self.send_response(200)
                 self.send_header('Content-Type', content_type)
@@ -1916,22 +1967,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             self.send_header('Location', '/feedback/index.html')
             self.end_headers()
             return
-
-        # 下载 local_agent.py 伴生程序
-        if path == '/download/local-agent':
-            agent_file = BASE_DIR / 'local_agent.py'
-            if agent_file.exists():
-                content = agent_file.read_bytes()
-                self.send_response(200)
-                self.send_header('Content-Type', 'text/x-python; charset=utf-8')
-                self.send_header('Content-Disposition', 'attachment; filename="local_agent.py"')
-                self.send_header('Content-Length', str(len(content)))
-                self.send_header('Cache-Control', 'no-store')
-                self.end_headers()
-                self.wfile.write(content)
-                return
-            else:
-                return self.send_error_json('伴生程序文件不存在', 404)
 
         # 尝试匹配静态文件
         if path and not path.startswith('/api/'):
@@ -2547,179 +2582,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 print(f'AI Error: {traceback.format_exc()}', file=sys.stderr)
                 return self.send_error_json(f'AI 请求失败: {e}', 500)
 
-        # ===== AI 编程助手接口 =====
-        if path == '/api/ai/chat/generate':
-            cu = get_current_user(self)
-            if not cu:
-                return self.send_error_json('请先登录', 401)
-            prompt = body.get('prompt', '').strip()
-            language = body.get('language', 'python')
-            if not prompt:
-                return self.send_error_json('请输入功能描述', 400)
-            try:
-                if not OPENROUTER_API_KEY:
-                    return self.send_error_json('AI 功能未配置', 503)
-                system_prompt = f'''你是一个专业的 Python 代码生成助手。根据用户的描述生成可运行的 Python 代码。
-要求：
-- 代码必须完整可运行，包含必要的 import 语句
-- 添加简洁的中文注释说明关键逻辑
-- 优先使用 Python 标准库，如需第三方库请在代码中注释说明
-- 只返回纯代码，不要解释'''
-                payload = {
-                    'model': 'openrouter/free',
-                    'messages': [
-                        {'role': 'system', 'content': system_prompt},
-                        {'role': 'user', 'content': f'请实现以下功能：\n{prompt}'}
-                    ],
-                    'temperature': 0.3,
-                    'max_tokens': 1500,
-                }
-                headers = {
-                    'Authorization': f'Bearer {OPENROUTER_API_KEY}',
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://codingzhou.dpdns.org',
-                    'X-Title': 'Code Explorer',
-                }
-                req = urllib.request.Request(OPENROUTER_API_URL, data=json.dumps(payload).encode(), headers=headers)
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    result = json.loads(resp.read())
-                    choice = result.get('choices', [{}])[0]
-                    msg = choice.get('message', {})
-                    text = msg.get('content', '') or ''
-                    reasoning = msg.get('reasoning_content', '') or ''
-                    # Extract code from markdown if present
-                    if '```python' in text:
-                        import re as _re
-                        m = _re.search(r'```python\s*\n([\s\S]*?)\n```', text)
-                        if m:
-                            text = m.group(1)
-                    elif '```' in text:
-                        import re as _re
-                        m = _re.search(r'```\s*\n([\s\S]*?)\n```', text)
-                        if m:
-                            text = m.group(1)
-                    record_ai_usage(cu['id'], cu['username'])
-                    return self.send_json({'success': True, 'code': text, 'reasoning': reasoning})
-            except Exception as e:
-                import traceback
-                print(f'AI Generate Error: {traceback.format_exc()}', file=sys.stderr)
-                return self.send_error_json(f'代码生成失败: {e}', 500)
-
-        if path == '/api/ai/chat/explain':
-            cu = get_current_user(self)
-            if not cu:
-                return self.send_error_json('请先登录', 401)
-            code = body.get('code', '').strip()
-            language = body.get('language', 'python')
-            if not code:
-                return self.send_error_json('请输入要解释的代码', 400)
-            try:
-                if not OPENROUTER_API_KEY:
-                    return self.send_error_json('AI 功能未配置', 503)
-                system_prompt = '''你是一个耐心的 Python 代码解释助手。用通俗易懂的中文解释代码的功能和逻辑。
-要求：
-- 分步骤解释代码的执行流程
-- 指出关键的语法和概念
-- 如果代码有问题或可以改进，一并指出
-- 适合初学者理解'''
-                payload = {
-                    'model': 'openrouter/free',
-                    'messages': [
-                        {'role': 'system', 'content': system_prompt},
-                        {'role': 'user', 'content': f'请解释以下 Python 代码：\n\n```python\n{code}\n```'}
-                    ],
-                    'temperature': 0.5,
-                    'max_tokens': 1500,
-                }
-                headers = {
-                    'Authorization': f'Bearer {OPENROUTER_API_KEY}',
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://codingzhou.dpdns.org',
-                    'X-Title': 'Code Explorer',
-                }
-                req = urllib.request.Request(OPENROUTER_API_URL, data=json.dumps(payload).encode(), headers=headers)
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    result = json.loads(resp.read())
-                    choice = result.get('choices', [{}])[0]
-                    msg = choice.get('message', {})
-                    text = msg.get('content', '') or ''
-                    reasoning = msg.get('reasoning_content', '') or ''
-                    record_ai_usage(cu['id'], cu['username'])
-                    return self.send_json({'success': True, 'explanation': text, 'reasoning': reasoning})
-            except Exception as e:
-                import traceback
-                print(f'AI Explain Error: {traceback.format_exc()}', file=sys.stderr)
-                return self.send_error_json(f'代码解释失败: {e}', 500)
-
-        if path == '/api/ai/chat/optimize':
-            cu = get_current_user(self)
-            if not cu:
-                return self.send_error_json('请先登录', 401)
-            code = body.get('code', '').strip()
-            language = body.get('language', 'python')
-            if not code:
-                return self.send_error_json('请输入要优化的代码', 400)
-            try:
-                if not OPENROUTER_API_KEY:
-                    return self.send_error_json('AI 功能未配置', 503)
-                system_prompt = '''你是一个 Python 代码优化专家。分析用户代码并提供优化建议和优化后的代码。
-要求：
-- 从性能、可读性、Pythonic 程度等方面分析
-- 列出具体的优化建议（用中文）
-- 提供优化后的完整代码
-- 如果原代码已经很好，也可以只给出分析'''
-                payload = {
-                    'model': 'openrouter/free',
-                    'messages': [
-                        {'role': 'system', 'content': system_prompt},
-                        {'role': 'user', 'content': f'请优化以下 Python 代码：\n\n```python\n{code}\n```'}
-                    ],
-                    'temperature': 0.3,
-                    'max_tokens': 2000,
-                }
-                headers = {
-                    'Authorization': f'Bearer {OPENROUTER_API_KEY}',
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://codingzhou.dpdns.org',
-                    'X-Title': 'Code Explorer',
-                }
-                req = urllib.request.Request(OPENROUTER_API_URL, data=json.dumps(payload).encode(), headers=headers)
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    result = json.loads(resp.read())
-                    choice = result.get('choices', [{}])[0]
-                    msg = choice.get('message', {})
-                    text = msg.get('content', '') or ''
-                    reasoning = msg.get('reasoning_content', '') or ''
-                    # Parse optimization suggestions and code from response
-                    import re as _re
-                    suggestions = []
-                    optimized_code = ''
-                    # Try to extract code block
-                    code_match = _re.search(r'优化后的代码[：:]*\s*```python\s*\n([\s\S]*?)\n```', text)
-                    if code_match:
-                        optimized_code = code_match.group(1)
-                    else:
-                        code_match = _re.search(r'```python\s*\n([\s\S]*?)\n```', text)
-                        if code_match:
-                            optimized_code = code_match.group(1)
-                    # Extract numbered suggestions
-                    for m in _re.finditer(r'(\d+)[.、)）]\s*([^\n]+)', text):
-                        suggestions.append(f'{m.group(1)}. {m.group(2).strip()}')
-                    if not suggestions:
-                        suggestions = [text[:200]]
-                    record_ai_usage(cu['id'], cu['username'])
-                    return self.send_json({
-                        'success': True,
-                        'suggestions': suggestions,
-                        'optimizedCode': optimized_code,
-                        'analysis': text,
-                        'reasoning': reasoning
-                    })
-            except Exception as e:
-                import traceback
-                print(f'AI Optimize Error: {traceback.format_exc()}', file=sys.stderr)
-                return self.send_error_json(f'代码优化失败: {e}', 500)
-
         if path == '/api/run/start':
             if not check_auth(self):
                 return self.send_error_json('请先登录', 401)
@@ -2731,6 +2593,68 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 return self.send_error_json('请先登录', 401)
             self.handle_run_stop(body)
             return
+
+        if path == '/api/scratch/upload':
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            name = body.get('name', '').strip()
+            data = body.get('data', '')
+            if not name or not data:
+                return self.send_error_json('缺少项目名称或文件数据', 400)
+            try:
+                raw = base64.b64decode(data)
+            except Exception:
+                return self.send_error_json('文件数据格式错误', 400)
+            # 确保存储目录存在
+            projects_dir = BASE_DIR / 'scratch' / 'projects' / str(user['id'])
+            projects_dir.mkdir(parents=True, exist_ok=True)
+            filename = uuid.uuid4().hex + '.sb3'
+            file_path = projects_dir / filename
+            file_path.write_bytes(raw)
+            now = int(time.time())
+            db = get_db()
+            try:
+                cur = db.execute(
+                    "INSERT INTO scratch_projects (user_id, name, filename, file_size, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+                    (user['id'], name, filename, len(raw), now, now)
+                )
+                db.commit()
+                project_id = cur.lastrowid
+                return self.send_json({
+                    'id': project_id,
+                    'name': name,
+                    'filename': filename,
+                    'file_size': len(raw),
+                    'created_at': now,
+                    'updated_at': now,
+                })
+            finally:
+                db.close()
+
+        if path.startswith('/api/scratch/projects/') and path.endswith('/delete'):
+            user = get_current_user(self)
+            if not user:
+                return self.send_error_json('请先登录', 401)
+            try:
+                project_id = int(path.split('/')[4])
+            except (ValueError, IndexError):
+                return self.send_error_json('无效的项目ID', 400)
+            db = get_db()
+            try:
+                cur = db.execute("SELECT * FROM scratch_projects WHERE id = ? AND user_id = ?", (project_id, user['id']))
+                project = cur.fetchone()
+                if not project:
+                    return self.send_error_json('项目不存在', 404)
+                project = dict(project)
+                file_path = BASE_DIR / 'scratch' / 'projects' / str(user['id']) / project['filename']
+                if file_path.exists():
+                    file_path.unlink()
+                db.execute("DELETE FROM scratch_projects WHERE id = ?", (project_id,))
+                db.commit()
+                return self.send_json({'success': True})
+            finally:
+                db.close()
 
         self.send_error(404)
 
