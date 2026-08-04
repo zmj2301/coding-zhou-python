@@ -14,6 +14,7 @@ require.config({
 </script>
 <style>
 /* ========== CSS Reset & Variables ========== */
+@import url('/components/nav.css');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 
 :root {
@@ -2886,141 +2887,6 @@ body::before {
     .admin-body { padding: 16px; }
     .admin-header { padding: 0 16px; }
   }
-
-  /* ========== 右上角按钮组 ========== */
-  .top-nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-  }
-
-  .user-menu-btn {
-    padding: 6px 12px;
-    border-radius: 8px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-    color: var(--text-primary);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    transition: transform 0.15s;
-    white-space: nowrap;
-  }
-  .user-menu-btn svg {
-    flex-shrink: 0;
-  }
-  .user-menu-btn:hover { transform: scale(1.05); }
-  .user-menu-btn.hidden { display: none; }
-  .user-dropdown {
-    position: fixed; top: 64px; right: 24px;
-    z-index: 99998;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    min-width: 180px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    display: none;
-    overflow: hidden;
-  }
-  .user-dropdown.show { display: block; }
-  .user-dropdown-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 16px;
-    color: var(--text-secondary);
-    cursor: pointer; font-size: 13px;
-    transition: background 0.15s;
-    border: none; background: none; width: 100%;
-    text-align: left; font-family: inherit;
-  }
-  .user-dropdown-item:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-  }
-  .user-dropdown-item.danger:hover {
-    background: rgba(248,81,73,0.08);
-    color: var(--accent-red);
-  }
-  .user-dropdown-divider {
-    height: 1px; background: var(--border-color);
-    margin: 4px 0;
-  }
-  .user-dropdown-item svg { width: 16px; height: 16px; }
-
-  /* ===== 主题切换按钮 ===== */
-  .theme-toggle-btn {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-secondary);
-    transition: all 0.15s;
-  }
-  .theme-toggle-btn:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border-color: var(--accent-blue);
-  }
-  .theme-toggle-btn svg { width: 18px; height: 18px; }
-  [data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
-  [data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
-  .theme-toggle-btn .moon-icon { display: none; }
-
-  /* ===== 顶部导航栏 ===== */
-  .top-nav {
-    position: sticky; top: 0; z-index: 9998;
-    height: 56px; background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    display: flex; align-items: center;
-    padding: 0 24px; gap: 8px;
-  }
-  .top-nav-brand {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 15px; font-weight: 700; color: var(--text-primary);
-    margin-right: 24px; white-space: nowrap;
-  }
-  .top-nav-brand-logo {
-    width: 24px; height: 24px; border-radius: 6px;
-    background: linear-gradient(135deg, #6366f1, #a855f7);
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 12px; font-weight: 700;
-  }
-  .top-nav-links {
-    display: flex; align-items: center; gap: 2px; flex: 1;
-  }
-  .top-nav-link {
-    padding: 8px 16px; border-radius: 8px;
-    font-size: 13px; font-weight: 500;
-    color: var(--text-secondary); text-decoration: none;
-    transition: all 0.15s; cursor: pointer;
-    white-space: nowrap;
-  }
-  .top-nav-link:hover {
-    color: var(--text-primary); background: var(--bg-tertiary);
-  }
-  .top-nav-link.active {
-    color: var(--accent-blue); background: rgba(88,166,255,0.1);
-  }
-
-  /* ===== 更新日志按钮 ===== */
-  .changelog-btn {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-secondary);
-    transition: all 0.15s;
-  }
-  .changelog-btn:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-    border-color: var(--accent-blue);
-  }
-  .changelog-btn svg { width: 18px; height: 18px; }
 
   /* ===== 更新日志弹窗 ===== */
   .changelog-modal-overlay {

@@ -23,10 +23,6 @@
     --accent-purple: #a371f7;
     --accent-pink: #ff6b9d;
     --accent-cyan: #00d4ff;
-    --accent-blue-dark: #388bfd;
-    --accent-green-dark: #2ea043;
-    --accent-purple-dark: #8957e5;
-    --text-on-accent: #fff;
     --radius-sm: 6px;
     --radius-lg: 16px;
     --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
@@ -35,45 +31,9 @@
     --neon-purple: 0 0 20px rgba(163, 113, 247, 0.4), 0 0 40px rgba(163, 113, 247, 0.2);
     --neon-green: 0 0 20px rgba(63, 185, 80, 0.4), 0 0 40px rgba(63, 185, 80, 0.2);
   }
-
-/* ===== 亮色主题支持 ===== */
-[data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f6f8fa;
-  --bg-tertiary: #eaeef2;
-  --bg-overlay: #d0d7de;
-  --border-color: #d0d7de;
-  --border-light: #eaeef2;
-  --text-primary: #24292f;
-  --text-secondary: #57606a;
-  --text-tertiary: #8c959f;
-  --accent-blue: #0969da;
-  --accent-green: #1a7f37;
-  --accent-yellow: #bf8700;
-  --accent-red: #cf222e;
-  --accent-purple: #8250df;
-  --accent-orange: #bf5612;
-  --accent-pink: #bf3c5b;
-  --accent-cyan: #1a7f37;
-  --accent-blue-dark: #0550ae;
-  --accent-green-dark: #116329;
-  --accent-purple-dark: #6639ba;
-  --text-on-accent: #fff;
-  --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace;
-  --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
-}
-
-[data-theme="light"] body::before {
-  background-image:
-    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-}
-
-[data-theme="light"] ::-webkit-scrollbar-thumb { background: var(--border-color); }
-[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #8c959f; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: var(--bg-primary);
+    background: #0a0e1a;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
@@ -100,19 +60,6 @@
     background-size: 50px 50px;
     pointer-events: none;
     z-index: 0;
-  }
-
-  [data-theme="light"] body::before {
-    background:
-      radial-gradient(ellipse at 20% 20%, rgba(9, 105, 218, 0.04) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, rgba(130, 80, 223, 0.04) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(26, 127, 37, 0.03) 0%, transparent 60%);
-  }
-
-  [data-theme="light"] body::after {
-    background-image:
-      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   }
 
   /* Hero 区域 */
@@ -145,7 +92,7 @@
     font-weight: 800;
     margin-bottom: 16px;
     letter-spacing: 3px;
-    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 50%, var(--accent-pink) 100%);
+    background: linear-gradient(135deg, #58a6ff 0%, #a371f7 50%, #ff6b9d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -217,7 +164,7 @@
   }
   .nav-capsule.active {
     background: linear-gradient(135deg, rgba(88, 166, 255, 0.2), rgba(163, 113, 247, 0.2));
-    color: var(--text-on-accent);
+    color: #fff;
     border-color: rgba(88, 166, 255, 0.6);
     box-shadow: var(--neon-blue);
   }
@@ -364,8 +311,8 @@
   .play-btn {
     margin-top: auto;
     padding: 10px 20px;
-    background: linear-gradient(135deg, var(--accent-green-dark), var(--accent-green));
-    color: var(--text-on-accent);
+    background: linear-gradient(135deg, #238636, #2ea043);
+    color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -376,7 +323,7 @@
     box-shadow: 0 4px 12px rgba(63, 185, 80, 0.2);
   }
   .play-btn:hover {
-    background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+    background: linear-gradient(135deg, #2ea043, #3fb950);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(63, 185, 80, 0.4);
   }
@@ -421,7 +368,7 @@
   }
   .auth-brand-icon {
     width: 80px; height: 80px; margin: 0 auto 24px;
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
     border-radius: 20px; display: flex; align-items: center; justify-content: center;
     box-shadow: 0 8px 32px rgba(88,166,255,0.3), 0 0 60px rgba(163,113,247,0.2);
     animation: iconFloat 3s ease-in-out infinite;
@@ -430,9 +377,9 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
   }
-  .auth-brand-icon svg { width: 40px; height: 40px; color: var(--text-on-accent); }
+  .auth-brand-icon svg { width: 40px; height: 40px; color: #fff; }
   .auth-brand h1 { font-size: 36px; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; letter-spacing: -0.5px;
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -482,8 +429,8 @@
   }
   .auth-btn-primary {
     width: 100%; padding: 14px 16px;
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
-    color: var(--text-on-accent); border: none; border-radius: 10px;
+    background: linear-gradient(135deg, #58a6ff, #388bfd);
+    color: white; border: none; border-radius: 10px;
     cursor: pointer; font-size: 15px; font-weight: 600;
     transition: all 0.2s; font-family: inherit;
     box-shadow: 0 4px 16px rgba(88,166,255,0.3);
@@ -493,7 +440,7 @@
     box-shadow: 0 6px 24px rgba(88,166,255,0.4);
   }
   .auth-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
-  .auth-btn-admin { background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark)); box-shadow: 0 4px 16px rgba(163,113,247,0.3); }
+  .auth-btn-admin { background: linear-gradient(135deg, #a371f7, #8957e5); box-shadow: 0 4px 16px rgba(163,113,247,0.3); }
   .auth-btn-admin:hover { box-shadow: 0 6px 24px rgba(163,113,247,0.4); }
   .auth-error {
     color: var(--accent-red); font-size: 13px;
@@ -556,9 +503,9 @@
   }
   .admin-title-icon {
     width: 36px; height: 36px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
+    background: linear-gradient(135deg, #a371f7, #8957e5);
     display: flex; align-items: center; justify-content: center;
-    color: var(--text-on-accent);
+    color: #fff;
     box-shadow: 0 4px 16px rgba(163,113,247,0.3);
   }
   .admin-header-right { display: flex; align-items: center; gap: 16px; }
@@ -595,7 +542,7 @@
   .admin-section-title::before {
     content: '';
     width: 4px; height: 18px;
-    background: linear-gradient(to bottom, var(--accent-blue), var(--accent-purple));
+    background: linear-gradient(to bottom, #58a6ff, #a371f7);
     border-radius: 2px;
   }
   .admin-cards {
@@ -616,7 +563,7 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent-blue)), transparent);
+    background: linear-gradient(90deg, transparent, var(--card-accent, #58a6ff), transparent);
     opacity: 0.6;
   }
   .admin-card:hover {
@@ -632,9 +579,9 @@
   }
   .admin-card-icon.blue { background: rgba(88,166,255,0.15); color: var(--accent-blue); box-shadow: 0 4px 12px rgba(88,166,255,0.15); }
   .admin-card-icon.green { background: rgba(63,185,80,0.15); color: var(--accent-green); box-shadow: 0 4px 12px rgba(63,185,80,0.15); }
-  .admin-card-icon.purple { background: rgba(163,113,247,0.15); color: var(--accent-purple); box-shadow: 0 4px 12px rgba(163,113,247,0.15); }
+  .admin-card-icon.purple { background: rgba(163,113,247,0.15); color: #a371f7; box-shadow: 0 4px 12px rgba(163,113,247,0.15); }
   .admin-card-icon.red { background: rgba(248,81,73,0.15); color: var(--accent-red); box-shadow: 0 4px 12px rgba(248,81,73,0.15); }
-  .admin-card-icon.yellow { background: rgba(210,153,34,0.15); color: var(--accent-yellow); box-shadow: 0 4px 12px rgba(210,153,34,0.15); }
+  .admin-card-icon.yellow { background: rgba(210,153,34,0.15); color: #d29922; box-shadow: 0 4px 12px rgba(210,153,34,0.15); }
   .admin-card-title { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
   .admin-card-value {
     font-size: 32px; font-weight: 700;
@@ -695,7 +642,7 @@
   .progress-bar-fill {
     height: 100%;
     border-radius: 3px;
-    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    background: linear-gradient(90deg, #58a6ff, #a371f7);
     box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
     transition: width 0.5s ease;
   }
@@ -714,11 +661,11 @@
     z-index: 99997;
     width: 44px; height: 44px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    background: linear-gradient(135deg, #58a6ff, #a371f7);
     border: 2px solid rgba(255,255,255,0.1);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    color: var(--text-on-accent); font-weight: 700; font-size: 16px;
+    color: white; font-weight: 700; font-size: 16px;
     box-shadow: 0 4px 16px rgba(88,166,255,0.3), 0 0 30px rgba(163,113,247,0.2);
     transition: all 0.3s ease;
   }
@@ -789,13 +736,16 @@
       <a class="ce-top-nav-link" href="/run/local" data-nav="/run/local">⚡ 本地运行</a>
     </div>
     <div class="ce-top-nav-actions">
-      <button class="ce-action-btn" id="ceUserMenuBtn" title="用户菜单" style="display:none">
+      <button class="user-menu-btn hidden" id="ceUserMenuBtn" title="用户菜单">
         <span id="ceUserName">用户</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </button>
-      <button class="ce-action-btn" id="ceThemeToggleBtn" title="切换主题">
-        <svg class="ce-sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg class="ce-moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <button class="changelog-btn" id="ceChangelogBtn" title="更新日志">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </button>
+      <button class="theme-toggle-btn" id="ceThemeToggleBtn" title="切换主题">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
     </div>
   </div>

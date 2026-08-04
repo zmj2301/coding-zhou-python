@@ -25,10 +25,6 @@
   --accent-orange: #f0883e;
   --accent-pink: #db61a2;
   --accent-cyan: #39d353;
-  --accent-blue-dark: #1f6feb;
-  --accent-green-dark: #2ea043;
-  --accent-purple-dark: #8957e5;
-  --text-on-accent: #fff;
   --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace;
   --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   --transition: 150ms ease;
@@ -55,10 +51,6 @@
   --accent-orange: #bf5612;
   --accent-pink: #bf3c5b;
   --accent-cyan: #1a7f37;
-  --accent-blue-dark: #0550ae;
-  --accent-green-dark: #116329;
-  --accent-purple-dark: #6639ba;
-  --text-on-accent: #fff;
 }
 
 body {
@@ -310,7 +302,7 @@ body::before {
   gap: 8px;
   padding: 11px 24px;
   background: var(--accent-blue);
-  color: var(--text-on-accent);
+  color: #fff;
   border: none;
   border-radius: var(--radius-md);
   font-size: 14px;
@@ -499,7 +491,7 @@ body::before {
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-on-accent);
+  color: #fff;
 }
 
 .original-post-content {
@@ -554,7 +546,7 @@ body::before {
 
 .reply-user .badge-admin {
   background: var(--accent-purple);
-  color: var(--text-on-accent);
+  color: #fff;
   font-size: 10px;
   padding: 1px 6px;
   border-radius: 3px;
@@ -609,7 +601,7 @@ body::before {
   font-weight: 600;
   border-radius: 8px;
   background: var(--accent-purple);
-  color: var(--text-on-accent);
+  color: #fff;
   vertical-align: middle;
 }
 
@@ -681,7 +673,7 @@ body::before {
 .btn:hover { background: var(--bg-overlay); }
 .btn-danger { background: rgba(248,81,73,0.15); color: var(--accent-red); border-color: rgba(248,81,73,0.3); }
 .btn-danger:hover { background: rgba(248,81,73,0.25); }
-.btn-primary { background: var(--accent-blue); color: var(--text-on-accent); border-color: var(--accent-blue); }
+.btn-primary { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
 .btn-primary:hover { filter: brightness(1.1); }
 
 /* ========== Empty / Loading ========== */
@@ -727,7 +719,7 @@ body::before {
 }
 
 .filter-btn:hover { color: var(--text-primary); }
-.filter-btn.active { background: var(--accent-blue); color: var(--text-on-accent); border-color: var(--accent-blue); }
+.filter-btn.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
 
 /* ========== Responsive ========== */
 @media (max-width: 768px) {
