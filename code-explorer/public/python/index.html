@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python 编程 - Code Explorer</title>
+<style>
+  :root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --bg-overlay: #30363d;
+    --border-color: #30363d;
+    --border-light: #21262d;
+    --text-primary: #c9d1d9;
+    --text-secondary: #8b949e;
+    --text-tertiary: #6e7681;
+    --accent-blue: #58a6ff;
+    --accent-green: #3fb950;
+    --accent-yellow: #d29922;
+    --accent-red: #f85149;
+    --accent-purple: #a371f7;
+    --accent-orange: #f0883e;
+    --accent-pink: #db61a2;
+    --accent-cyan: #39d353;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 80px 20px 60px;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    background: rgba(88, 166, 255, 0.1);
+    border: 1px solid rgba(88, 166, 255, 0.25);
+    border-radius: 20px;
+    color: var(--accent-blue);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #58a6ff 0%, #a371f7 50%, #db61a2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-stat {
+    text-align: center;
+  }
+  .hero-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-blue);
+  }
+  .hero-stat-label {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* Section */
+  .section {
+    margin-top: 48px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(180deg, var(--accent-blue), var(--accent-purple));
+    border-radius: 2px;
+  }
+  .section-subtitle {
+    font-size: 14px;
+    color: var(--text-tertiary);
+  }
+
+  /* Cards grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .project-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--card-accent, var(--accent-blue));
+    opacity: 0.8;
+  }
+  .project-card:hover {
+    border-color: var(--card-accent, var(--accent-blue));
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: var(--card-accent-bg, rgba(88,166,255,0.12));
+    color: var(--card-accent, var(--accent-blue));
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 16px;
+  }
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .card-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 10px;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+  }
+  .card-tag.difficulty-easy { background: rgba(63,185,80,0.15); color: var(--accent-green); }
+  .card-tag.difficulty-medium { background: rgba(210,153,34,0.15); color: var(--accent-yellow); }
+  .card-tag.difficulty-hard { background: rgba(248,81,73,0.15); color: var(--accent-red); }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-light);
+  }
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: linear-gradient(135deg, var(--card-accent, var(--accent-blue)), var(--card-accent-2, #388bfd));
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-sans);
+  }
+  .start-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(88,166,255,0.3);
+  }
+  .start-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Accent variants */
+  .accent-blue { --card-accent: var(--accent-blue); --card-accent-2: #388bfd; --card-accent-bg: rgba(88,166,255,0.12); }
+  .accent-purple { --card-accent: var(--accent-purple); --card-accent-2: #8957e5; --card-accent-bg: rgba(163,113,247,0.12); }
+  .accent-green { --card-accent: var(--accent-green); --card-accent-2: #2ea043; --card-accent-bg: rgba(63,185,80,0.12); }
+  .accent-orange { --card-accent: var(--accent-orange); --card-accent-2: #d0752c; --card-accent-bg: rgba(240,136,62,0.12); }
+  .accent-pink { --card-accent: var(--accent-pink); --card-accent-2: #c44d8f; --card-accent-bg: rgba(219,97,162,0.12); }
+  .accent-cyan { --card-accent: var(--accent-cyan); --card-accent-2: #2c9a3e; --card-accent-bg: rgba(57,211,83,0.12); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero { padding: 48px 16px 40px; }
+    .hero h1 { font-size: 32px; }
+    .hero p { font-size: 15px; }
+    .hero-stats { gap: 24px; }
+    .hero-stat-value { font-size: 22px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 16px; }
+    .project-card { padding: 18px; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+  }
+</style>
+<link rel="stylesheet" href="/components/nav.css">
+</head>
+<body class="ce-has-nav">
+
+<div class="ce-nav-wrapper">
+  <div class="ce-top-nav">
+    <div class="ce-top-nav-brand">
+      <div class="ce-top-nav-brand-logo">◈</div>
+      Code Explorer
+    </div>
+    <div class="ce-top-nav-links">
+      <a class="ce-top-nav-link" href="/" data-nav="/">首页</a>
+      <a class="ce-top-nav-link" href="/console" data-nav="/console">API Key</a>
+      <a class="ce-top-nav-link" href="/resources/" data-nav="/resources">资源下载</a>
+      <a class="ce-top-nav-link" href="/web-games/" data-nav="/web-games">网页游戏</a>
+      <a class="ce-top-nav-link" href="/scratch" data-nav="/scratch">Scratch</a>
+      <a class="ce-top-nav-link active" href="/python/" data-nav="/python">Python 编程</a>
+      <a class="ce-top-nav-link" href="/run/local" data-nav="/run/local">⚡ 本地运行</a>
+    </div>
+    <div class="ce-top-nav-actions">
+      <button class="ce-action-btn" id="ceUserMenuBtn" title="用户菜单" style="display:none">
+        <span id="ceUserName">用户</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="ce-action-btn" id="ceThemeToggleBtn" title="切换主题">
+        <svg class="ce-sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="ce-moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <section class="hero">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      在线 Python 编程环境
+    </div>
+    <h1>Python 编程</h1>
+    <p>通过实战项目快速掌握 Python，从基础语法到高级应用，循序渐进，边学边练。</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">8</div>
+        <div class="hero-stat-label">精选项目</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">3</div>
+        <div class="hero-stat-label">难度等级</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">∞</div>
+        <div class="hero-stat-label">无限练习</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-title">Python 项目实战</div>
+      <div class="section-subtitle">选择一个项目开始编程之旅</div>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="project-card accent-blue">
+        <div class="card-header">
+          <div class="card-icon">📘</div>
+          <div class="card-title">基础语法练习</div>
+        </div>
+        <div class="card-desc">涵盖变量、条件、循环、函数等 Python 核心基础知识，通过大量小练习巩固理解。</div>
+        <div class="card-tags">
+          <span class="card-tag difficulty-easy">入门</span>
+          <span class="card-tag">语法</span>
+          <span class="card-tag">基础</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⏱ 约 2 小时</span>
+            <span class="card-meta-item">📝 12 个练习</span>
+          </div>
+          <button class="start-btn" onclick="startProject('basic-syntax')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始编程
+          </button>
+        </div>
+      </div>
+
+      <div class="project-card accent-purple">
+        <div class="card-header">
+          <div class="card-icon">🧩</div>
+          <div class="card-title">数据结构与算法</div>
+        </div>
+        <div class="card-desc">学习列表、字典、集合、树、图等常用数据结构，以及排序、搜索、动态规划等算法。</div>
+        <div class="card-tags">
+          <span class="card-tag difficulty-medium">进阶</span>
+          <span class="card-tag">算法</span>
+          <span class="card-tag">数据结构</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⏱ 约 6 小时</span>
+            <span class="card-meta-item">📝 20 个题目</span>
+          </div>
+          <button class="start-btn" onclick="startProject('dsa')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始编程
+          </button>
+        </div>
+      </div>
+
+      <div class="project-card accent-green">
+        <div class="card-header">
+          <div class="card-icon">🌐</div>
+          <div class="card-title">Web 开发入门</div>
+        </div>
+        <div class="card-desc">使用 Flask 框架搭建 Web 应用，学习路由、模板、数据库操作及 REST API 开发。</div>
+        <div class="card-tags">
+          <span class="card-tag difficulty-medium">进阶</span>
+          <span class="card-tag">Flask</span>
+          <span class="card-tag">Web</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⏱ 约 8 小时</span>
+            <span class="card-meta-item">📝 5 个项目</span>
+          </div>
+          <button class="start-btn" onclick="startProject('web-dev')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始编程
+          </button>
+        </div>
+      </div>
+
+      <div class="project-card accent-orange">
+        <div class="card-header">
+          <div class="card-icon">📊</div>
+          <div class="card-title">数据分析实战</div>
+        </div>
+        <div class="card-desc">使用 Pandas、NumPy、Matplotlib 进行数据清洗、分析和可视化，处理真实数据集。</div>
+        <div class="card-tags">
+          <span class="card-tag difficulty-medium">进阶</span>
+          <span class="card-tag">Pandas</span>
+          <span class="card-tag">数据分析</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⏱ 约 6 小时</span>
+            <span class="card-meta-item">📝 4 个案例</span>
+          </div>
+          <button class="start-btn" onclick="startProject('data-analysis')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始编程
+          </button>
+        </div>
+      </div>
+
+      <div class="project-card accent-cyan">
+        <div class="card-header">
+          <div class="card-icon">🕷️</div>
+          <div class="card-title">爬虫项目</div>
+        </div>
+        <div class="card-desc">学习 Requests、BeautifulSoup、Scrapy 等库，抓取网页数据并进行解析和存储。</div>
+        <div class="card-tags">
+          <span class="card-tag difficulty-medium">进阶</span>
+          <span class="card-tag">爬虫</span>
+          <span class="card-tag">Requests</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⏱ 约 4 小时</span>
+            <span class="card-meta-item">📝 6 个项目</span>
+          </div>
+          <button class="start-btn" onclick="startProject('web-scraper')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始编程
+          </button>
+        </div>
+      </div>
+
+      <div class="project-card accent-pink">
+        <div class="card-header">
+          <div class="card-icon">⚙️</div>
+          <div class="card-title">自动化脚本</div>
+        </div>
+        <div class="card-desc">编写自动化脚本处理日常任务：文件操作、批量重命名、定时任务、Excel 自动化等。</div>
+        <div class="card-tags">
+          <span class="card-tag difficulty-easy">入门</span>
+          <span class="card-tag">自动化</span>
+          <span class="card-tag">脚本</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⏱ 约 3 小时</span>
+            <span class="card-meta-item">📝 8 个脚本</span>
+          </div>
+          <button class="start-btn" onclick="startProject('automation')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始编程
+          </button>
+        </div>
+      </div>
+
+      <div class="project-card accent-blue">
+        <div class="card-header">
+          <div class="card-icon">🎮</div>
+          <div class="card-title">Pygame 游戏开发</div>
+        </div>
+        <div class="card-desc">使用 Pygame 开发 2D 小游戏，学习图形渲染、音效处理、碰撞检测等游戏开发核心技术。</div>
+        <div class="card-tags">
+          <span class="card-tag difficulty-hard">挑战</span>
+          <span class="card-tag">Pygame</span>
+          <span class="card-tag">游戏</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⏱ 约 10 小时</span>
+            <span class="card-meta-item">📝 3 个游戏</span>
+          </div>
+          <button class="start-btn" onclick="startProject('pygame')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始编程
+          </button>
+        </div>
+      </div>
+
+      <div class="project-card accent-purple">
+        <div class="card-header">
+          <div class="card-icon">🤖</div>
+          <div class="card-title">AI 与机器学习</div>
+        </div>
+        <div class="card-desc">入门机器学习，使用 scikit-learn 构建分类和回归模型，体验简单的 AI 应用开发。</div>
+        <div class="card-tags">
+          <span class="card-tag difficulty-hard">挑战</span>
+          <span class="card-tag">ML</span>
+          <span class="card-tag">AI</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⏱ 约 8 小时</span>
+            <span class="card-meta-item">📝 5 个模型</span>
+          </div>
+          <button class="start-btn" onclick="startProject('ml-ai')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            开始编程
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<script>
+  function startProject(id) {
+    var projects = {
+      'basic-syntax': { name: '基础语法练习', file: 'basic_syntax.py' },
+      'dsa': { name: '数据结构与算法', file: 'dsa.py' },
+      'web-dev': { name: 'Web 开发入门', file: 'app.py' },
+      'data-analysis': { name: '数据分析实战', file: 'analysis.py' },
+      'web-scraper': { name: '爬虫项目', file: 'scraper.py' },
+      'automation': { name: '自动化脚本', file: 'automation.py' },
+      'pygame': { name: 'Pygame 游戏开发', file: 'game.py' },
+      'ml-ai': { name: 'AI 与机器学习', file: 'ml.py' }
+    };
+    var p = projects[id];
+    if (p) {
+      window.location.href = '/?project=' + id;
+    }
+  }
+</script>
+<script src="/components/nav.js"></script>
+</body>
+</html>

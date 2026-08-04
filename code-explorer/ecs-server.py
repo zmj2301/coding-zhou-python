@@ -943,6 +943,103 @@ def parse_requirements_file(req_path):
     return packages
 
 
+def install_deps_for_dir(python_bin, temp_dir, skip_dirs, emit, heartbeat):
+    """分析目录中所有 .py 文件，收集并安装缺失的第三方依赖。
+
+    返回 True 表示可以继续执行；返回 False 表示已发出错误，应中止。
+    """
+    req_file = temp_dir / 'requirements.txt'
+
+    heartbeat()
+    emit('status', {'phase': 'analyzing', 'message': '分析项目依赖...'})
+
+    # 收集所有 .py 文件以分析 imports
+    all_imports = set()
+    py_file_count = 0
+    for py_file in temp_dir.rglob('*.py'):
+        try:
+            code_content = py_file.read_text(encoding='utf-8', errors='replace')
+            all_imports.update(detect_imports(code_content))
+            py_file_count += 1
+        except Exception:
+            pass
+    if py_file_count == 0:
+        emit('error', {'message': '项目中没有找到任何 .py 文件'})
+        return False
+
+    # 收集本地模块名（排除这些不安装）
+    # 更精确的检测：所有目录名（包）和所有 .py 文件名（顶层模块）
+    local_modules = set()
+    for py_file in temp_dir.rglob('*.py'):
+        rel = py_file.relative_to(temp_dir)
+        parts = rel.parts
+        # 顶层 .py 文件是模块
+        if len(parts) == 1:
+            local_modules.add(py_file.stem)
+        # 路径中的所有目录都是潜在的包
+        for i in range(len(parts) - 1):
+            local_modules.add(parts[i])
+        # __init__.py 确认该目录是包
+        if py_file.name == '__init__.py':
+            local_modules.add(py_file.parent.name)
+    # 额外：扫描所有目录作为包
+    for d in temp_dir.rglob('*'):
+        if d.is_dir() and not any(part in skip_dirs for part in d.relative_to(temp_dir).parts):
+            rel = d.relative_to(temp_dir)
+            for part in rel.parts:
+                local_modules.add(part)
+
+    # 过滤掉本地模块和标准库模块
+    third_party_imports = set()
+    for imp in all_imports:
+        # 本地模块
+        if imp in local_modules:
+            continue
+        # 标准库
+        if imp in STDLIB_MODULES:
+            continue
+        # 以 _ 开头的内部模块
+        if imp.startswith('_'):
+            continue
+        third_party_imports.add(imp)
+    all_imports = third_party_imports
+
+    # 合并 requirements.txt 和检测到的依赖
+    req_packages = []
+    if req_file.exists():
+        req_packages = parse_requirements_file(req_file)
+        emit('deps', {'phase': 'requirements_found', 'count': len(req_packages), 'message': f'发现 requirements.txt，包含 {len(req_packages)} 个依赖'})
+
+    # 去重合并所有需要安装的包（用规范化名称去重）
+    all_packages = {}
+    for pkg in req_packages:
+        all_packages[_normalize_pkg_name(pkg)] = pkg
+    for pkg in all_imports:
+        norm = _normalize_pkg_name(pkg)
+        if norm not in all_packages:
+            all_packages[norm] = pkg
+
+    # 使用改进的 check_package_installed 检查哪些真正缺失
+    missing = []
+    for norm_name, pkg_name in all_packages.items():
+        if not check_package_installed(python_bin, pkg_name):
+            missing.append(pkg_name)
+    # 去重（保留顺序）
+    seen = set()
+    missing_unique = []
+    for p in missing:
+        if p not in seen:
+            seen.add(p)
+            missing_unique.append(p)
+
+    if missing_unique:
+        emit('deps', {'phase': 'installing', 'count': len(missing_unique), 'message': f'需要安装 {len(missing_unique)} 个依赖包'})
+        install_dependencies(python_bin, missing_unique, emit, heartbeat)
+    else:
+        emit('deps', {'phase': 'installed', 'message': '所有依赖已就绪'})
+    return True
+
+
 def cleanup_old_runs():
     while True:
         time.sleep(300)
@@ -2607,99 +2704,46 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     dest.parent.mkdir(parents=True, exist_ok=True)
                     dest.write_text(content, encoding='utf-8')
 
-                req_file = temp_dir / 'requirements.txt'
-
                 emit('status', {'phase': 'venv', 'message': '准备项目虚拟环境...'})
                 heartbeat()
                 python_bin = ensure_venv(project_path, emit, heartbeat)
 
-                heartbeat()
-                emit('status', {'phase': 'analyzing', 'message': '分析项目依赖...'})
-
-                # 收集所有 .py 文件以分析 imports
-                all_imports = set()
-                py_file_count = 0
-                for py_file in temp_dir.rglob('*.py'):
-                    try:
-                        code_content = py_file.read_text(encoding='utf-8', errors='replace')
-                        all_imports.update(detect_imports(code_content))
-                        py_file_count += 1
-                    except Exception:
-                        pass
-                if py_file_count == 0:
-                    emit('error', {'message': '项目中没有找到任何 .py 文件'})
+                if not install_deps_for_dir(python_bin, temp_dir, skip_dirs, emit, heartbeat):
                     return
 
-                # 收集本地模块名（排除这些不安装）
-                # 更精确的检测：所有目录名（包）和所有 .py 文件名（顶层模块）
-                local_modules = set()
-                for py_file in temp_dir.rglob('*.py'):
-                    rel = py_file.relative_to(temp_dir)
-                    parts = rel.parts
-                    # 顶层 .py 文件是模块
-                    if len(parts) == 1:
-                        local_modules.add(py_file.stem)
-                    # 路径中的所有目录都是潜在的包
-                    for i in range(len(parts) - 1):
-                        local_modules.add(parts[i])
-                    # __init__.py 确认该目录是包
-                    if py_file.name == '__init__.py':
-                        local_modules.add(py_file.parent.name)
-                # 额外：扫描所有目录作为包
-                for d in temp_dir.rglob('*'):
-                    if d.is_dir() and not any(part in skip_dirs for part in d.relative_to(temp_dir).parts):
-                        rel = d.relative_to(temp_dir)
-                        for part in rel.parts:
-                            local_modules.add(part)
+            elif mode == 'multi':
+                files = body.get('files', {})
+                entry_file = body.get('entryFile', 'main.py')
+                venv_key = body.get('venvKey', '')
+                if not isinstance(files, dict) or not files:
+                    emit('error', {'message': '缺少文件内容'})
+                    return
 
-                # 过滤掉本地模块和标准库模块
-                third_party_imports = set()
-                for imp in all_imports:
-                    # 本地模块
-                    if imp in local_modules:
-                        continue
-                    # 标准库
-                    if imp in STDLIB_MODULES:
-                        continue
-                    # 以 _ 开头的内部模块
-                    if imp.startswith('_'):
-                        continue
-                    third_party_imports.add(imp)
-                all_imports = third_party_imports
+                skip_dirs = {'__pycache__', '.git', 'node_modules', '.venv', 'venv', '.idea', '.vscode'}
+                emit('status', {'phase': 'copying', 'message': '写入项目文件...'})
+                heartbeat()
 
-                # 合并 requirements.txt 和检测到的依赖
-                req_packages = []
-                if req_file.exists():
-                    req_packages = parse_requirements_file(req_file)
-                    emit('deps', {'phase': 'requirements_found', 'count': len(req_packages), 'message': f'发现 requirements.txt，包含 {len(req_packages)} 个依赖'})
+                file_count = 0
+                for rel_path, content in files.items():
+                    rel = rel_path.replace('\\', '/').lstrip('/')
+                    if not rel or '..' in rel.split('/'):
+                        emit('error', {'message': f'非法文件路径: {rel_path}'})
+                        return
+                    dest = temp_dir / rel
+                    dest.parent.mkdir(parents=True, exist_ok=True)
+                    dest.write_text(content, encoding='utf-8')
+                    file_count += 1
+                    if file_count % 20 == 0:
+                        heartbeat()
 
-                # 去重合并所有需要安装的包（用规范化名称去重）
-                all_packages = {}
-                for pkg in req_packages:
-                    all_packages[_normalize_pkg_name(pkg)] = pkg
-                for pkg in all_imports:
-                    norm = _normalize_pkg_name(pkg)
-                    if norm not in all_packages:
-                        all_packages[norm] = pkg
+                if not venv_key:
+                    venv_key = '__multi_file__'
+                emit('status', {'phase': 'venv', 'message': '准备虚拟环境...'})
+                heartbeat()
+                python_bin = ensure_venv(venv_key, emit, heartbeat)
 
-                # 使用改进的 check_package_installed 检查哪些真正缺失
-                missing = []
-                for norm_name, pkg_name in all_packages.items():
-                    if not check_package_installed(python_bin, pkg_name):
-                        missing.append(pkg_name)
-                # 去重（保留顺序）
-                seen = set()
-                missing_unique = []
-                for p in missing:
-                    if p not in seen:
-                        seen.add(p)
-                        missing_unique.append(p)
-
-                if missing_unique:
-                    emit('deps', {'phase': 'installing', 'count': len(missing_unique), 'message': f'需要安装 {len(missing_unique)} 个依赖包'})
-                    install_dependencies(python_bin, missing_unique, emit, heartbeat)
-                else:
-                    emit('deps', {'phase': 'installed', 'message': '所有依赖已就绪'})
+                if not install_deps_for_dir(python_bin, temp_dir, skip_dirs, emit, heartbeat):
+                    return
 
             else:
                 emit('error', {'message': f'不支持的模式: {mode}'})

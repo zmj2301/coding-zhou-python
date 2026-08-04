@@ -223,8 +223,21 @@
     display: block;
   }
 
-  /* ===== 文件选择（隐藏） ===== */
-  #fileInput { display: none; }
+  /* ===== 编辑器提示条 ===== */
+  #editorHint {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    z-index: 10;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+  }
 
   /* ===== Toast 通知 ===== */
   #toast {
@@ -250,26 +263,40 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  /* ===== 项目文件选择区 ===== */
-  #projectDrop {
-    position: fixed;
-    inset: 44px 0 0 0;
-    background: rgba(88,166,255,0.15);
-    border: 3px dashed var(--accent-blue);
-    border-radius: var(--radius-md);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: var(--accent-blue);
-    font-weight: 600;
-    z-index: 200;
-    backdrop-filter: blur(4px);
-  }
-  #projectDrop.active { display: flex; }
+  /* ===== 键盘快捷键说明（无） ===== */
 </style>
+<link rel="stylesheet" href="/components/nav.css">
 </head>
 <body>
+
+<!-- Code Explorer Shared Navigation Bar -->
+<div class="ce-nav-wrapper">
+  <div class="ce-top-nav">
+    <div class="ce-top-nav-brand">
+      <div class="ce-top-nav-brand-logo">◈</div>
+      Code Explorer
+    </div>
+    <div class="ce-top-nav-links">
+      <a class="ce-top-nav-link" href="/" data-nav="/">首页</a>
+      <a class="ce-top-nav-link" href="/console" data-nav="/console">API Key</a>
+      <a class="ce-top-nav-link" href="/resources/" data-nav="/resources">资源下载</a>
+      <a class="ce-top-nav-link" href="/web-games/" data-nav="/web-games">网页游戏</a>
+      <a class="ce-top-nav-link active" href="/scratch" data-nav="/scratch">Scratch</a>
+      <a class="ce-top-nav-link" href="/python/" data-nav="/python">Python 编程</a>
+      <a class="ce-top-nav-link" href="/run/local" data-nav="/run/local">⚡ 本地运行</a>
+    </div>
+    <div class="ce-top-nav-actions">
+      <button class="ce-action-btn" id="ceUserMenuBtn" title="用户菜单" style="display:none">
+        <span id="ceUserName">用户</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="ce-action-btn" id="ceThemeToggleBtn" title="切换主题">
+        <svg class="ce-sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="ce-moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- 加载遮罩 -->
 <div id="loadingOverlay">
@@ -281,11 +308,12 @@
 <div id="authScreen">
   <div class="auth-card">
     <h2>🔐 登录以使用 Scratch</h2>
-    <p>请先输入访问密码</p>
-    <input type="password" class="auth-input" id="authPassword" placeholder="输入密码" autocomplete="off">
+    <p>请输入用户名和密码</p>
+    <input type="text" class="auth-input" id="authUsername" placeholder="用户名" autocomplete="username">
+    <input type="password" class="auth-input" id="authPassword" placeholder="密码" autocomplete="current-password">
     <button class="auth-btn" id="authSubmit">登 录</button>
     <div class="auth-error" id="authError"></div>
-    <div class="auth-hint">前往 <a href="/web-games/" style="color:var(--accent-blue);text-decoration:none">网页游戏中心</a> 登录</div>
+    <div class="auth-hint">前往 <a href="/" style="color:var(--accent-blue);text-decoration:none">主页</a> 注册或登录</div>
   </div>
 </div>
 
@@ -298,19 +326,6 @@
       返回
     </button>
     <div class="tb-sep"></div>
-
-    <button class="tb-btn" id="tbNew" title="新建项目">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      新建
-    </button>
-    <button class="tb-btn" id="tbLoad" title="加载 .sb3 文件">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      加载
-    </button>
-    <button class="tb-btn" id="tbSave" title="保存项目">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2zM17 21v-8H7v8M7 3v5h8"/></svg>
-      保存
-    </button>
     <button class="tb-btn" id="tbFull" title="全屏模式">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3M21 8V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3M16 21h3a2 2 0 002-2v-3"/></svg>
       全屏
@@ -320,7 +335,7 @@
 
     <span class="tb-status">
       <span class="tb-status-dot"></span>
-      <span id="statusText">编辑器就绪</span>
+      <span id="statusText">播放器就绪</span>
     </span>
     <div class="tb-sep"></div>
     <button class="tb-btn tb-btn-danger" id="tbLogout" title="退出登录">
@@ -331,14 +346,9 @@
 
   <!-- 编辑器主体 -->
   <div id="editorBody">
+    <div id="editorHint">空项目模板 · 在 <code>SCRATCH_PROJECT_ID</code> 中替换为你的空项目 ID，或用 <code>?project=&lt;ID&gt;</code> 临时指定</div>
     <iframe id="scratchFrame" title="Scratch Editor"></iframe>
   </div>
-
-  <!-- 文件输入 -->
-  <input type="file" id="fileInput" accept=".sb3">
-
-  <!-- 拖拽提示 -->
-  <div id="projectDrop">📦 松开加载 Scratch 项目文件 (.sb3)</div>
 </div>
 
 <!-- Toast -->
@@ -353,8 +363,21 @@
   const LOGIN_URL = '/api/login';
   const LOGOUT_URL = '/api/logout';
   const COOKIE_NAME = 'wg_token';
-  const SCRATCH_CDN = 'https://unpkg.com/scratch-gui@5.3.0/dist/build/index.html';
-  const FALLBACK_CDN = 'https://cdn.jsdelivr.net/gh/LLK/scratch-gui@develop/dist/build/index.html';
+
+  // 空项目模板 ID：请在 scratch.mit.edu 创建一个空项目并分享后填入；
+  // 也可用 URL 参数临时指定，如 /scratch/?project=123456789
+  const SCRATCH_PROJECT_ID = '60917032';
+  let SCRATCH_EMBED_URL = 'https://turbowarp.org/' + SCRATCH_PROJECT_ID + '/embed';
+
+  // 支持 ?project=<ID> 覆盖默认项目
+  (function() {
+    try {
+      var m = new URLSearchParams(window.location.search).get('project');
+      if (m && /^\d{6,}$/.test(m)) {
+        SCRATCH_EMBED_URL = 'https://turbowarp.org/' + m + '/embed';
+      }
+    } catch (e) { /* ignore */ }
+  })();
 
   // ===== DOM =====
   const loadingOverlay = document.getElementById('loadingOverlay');
@@ -362,11 +385,10 @@
   const authScreen = document.getElementById('authScreen');
   const editorContainer = document.getElementById('editorContainer');
   const scratchFrame = document.getElementById('scratchFrame');
-  const fileInput = document.getElementById('fileInput');
-  const projectDrop = document.getElementById('projectDrop');
   const toastEl = document.getElementById('toast');
   const statusText = document.getElementById('statusText');
 
+  const authUsername = document.getElementById('authUsername');
   const authPassword = document.getElementById('authPassword');
   const authSubmit = document.getElementById('authSubmit');
   const authError = document.getElementById('authError');
@@ -407,9 +429,10 @@
 
   // ===== 登录 =====
   function doLogin() {
+    var username = authUsername.value.trim();
     var pw = authPassword.value.trim();
-    if (!pw) {
-      authError.textContent = '请输入密码';
+    if (!username || !pw) {
+      authError.textContent = '请输入用户名和密码';
       authError.classList.add('show');
       return;
     }
@@ -420,7 +443,7 @@
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pw })
+      body: JSON.stringify({ username: username, password: pw })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
@@ -430,7 +453,7 @@
         authSubmit.textContent = '登 录';
         initEditor();
       } else {
-        authError.textContent = '密码错误';
+        authError.textContent = data.error || '用户名或密码错误';
         authError.classList.add('show');
         authSubmit.disabled = false;
         authSubmit.textContent = '登 录';
@@ -445,35 +468,33 @@
   }
 
   authSubmit.addEventListener('click', doLogin);
+  authUsername.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { authPassword.focus(); }
+  });
   authPassword.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') doLogin();
   });
 
   // ===== 加载 Scratch 编辑器 =====
   var scratchLoaded = false;
-  var currentCdn = SCRATCH_CDN;
 
-  function loadScratchEditor(cdnUrl, isFallback) {
+  function loadScratchEditor() {
     if (scratchLoaded) return;
-    loadingText.textContent = isFallback ? '正在加载编辑器（备用地址）...' : '正在加载 Scratch 编辑器...';
-    scratchFrame.src = cdnUrl;
+    loadingText.textContent = '正在加载 TurboWarp 项目...';
+    scratchFrame.src = SCRATCH_EMBED_URL;
     scratchFrame.onload = function() {
       if (scratchLoaded) return;
       scratchLoaded = true;
-      currentCdn = cdnUrl;
       hideLoading();
-      statusText.textContent = '编辑器就绪';
-      showToast('Scratch 编辑器加载完成');
+      statusText.textContent = '播放器就绪';
+      showToast('TurboWarp 项目加载完成');
     };
-    scratchFrame.onerror = function() {
-      if (scratchLoaded) return;
-      if (!isFallback && SCRATCH_CDN !== FALLBACK_CDN) {
-        loadScratchEditor(FALLBACK_CDN, true);
-      } else {
-        statusText.textContent = '加载失败';
-        loadingText.textContent = '编辑器加载失败，请检查网络或稍后重试';
+    var loadTimer = setTimeout(function() {
+      if (!scratchLoaded) {
+        statusText.textContent = '加载缓慢';
+        loadingText.textContent = '编辑器仍在加载中，请稍候...';
       }
-    };
+    }, 20000);
   }
 
   // ===== 隐藏加载遮罩 =====
@@ -489,7 +510,7 @@
     authScreen.classList.remove('active');
     editorContainer.classList.add('active');
     if (!scratchLoaded) {
-      loadScratchEditor(SCRATCH_CDN, false);
+      loadScratchEditor();
     } else {
       hideLoading();
     }
@@ -502,7 +523,7 @@
     } else {
       loadingOverlay.style.display = 'none';
       authScreen.classList.add('active');
-      authPassword.focus();
+      authUsername.focus();
     }
   });
 
@@ -512,55 +533,6 @@
     window.location.href = '/';
   });
 
-  // 新建项目
-  document.getElementById('tbNew').addEventListener('click', function() {
-    try {
-      var editor = scratchFrame.contentWindow;
-      // 通过 scratch-gui 的 postMessage 发送命令
-      editor.postMessage({ command: 'SCRATCH_GUI_NEW' }, '*');
-      statusText.textContent = '已创建新项目';
-      showToast('已创建新空白项目');
-    } catch(e) {
-      showToast('编辑器尚未完全加载，请稍后再试');
-    }
-  });
-
-  // 加载 .sb3
-  document.getElementById('tbLoad').addEventListener('click', function() {
-    fileInput.click();
-  });
-
-  fileInput.addEventListener('change', function(e) {
-    var file = e.target.files[0];
-    if (!file) return;
-    var url = URL.createObjectURL(file);
-    try {
-      var editor = scratchFrame.contentWindow;
-      editor.postMessage({
-        command: 'SCRATCH_GUI_LOAD',
-        projectUrl: url
-      }, '*');
-      statusText.textContent = '已加载: ' + file.name;
-      showToast('已加载: ' + file.name);
-      URL.revokeObjectURL(url);
-    } catch(err) {
-      showToast('编辑器尚未完全加载，请稍后再试');
-    }
-    fileInput.value = '';
-  });
-
-  // 保存项目
-  document.getElementById('tbSave').addEventListener('click', function() {
-    try {
-      var editor = scratchFrame.contentWindow;
-      editor.postMessage({ command: 'SCRATCH_GUI_SAVE' }, '*');
-      statusText.textContent = '保存中...';
-      showToast('正在保存项目...');
-    } catch(e) {
-      showToast('编辑器尚未完全加载，请稍后再试');
-    }
-  });
-
   // 全屏
   document.getElementById('tbFull').addEventListener('click', function() {
     if (!document.fullscreenElement) {
@@ -568,7 +540,7 @@
       statusText.textContent = '全屏模式';
     } else {
       document.exitFullscreen().catch(function() {});
-      statusText.textContent = '编辑器就绪';
+      statusText.textContent = '播放器就绪';
     }
   });
 
@@ -580,56 +552,9 @@
     window.location.href = '/web-games/';
   });
 
-  // ===== 拖拽加载 .sb3 =====
-  var dragCounter = 0;
-  document.addEventListener('dragenter', function(e) {
-    e.preventDefault();
-    dragCounter++;
-    projectDrop.classList.add('active');
-  });
-  document.addEventListener('dragleave', function(e) {
-    e.preventDefault();
-    dragCounter--;
-    if (dragCounter <= 0) {
-      dragCounter = 0;
-      projectDrop.classList.remove('active');
-    }
-  });
-  document.addEventListener('dragover', function(e) {
-    e.preventDefault();
-  });
-  document.addEventListener('drop', function(e) {
-    e.preventDefault();
-    dragCounter = 0;
-    projectDrop.classList.remove('active');
-    var file = e.dataTransfer.files[0];
-    if (!file || !file.name.toLowerCase().endsWith('.sb3')) {
-      showToast('请拖入 .sb3 文件');
-      return;
-    }
-    var url = URL.createObjectURL(file);
-    try {
-      var editor = scratchFrame.contentWindow;
-      editor.postMessage({
-        command: 'SCRATCH_GUI_LOAD',
-        projectUrl: url
-      }, '*');
-      statusText.textContent = '已加载: ' + file.name;
-      showToast('已加载: ' + file.name);
-      URL.revokeObjectURL(url);
-    } catch(err) {
-      showToast('编辑器尚未完全加载，请稍后再试');
-    }
-  });
-
   // ===== 键盘快捷键 =====
   document.addEventListener('keydown', function(e) {
     if (!editorContainer.classList.contains('active')) return;
-    // Ctrl+S / Cmd+S 保存
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-      e.preventDefault();
-      document.getElementById('tbSave').click();
-    }
     // F11 全屏
     if (e.key === 'F11') {
       e.preventDefault();
@@ -639,5 +564,6 @@
 
 })();
 </script>
+<script src="/components/nav.js"></script>
 </body>
 </html>

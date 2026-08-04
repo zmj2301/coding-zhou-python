@@ -298,15 +298,16 @@ if __name__ == '__main__':
     pygame.init()
     pygame.mixer.init()
     try:
-        # 寻找当前工作目录下是否有image文件夹
-        file_image_name = os.path.join(os.getcwd(), 'image')
+        # 寻找当前工作目录下是否有img文件夹
+        file_image_name = os.path.join(os.getcwd(), 'img')
         # 查看
         file_work = os.listdir(file_image_name) if os.path.exists(file_image_name) else []
         file_forget = ['0.png', '1.png', '2.png', '3.png', '右1.png', '右2.png', '右3.png', '右4.png', '左1.png', '左2.png', '左3.png', '左4.png', '打字模式.png', '打字模式文字.png', '果汁1.png', '果汁2.png', '果汁3.png', '果汁4.png', '水果1.png', '水果2.png', '水果3.png', '水果4.png', '炸弹1.png', '炸弹2.png', '禅模式.png', '禅模式文字.png', '经典模式.png', '背景.png', '返回模式.png']
         if file_work != file_forget:
             missing_files = set(file_forget) - set(file_work)
-            messagebox.showerror('错误', f'缺少以下文件：{", ".join(missing_files)}')
-            sys.exit(1)
+            if missing_files:
+                messagebox.showerror('错误', f'缺少以下文件：{", ".join(missing_files)}')
+                sys.exit(1)
         game = Game()
         game.loading_image()
         game.main()

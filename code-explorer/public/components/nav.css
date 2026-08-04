@@ -1,0 +1,187 @@
+/* Code Explorer Shared Navigation Bar Styles */
+/* Include this CSS in every page that uses the nav bar */
+
+:root {
+  --ce-nav-bg: #161b22;
+  --ce-nav-border: #30363d;
+  --ce-nav-text: #c9d1d9;
+  --ce-nav-text-secondary: #8b949e;
+  --ce-nav-bg-hover: #21262d;
+  --ce-nav-active: #58a6ff;
+  --ce-nav-active-bg: rgba(88, 166, 255, 0.1);
+  --ce-nav-gradient: linear-gradient(135deg, #6366f1, #a855f7);
+}
+
+[data-theme="light"] {
+  --ce-nav-bg: #ffffff;
+  --ce-nav-border: #d0d7de;
+  --ce-nav-text: #1f2328;
+  --ce-nav-text-secondary: #656d76;
+  --ce-nav-bg-hover: #f6f8fa;
+  --ce-nav-active: #0969da;
+  --ce-nav-active-bg: rgba(9, 105, 218, 0.1);
+}
+
+/* Nav wrapper */
+.ce-nav-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+}
+
+/* Main nav bar */
+.ce-top-nav {
+  height: 56px;
+  background: var(--ce-nav-bg);
+  border-bottom: 1px solid var(--ce-nav-border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* Brand */
+.ce-top-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ce-nav-text);
+  margin-right: 24px;
+  white-space: nowrap;
+}
+
+.ce-top-nav-brand-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--ce-nav-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Nav links */
+.ce-top-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.ce-top-nav-link {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ce-nav-text-secondary);
+  text-decoration: none;
+  transition: all 0.15s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ce-top-nav-link:hover {
+  color: var(--ce-nav-text);
+  background: var(--ce-nav-bg-hover);
+}
+
+.ce-top-nav-link.active {
+  color: var(--ce-nav-active);
+  background: var(--ce-nav-active-bg);
+}
+
+/* Actions */
+.ce-top-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ce-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--ce-nav-bg-hover);
+  border: 1px solid var(--ce-nav-border);
+  color: var(--ce-nav-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 10px;
+  gap: 6px;
+}
+
+.ce-action-btn:hover {
+  background: var(--ce-nav-border);
+  transform: scale(1.05);
+}
+
+.ce-action-btn .ce-sun-icon {
+  display: none;
+}
+
+.ce-action-btn .ce-moon-icon {
+  display: block;
+}
+
+[data-theme="light"] .ce-action-btn .ce-sun-icon {
+  display: block;
+}
+
+[data-theme="light"] .ce-action-btn .ce-moon-icon {
+  display: none;
+}
+
+/* Page offset for fixed nav */
+body.ce-has-nav {
+  padding-top: 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .ce-top-nav {
+    padding: 0 12px;
+    gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ce-top-nav-brand {
+    margin-right: 12px;
+    font-size: 14px;
+  }
+
+  .ce-top-nav-link {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .ce-top-nav-actions {
+    flex-shrink: 0;
+  }
+
+  .ce-action-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Scrollbar styling for nav overflow */
+.ce-top-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.ce-top-nav {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
