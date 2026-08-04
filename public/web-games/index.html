@@ -633,16 +633,16 @@ body::before {
 .auth-field label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
 .auth-field input {
   width: 100%; padding: 12px 16px;
-  background: rgba(13, 17, 23, 0.8);
-  border: 1px solid rgba(48, 54, 61, 0.8);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   color: var(--text-primary); font-size: 15px;
-  outline: none; transition: all 0.2s;
+  outline: none; transition: all var(--transition);
   font-family: inherit;
 }
 .auth-field input:focus {
   border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(88,166,255,0.12), 0 0 20px rgba(88,166,255,0.1);
+  box-shadow: 0 0 0 3px rgba(88,166,255,0.12);
 }
 .auth-btn-primary {
   width: 100%; padding: 14px 16px;
@@ -659,8 +659,8 @@ body::before {
   color: var(--accent-red); font-size: 13px;
   margin-top: 16px; min-height: 20px;
   padding: 10px 14px;
-  background: rgba(248,81,73,0.08);
-  border: 1px solid rgba(248,81,73,0.2);
+  background: color-mix(in srgb, var(--accent-red) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-red) 25%, transparent);
   border-radius: 8px; display: none;
 }
 .auth-error.show { display: block; }
@@ -720,12 +720,12 @@ body::before {
 .admin-logout-btn {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 18px; background: transparent;
-  border: 1px solid rgba(248,81,73,0.3);
+  border: 1px solid color-mix(in srgb, var(--accent-red) 30%, transparent);
   border-radius: 8px; color: var(--accent-red);
   cursor: pointer; font-size: 13px;
   transition: all var(--transition);
 }
-.admin-logout-btn:hover { background: rgba(248,81,73,0.08); border-color: var(--accent-red); }
+.admin-logout-btn:hover { background: color-mix(in srgb, var(--accent-red) 10%, transparent); border-color: var(--accent-red); }
 .admin-body { flex: 1; overflow-y: auto; padding: 40px 32px; }
 .admin-body-inner { max-width: 1400px; margin: 0 auto; }
 .admin-section { margin-bottom: 40px; }
@@ -762,28 +762,26 @@ body::before {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.admin-card-icon.blue { background: rgba(88,166,255,0.15); color: var(--accent-blue); box-shadow: 0 4px 12px rgba(88,166,255,0.15); }
-.admin-card-icon.green { background: rgba(63,185,80,0.15); color: var(--accent-green); box-shadow: 0 4px 12px rgba(63,185,80,0.15); }
-.admin-card-icon.purple { background: rgba(163,113,247,0.15); color: #a371f7; box-shadow: 0 4px 12px rgba(163,113,247,0.15); }
-.admin-card-icon.red { background: rgba(248,81,73,0.15); color: var(--accent-red); box-shadow: 0 4px 12px rgba(248,81,73,0.15); }
-.admin-card-icon.yellow { background: rgba(210,153,34,0.15); color: #d29922; box-shadow: 0 4px 12px rgba(210,153,34,0.15); }
+.admin-card-icon.blue { background: color-mix(in srgb, var(--accent-blue) 15%, transparent); color: var(--accent-blue); box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-blue) 15%, transparent); }
+.admin-card-icon.green { background: color-mix(in srgb, var(--accent-green) 15%, transparent); color: var(--accent-green); box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-green) 15%, transparent); }
+.admin-card-icon.purple { background: color-mix(in srgb, var(--accent-purple) 15%, transparent); color: var(--accent-purple); box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-purple) 15%, transparent); }
+.admin-card-icon.yellow { background: color-mix(in srgb, var(--accent-yellow) 15%, transparent); color: var(--accent-yellow); box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-yellow) 15%, transparent); }
 .admin-card-title { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
 .admin-card-value {
   font-size: 32px; font-weight: 700;
-  background: linear-gradient(135deg, #e6edf3, #8b949e);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  color: var(--text-primary);
   margin-bottom: 6px; line-height: 1.2;
 }
 .admin-card-desc { font-size: 12px; color: var(--text-tertiary); word-break: break-all; font-family: var(--font-mono); }
 .admin-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-.admin-badge.on { background: rgba(63,185,80,0.12); color: var(--accent-green); border: 1px solid rgba(63,185,80,0.2); box-shadow: 0 0 12px rgba(63,185,80,0.15); }
-.admin-badge.off { background: rgba(248,81,73,0.12); color: var(--accent-red); border: 1px solid rgba(248,81,73,0.2); }
+.admin-badge.on { background: color-mix(in srgb, var(--accent-green) 12%, transparent); color: var(--accent-green); border: 1px solid color-mix(in srgb, var(--accent-green) 20%, transparent); box-shadow: 0 0 12px color-mix(in srgb, var(--accent-green) 15%, transparent); }
+.admin-badge.off { background: color-mix(in srgb, var(--accent-red) 12%, transparent); color: var(--accent-red); border: 1px solid color-mix(in srgb, var(--accent-red) 20%, transparent); }
 .admin-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
 .progress-list { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
 .progress-item { display: flex; align-items: center; gap: 12px; }
 .progress-label { font-size: 12px; color: var(--text-secondary); min-width: 80px; }
-.progress-bar-wrap { flex: 1; height: 6px; background: rgba(48, 54, 61, 0.8); border-radius: 3px; overflow: hidden; }
-.progress-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #58a6ff, #a371f7); box-shadow: 0 0 10px rgba(88, 166, 255, 0.5); transition: width 0.5s ease; }
+.progress-bar-wrap { flex: 1; height: 6px; background: var(--bg-overlay); border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); transition: width 0.5s ease; }
 .progress-value { font-size: 12px; color: var(--text-primary); font-weight: 600; font-family: var(--font-mono); min-width: 40px; text-align: right; }
 
 .user-menu-btn {
@@ -838,8 +836,8 @@ body::before {
 @keyframes dropdownFade { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 .user-dropdown-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-secondary); cursor: pointer; font-size: 14px; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; font-family: inherit; }
 .user-dropdown-item:hover { background: rgba(88, 166, 255, 0.08); color: var(--text-primary); }
-.user-dropdown-item.danger:hover { background: rgba(248,81,73,0.08); color: var(--accent-red); }
-.user-dropdown-divider { height: 1px; background: rgba(48, 54, 61, 0.8); margin: 4px 0; }
+.user-dropdown-item.danger:hover { background: color-mix(in srgb, var(--accent-red) 10%, transparent); color: var(--accent-red); }
+.user-dropdown-divider { height: 1px; background: var(--border-color); margin: 4px 0; }
 .user-dropdown-item svg { width: 18px; height: 18px; }
 
 /* ===== RESPONSIVE ===== */
@@ -1176,28 +1174,28 @@ function renderDashboard(data) {
   adminDashboardContent.innerHTML = `
     <div class="admin-section"><div class="admin-section-title">服务器状态</div>
       <div class="admin-cards">
-        <div class="admin-card" style="--card-accent:#3fb950"><div class="admin-card-header"><div class="admin-card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></div><div class="admin-card-title">运行时间</div></div><div class="admin-card-value" style="font-size:24px">${escape(data.server.uptime)}</div></div>
-        <div class="admin-card" style="--card-accent:#58a6ff"><div class="admin-card-header"><div class="admin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div><div class="admin-card-title">文件总数</div></div><div class="admin-card-value">${data.server.total_files}</div></div>
-        <div class="admin-card" style="--card-accent:#a371f7"><div class="admin-card-header"><div class="admin-card-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div><div class="admin-card-title">服务端口</div></div><div class="admin-card-value">${data.server.port}</div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-green)"><div class="admin-card-header"><div class="admin-card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></div><div class="admin-card-title">运行时间</div></div><div class="admin-card-value" style="font-size:24px">${escape(data.server.uptime)}</div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-blue)"><div class="admin-card-header"><div class="admin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div><div class="admin-card-title">文件总数</div></div><div class="admin-card-value">${data.server.total_files}</div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-purple)"><div class="admin-card-header"><div class="admin-card-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div><div class="admin-card-title">服务端口</div></div><div class="admin-card-value">${data.server.port}</div></div>
       </div>
     </div>
     <div class="admin-section"><div class="admin-section-title">登录认证</div>
       <div class="admin-cards">
-        <div class="admin-card" style="--card-accent:#58a6ff"><div class="admin-card-header"><div class="admin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div><div class="admin-card-title">用户密码</div></div><div style="margin-top:10px">${authStatus}</div></div>
-        <div class="admin-card" style="--card-accent:#a371f7"><div class="admin-card-header"><div class="admin-card-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><div class="admin-card-title">管理员密码</div></div><div style="margin-top:10px">${adminStatus}</div></div>
-        <div class="admin-card" style="--card-accent:#3fb950"><div class="admin-card-header"><div class="admin-card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div><div class="admin-card-title">活跃会话</div></div><div class="admin-card-value">${data.auth.active_sessions}</div><div class="admin-card-desc">管理员会话: ${data.auth.admin_sessions}</div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-blue)"><div class="admin-card-header"><div class="admin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div><div class="admin-card-title">用户密码</div></div><div style="margin-top:10px">${authStatus}</div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-purple)"><div class="admin-card-header"><div class="admin-card-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><div class="admin-card-title">管理员密码</div></div><div style="margin-top:10px">${adminStatus}</div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-green)"><div class="admin-card-header"><div class="admin-card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div><div class="admin-card-title">活跃会话</div></div><div class="admin-card-value">${data.auth.active_sessions}</div><div class="admin-card-desc">管理员会话: ${data.auth.admin_sessions}</div></div>
       </div>
     </div>
     <div class="admin-section"><div class="admin-section-title">数据文件</div>
       <div class="admin-cards">
-        <div class="admin-card" style="--card-accent:#f85149"><div class="admin-card-header"><div class="admin-card-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div><div class="admin-card-title">点赞数据</div></div><div class="admin-card-value" style="font-size:26px">${data.data.likes_count}</div><div class="admin-card-desc">${escape(data.data.likes_file)}</div></div>
-        <div class="admin-card" style="--card-accent:#58a6ff"><div class="admin-card-header"><div class="admin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div><div class="admin-card-title">评论文件</div></div><div class="admin-card-value">${data.data.comment_files.length}</div><div class="admin-card-desc">${escape(data.data.comments_dir)}</div>${commentRows ? `<div style="margin-top:14px;max-height:120px;overflow-y:auto">${commentRows}</div>` : ''}</div>
-        <div class="admin-card" style="--card-accent:#d29922"><div class="admin-card-header"><div class="admin-card-icon yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div><div class="admin-card-title">上传文件</div></div><div class="admin-card-value">${data.data.uploaded_files_count}</div><div class="admin-card-desc">${escape(data.data.uploads_dir)}</div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-red)"><div class="admin-card-header"><div class="admin-card-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div><div class="admin-card-title">点赞数据</div></div><div class="admin-card-value" style="font-size:26px">${data.data.likes_count}</div><div class="admin-card-desc">${escape(data.data.likes_file)}</div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-blue)"><div class="admin-card-header"><div class="admin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div><div class="admin-card-title">评论文件</div></div><div class="admin-card-value">${data.data.comment_files.length}</div><div class="admin-card-desc">${escape(data.data.comments_dir)}</div>${commentRows ? `<div style="margin-top:14px;max-height:120px;overflow-y:auto">${commentRows}</div>` : ''}</div>
+        <div class="admin-card" style="--card-accent:var(--accent-yellow)"><div class="admin-card-header"><div class="admin-card-icon yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></div><div class="admin-card-title">上传文件</div></div><div class="admin-card-value">${data.data.uploaded_files_count}</div><div class="admin-card-desc">${escape(data.data.uploads_dir)}</div></div>
       </div>
     </div>
     <div class="admin-section"><div class="admin-section-title">系统资源</div>
       <div class="admin-cards">
-        <div class="admin-card" style="--card-accent:#00d4ff"><div class="admin-card-header"><div class="admin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div><div class="admin-card-title">资源使用</div></div><div class="progress-list"><div class="progress-item"><span class="progress-label">CPU</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 30 + 10)}%"></div></div><span class="progress-value">%</span></div><div class="progress-item"><span class="progress-label">内存</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 40 + 20)}%;background:linear-gradient(90deg,#a371f7,#ff6b9d)"></div></div><span class="progress-value">%</span></div><div class="progress-item"><span class="progress-label">磁盘</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 50 + 30)}%;background:linear-gradient(90deg,#3fb950,#00d4ff)"></div></div><span class="progress-value">%</span></div></div></div>
+        <div class="admin-card" style="--card-accent:var(--accent-cyan)"><div class="admin-card-header"><div class="admin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div><div class="admin-card-title">资源使用</div></div><div class="progress-list"><div class="progress-item"><span class="progress-label">CPU</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 30 + 10)}%"></div></div><span class="progress-value">%</span></div><div class="progress-item"><span class="progress-label">内存</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 40 + 20)}%;background:linear-gradient(90deg,var(--accent-purple),var(--accent-pink))"></div></div><span class="progress-value">%</span></div><div class="progress-item"><span class="progress-label">磁盘</span><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.floor(Math.random() * 50 + 30)}%;background:linear-gradient(90deg,var(--accent-green),var(--accent-cyan))"></div></div><span class="progress-value">%</span></div></div></div>
       </div>
     </div>`;
 }

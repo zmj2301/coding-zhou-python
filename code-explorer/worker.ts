@@ -246,7 +246,12 @@ async function fetchAsset(path: string, env: Env): Promise<Response> {
       if (resp.ok) return resp;
     }
   } catch {}
-  return fetchFromGitHub('code-explorer/public' + path, env);
+  // 先尝试 code-explorer/public/，再尝试 public/
+  let resp = await fetchFromGitHub('code-explorer/public' + path, env);
+  if (!resp.ok) {
+    resp = await fetchFromGitHub('public' + path, env);
+  }
+  return resp;
 }
 
 // ------------------------------------------------------------
@@ -1479,6 +1484,14 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     }
   }
 
+  // Scratch 页面保护（静态文件从 public/scratch/ 提供）
+  if (path.startsWith('/scratch/') || path === '/scratch') {
+    if (isBrowserRequest(request)) {
+      const authenticated = await checkAuth(request, env);
+      if (!authenticated) return redirectResponse('/');
+    }
+  }
+
   const ext = getExt(path);
   const isStatic = isStaticAsset(ext);
   const isHtml = ext === '.html' || ext === '.htm';
@@ -1525,6 +1538,15 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
       } catch {}
     }
     return new Response(body, { status: 200, headers });
+  }
+
+  // 目录 fallback: 尝试路径 + /index.html
+  const indexPath = path.endsWith('/') ? path + 'index.html' : path + '/index.html';
+  let dirAssetResp = await fetchAsset(indexPath, env);
+  if (dirAssetResp.ok) {
+    const ctype = CONTENT_TYPE_MAP['.html'] || dirAssetResp.headers.get('Content-Type') || 'text/html';
+    const body = await dirAssetResp.text();
+    return new Response(body, { status: 200, headers: { 'Content-Type': ctype, 'Cache-Control': 'no-cache' } });
   }
 
   // Fallback: 从 GitHub 代理静态文件（code-explorer/public 下的资源）

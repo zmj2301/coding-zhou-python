@@ -164,6 +164,42 @@ body::before {
 .carousel-slide img {
   width: 100%; height: auto; display: block;
   object-fit: contain; max-height: 360px;
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.carousel-slide img:hover {
+  transform: scale(1.02);
+  filter: brightness(1.05);
+}
+.carousel-link {
+  display: block;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+.carousel-link:hover img {
+  transform: scale(1.02);
+  filter: brightness(1.05);
+}
+.carousel-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+.carousel-link:hover .carousel-hint {
+  background: rgba(88, 166, 255, 0.9);
 }
 .carousel-dots {
   display: flex; justify-content: center; gap: 10px;
@@ -3442,6 +3478,9 @@ body::before {
     <a class="top-nav-link" href="/console">API Key</a>
     <a class="top-nav-link" href="#">资源下载</a>
     <a class="top-nav-link" href="/web-games/">网页游戏</a>
+    <a class="top-nav-link" href="/scratch">Scratch</a>
+    <a class="top-nav-link" href="/python/">Python 编程</a>
+    <a class="top-nav-link" href="/run/local">⚡ 本地运行</a>
   </div>
 </div>
 
@@ -3451,13 +3490,13 @@ body::before {
     <div class="carousel">
       <div class="carousel-slides">
         <div class="carousel-slide active">
-          <img src="/images/code_explorer.png" alt="Code Explorer">
+          <a href="#projectListSection" class="carousel-link"><img src="/images/code_explorer.png" alt="Code Explorer"><span class="carousel-hint">↓ 点击查看项目列表</span></a>
         </div>
         <div class="carousel-slide">
-          <img src="/images/run_python.png" alt="Run Python">
+          <a href="#projectListSection" class="carousel-link"><img src="/images/run_python.png" alt="Run Python"><span class="carousel-hint">↓ 点击查看项目列表</span></a>
         </div>
         <div class="carousel-slide">
-          <img src="/images/run_scratch.png" alt="Run Scratch">
+          <a href="#projectListSection" class="carousel-link"><img src="/images/run_scratch.png" alt="Run Scratch"><span class="carousel-hint">↓ 点击查看项目列表</span></a>
         </div>
       </div>
       <div class="carousel-dots" id="carouselDots">
@@ -3487,7 +3526,7 @@ body::before {
     <div class="recent-items" id="bookmarkItems"></div>
   </div>
 
-  <div class="section-header">
+  <div class="section-header" id="projectListSection">
     <h2>项目列表</h2>
     <div class="header-right">
       <div class="hero-search" id="heroSearch">
@@ -7014,10 +7053,47 @@ if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (
   startAuto();
   document.querySelector('.carousel').addEventListener('mouseenter', stopAuto);
   document.querySelector('.carousel').addEventListener('mouseleave', startAuto);
+
+  // Click on carousel image to scroll to project list
+  // Intercept anchor clicks for smooth scrolling
+  var links = document.querySelectorAll('.carousel-link');
+  links.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = this.getAttribute('href');
+      if (targetId && targetId.startsWith('#')) {
+        var target = document.getElementById(targetId.substring(1));
+        if (target) {
+          var headerOffset = 70;
+          var rect = target.getBoundingClientRect();
+          var top = rect.top - headerOffset + window.pageYOffset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      }
+    });
+  });
 })();
 
 // 初始化主题
 setTheme(getTheme());
+
+// ===== Scroll to Project List =====
+function scrollToProjectList() {
+  var target = document.getElementById('projectListSection');
+  if (!target) return;
+  var headerOffset = 70;
+  var rect = target.getBoundingClientRect();
+  var top = rect.top - headerOffset + window.pageYOffset;
+  window.scrollTo({ top: top, behavior: 'smooth' });
+}
+
+// Also intercept any anchor link to #projectListSection
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href="#projectListSection"]');
+  if (!a) return;
+  e.preventDefault();
+  scrollToProjectList();
+}, false);
 
 // ===== A3: 最近访问记录 =====
 const RECENT_KEY = 'code_explorer_recent';
@@ -7343,5 +7419,174 @@ function copyCode(btn) {
   </div>
 </div>
 </body>
+
+<!-- ========== 本地运行页面容器 ========== -->
+<div id="localRunApp" style="display:none;position:fixed;inset:0;z-index:999999;background:#0d1117;color:#e6edf3;overflow:auto">
+  <div id="localRunContent"></div>
+</div>
+
+<script>
+(function(){
+  var path = window.location.pathname;
+  if(path.startsWith('/run/local')){
+    var app = document.getElementById('localRunApp');
+    var content = document.getElementById('localRunContent');
+    app.style.display = 'block';
+
+    var style = document.createElement('style');
+    style.textContent = '' +
+      '#localRunContent{max-width:1100px;margin:0 auto;padding:32px 24px}' +
+      '.lr-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #30363d}' +
+      '.lr-title{font-size:22px;font-weight:600;display:flex;align-items:center;gap:10px}' +
+      '.lr-title .icon{width:36px;height:36px;background:linear-gradient(135deg,#58a6ff,#a371f7);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}' +
+      '.lr-status{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:13px;background:#21262d}' +
+      '.lr-status.connected{background:rgba(63,185,80,.15);color:#3fb950}' +
+      '.lr-status.disconnected{background:rgba(248,81,73,.15);color:#f85149}' +
+      '.lr-status .dot{width:8px;height:8px;border-radius:50%;background:currentColor}' +
+      '.lr-actions{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}' +
+      '.lr-btn{background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px;transition:all .2s}' +
+      '.lr-btn:hover{background:#30363d;border-color:#58a6ff}' +
+      '.lr-btn.primary{background:linear-gradient(135deg,#58a6ff,#388bfd);border:none}' +
+      '.lr-btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(88,166,255,.3)}' +
+      '.lr-btn.danger{background:rgba(248,81,73,.15);color:#f85149;border-color:rgba(248,81,73,.3)}' +
+      '.lr-section{margin-bottom:28px}' +
+      '.lr-section-title{font-size:15px;font-weight:600;margin-bottom:14px;color:#8b949e;display:flex;align-items:center;gap:8px}' +
+      '.lr-section-title .count{background:#30363d;color:#8b949e;font-size:11px;padding:2px 8px;border-radius:10px}' +
+      '.lr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}' +
+      '.lr-card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}' +
+      '.lr-card:hover{border-color:#58a6ff;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}' +
+      '.lr-card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}' +
+      '.lr-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}' +
+      '.lr-card-icon.python{background:linear-gradient(135deg,#3776ab,#ffd43b);color:#fff}' +
+      '.lr-card-icon.javascript{background:linear-gradient(135deg,#f7df1e,#f0883e);color:#1e1e1e}' +
+      '.lr-card-icon.html{background:linear-gradient(135deg,#e44d26,#f0883e);color:#fff}' +
+      '.lr-card-icon.css{background:linear-gradient(135deg,#2965f1,#58a6ff);color:#fff}' +
+      '.lr-card-icon.mixed{background:linear-gradient(135deg,#a371f7,#58a6ff);color:#fff}' +
+      '.lr-card-badge{font-size:11px;padding:3px 8px;border-radius:10px;background:rgba(88,166,255,.15);color:#58a6ff}' +
+      '.lr-card-name{font-size:16px;font-weight:600;margin-bottom:6px}' +
+      '.lr-card-desc{font-size:12px;color:#8b949e;margin-bottom:10px}' +
+      '.lr-card-meta{display:flex;gap:14px;font-size:11px;color:#6e7681;margin-bottom:14px}' +
+      '.lr-card-meta span{display:flex;align-items:center;gap:3px}' +
+      '.lr-card-footer{display:flex;gap:8px}' +
+      '.lr-card-btn{flex:1;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all .2s}' +
+      '.lr-card-btn.run{background:linear-gradient(135deg,#3fb950,#2ea043);color:#fff}' +
+      '.lr-card-btn.run:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(63,185,80,.3)}' +
+      '.lr-card-btn.browse{background:#21262d;color:#e6edf3;border:1px solid #30363d}' +
+      '.lr-card-btn.browse:hover{background:#30363d}' +
+      '.lr-empty{text-align:center;padding:60px 20px;color:#6e7681}' +
+      '.lr-empty h3{margin-bottom:10px;font-size:18px}' +
+      '.lr-empty p{font-size:14px;line-height:1.6}' +
+      '.lr-setup{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;margin-top:24px}' +
+      '.lr-setup h3{font-size:16px;margin-bottom:16px;display:flex;align-items:center;gap:8px}' +
+      '.lr-step{display:flex;gap:12px;margin-bottom:16px}' +
+      '.lr-step-num{width:28px;height:28px;background:#21262d;border:1px solid #30363d;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}' +
+      '.lr-step-content{flex:1}' +
+      '.lr-step-title{font-size:14px;font-weight:500;margin-bottom:4px}' +
+      '.lr-step-desc{font-size:13px;color:#8b949e}' +
+      '.lr-code{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 14px;font-family:monospace;font-size:13px;color:#58a6ff;overflow-x:auto;margin-top:8px}' +
+      '.lr-code .comment{color:#6e7681}' +
+      '.lr-code .prompt{color:#3fb950}' +
+      '.lr-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid #30363d}' +
+      '.lr-tab{padding:10px 16px;background:none;border:none;color:#8b949e;cursor:pointer;font-size:14px;border-bottom:2px solid transparent;transition:all .2s}' +
+      '.lr-tab.active{color:#58a6ff;border-bottom-color:#58a6ff}' +
+      '.lr-tab:hover{color:#e6edf3}' +
+      '.lr-output-panel{background:#0d1117;border:1px solid #30363d;border-radius:10px;overflow:hidden}' +
+      '.lr-output-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#161b22;border-bottom:1px solid #30363d}' +
+      '.lr-output-header h4{font-size:14px;margin:0}' +
+      '.lr-output-body{padding:16px;font-family:monospace;font-size:13px;min-height:100px;max-height:300px;overflow:auto;white-space:pre-wrap;line-height:1.6}' +
+      '.lr-output-body .out{color:#e6edf3}' +
+      '.lr-output-body .err{color:#f85149}' +
+      '.lr-output-body .sys{color:#58a6ff}' +
+      '.lr-output-body .success{color:#3fb950}' +
+      '.lr-notice{background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.3);border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.6}' +
+      '.lr-notice strong{color:#58a6ff}' +
+      '.lr-close{position:absolute;top:20px;right:20px;background:none;border:none;color:#8b949e;font-size:24px;cursor:pointer;z-index:10}' +
+      '.lr-close:hover{color:#e6edf3}' +
+      '@media(max-width:768px){' +
+      '#localRunContent{padding:20px 16px}' +
+      '.lr-grid{grid-template-columns:1fr}' +
+      '.lr-header{flex-direction:column;gap:12px;align-items:flex-start}' +
+      '}';
+    document.head.appendChild(style);
+
+    var H = '';
+    H += '<button class="lr-close" onclick="document.getElementById(\'localRunApp\').style.display=\'none\';history.back()">&times;</button>';
+    H += '<div class="lr-notice"><strong>💡 本地运行模式：</strong> 此页面与您本地的伴生程序通信，实现浏览器与本地文件系统的交互。请确保已在本地启动伴生程序。</div>';
+    H += '<div class="lr-header"><div class="lr-title"><span class="icon">⚡</span>本地运行中心</div>';
+    H += '<div style="display:flex;gap:12px;align-items:center"><div class="lr-status disconnected" id="lrConnStatus"><span class="dot"></span><span id="lrConnText">未连接</span></div></div></div>';
+    H += '<div class="lr-actions">';
+    H += '<button class="lr-btn" onclick="lrSetPort()">🔌 设置端口</button>';
+    H += '<button class="lr-btn" onclick="lrSetDir()">📁 设置项目目录</button>';
+    H += '<button class="lr-btn primary" onclick="lrRefresh()">🔄 刷新项目列表</button>';
+    H += '<button class="lr-btn danger" onclick="lrClear()">🗑 清空缓存</button>';
+    H += '</div>';
+    H += '<div class="lr-section"><div class="lr-section-title">可用项目 <span class="count" id="lrProjCount">0</span></div>';
+    H += '<div class="lr-tabs">';
+    H += '<button class="lr-tab active" onclick="lrFilter(this,\'all\')">全部</button>';
+    H += '<button class="lr-tab" onclick="lrFilter(this,\'python\')">Python</button>';
+    H += '<button class="lr-tab" onclick="lrFilter(this,\'javascript\')">JavaScript</button>';
+    H += '<button class="lr-tab" onclick="lrFilter(this,\'web\')">Web项目</button>';
+    H += '</div>';
+    H += '<div class="lr-grid" id="lrProjGrid"><div class="lr-empty"><h3>📡 等待连接</h3><p>请先在本地启动 local_agent.py 伴生程序</p></div></div>';
+    H += '</div>';
+    H += '<div class="lr-section" id="lrOutputSection" style="display:none"><div class="lr-section-title">运行输出</div>';
+    H += '<div class="lr-output-panel"><div class="lr-output-header"><h4>代码执行结果</h4><button class="lr-btn" style="padding:4px 12px;font-size:12px" onclick="lrClearOutput()">清空</button></div>';
+    H += '<div class="lr-output-body" id="lrOutput"></div></div></div>';
+    H += '<div class="lr-setup"><h3>🚀 快速开始</h3>';
+    H += '<div class="lr-step"><div class="lr-step-num">1</div><div class="lr-step-content"><div class="lr-step-title">下载本地伴生程序</div><div class="lr-step-desc">保存为 local_agent.py，放在任意目录</div><div class="lr-code"><span class="prompt">$</span> python -c "import urllib.request; urllib.request.urlretrieve(\'http://codingzhou.dpdns.org/local_agent.py\', \'local_agent.py\')"</div></div></div>';
+    H += '<div class="lr-step"><div class="lr-step-num">2</div><div class="lr-step-content"><div class="lr-step-title">启动伴生程序</div><div class="lr-step-desc">在终端中运行以下命令</div><div class="lr-code"><span class="prompt">$</span> python local_agent.py --port 18765 --dir ~/projects</div></div></div>';
+    H += '<div class="lr-step"><div class="lr-step-num">3</div><div class="lr-step-content"><div class="lr-step-title">返回此页面使用</div><div class="lr-step-desc">伴生程序启动后，页面会自动检测并显示项目列表</div></div></div>';
+    H += '</div>';
+    content.innerHTML = H;
+
+    var LR = { port: parseInt(localStorage.getItem('lr_port') || '18765'), dir: localStorage.getItem('lr_dir') || '~/projects', projects: [], filter: 'all', timer: null };
+    function lrBase(){ return 'http://localhost:' + LR.port; }
+    function lrCheck(){
+      var xhr = new XMLHttpRequest(); xhr.timeout = 3000;
+      xhr.open('GET', lrBase() + '/api/status', true);
+      xhr.onload = function(){ if(xhr.status===200){ try{ var d=JSON.parse(xhr.responseText); lrSetStatus(true,d); lrLoadProjects(); }catch(e){ lrSetStatus(false); } } else lrSetStatus(false); };
+      xhr.onerror = xhr.ontimeout = function(){ lrSetStatus(false); }; xhr.send();
+    }
+    function lrSetStatus(ok, d){
+      var el = document.getElementById('lrConnStatus'); var txt = document.getElementById('lrConnText');
+      if(ok){ el.className='lr-status connected'; txt.textContent='已连接 | Python ' + (d.pythonVersion||'?'); }
+      else { el.className='lr-status disconnected'; txt.textContent='未连接 — 请启动 local_agent.py'; }
+    }
+    function lrLoadProjects(){
+      var xhr = new XMLHttpRequest(); xhr.open('GET', lrBase() + '/api/projects', true);
+      xhr.onload = function(){ if(xhr.status===200){ try{ var d=JSON.parse(xhr.responseText); LR.projects=d.projects||[]; lrRenderProjects(); }catch(e){ lrShowEmpty('解析项目列表失败'); } } else lrShowEmpty('无法加载项目列表'); };
+      xhr.onerror = function(){ lrShowEmpty('无法连接到本地伴生程序'); }; xhr.send();
+    }
+    function lrRenderProjects(){
+      var grid=document.getElementById('lrProjGrid');
+      var filtered=LR.projects.filter(function(p){ if(LR.filter==='all') return true; if(LR.filter==='python') return p.type==='python'||p.type==='mixed'; if(LR.filter==='javascript') return p.type==='javascript'; if(LR.filter==='web') return p.type==='web'||p.type==='html'; return true; });
+      if(!filtered.length){ lrShowEmpty(LR.projects.length===0?'暂无检测到的项目。请在本地启动伴生程序后刷新':'当前分类下暂无项目'); return; }
+      document.getElementById('lrProjCount').textContent=filtered.length;
+      var h='';
+      filtered.forEach(function(p){
+        var ic=p.type||'mixed'; var fi=p.files?p.files+' 个文件':'';
+        h+='<div class="lr-card" onclick="lrSelectProject(\''+p.path+'\')">';
+        h+='<div class="lr-card-header"><div class="lr-card-icon '+ic+'">'+(p.shortName||p.name).substring(0,2).toUpperCase()+'</div><span class="lr-card-badge">'+(p.type||'mixed').toUpperCase()+'</span></div>';
+        h+='<div class="lr-card-name">'+p.name+'</div><div class="lr-card-desc">'+(p.description||'')+'</div>';
+        h+='<div class="lr-card-meta"><span>📁 '+fi+'</span></div>';
+        h+='<div class="lr-card-footer"><button class="lr-card-btn run" onclick="event.stopPropagation();lrRunProject(\''+p.path+'\')">▶️ 运行</button><button class="lr-card-btn browse" onclick="event.stopPropagation();lrBrowseProject(\''+p.path+'\')">📂 浏览</button></div>';
+        h+='</div>';
+      });
+      grid.innerHTML=h;
+    }
+    function lrShowEmpty(msg){ document.getElementById('lrProjCount').textContent='0'; document.getElementById('lrProjGrid').innerHTML='<div class="lr-empty"><h3>📭 暂无项目</h3><p>'+msg+'</p></div>'; }
+    function lrSetPort(){ var p=prompt('输入伴生程序端口号：',LR.port); if(p){ LR.port=parseInt(p)||18765; localStorage.setItem('lr_port',LR.port); lrCheck(); } }
+    function lrSetDir(){ var d=prompt('输入默认项目目录路径：',LR.dir); if(d){ LR.dir=d; localStorage.setItem('lr_dir',d); } }
+    function lrRefresh(){ lrCheck(); }
+    function lrClear(){ localStorage.removeItem('lr_port'); localStorage.removeItem('lr_dir'); LR.port=18765; LR.dir='~/projects'; lrCheck(); }
+    function lrFilter(el,type){ LR.filter=type; document.querySelectorAll('.lr-tab').forEach(function(t){t.classList.remove('active');}); el.classList.add('active'); lrRenderProjects(); }
+    function lrSelectProject(path){ alert('项目: '+path+'\\n\\n点击运行可执行该项目的主文件'); }
+    function lrBrowseProject(path){ var xhr=new XMLHttpRequest(); xhr.open('GET',lrBase()+'/api/files?project='+encodeURIComponent(path),true); xhr.onload=function(){ if(xhr.status===200){ try{ var d=JSON.parse(xhr.responseText); var fs=d.files||[]; var msg='📁 项目: '+path+'\\n\\n'; msg+=fs.slice(0,50).map(function(f){return '  '+(f.isDir?'📁':'📄')+' '+f.name;}).join('\\n'); alert(msg); }catch(e){ alert('解析失败'); }}}; xhr.send(); }
+    function lrRunProject(path){ var output=document.getElementById('lrOutput'); var section=document.getElementById('lrOutputSection'); section.style.display='block'; output.innerHTML='<span class="sys">⏳ 正在运行: '+path+' ...</span>'; var xhr=new XMLHttpRequest(); xhr.open('POST',lrBase()+'/api/run',true); xhr.setRequestHeader('Content-Type','application/json'); xhr.onload=function(){ output+='<br><span class="success">✅ 执行完成</span>'; }; xhr.onerror=function(){ output+='<br><span class="err">❌ 无法连接</span>'; }; xhr.send(JSON.stringify({project:path})); }
+    function lrClearOutput(){ document.getElementById('lrOutput').innerHTML=''; }
+    window.lrFilter=lrFilter; window.lrSetPort=lrSetPort; window.lrSetDir=lrSetDir; window.lrRefresh=lrRefresh; window.lrClear=lrClear; window.lrSelectProject=lrSelectProject; window.lrBrowseProject=lrBrowseProject; window.lrRunProject=lrRunProject; window.lrClearOutput=lrClearOutput;
+    lrCheck(); LR.timer=setInterval(lrCheck,5000);
+  }
+})();
+</script>
 </html>
-<!-- force-refresh: 1785070272 -->

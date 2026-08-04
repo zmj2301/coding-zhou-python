@@ -14,6 +14,7 @@ echo "[1/8] 创建项目目录..."
 mkdir -p /home/code-explorer/public
 mkdir -p /home/code-explorer/public/project-trees
 mkdir -p /home/code-explorer/public/web-games
+mkdir -p /home/code-explorer/public/scratch
 mkdir -p /home/code-explorer/comments
 cd /home/code-explorer
 

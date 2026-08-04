@@ -1800,6 +1800,66 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             except Exception as e:
                 return self.send_error_json(f'下载失败: {e}', 500)
 
+        # ===== 静态页面路由 =====
+        if path == '/run/local' or path == '/run/local/':
+            local_path = BASE_DIR / 'run' / 'local.html'
+            if local_path.exists():
+                content = local_path.read_bytes()
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html; charset=utf-8')
+                self.send_header('Content-Length', len(content))
+                self.send_header('Cache-Control', 'no-store')
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        if path == '/feedback' or path == '/feedback/':
+            # 重定向到反馈页面
+            self.send_response(302)
+            self.send_header('Location', '/feedback/index.html')
+            self.end_headers()
+            return
+
+        # 尝试匹配静态文件
+        if path and not path.startswith('/api/'):
+            clean_path = path.lstrip('/')
+            if clean_path:
+                candidates = [
+                    BASE_DIR / clean_path,
+                    BASE_DIR / (clean_path + '.html'),
+                    BASE_DIR / clean_path / 'index.html',
+                ]
+                for candidate in candidates:
+                    try:
+                        if candidate.exists() and candidate.is_file():
+                            content = candidate.read_bytes()
+                            ext = candidate.suffix.lower()
+                            content_types = {
+                                '.html': 'text/html; charset=utf-8',
+                                '.css': 'text/css; charset=utf-8',
+                                '.js': 'application/javascript; charset=utf-8',
+                                '.json': 'application/json; charset=utf-8',
+                                '.png': 'image/png',
+                                '.jpg': 'image/jpeg',
+                                '.jpeg': 'image/jpeg',
+                                '.gif': 'image/gif',
+                                '.svg': 'image/svg+xml',
+                                '.ico': 'image/x-icon',
+                                '.webp': 'image/webp',
+                                '.woff': 'font/woff',
+                                '.woff2': 'font/woff2',
+                            }
+                            ctype = content_types.get(ext, 'application/octet-stream')
+                            self.send_response(200)
+                            self.send_header('Content-Type', ctype)
+                            self.send_header('Content-Length', len(content))
+                            self.send_header('Cache-Control', 'public, max-age=3600')
+                            self.end_headers()
+                            self.wfile.write(content)
+                            return
+                    except Exception:
+                        continue
+
         self.send_error(404)
 
     def do_POST(self):

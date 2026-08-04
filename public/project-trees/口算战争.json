@@ -9,238 +9,238 @@
         "type": "file",
         "path": "img_plane/background.png",
         "ext": ".png",
-        "lastModified": 1785669263624
+        "lastModified": 1785762151686
       },
       {
         "name": "background_itme.png",
         "type": "file",
         "path": "img_plane/background_itme.png",
         "ext": ".png",
-        "lastModified": 1785669263645
+        "lastModified": 1785762151687
       },
       {
         "name": "bullet.png",
         "type": "file",
         "path": "img_plane/bullet.png",
         "ext": ".png",
-        "lastModified": 1785669263625
+        "lastModified": 1785762151688
       },
       {
         "name": "expl0.png",
         "type": "file",
         "path": "img_plane/expl0.png",
         "ext": ".png",
-        "lastModified": 1785669263629
+        "lastModified": 1785762151689
       },
       {
         "name": "expl1.png",
         "type": "file",
         "path": "img_plane/expl1.png",
         "ext": ".png",
-        "lastModified": 1785669263629
+        "lastModified": 1785762151690
       },
       {
         "name": "expl2.png",
         "type": "file",
         "path": "img_plane/expl2.png",
         "ext": ".png",
-        "lastModified": 1785669263629
+        "lastModified": 1785762151691
       },
       {
         "name": "expl3.png",
         "type": "file",
         "path": "img_plane/expl3.png",
         "ext": ".png",
-        "lastModified": 1785669263630
+        "lastModified": 1785762151691
       },
       {
         "name": "expl4.png",
         "type": "file",
         "path": "img_plane/expl4.png",
         "ext": ".png",
-        "lastModified": 1785669263630
+        "lastModified": 1785762151693
       },
       {
         "name": "expl5.png",
         "type": "file",
         "path": "img_plane/expl5.png",
         "ext": ".png",
-        "lastModified": 1785669263631
+        "lastModified": 1785762151694
       },
       {
         "name": "expl6.png",
         "type": "file",
         "path": "img_plane/expl6.png",
         "ext": ".png",
-        "lastModified": 1785669263631
+        "lastModified": 1785762151695
       },
       {
         "name": "expl7.png",
         "type": "file",
         "path": "img_plane/expl7.png",
         "ext": ".png",
-        "lastModified": 1785669263631
+        "lastModified": 1785762151697
       },
       {
         "name": "expl8.png",
         "type": "file",
         "path": "img_plane/expl8.png",
         "ext": ".png",
-        "lastModified": 1785669263632
+        "lastModified": 1785762151698
       },
       {
         "name": "gun.png",
         "type": "file",
         "path": "img_plane/gun.png",
         "ext": ".png",
-        "lastModified": 1785669263645
+        "lastModified": 1785762151699
       },
       {
         "name": "gun_2.png",
         "type": "file",
         "path": "img_plane/gun_2.png",
         "ext": ".png",
-        "lastModified": 1785669263645
+        "lastModified": 1785762151701
       },
       {
         "name": "player.png",
         "type": "file",
         "path": "img_plane/player.png",
         "ext": ".png",
-        "lastModified": 1785669263624
+        "lastModified": 1785762151702
       },
       {
         "name": "player_expl0.png",
         "type": "file",
         "path": "img_plane/player_expl0.png",
         "ext": ".png",
-        "lastModified": 1785669263632
+        "lastModified": 1785762151703
       },
       {
         "name": "player_expl1.png",
         "type": "file",
         "path": "img_plane/player_expl1.png",
         "ext": ".png",
-        "lastModified": 1785669263633
+        "lastModified": 1785762151704
       },
       {
         "name": "player_expl2.png",
         "type": "file",
         "path": "img_plane/player_expl2.png",
         "ext": ".png",
-        "lastModified": 1785669263633
+        "lastModified": 1785762151705
       },
       {
         "name": "player_expl3.png",
         "type": "file",
         "path": "img_plane/player_expl3.png",
         "ext": ".png",
-        "lastModified": 1785669263634
+        "lastModified": 1785762151708
       },
       {
         "name": "player_expl4.png",
         "type": "file",
         "path": "img_plane/player_expl4.png",
         "ext": ".png",
-        "lastModified": 1785669263634
+        "lastModified": 1785762151709
       },
       {
         "name": "player_expl5.png",
         "type": "file",
         "path": "img_plane/player_expl5.png",
         "ext": ".png",
-        "lastModified": 1785669263635
+        "lastModified": 1785762151710
       },
       {
         "name": "player_expl6.png",
         "type": "file",
         "path": "img_plane/player_expl6.png",
         "ext": ".png",
-        "lastModified": 1785669263635
+        "lastModified": 1785762151712
       },
       {
         "name": "player_expl7.png",
         "type": "file",
         "path": "img_plane/player_expl7.png",
         "ext": ".png",
-        "lastModified": 1785669263636
+        "lastModified": 1785762151714
       },
       {
         "name": "player_expl8.png",
         "type": "file",
         "path": "img_plane/player_expl8.png",
         "ext": ".png",
-        "lastModified": 1785669263636
+        "lastModified": 1785762151715
       },
       {
         "name": "rock0.png",
         "type": "file",
         "path": "img_plane/rock0.png",
         "ext": ".png",
-        "lastModified": 1785669263625
+        "lastModified": 1785762151717
       },
       {
         "name": "rock1.png",
         "type": "file",
         "path": "img_plane/rock1.png",
         "ext": ".png",
-        "lastModified": 1785669263626
+        "lastModified": 1785762151718
       },
       {
         "name": "rock2.png",
         "type": "file",
         "path": "img_plane/rock2.png",
         "ext": ".png",
-        "lastModified": 1785669263626
+        "lastModified": 1785762151719
       },
       {
         "name": "rock3.png",
         "type": "file",
         "path": "img_plane/rock3.png",
         "ext": ".png",
-        "lastModified": 1785669263627
+        "lastModified": 1785762151720
       },
       {
         "name": "rock4.png",
         "type": "file",
         "path": "img_plane/rock4.png",
         "ext": ".png",
-        "lastModified": 1785669263627
+        "lastModified": 1785762151721
       },
       {
         "name": "rock5.png",
         "type": "file",
         "path": "img_plane/rock5.png",
         "ext": ".png",
-        "lastModified": 1785669263628
+        "lastModified": 1785762151722
       },
       {
         "name": "rock6.png",
         "type": "file",
         "path": "img_plane/rock6.png",
         "ext": ".png",
-        "lastModified": 1785669263628
+        "lastModified": 1785762151724
       },
       {
         "name": "rock7.png",
         "type": "file",
         "path": "img_plane/rock7.png",
         "ext": ".png",
-        "lastModified": 1785669263628
+        "lastModified": 1785762151724
       },
       {
         "name": "shield.png",
         "type": "file",
         "path": "img_plane/shield.png",
         "ext": ".png",
-        "lastModified": 1785669263644
+        "lastModified": 1785762151725
       },
       {
         "name": "start.png",
         "type": "file",
         "path": "img_plane/start.png",
         "ext": ".png",
-        "lastModified": 1785669263650
+        "lastModified": 1785762151727
       }
     ]
   },
@@ -254,63 +254,63 @@
         "type": "file",
         "path": "sound/background.ogg",
         "ext": ".ogg",
-        "lastModified": 1785669285669
+        "lastModified": 1785762151731
       },
       {
         "name": "background.wav",
         "type": "file",
         "path": "sound/background.wav",
         "ext": ".wav",
-        "lastModified": 1785669285669
+        "lastModified": 1785762151735
       },
       {
         "name": "expl0.wav",
         "type": "file",
         "path": "sound/expl0.wav",
         "ext": ".wav",
-        "lastModified": 1785669285554
+        "lastModified": 1785762151737
       },
       {
         "name": "expl1.wav",
         "type": "file",
         "path": "sound/expl1.wav",
         "ext": ".wav",
-        "lastModified": 1785669285557
+        "lastModified": 1785762151738
       },
       {
         "name": "pow0.wav",
         "type": "file",
         "path": "sound/pow0.wav",
         "ext": ".wav",
-        "lastModified": 1785669285560
+        "lastModified": 1785762151739
       },
       {
         "name": "pow1.wav",
         "type": "file",
         "path": "sound/pow1.wav",
         "ext": ".wav",
-        "lastModified": 1785669285563
+        "lastModified": 1785762151741
       },
       {
         "name": "rumble.ogg",
         "type": "file",
         "path": "sound/rumble.ogg",
         "ext": ".ogg",
-        "lastModified": 1785669285572
+        "lastModified": 1785762151742
       },
       {
         "name": "rumble.wav",
         "type": "file",
         "path": "sound/rumble.wav",
         "ext": ".wav",
-        "lastModified": 1785669285572
+        "lastModified": 1785762151743
       },
       {
         "name": "shoot.wav",
         "type": "file",
         "path": "sound/shoot.wav",
         "ext": ".wav",
-        "lastModified": 1785669285551
+        "lastModified": 1785762151745
       }
     ]
   },
@@ -319,34 +319,34 @@
     "type": "file",
     "path": "arrive.md",
     "ext": ".md",
-    "lastModified": 1781683308063
+    "lastModified": 1785762151684
   },
   {
     "name": "plane_war.py",
     "type": "file",
     "path": "plane_war.py",
     "ext": ".py",
-    "lastModified": 1756090019355
+    "lastModified": 1785762151728
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
     "ext": ".md",
-    "lastModified": 1785552054219
+    "lastModified": 1785762151683
   },
   {
     "name": "work.md",
     "type": "file",
     "path": "work.md",
     "ext": ".md",
-    "lastModified": 1775814826175
+    "lastModified": 1785762151746
   },
   {
     "name": "提示点.md",
     "type": "file",
     "path": "提示点.md",
     "ext": ".md",
-    "lastModified": 1781683308664
+    "lastModified": 1785762151746
   }
 ]

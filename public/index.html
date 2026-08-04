@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -164,6 +164,42 @@ body::before {
 .carousel-slide img {
   width: 100%; height: auto; display: block;
   object-fit: contain; max-height: 360px;
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.carousel-slide img:hover {
+  transform: scale(1.02);
+  filter: brightness(1.05);
+}
+.carousel-link {
+  display: block;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+.carousel-link:hover img {
+  transform: scale(1.02);
+  filter: brightness(1.05);
+}
+.carousel-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+.carousel-link:hover .carousel-hint {
+  background: rgba(88, 166, 255, 0.9);
 }
 .carousel-dots {
   display: flex; justify-content: center; gap: 10px;
@@ -3442,6 +3478,9 @@ body::before {
     <a class="top-nav-link" href="/console">API Key</a>
     <a class="top-nav-link" href="#">资源下载</a>
     <a class="top-nav-link" href="/web-games/">网页游戏</a>
+    <a class="top-nav-link" href="/scratch">Scratch</a>
+    <a class="top-nav-link" href="/python/">Python 编程</a>
+    <a class="top-nav-link" href="/run/local">⚡ 本地运行</a>
   </div>
 </div>
 
@@ -3451,13 +3490,13 @@ body::before {
     <div class="carousel">
       <div class="carousel-slides">
         <div class="carousel-slide active">
-          <img src="/images/code_explorer.png" alt="Code Explorer">
+          <a href="#projectListSection" class="carousel-link"><img src="/images/code_explorer.png" alt="Code Explorer"><span class="carousel-hint">↓ 点击查看项目列表</span></a>
         </div>
         <div class="carousel-slide">
-          <img src="/images/run_python.png" alt="Run Python">
+          <a href="#projectListSection" class="carousel-link"><img src="/images/run_python.png" alt="Run Python"><span class="carousel-hint">↓ 点击查看项目列表</span></a>
         </div>
         <div class="carousel-slide">
-          <img src="/images/run_scratch.png" alt="Run Scratch">
+          <a href="#projectListSection" class="carousel-link"><img src="/images/run_scratch.png" alt="Run Scratch"><span class="carousel-hint">↓ 点击查看项目列表</span></a>
         </div>
       </div>
       <div class="carousel-dots" id="carouselDots">
@@ -3487,7 +3526,7 @@ body::before {
     <div class="recent-items" id="bookmarkItems"></div>
   </div>
 
-  <div class="section-header">
+  <div class="section-header" id="projectListSection">
     <h2>项目列表</h2>
     <div class="header-right">
       <div class="hero-search" id="heroSearch">
@@ -7014,10 +7053,47 @@ if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (
   startAuto();
   document.querySelector('.carousel').addEventListener('mouseenter', stopAuto);
   document.querySelector('.carousel').addEventListener('mouseleave', startAuto);
+
+  // Click on carousel image to scroll to project list
+  // Intercept anchor clicks for smooth scrolling
+  var links = document.querySelectorAll('.carousel-link');
+  links.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = this.getAttribute('href');
+      if (targetId && targetId.startsWith('#')) {
+        var target = document.getElementById(targetId.substring(1));
+        if (target) {
+          var headerOffset = 70;
+          var rect = target.getBoundingClientRect();
+          var top = rect.top - headerOffset + window.pageYOffset;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        }
+      }
+    });
+  });
 })();
 
 // 初始化主题
 setTheme(getTheme());
+
+// ===== Scroll to Project List =====
+function scrollToProjectList() {
+  var target = document.getElementById('projectListSection');
+  if (!target) return;
+  var headerOffset = 70;
+  var rect = target.getBoundingClientRect();
+  var top = rect.top - headerOffset + window.pageYOffset;
+  window.scrollTo({ top: top, behavior: 'smooth' });
+}
+
+// Also intercept any anchor link to #projectListSection
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href="#projectListSection"]');
+  if (!a) return;
+  e.preventDefault();
+  scrollToProjectList();
+}, false);
 
 // ===== A3: 最近访问记录 =====
 const RECENT_KEY = 'code_explorer_recent';
@@ -7345,4 +7421,3 @@ function copyCode(btn) {
 </body>
 </html>
 <!-- force-refresh: 1785070272 -->
-<!-- wrangler-force-redeploy 20260803-205327 -->

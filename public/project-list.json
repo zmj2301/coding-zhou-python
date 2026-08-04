@@ -19,7 +19,7 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 240,
-    "lastModified": 1785671390122,
+    "lastModified": 1785762146241,
     "themeColor": "hsl(160, 40%, 63%)",
     "popupUrl": null
   },
@@ -43,7 +43,7 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 2,
-    "lastModified": 1785552447329,
+    "lastModified": 1785762147661,
     "themeColor": "hsl(157, 30%, 58%)",
     "popupUrl": "/fathers-day/index.html"
   },
@@ -55,7 +55,7 @@
     "desc": "",
     "mainFile": "_middleware.ts",
     "fileCount": 18,
-    "lastModified": 1784382126871,
+    "lastModified": 1785762147666,
     "themeColor": "hsl(225, 33%, 66%)",
     "popupUrl": null
   },
@@ -72,6 +72,18 @@
     "popupUrl": null
   },
   {
+    "name": "images",
+    "path": "images",
+    "type": "other",
+    "label": "其他",
+    "desc": "",
+    "mainFile": "code_explorer.png",
+    "fileCount": 3,
+    "lastModified": 1785744281800,
+    "themeColor": "hsl(241, 33%, 66%)",
+    "popupUrl": null
+  },
+  {
     "name": "output",
     "path": "output",
     "type": "other",
@@ -80,7 +92,7 @@
     "mainFile": "README.md",
     "fileCount": 3,
     "lastModified": 1785285237261,
-    "themeColor": "hsl(241, 33%, 66%)",
+    "themeColor": "hsl(216, 40%, 63%)",
     "popupUrl": null
   },
   {
@@ -91,8 +103,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 2,
-    "lastModified": 1785552449812,
-    "themeColor": "hsl(216, 40%, 63%)",
+    "lastModified": 1785762147692,
+    "themeColor": "hsl(183, 37%, 65%)",
     "popupUrl": null
   },
   {
@@ -103,8 +115,8 @@
     "desc": "",
     "mainFile": "3D_shoot.py",
     "fileCount": 11,
-    "lastModified": 1785552070048,
-    "themeColor": "hsl(183, 37%, 65%)",
+    "lastModified": 1785762148466,
+    "themeColor": "hsl(193, 33%, 61%)",
     "popupUrl": null
   },
   {
@@ -115,8 +127,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 63,
-    "lastModified": 1785552161208,
-    "themeColor": "hsl(193, 33%, 61%)",
+    "lastModified": 1785762149886,
+    "themeColor": "hsl(182, 32%, 60%)",
     "popupUrl": null
   },
   {
@@ -127,8 +139,8 @@
     "desc": "",
     "mainFile": "Chinese_chess.py",
     "fileCount": 71,
-    "lastModified": 1785655850443,
-    "themeColor": "hsl(182, 32%, 60%)",
+    "lastModified": 1785762143981,
+    "themeColor": "hsl(200, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -139,8 +151,8 @@
     "desc": "",
     "mainFile": "Chinese_chess.py",
     "fileCount": 25,
-    "lastModified": 1785658015062,
-    "themeColor": "hsl(200, 42%, 65%)",
+    "lastModified": 1785762143865,
+    "themeColor": "hsl(189, 43%, 66%)",
     "popupUrl": null
   },
   {
@@ -151,8 +163,8 @@
     "desc": "",
     "mainFile": "chat_ai.py",
     "fileCount": 10,
-    "lastModified": 1785552175313,
-    "themeColor": "hsl(189, 43%, 66%)",
+    "lastModified": 1785762143990,
+    "themeColor": "hsl(197, 42%, 60%)",
     "popupUrl": null
   },
   {
@@ -163,8 +175,8 @@
     "desc": "",
     "mainFile": "mc_farmer.py",
     "fileCount": 99,
-    "lastModified": 1785657963725,
-    "themeColor": "hsl(197, 42%, 60%)",
+    "lastModified": 1785762144163,
+    "themeColor": "hsl(245, 34%, 67%)",
     "popupUrl": null
   },
   {
@@ -175,8 +187,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 6,
-    "lastModified": 1781832722375,
-    "themeColor": "hsl(245, 34%, 67%)",
+    "lastModified": 1785762144177,
+    "themeColor": "hsl(189, 39%, 62%)",
     "popupUrl": null
   },
   {
@@ -187,8 +199,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 18,
-    "lastModified": 1785552080524,
-    "themeColor": "hsl(189, 39%, 62%)",
+    "lastModified": 1785762144285,
+    "themeColor": "hsl(218, 37%, 65%)",
     "popupUrl": null
   },
   {
@@ -199,8 +211,8 @@
     "desc": "",
     "mainFile": "generate_imgs.py",
     "fileCount": 9,
-    "lastModified": 1785655872030,
-    "themeColor": "hsl(218, 37%, 65%)",
+    "lastModified": 1785762144320,
+    "themeColor": "hsl(268, 40%, 63%)",
     "popupUrl": null
   },
   {
@@ -211,8 +223,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 7,
-    "lastModified": 1785552134266,
-    "themeColor": "hsl(268, 40%, 63%)",
+    "lastModified": 1785762149910,
+    "themeColor": "hsl(234, 39%, 62%)",
     "popupUrl": null
   },
   {
@@ -223,8 +235,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 3,
-    "lastModified": 1785552139151,
-    "themeColor": "hsl(234, 39%, 62%)",
+    "lastModified": 1785762144324,
+    "themeColor": "hsl(356, 31%, 59%)",
     "popupUrl": null
   },
   {
@@ -235,8 +247,8 @@
     "desc": "",
     "mainFile": "a.py",
     "fileCount": 18,
-    "lastModified": 1785552074927,
-    "themeColor": "hsl(356, 31%, 59%)",
+    "lastModified": 1785762150359,
+    "themeColor": "hsl(352, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -247,8 +259,8 @@
     "desc": "",
     "mainFile": "ChatGPT copy.py",
     "fileCount": 18,
-    "lastModified": 1785552152826,
-    "themeColor": "hsl(352, 42%, 65%)",
+    "lastModified": 1785762150400,
+    "themeColor": "hsl(196, 31%, 59%)",
     "popupUrl": null
   },
   {
@@ -259,8 +271,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 12,
-    "lastModified": 1785552108274,
-    "themeColor": "hsl(196, 31%, 59%)",
+    "lastModified": 1785762144748,
+    "themeColor": "hsl(2, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -271,8 +283,8 @@
     "desc": "",
     "mainFile": "ai.py",
     "fileCount": 14,
-    "lastModified": 1785552103099,
-    "themeColor": "hsl(2, 42%, 65%)",
+    "lastModified": 1785762150440,
+    "themeColor": "hsl(322, 37%, 65%)",
     "popupUrl": null
   },
   {
@@ -283,8 +295,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 5,
-    "lastModified": 1785552085038,
-    "themeColor": "hsl(322, 37%, 65%)",
+    "lastModified": 1785762150446,
+    "themeColor": "hsl(334, 44%, 67%)",
     "popupUrl": null
   },
   {
@@ -295,8 +307,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 9,
-    "lastModified": 1780151186956,
-    "themeColor": "hsl(334, 44%, 67%)",
+    "lastModified": 1785762150454,
+    "themeColor": "hsl(326, 36%, 59%)",
     "popupUrl": null
   },
   {
@@ -307,8 +319,8 @@
     "desc": "",
     "mainFile": "stroop_trainer.py",
     "fileCount": 9,
-    "lastModified": 1785552197110,
-    "themeColor": "hsl(326, 36%, 59%)",
+    "lastModified": 1785762150467,
+    "themeColor": "hsl(105, 37%, 60%)",
     "popupUrl": null
   },
   {
@@ -320,7 +332,7 @@
     "mainFile": "1.py",
     "fileCount": 35,
     "lastModified": 1772424974630,
-    "themeColor": "hsl(105, 37%, 60%)",
+    "themeColor": "hsl(194, 44%, 62%)",
     "popupUrl": null
   },
   {
@@ -331,8 +343,8 @@
     "desc": "",
     "mainFile": "cmd命令运行.py",
     "fileCount": 7,
-    "lastModified": 1785552232505,
-    "themeColor": "hsl(194, 44%, 62%)",
+    "lastModified": 1785762144772,
+    "themeColor": "hsl(118, 36%, 64%)",
     "popupUrl": null
   },
   {
@@ -343,8 +355,8 @@
     "desc": "",
     "mainFile": "image.py",
     "fileCount": 5,
-    "lastModified": 1785552260533,
-    "themeColor": "hsl(118, 36%, 64%)",
+    "lastModified": 1785762144783,
+    "themeColor": "hsl(181, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -355,8 +367,8 @@
     "desc": "",
     "mainFile": "判断字符串是否是数字.py",
     "fileCount": 4,
-    "lastModified": 1785552249731,
-    "themeColor": "hsl(181, 42%, 65%)",
+    "lastModified": 1785762144790,
+    "themeColor": "hsl(266, 44%, 67%)",
     "popupUrl": null
   },
   {
@@ -367,8 +379,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 76,
-    "lastModified": 1785669030790,
-    "themeColor": "hsl(266, 44%, 67%)",
+    "lastModified": 1785762144921,
+    "themeColor": "hsl(204, 30%, 63%)",
     "popupUrl": null
   },
   {
@@ -379,8 +391,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 21,
-    "lastModified": 1784382124410,
-    "themeColor": "hsl(204, 30%, 63%)",
+    "lastModified": 1785762150611,
+    "themeColor": "hsl(154, 34%, 62%)",
     "popupUrl": null
   },
   {
@@ -391,8 +403,8 @@
     "desc": "",
     "mainFile": "TTS.py",
     "fileCount": 3,
-    "lastModified": 1785552267551,
-    "themeColor": "hsl(154, 34%, 62%)",
+    "lastModified": 1785762144925,
+    "themeColor": "hsl(224, 33%, 66%)",
     "popupUrl": null
   },
   {
@@ -402,9 +414,9 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 150,
-    "lastModified": 1785552289471,
-    "themeColor": "hsl(224, 33%, 66%)",
+    "fileCount": 151,
+    "lastModified": 1785762144966,
+    "themeColor": "hsl(222, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -415,8 +427,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 2082,
-    "lastModified": 1785669030780,
-    "themeColor": "hsl(222, 42%, 65%)",
+    "lastModified": 1785762150620,
+    "themeColor": "hsl(196, 44%, 62%)",
     "popupUrl": null
   },
   {
@@ -427,8 +439,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 35,
-    "lastModified": 1785673259602,
-    "themeColor": "hsl(196, 44%, 62%)",
+    "lastModified": 1785762144972,
+    "themeColor": "hsl(22, 37%, 65%)",
     "popupUrl": null
   },
   {
@@ -439,8 +451,8 @@
     "desc": "",
     "mainFile": "found_ask_root.py",
     "fileCount": 18,
-    "lastModified": 1785552211643,
-    "themeColor": "hsl(22, 37%, 65%)",
+    "lastModified": 1785762150639,
+    "themeColor": "hsl(202, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -451,8 +463,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 3,
-    "lastModified": 1785552205996,
-    "themeColor": "hsl(202, 42%, 65%)",
+    "lastModified": 1785762150642,
+    "themeColor": "hsl(226, 34%, 62%)",
     "popupUrl": null
   },
   {
@@ -463,8 +475,8 @@
     "desc": "",
     "mainFile": "camera_rtsp.py",
     "fileCount": 7,
-    "lastModified": 1778029176241,
-    "themeColor": "hsl(226, 34%, 62%)",
+    "lastModified": 1785762150646,
+    "themeColor": "hsl(201, 35%, 58%)",
     "popupUrl": null
   },
   {
@@ -475,8 +487,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 100,
-    "lastModified": 1785669300040,
-    "themeColor": "hsl(201, 35%, 58%)",
+    "lastModified": 1785762150796,
+    "themeColor": "hsl(274, 41%, 64%)",
     "popupUrl": null
   },
   {
@@ -488,7 +500,7 @@
     "mainFile": "水果忍者-初始素材.sb3",
     "fileCount": 1,
     "lastModified": 1781834231387,
-    "themeColor": "hsl(274, 41%, 64%)",
+    "themeColor": "hsl(210, 33%, 61%)",
     "popupUrl": null
   },
   {
@@ -499,8 +511,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 2,
-    "lastModified": 1785552387167,
-    "themeColor": "hsl(210, 33%, 61%)",
+    "lastModified": 1785762150811,
+    "themeColor": "hsl(199, 36%, 59%)",
     "webGameUrl": "/web-games/chinese-chess/",
     "hasSubProjects": false
   },
@@ -512,8 +524,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 2,
-    "lastModified": 1785552391251,
-    "themeColor": "hsl(199, 36%, 59%)",
+    "lastModified": 1785762150813,
+    "themeColor": "hsl(122, 30%, 63%)",
     "webGameUrl": "/web-games/idiom-chain/",
     "hasSubProjects": false
   },
@@ -525,8 +537,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 2,
-    "lastModified": 1785552399463,
-    "themeColor": "hsl(122, 30%, 63%)",
+    "lastModified": 1785762150818,
+    "themeColor": "hsl(236, 35%, 63%)",
     "webGameUrl": "/web-games/math-war/",
     "hasSubProjects": false
   },
@@ -538,8 +550,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 2,
-    "lastModified": 1785552401962,
-    "themeColor": "hsl(236, 35%, 63%)",
+    "lastModified": 1785762150820,
+    "themeColor": "hsl(144, 44%, 67%)",
     "webGameUrl": "/web-games/my-world/",
     "hasSubProjects": false
   },
@@ -551,8 +563,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 2,
-    "lastModified": 1785552405590,
-    "themeColor": "hsl(144, 44%, 67%)",
+    "lastModified": 1785762150822,
+    "themeColor": "hsl(190, 44%, 67%)",
     "webGameUrl": "/web-games/plane-war/",
     "hasSubProjects": false
   },
@@ -564,8 +576,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 378,
-    "lastModified": 1784382126604,
-    "themeColor": "hsl(190, 44%, 67%)",
+    "lastModified": 1785762151594,
+    "themeColor": "hsl(211, 38%, 61%)",
     "webGameUrl": "/web-games/pvz_tmp/",
     "hasSubProjects": false
   },
@@ -577,8 +589,8 @@
     "desc": "",
     "mainFile": "auto_scraper.py",
     "fileCount": 53,
-    "lastModified": 1785552295876,
-    "themeColor": "hsl(211, 38%, 61%)",
+    "lastModified": 1785762151670,
+    "themeColor": "hsl(213, 38%, 66%)",
     "popupUrl": null
   },
   {
@@ -589,8 +601,8 @@
     "desc": "",
     "mainFile": "server.py",
     "fileCount": 2,
-    "lastModified": 1785552044400,
-    "themeColor": "hsl(213, 38%, 66%)",
+    "lastModified": 1785762151676,
+    "themeColor": "hsl(151, 32%, 65%)",
     "popupUrl": null
   },
   {
@@ -601,8 +613,8 @@
     "desc": "",
     "mainFile": "plane_war.py",
     "fileCount": 48,
-    "lastModified": 1785669687611,
-    "themeColor": "hsl(151, 32%, 65%)",
+    "lastModified": 1785762151746,
+    "themeColor": "hsl(309, 37%, 65%)",
     "popupUrl": null
   },
   {
@@ -613,8 +625,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 29,
-    "lastModified": 1781832722549,
-    "themeColor": "hsl(309, 37%, 65%)",
+    "lastModified": 1785762151766,
+    "themeColor": "hsl(258, 38%, 61%)",
     "popupUrl": null
   },
   {
@@ -625,8 +637,8 @@
     "desc": "",
     "mainFile": "年级前十冲刺计划：七科提分目标与时间轴规划.pdf",
     "fileCount": 4,
-    "lastModified": 1784382126740,
-    "themeColor": "hsl(258, 38%, 61%)",
+    "lastModified": 1785762151801,
+    "themeColor": "hsl(330, 30%, 63%)",
     "popupUrl": null
   },
   {
@@ -637,8 +649,8 @@
     "desc": "",
     "mainFile": "main.py",
     "fileCount": 12,
-    "lastModified": 1785156831095,
-    "themeColor": "hsl(330, 30%, 63%)",
+    "lastModified": 1785762151807,
+    "themeColor": "hsl(173, 37%, 60%)",
     "popupUrl": null
   },
   {
@@ -649,8 +661,8 @@
     "desc": "",
     "mainFile": "get_conent.py",
     "fileCount": 6,
-    "lastModified": 1785552060139,
-    "themeColor": "hsl(173, 37%, 60%)",
+    "lastModified": 1785762151814,
+    "themeColor": "hsl(160, 40%, 63%)",
     "popupUrl": null
   },
   {
@@ -661,8 +673,8 @@
     "desc": "",
     "mainFile": "2026跨年.py",
     "fileCount": 14,
-    "lastModified": 1781652585823,
-    "themeColor": "hsl(160, 40%, 63%)",
+    "lastModified": 1785762151837,
+    "themeColor": "hsl(170, 42%, 65%)",
     "popupUrl": null
   },
   {
@@ -673,8 +685,8 @@
     "desc": "",
     "mainFile": "index.html",
     "fileCount": 5,
-    "lastModified": 1785552047526,
-    "themeColor": "hsl(170, 42%, 65%)",
+    "lastModified": 1785762151845,
+    "themeColor": "hsl(157, 30%, 58%)",
     "popupUrl": null
   },
   {
@@ -685,8 +697,8 @@
     "desc": "",
     "mainFile": "game.js",
     "fileCount": 2,
-    "lastModified": 1781650532361,
-    "themeColor": "hsl(157, 30%, 58%)",
+    "lastModified": 1785762151603,
+    "themeColor": "hsl(225, 33%, 66%)",
     "webGameUrl": "/web-games/shared/",
     "hasSubProjects": false
   }

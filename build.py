@@ -103,7 +103,15 @@ def main():
         print('  跳过: changelog.json 不存在')
 
     print()
-    print('步骤 2.6: 复制 project-list.json...')
+    print('步骤 2.6: 复制 python 导航页...')
+    python_src = CODE_EXPLORER_DIR / 'code-explorer' / 'python'
+    if python_src.exists():
+        copy_dir(python_src, PUBLIC_DIR / 'python')
+    else:
+        print('  跳过: python 目录不存在')
+
+    print()
+    print('步骤 2.7: 复制 project-list.json...')
     gen_src = CODE_EXPLORER_DIR / 'code-explorer' / 'public'
     project_list_src = gen_src / 'project-list.json'
     if project_list_src.exists():

@@ -14,42 +14,42 @@
             "type": "file",
             "path": "deskpet/__pycache__/__init__.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1785199014118
+            "lastModified": 1785811438588
           },
           {
             "name": "auto_start.cpython-312.pyc",
             "type": "file",
             "path": "deskpet/__pycache__/auto_start.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1785414680999
+            "lastModified": 1785811438892
           },
           {
             "name": "config.cpython-312.pyc",
             "type": "file",
             "path": "deskpet/__pycache__/config.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1785414680937
+            "lastModified": 1785811438826
           },
           {
             "name": "pet_window.cpython-312.pyc",
             "type": "file",
             "path": "deskpet/__pycache__/pet_window.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1785414680950
+            "lastModified": 1785811438839
           },
           {
             "name": "size_settings_dialog.cpython-312.pyc",
             "type": "file",
             "path": "deskpet/__pycache__/size_settings_dialog.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1785414681011
+            "lastModified": 1785811438905
           },
           {
             "name": "sync_manager.cpython-312.pyc",
             "type": "file",
             "path": "deskpet/__pycache__/sync_manager.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1785414681019
+            "lastModified": 1785811438914
           }
         ]
       },
@@ -58,42 +58,42 @@
         "type": "file",
         "path": "deskpet/__init__.py",
         "ext": ".py",
-        "lastModified": 1785156831023
+        "lastModified": 1785762144932
       },
       {
         "name": "auto_start.py",
         "type": "file",
         "path": "deskpet/auto_start.py",
         "ext": ".py",
-        "lastModified": 1785414663730
+        "lastModified": 1785762144933
       },
       {
         "name": "config.py",
         "type": "file",
         "path": "deskpet/config.py",
         "ext": ".py",
-        "lastModified": 1785414663941
+        "lastModified": 1785762144935
       },
       {
         "name": "pet_window.py",
         "type": "file",
         "path": "deskpet/pet_window.py",
         "ext": ".py",
-        "lastModified": 1785414664222
+        "lastModified": 1785762144937
       },
       {
         "name": "size_settings_dialog.py",
         "type": "file",
         "path": "deskpet/size_settings_dialog.py",
         "ext": ".py",
-        "lastModified": 1785414664229
+        "lastModified": 1785762144937
       },
       {
         "name": "sync_manager.py",
         "type": "file",
         "path": "deskpet/sync_manager.py",
         "ext": ".py",
-        "lastModified": 1785414664241
+        "lastModified": 1785762144939
       }
     ]
   },
@@ -112,7 +112,7 @@
             "type": "file",
             "path": "relax_exe/__pycache__/app.cpython-312.pyc",
             "ext": ".pyc",
-            "lastModified": 1785414681025
+            "lastModified": 1785811438921
           }
         ]
       },
@@ -131,21 +131,21 @@
                 "type": "file",
                 "path": "relax_exe/core/__pycache__/__init__.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376350
+                "lastModified": 1785811438927
               },
               {
                 "name": "logger.cpython-312.pyc",
                 "type": "file",
                 "path": "relax_exe/core/__pycache__/logger.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376352
+                "lastModified": 1785811438929
               },
               {
                 "name": "timer_manager.cpython-312.pyc",
                 "type": "file",
                 "path": "relax_exe/core/__pycache__/timer_manager.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1785414681036
+                "lastModified": 1785811438937
               }
             ]
           },
@@ -154,21 +154,21 @@
             "type": "file",
             "path": "relax_exe/core/__init__.py",
             "ext": ".py",
-            "lastModified": 1778896320656
+            "lastModified": 1785762144947
           },
           {
             "name": "logger.py",
             "type": "file",
             "path": "relax_exe/core/logger.py",
             "ext": ".py",
-            "lastModified": 1779582849612
+            "lastModified": 1785762144948
           },
           {
             "name": "timer_manager.py",
             "type": "file",
             "path": "relax_exe/core/timer_manager.py",
             "ext": ".py",
-            "lastModified": 1785414664529
+            "lastModified": 1785762144949
           }
         ]
       },
@@ -1016,6 +1016,13 @@
             "path": "relax_exe/logs/app_20260803_103812.log",
             "ext": ".log",
             "lastModified": 1785724735688
+          },
+          {
+            "name": "app_20260804_104358.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260804_104358.log",
+            "ext": ".log",
+            "lastModified": 1785814527593
           }
         ]
       },
@@ -1034,35 +1041,35 @@
                 "type": "file",
                 "path": "relax_exe/ui/__pycache__/__init__.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376361
+                "lastModified": 1785811438941
               },
               {
                 "name": "agreement_dialog.cpython-312.pyc",
                 "type": "file",
                 "path": "relax_exe/ui/__pycache__/agreement_dialog.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376371
+                "lastModified": 1785811438954
               },
               {
                 "name": "countdown_widget.cpython-312.pyc",
                 "type": "file",
                 "path": "relax_exe/ui/__pycache__/countdown_widget.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1785414681042
+                "lastModified": 1785811438945
               },
               {
                 "name": "flip_clock_widget.cpython-312.pyc",
                 "type": "file",
                 "path": "relax_exe/ui/__pycache__/flip_clock_widget.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1785199014490
+                "lastModified": 1785811438959
               },
               {
                 "name": "settings_dialog.cpython-312.pyc",
                 "type": "file",
                 "path": "relax_exe/ui/__pycache__/settings_dialog.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1781835376368
+                "lastModified": 1785811438951
               }
             ]
           },
@@ -1071,42 +1078,42 @@
             "type": "file",
             "path": "relax_exe/ui/__init__.py",
             "ext": ".py",
-            "lastModified": 1778896321258
+            "lastModified": 1785762144952
           },
           {
             "name": "agreement_dialog.py",
             "type": "file",
             "path": "relax_exe/ui/agreement_dialog.py",
             "ext": ".py",
-            "lastModified": 1779582849859
+            "lastModified": 1785762144954
           },
           {
             "name": "countdown_widget.py",
             "type": "file",
             "path": "relax_exe/ui/countdown_widget.py",
             "ext": ".py",
-            "lastModified": 1785414664644
+            "lastModified": 1785762144957
           },
           {
             "name": "flip_clock.html",
             "type": "file",
             "path": "relax_exe/ui/flip_clock.html",
             "ext": ".html",
-            "lastModified": 1785156831030
+            "lastModified": 1785762144958
           },
           {
             "name": "flip_clock_widget.py",
             "type": "file",
             "path": "relax_exe/ui/flip_clock_widget.py",
             "ext": ".py",
-            "lastModified": 1785156831030
+            "lastModified": 1785762144961
           },
           {
             "name": "settings_dialog.py",
             "type": "file",
             "path": "relax_exe/ui/settings_dialog.py",
             "ext": ".py",
-            "lastModified": 1779582850419
+            "lastModified": 1785762144962
           }
         ]
       },
@@ -1115,35 +1122,35 @@
         "type": "file",
         "path": "relax_exe/app.py",
         "ext": ".py",
-        "lastModified": 1785414664500
+        "lastModified": 1785762144947
       },
       {
         "name": "main.py",
         "type": "file",
         "path": "relax_exe/main.py",
         "ext": ".py",
-        "lastModified": 1778899090203
+        "lastModified": 1785762144950
       },
       {
         "name": "README.md",
         "type": "file",
         "path": "relax_exe/README.md",
         "ext": ".md",
-        "lastModified": 1779582849729
+        "lastModified": 1785762144945
       },
       {
         "name": "requirements.txt",
         "type": "file",
         "path": "relax_exe/requirements.txt",
         "ext": ".txt",
-        "lastModified": 1778901527196
+        "lastModified": 1785762144951
       },
       {
         "name": "启动定时休息.bat",
         "type": "file",
         "path": "relax_exe/启动定时休息.bat",
         "ext": ".bat",
-        "lastModified": 1779453028331
+        "lastModified": 1785762144964
       }
     ]
   },
@@ -1152,21 +1159,21 @@
     "type": "file",
     "path": "calendar_preview.html",
     "ext": ".html",
-    "lastModified": 1785156830996
+    "lastModified": 1785762144930
   },
   {
     "name": "config.json",
     "type": "file",
     "path": "config.json",
     "ext": ".json",
-    "lastModified": 1785724734626
+    "lastModified": 1785762144930
   },
   {
     "name": "flip_countdown_preview.html",
     "type": "file",
     "path": "flip_countdown_preview.html",
     "ext": ".html",
-    "lastModified": 1785156831027
+    "lastModified": 1785762144941
   },
   {
     "name": "icon.png",
@@ -1180,7 +1187,7 @@
     "type": "file",
     "path": "main.py",
     "ext": ".py",
-    "lastModified": 1780101955258
+    "lastModified": 1785762144944
   },
   {
     "name": "main_log.log",
@@ -1194,27 +1201,27 @@
     "type": "file",
     "path": "README.md",
     "ext": ".md",
-    "lastModified": 1785552289472
+    "lastModified": 1785762144928
   },
   {
     "name": "split_flap_preview.html",
     "type": "file",
     "path": "split_flap_preview.html",
     "ext": ".html",
-    "lastModified": 1785156831031
+    "lastModified": 1785762144965
   },
   {
     "name": "test_auto_start.py",
     "type": "file",
     "path": "test_auto_start.py",
     "ext": ".py",
-    "lastModified": 1785414664656
+    "lastModified": 1785762144966
   },
   {
     "name": "test_flip_clock.py",
     "type": "file",
     "path": "test_flip_clock.py",
     "ext": ".py",
-    "lastModified": 1785156831032
+    "lastModified": 1785762144968
   }
 ]

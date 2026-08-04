@@ -91,7 +91,7 @@ class Game:
         # filename: file-pygame
         self.image = {}
         for name in ['0.png', '1.png', '2.png', '3.png', '右1.png', '右2.png', '右3.png', '右4.png', '左1.png', '左2.png', '左3.png', '左4.png', '打字模式.png', '打字模式文字.png', '果汁1.png', '果汁2.png', '果汁3.png', '果汁4.png', '水果1.png', '水果2.png', '水果3.png', '水果4.png', '炸弹1.png', '炸弹2.png', '禅模式.png', '禅模式文字.png', '经典模式.png', '背景.png', '返回模式.png']:
-            path = os.path.join(os.getcwd(), 'image', name)
+            path = os.path.join(os.getcwd(), 'img', name)
             self.image[name] = pygame.image.load(path).convert_alpha()
         self.image['背景.png'] = pygame.transform.scale(self.image['背景.png'], (self.WIDTH, self.HEIGHT))
         self.mouse_down = False

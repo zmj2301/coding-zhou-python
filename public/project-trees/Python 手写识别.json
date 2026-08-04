@@ -19,56 +19,56 @@
                 "type": "file",
                 "path": "dataset/MNIST/raw/t10k-images-idx3-ubyte",
                 "ext": "",
-                "lastModified": 1777962471463
+                "lastModified": 1785762144572
               },
               {
                 "name": "t10k-images-idx3-ubyte.gz",
                 "type": "file",
                 "path": "dataset/MNIST/raw/t10k-images-idx3-ubyte.gz",
                 "ext": ".gz",
-                "lastModified": 1777962471415
+                "lastModified": 1785762144585
               },
               {
                 "name": "t10k-labels-idx1-ubyte",
                 "type": "file",
                 "path": "dataset/MNIST/raw/t10k-labels-idx1-ubyte",
                 "ext": "",
-                "lastModified": 1777962475066
+                "lastModified": 1785762144587
               },
               {
                 "name": "t10k-labels-idx1-ubyte.gz",
                 "type": "file",
                 "path": "dataset/MNIST/raw/t10k-labels-idx1-ubyte.gz",
                 "ext": ".gz",
-                "lastModified": 1777962475062
+                "lastModified": 1785762144589
               },
               {
                 "name": "train-images-idx3-ubyte",
                 "type": "file",
                 "path": "dataset/MNIST/raw/train-images-idx3-ubyte",
                 "ext": "",
-                "lastModified": 1777962328424
+                "lastModified": 1785762144669
               },
               {
                 "name": "train-images-idx3-ubyte.gz",
                 "type": "file",
                 "path": "dataset/MNIST/raw/train-images-idx3-ubyte.gz",
                 "ext": ".gz",
-                "lastModified": 1777962328145
+                "lastModified": 1785762144733
               },
               {
                 "name": "train-labels-idx1-ubyte",
                 "type": "file",
                 "path": "dataset/MNIST/raw/train-labels-idx1-ubyte",
                 "ext": "",
-                "lastModified": 1777962336266
+                "lastModified": 1785762144741
               },
               {
                 "name": "train-labels-idx1-ubyte.gz",
                 "type": "file",
                 "path": "dataset/MNIST/raw/train-labels-idx1-ubyte.gz",
                 "ext": ".gz",
-                "lastModified": 1777962336263
+                "lastModified": 1785762144742
               }
             ]
           }
@@ -81,27 +81,27 @@
     "type": "file",
     "path": "GUI.py",
     "ext": ".py",
-    "lastModified": 1777959269095
+    "lastModified": 1785762144325
   },
   {
     "name": "main.py",
     "type": "file",
     "path": "main.py",
     "ext": ".py",
-    "lastModified": 1777964201839
+    "lastModified": 1785762144747
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
     "ext": ".md",
-    "lastModified": 1785552108274
+    "lastModified": 1785762144326
   },
   {
     "name": "手写识别.py",
     "type": "file",
     "path": "手写识别.py",
     "ext": ".py",
-    "lastModified": 1777962863329
+    "lastModified": 1785762144748
   }
 ]

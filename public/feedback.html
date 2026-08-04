@@ -593,6 +593,48 @@ body::before {
   background: rgba(88, 166, 255, 0.1);
 }
 
+.tab .badge {
+  display: inline-block;
+  padding: 1px 6px;
+  margin-left: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  background: var(--accent-purple);
+  color: #fff;
+  vertical-align: middle;
+}
+
+.tab .badge.readonly {
+  background: var(--text-tertiary);
+}
+
+.reply-form .admin-label {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  background: rgba(163, 113, 247, 0.15);
+  color: var(--accent-purple);
+  margin-bottom: 10px;
+}
+
+.reply-form .readonly-notice {
+  text-align: center;
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.reply-form .readonly-notice svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
 .reply-form textarea {
   min-height: 80px;
   margin-bottom: 12px;
@@ -873,11 +915,17 @@ async function checkAuth() {
         if (inboxLabel) inboxLabel.textContent = '意见箱';
         if (ticketsTitle) ticketsTitle.textContent = '📋 意见箱';
         if (ticketsDesc) ticketsDesc.textContent = '查看所有用户提交的工单，进行回复和状态管理';
+        if (inboxTab) {
+          inboxTab.innerHTML = '📋 <span id="inboxTabLabel">意见箱</span><span class="badge" id="inboxBadge">管理员</span>';
+        }
       } else {
         // Non-admin: show "我的工单" (read-only personal tickets)
         if (inboxLabel) inboxLabel.textContent = '我的工单';
         if (ticketsTitle) ticketsTitle.textContent = '📋 我的工单';
         if (ticketsDesc) ticketsDesc.textContent = '查看您提交的反馈和管理员的回复';
+        if (inboxTab) {
+          inboxTab.innerHTML = '📋 <span id="inboxTabLabel">我的工单</span><span class="badge readonly">只读</span>';
+        }
       }
 
       return true;
@@ -1206,7 +1254,7 @@ async function loadTicketDetail(ticketId) {
     var replyFormHtml = '';
     if (state.isAdmin) {
       replyFormHtml = '<div class="reply-form">' +
-        '<div class="form-label">管理员回复</div>' +
+        '<div class="admin-label">🔒 管理员回复区域</div>' +
         '<div class="quick-replies">' +
           '<span class="quick-reply" data-text="您好，问题已解决，感谢您的反馈！">✅ 问题解决</span>' +
           '<span class="quick-reply" data-text="您好，我们正在处理您的反馈，请耐心等待。">⏳ 正在处理</span>' +
@@ -1222,8 +1270,14 @@ async function loadTicketDetail(ticketId) {
         '<textarea class="form-textarea" id="replyContent" placeholder="输入回复内容..."></textarea>' +
         '<button class="submit-btn" id="sendReplyBtn">发送回复</button>' +
       '</div>';
-    } else if (replies.length === 0) {
-      replyFormHtml = '<div class="reply-form" style="text-align:center;color:var(--text-tertiary);font-size:13px">暂无回复，管理员收到反馈后会尽快回复您</div>';
+    } else {
+      replyFormHtml = '<div class="reply-form">' +
+        '<div class="readonly-notice">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="vertical-align:middle"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>' +
+          '您当前为普通用户，仅可查看工单和管理员回复<br>' +
+          '<span style="font-size:11px;opacity:0.7">如需补充信息，请在评论区留言或联系管理员</span>' +
+        '</div>' +
+      '</div>';
     }
 
     card.innerHTML =
@@ -1257,6 +1311,11 @@ async function loadTicketDetail(ticketId) {
       var statusSelect = $('statusSelect');
       if (statusSelect) {
         statusSelect.addEventListener('change', function() {
+          if (!state.isAdmin) {
+            showMessage('error', '仅管理员可修改状态');
+            this.value = d.status;
+            return;
+          }
           fetch('/api/feedback/status', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1287,6 +1346,10 @@ async function loadTicketDetail(ticketId) {
       var replyBtn = $('sendReplyBtn');
       if (replyBtn) {
         replyBtn.addEventListener('click', function() {
+          if (!state.isAdmin) {
+            showMessage('error', '仅管理员可回复工单');
+            return;
+          }
           var content = $('replyContent').value.trim();
           if (!content) { showMessage('error', '请输入回复内容'); return; }
           var self = this;
@@ -1314,6 +1377,10 @@ async function loadTicketDetail(ticketId) {
       var delBtn = $('deleteTicketBtn');
       if (delBtn) {
         delBtn.addEventListener('click', function() {
+          if (!state.isAdmin) {
+            showMessage('error', '仅管理员可删除工单');
+            return;
+          }
           if (!confirm('确定要删除此工单吗？所有回复也会一同删除。')) return;
           fetch('/api/feedback/delete', {
             method: 'POST',

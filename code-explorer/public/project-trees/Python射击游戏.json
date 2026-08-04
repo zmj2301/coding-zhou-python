@@ -128,350 +128,350 @@
         "type": "file",
         "path": "img/arrow.png",
         "ext": ".png",
-        "lastModified": 1763769570000
+        "lastModified": 1785762144799
       },
       {
         "name": "background.png",
         "type": "file",
         "path": "img/background.png",
         "ext": ".png",
-        "lastModified": 1763114896000
+        "lastModified": 1785762144800
       },
       {
         "name": "bgc.png",
         "type": "file",
         "path": "img/bgc.png",
         "ext": ".png",
-        "lastModified": 1767257400000
+        "lastModified": 1785762144801
       },
       {
         "name": "bomb.png",
         "type": "file",
         "path": "img/bomb.png",
         "ext": ".png",
-        "lastModified": 1764401434000
+        "lastModified": 1785762144802
       },
       {
         "name": "Cherry_Boom.png",
         "type": "file",
         "path": "img/Cherry_Boom.png",
         "ext": ".png",
-        "lastModified": 1767366706000
+        "lastModified": 1785762144796
       },
       {
         "name": "choose.png",
         "type": "file",
         "path": "img/choose.png",
         "ext": ".png",
-        "lastModified": 1765017708000
+        "lastModified": 1785762144803
       },
       {
         "name": "d.png",
         "type": "file",
         "path": "img/d.png",
         "ext": ".png",
-        "lastModified": 1763257920000
+        "lastModified": 1785762144804
       },
       {
         "name": "dark_clouds.png",
         "type": "file",
         "path": "img/dark_clouds.png",
         "ext": ".png",
-        "lastModified": 1768659084000
+        "lastModified": 1785762144805
       },
       {
         "name": "enemy-b1.png",
         "type": "file",
         "path": "img/enemy-b1.png",
         "ext": ".png",
-        "lastModified": 1763113022000
+        "lastModified": 1785762144806
       },
       {
         "name": "enemy-b2.png",
         "type": "file",
         "path": "img/enemy-b2.png",
         "ext": ".png",
-        "lastModified": 1763113026000
+        "lastModified": 1785762144807
       },
       {
         "name": "enemy-b3.png",
         "type": "file",
         "path": "img/enemy-b3.png",
         "ext": ".png",
-        "lastModified": 1763113030000
+        "lastModified": 1785762144808
       },
       {
         "name": "enemy-b4.png",
         "type": "file",
         "path": "img/enemy-b4.png",
         "ext": ".png",
-        "lastModified": 1763113032000
+        "lastModified": 1785762144809
       },
       {
         "name": "enemy-b5.png",
         "type": "file",
         "path": "img/enemy-b5.png",
         "ext": ".png",
-        "lastModified": 1763113036000
+        "lastModified": 1785762144811
       },
       {
         "name": "enemy-b6.png",
         "type": "file",
         "path": "img/enemy-b6.png",
         "ext": ".png",
-        "lastModified": 1763113038000
+        "lastModified": 1785762144812
       },
       {
         "name": "enemy-br1.png",
         "type": "file",
         "path": "img/enemy-br1.png",
         "ext": ".png",
-        "lastModified": 1763113060000
+        "lastModified": 1785762144814
       },
       {
         "name": "enemy-br2.png",
         "type": "file",
         "path": "img/enemy-br2.png",
         "ext": ".png",
-        "lastModified": 1763113062000
+        "lastModified": 1785762144817
       },
       {
         "name": "enemy-br3.png",
         "type": "file",
         "path": "img/enemy-br3.png",
         "ext": ".png",
-        "lastModified": 1763113066000
+        "lastModified": 1785762144819
       },
       {
         "name": "enemy-br4.png",
         "type": "file",
         "path": "img/enemy-br4.png",
         "ext": ".png",
-        "lastModified": 1763113070000
+        "lastModified": 1785762144836
       },
       {
         "name": "enemy-br5.png",
         "type": "file",
         "path": "img/enemy-br5.png",
         "ext": ".png",
-        "lastModified": 1763113076000
+        "lastModified": 1785762144837
       },
       {
         "name": "enemy-br6.png",
         "type": "file",
         "path": "img/enemy-br6.png",
         "ext": ".png",
-        "lastModified": 1763113080000
+        "lastModified": 1785762144838
       },
       {
         "name": "enemy-br7.png",
         "type": "file",
         "path": "img/enemy-br7.png",
         "ext": ".png",
-        "lastModified": 1763113130000
+        "lastModified": 1785762144839
       },
       {
         "name": "enemy-s1.png",
         "type": "file",
         "path": "img/enemy-s1.png",
         "ext": ".png",
-        "lastModified": 1763727462000
+        "lastModified": 1785762144840
       },
       {
         "name": "enemy-s2.png",
         "type": "file",
         "path": "img/enemy-s2.png",
         "ext": ".png",
-        "lastModified": 1763727466000
+        "lastModified": 1785762144846
       },
       {
         "name": "enemy-s3.png",
         "type": "file",
         "path": "img/enemy-s3.png",
         "ext": ".png",
-        "lastModified": 1763727470000
+        "lastModified": 1785762144847
       },
       {
         "name": "enemy_ball.png",
         "type": "file",
         "path": "img/enemy_ball.png",
         "ext": ".png",
-        "lastModified": 1767402050000
+        "lastModified": 1785762144848
       },
       {
         "name": "game_over.jfif",
         "type": "file",
         "path": "img/game_over.jfif",
         "ext": ".jfif",
-        "lastModified": 1765678168000
+        "lastModified": 1785762144853
       },
       {
         "name": "game_over.png",
         "type": "file",
         "path": "img/game_over.png",
         "ext": ".png",
-        "lastModified": 1765678294000
+        "lastModified": 1785762144857
       },
       {
         "name": "gp.png",
         "type": "file",
         "path": "img/gp.png",
         "ext": ".png",
-        "lastModified": 1765017732000
+        "lastModified": 1785762144859
       },
       {
         "name": "gun.jpg",
         "type": "file",
         "path": "img/gun.jpg",
         "ext": ".jpg",
-        "lastModified": 1763113530000
+        "lastModified": 1785762144864
       },
       {
         "name": "gun.png",
         "type": "file",
         "path": "img/gun.png",
         "ext": ".png",
-        "lastModified": 1763113566000
+        "lastModified": 1785762144869
       },
       {
         "name": "gun1.png",
         "type": "file",
         "path": "img/gun1.png",
         "ext": ".png",
-        "lastModified": 1763257604000
+        "lastModified": 1785762144872
       },
       {
         "name": "inventory.png",
         "type": "file",
         "path": "img/inventory.png",
         "ext": ".png",
-        "lastModified": 1764995188000
+        "lastModified": 1785762144874
       },
       {
         "name": "jtl.png",
         "type": "file",
         "path": "img/jtl.png",
         "ext": ".png",
-        "lastModified": 1763727702000
+        "lastModified": 1785762144878
       },
       {
         "name": "laser.png",
         "type": "file",
         "path": "img/laser.png",
         "ext": ".png",
-        "lastModified": 1764402254000
+        "lastModified": 1785762144879
       },
       {
         "name": "laser_h.png",
         "type": "file",
         "path": "img/laser_h.png",
         "ext": ".png",
-        "lastModified": 1764980372000
+        "lastModified": 1785762144881
       },
       {
         "name": "medical.png",
         "type": "file",
         "path": "img/medical.png",
         "ext": ".png",
-        "lastModified": 1764426718000
+        "lastModified": 1785762144882
       },
       {
         "name": "plane.png",
         "type": "file",
         "path": "img/plane.png",
         "ext": ".png",
-        "lastModified": 1764399752000
+        "lastModified": 1785762144890
       },
       {
         "name": "player.png",
         "type": "file",
         "path": "img/player.png",
         "ext": ".png",
-        "lastModified": 1762524260000
+        "lastModified": 1785762144891
       },
       {
         "name": "player_left.png",
         "type": "file",
         "path": "img/player_left.png",
         "ext": ".png",
-        "lastModified": 1762564950000
+        "lastModified": 1785762144892
       },
       {
         "name": "player_right.png",
         "type": "file",
         "path": "img/player_right.png",
         "ext": ".png",
-        "lastModified": 1762564938000
+        "lastModified": 1785762144894
       },
       {
         "name": "rotary_cutter.png",
         "type": "file",
         "path": "img/rotary_cutter.png",
         "ext": ".png",
-        "lastModified": 1765584252000
+        "lastModified": 1785762144895
       },
       {
         "name": "Spikeweed.png",
         "type": "file",
         "path": "img/Spikeweed.png",
         "ext": ".png",
-        "lastModified": 1765026880000
+        "lastModified": 1785762144798
       },
       {
         "name": "sword.png",
         "type": "file",
         "path": "img/sword.png",
         "ext": ".png",
-        "lastModified": 1763277154000
+        "lastModified": 1785762144897
       },
       {
         "name": "sword_r.png",
         "type": "file",
         "path": "img/sword_r.png",
         "ext": ".png",
-        "lastModified": 1763720382000
+        "lastModified": 1785762144898
       },
       {
         "name": "swordb.png",
         "type": "file",
         "path": "img/swordb.png",
         "ext": ".png",
-        "lastModified": 1767422812000
+        "lastModified": 1785762144899
       },
       {
         "name": "win.jpg",
         "type": "file",
         "path": "img/win.jpg",
         "ext": ".jpg",
-        "lastModified": 1765692868000
+        "lastModified": 1785762144901
       },
       {
         "name": "zhanxian.png",
         "type": "file",
         "path": "img/zhanxian.png",
         "ext": ".png",
-        "lastModified": 1767264484000
+        "lastModified": 1785762144903
       },
       {
         "name": "zx.png",
         "type": "file",
         "path": "img/zx.png",
         "ext": ".png",
-        "lastModified": 1767264562000
+        "lastModified": 1785762144904
       },
       {
         "name": "zx_grayscale.png",
         "type": "file",
         "path": "img/zx_grayscale.png",
         "ext": ".png",
-        "lastModified": 1767267824000
+        "lastModified": 1785762144905
       },
       {
         "name": "下载.png",
         "type": "file",
         "path": "img/下载.png",
         "ext": ".png",
-        "lastModified": 1769823820000
+        "lastModified": 1785762144913
       },
       {
         "name": "阴云.webp",
@@ -487,62 +487,62 @@
     "type": "file",
     "path": "asseats.py",
     "ext": ".py",
-    "lastModified": 1767267891468
+    "lastModified": 1785762144794
   },
   {
     "name": "fix_boss_animation.py",
     "type": "file",
     "path": "fix_boss_animation.py",
     "ext": ".py",
-    "lastModified": 1769851361918
+    "lastModified": 1785762144795
   },
   {
     "name": "main.py",
     "type": "file",
     "path": "main.py",
     "ext": ".py",
-    "lastModified": 1768699161397
+    "lastModified": 1785762144914
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
     "ext": ".md",
-    "lastModified": 1785552247892
+    "lastModified": 1785762144792
   },
   {
     "name": "text.py",
     "type": "file",
     "path": "text.py",
     "ext": ".py",
-    "lastModified": 1767398556919
+    "lastModified": 1785762144916
   },
   {
     "name": "texts.py",
     "type": "file",
     "path": "texts.py",
     "ext": ".py",
-    "lastModified": 1769240918525
+    "lastModified": 1785762144917
   },
   {
     "name": "variables.txt",
     "type": "file",
     "path": "variables.txt",
     "ext": ".txt",
-    "lastModified": 1765018986468
+    "lastModified": 1785762144918
   },
   {
     "name": "variables_with_details.txt",
     "type": "file",
     "path": "variables_with_details.txt",
     "ext": ".txt",
-    "lastModified": 1765019361053
+    "lastModified": 1785762144919
   },
   {
     "name": "游戏变量列表.docx",
     "type": "file",
     "path": "游戏变量列表.docx",
     "ext": ".docx",
-    "lastModified": 1765019025106
+    "lastModified": 1785762144921
   }
 ]

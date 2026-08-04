@@ -9,35 +9,35 @@
         "type": "file",
         "path": "core/__init__.py",
         "ext": ".py",
-        "lastModified": 1777973961073
+        "lastModified": 1785762150589
       },
       {
         "name": "ai_enhancer.py",
         "type": "file",
         "path": "core/ai_enhancer.py",
         "ext": ".py",
-        "lastModified": 1777974525388
+        "lastModified": 1785762150591
       },
       {
         "name": "audio_handler.py",
         "type": "file",
         "path": "core/audio_handler.py",
         "ext": ".py",
-        "lastModified": 1777973919388
+        "lastModified": 1785762150592
       },
       {
         "name": "config_manager.py",
         "type": "file",
         "path": "core/config_manager.py",
         "ext": ".py",
-        "lastModified": 1777973880610
+        "lastModified": 1785762150593
       },
       {
         "name": "tts_engine.py",
         "type": "file",
         "path": "core/tts_engine.py",
         "ext": ".py",
-        "lastModified": 1777975806756
+        "lastModified": 1785762150593
       }
     ]
   },
@@ -51,14 +51,14 @@
         "type": "file",
         "path": "data/config.json",
         "ext": ".json",
-        "lastModified": 1777975916143
+        "lastModified": 1785762150594
       },
       {
         "name": "history.json",
         "type": "file",
         "path": "data/history.json",
         "ext": ".json",
-        "lastModified": 1777975899021
+        "lastModified": 1785762150599
       }
     ]
   },
@@ -72,49 +72,49 @@
         "type": "file",
         "path": "ui/__init__.py",
         "ext": ".py",
-        "lastModified": 1777974085647
+        "lastModified": 1785762150603
       },
       {
         "name": "ai_panel.py",
         "type": "file",
         "path": "ui/ai_panel.py",
         "ext": ".py",
-        "lastModified": 1777974539599
+        "lastModified": 1785762150604
       },
       {
         "name": "control_panel.py",
         "type": "file",
         "path": "ui/control_panel.py",
         "ext": ".py",
-        "lastModified": 1777974000800
+        "lastModified": 1785762150605
       },
       {
         "name": "main_window.py",
         "type": "file",
         "path": "ui/main_window.py",
         "ext": ".py",
-        "lastModified": 1777975847390
+        "lastModified": 1785762150606
       },
       {
         "name": "settings_panel.py",
         "type": "file",
         "path": "ui/settings_panel.py",
         "ext": ".py",
-        "lastModified": 1777974021807
+        "lastModified": 1785762150607
       },
       {
         "name": "status_panel.py",
         "type": "file",
         "path": "ui/status_panel.py",
         "ext": ".py",
-        "lastModified": 1777974049983
+        "lastModified": 1785762150607
       },
       {
         "name": "text_input_panel.py",
         "type": "file",
         "path": "ui/text_input_panel.py",
         "ext": ".py",
-        "lastModified": 1777973986370
+        "lastModified": 1785762150608
       }
     ]
   },
@@ -128,21 +128,21 @@
         "type": "file",
         "path": "utils/__init__.py",
         "ext": ".py",
-        "lastModified": 1777973966006
+        "lastModified": 1785762150609
       },
       {
         "name": "file_utils.py",
         "type": "file",
         "path": "utils/file_utils.py",
         "ext": ".py",
-        "lastModified": 1777973954547
+        "lastModified": 1785762150609
       },
       {
         "name": "history_manager.py",
         "type": "file",
         "path": "utils/history_manager.py",
         "ext": ".py",
-        "lastModified": 1777973947897
+        "lastModified": 1785762150610
       }
     ]
   },
@@ -151,27 +151,27 @@
     "type": "file",
     "path": "main.py",
     "ext": ".py",
-    "lastModified": 1777974093348
+    "lastModified": 1785762150602
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
     "ext": ".md",
-    "lastModified": 1777975714479
+    "lastModified": 1785762150589
   },
   {
     "name": "requirements.txt",
     "type": "file",
     "path": "requirements.txt",
     "ext": ".txt",
-    "lastModified": 1777975673618
+    "lastModified": 1785762150602
   },
   {
     "name": "启动工具.py",
     "type": "file",
     "path": "启动工具.py",
     "ext": ".py",
-    "lastModified": 1777975689682
+    "lastModified": 1785762150611
   }
 ]
