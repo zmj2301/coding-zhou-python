@@ -116,7 +116,7 @@ async function init(){
   try{const r=await fetch('/api/projects/list');if(r.ok)data=await r.json();}catch(e){}
   if(!data.length){try{const r=await fetch('/project-list.json');if(r.ok)data=await r.json();}catch(e){}}
   data=data.filter(p=>!['web-game','popup-preview'].includes(p.type||'other')&&
-    ![functions','GitHub文件','output','portfolio','codinghou','deepseek_v3_tokenizer'].includes(p.path||'')&&
+    !['functions','GitHub文件','output','portfolio','codinghou','deepseek_v3_tokenizer'].includes(p.path||'')&&
     !(p.path||'').startsWith('web-games'));
   all=data.map(p=>({name:p.name,icon:iconOf(p.type),category:labelOf(p.type),type:p.type,fileCount:p.fileCount||0,path:p.path,description:p.desc||'项目路径: '+p.path}));
   curF='all';filtered=[...all];updateCounts();renderCards();
@@ -131,7 +131,7 @@ function buildSidebar(){
   const counts={game:0,tool:0,ai:0,other:0};
   all.forEach(p=>{counts[p.type]=(counts[p.type]||0)+1;});
   let h='<div class="sidebar-section"><div class="sidebar-section-label">资源</div>';
-  h+='<div class="sidebar-item active" data-filter="all" onclick="filter(\u0027all\u0027)"><span class="icon">📦</span> 全部资源 <span class="count" id="countAll">'+all.length+'</span></div>';
+  h+='<div class="sidebar-item active" data-filter="all" onclick="filter(\u0027all\u0027)"><span class="icon">📦</span> 全部资源 <span class="count" id="countall">'+all.length+'</span></div>';
   h+='</div><div class="sidebar-divider"></div><div class="sidebar-section"><div class="sidebar-section-label">按类型</div>';
   [{f:'game',icon:'🎮',n:'游戏'},{f:'tool',icon:'🔧',n:'工具'},{f:'ai',icon:'🤖',n:'AI'},{f:'other',icon:'📂',n:'其他'}].forEach(it=>{
     h+='<div class="sidebar-item" data-filter="'+it.f+'" onclick="filter(\u0027'+it.f+'\u0027)"><span class="icon">'+it.icon+'</span> '+it.n+' <span class="count" id="count'+it.f+'">'+(counts[it.f]||0)+'</span></div>';
@@ -148,7 +148,7 @@ function filter(f){
 }
 function apply(){
   const q=document.getElementById('searchInput').value.toLowerCase().trim();
-  filtered=all.filter(p=>{(curF==='all'||p.type===curF)&&(!q||p.name.toLowerCase().includes(q)||(p.path||'').toLowerCase().includes(q));});
+  filtered=all.filter(p=>(curF==='all'||p.type===curF)&&(!q||p.name.toLowerCase().includes(q)||(p.path||'').toLowerCase().includes(q)));
   renderCards();
   document.getElementById('filterCount').textContent=filtered.length!==all.length?' '+filtered.length+' / '+all.length:'';
 }
