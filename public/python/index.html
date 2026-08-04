@@ -201,6 +201,110 @@ body::before {
 .toolbar-action.btn-stop { color: var(--accent-red); border-color: rgba(248,81,73,0.4); }
 .toolbar-action.btn-stop:hover { background: rgba(248,81,73,0.12); color: var(--accent-red); }
 
+/* 运行模式切换 */
+.run-mode-group {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  flex-shrink: 0;
+}
+.run-mode-btn {
+  padding: 3px 10px;
+  font-size: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.run-mode-btn:hover { color: var(--text-primary); }
+.run-mode-btn.active { background: var(--accent-blue); color: #fff; }
+
+/* 多文件标签栏 */
+.file-tabs {
+  display: flex; align-items: center; gap: 2px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 8px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  height: 34px;
+  min-height: 34px;
+}
+.file-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+}
+.file-tab:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+.file-tab.active {
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+  border-bottom: 1px solid var(--bg-primary);
+}
+.file-tab.active::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); flex-shrink: 0; }
+.file-tab .tab-close {
+  width: 14px; height: 14px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 3px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-style: normal;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.file-tab:hover .tab-close { opacity: 0.8; }
+.file-tab .tab-close:hover { background: rgba(248,81,73,0.25); color: var(--accent-red); }
+.file-tabs-actions {
+  display: flex; align-items: center; gap: 2px;
+  padding-left: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.file-tab-add, .file-tab-rename {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.file-tab-add:hover, .file-tab-rename:hover { color: var(--text-primary); background: var(--bg-tertiary); border-color: var(--accent-blue); }
+.entry-file-label {
+  font-size: 11px; color: var(--text-tertiary);
+  margin-left: 6px; white-space: nowrap;
+}
+#entryFileSelect {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  padding: 3px 6px;
+  max-width: 180px;
+  flex-shrink: 0;
+}
+#entryFileSelect:focus { outline: none; border-color: var(--accent-blue); }
+
 /* 编辑器与终端容器 */
 .workspace {
   flex: 1;
@@ -343,6 +447,10 @@ body::before {
   <div class="toolbar">
     <span class="toolbar-title">🐍 Python 在线编程</span>
     <div class="toolbar-divider"></div>
+    <div class="run-mode-group" id="runModeGroup">
+      <button class="run-mode-btn active" data-mode="single" id="modeSingle">单文件</button>
+      <button class="run-mode-btn" data-mode="multi" id="modeMulti">多文件</button>
+    </div>
     <span class="toolbar-hint" id="fileName">script.py</span>
     <button class="toolbar-action" id="btnCopy" title="复制代码">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
@@ -356,6 +464,19 @@ body::before {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       <span id="btnRunLabel">运行</span>
     </button>
+  </div>
+
+  <div class="file-tabs" id="fileTabs" style="display:none">
+    <div class="file-tabs-actions">
+      <button class="file-tab-rename" id="btnRenameFile" title="重命名当前文件" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+      </button>
+      <button class="file-tab-add" id="btnAddFile" title="新建文件">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <span class="entry-file-label">入口文件</span>
+      <select id="entryFileSelect"></select>
+    </div>
   </div>
 
   <div class="workspace">
@@ -406,6 +527,10 @@ let monacoEditor = null;
 let isRunning = false;
 let runAbortController = null;
 let currentRunId = null;
+let runMode = 'single';
+let multiFiles = {};
+let activeFile = 'main.py';
+let singleCodeBackup = null;
 
 // ==================== 主题切换 ====================
 (function(){
@@ -460,11 +585,208 @@ if __name__ == "__main__":
     main()
 `;
 
+// ==================== 多文件示例 ====================
+const DEFAULT_MULTI_FILES = {
+  'main.py': `# =============================================
+# 多文件项目 - 入口文件 (main.py)
+# 点击「运行」或按 Ctrl+Enter 执行
+# =============================================
+
+from utils import fibonacci, greet
+from data_store import build_store, get
+
+def main():
+    print("=== 多文件项目示例 ===")
+    print(greet("CodingZhou"))
+    print()
+    print("斐波那契数列前 10 项:", fibonacci(10))
+    print()
+    store = build_store()
+    get(store, "name", "CodingZhou")
+    get(store, "lang", "Python")
+
+if __name__ == "__main__":
+    main()
+`,
+  'utils.py': `# 工具模块 - utils.py
+def fibonacci(n):
+    """计算斐波那契数列前 n 项"""
+    seq = []
+    a, b = 0, 1
+    for _ in range(n):
+        seq.append(a)
+        a, b = b, a + b
+    return seq
+
+def greet(name):
+    return f"Hello, {name}! 🐍"
+`,
+  'data_store.py': `# 数据模块 - data_store.py
+def build_store():
+    return {}
+
+def get(store, key, value):
+    store[key] = value
+    print(f"[store] {key} = {value}")
+    return store
+`,
+};
+const DEFAULT_SINGLE_CODE = DEFAULT_CODE;
+
 // ==================== 编辑器初始化 ====================
 function loadExample() {
   $('welcomeBox').style.display = 'none';
   $('editorHost').style.display = 'block';
   initEditor();
+}
+
+function getCurrentFileContent() {
+  if (runMode === 'multi') {
+    return multiFiles[activeFile] || '';
+  }
+  return monacoEditor ? monacoEditor.getValue() : DEFAULT_SINGLE_CODE;
+}
+
+function switchMode(mode) {
+  if (mode === runMode) return;
+  saveActiveEditorContent();
+  if (runMode === 'single' && monacoEditor) {
+    singleCodeBackup = monacoEditor.getValue();
+  }
+  runMode = mode;
+
+  $('modeSingle').classList.toggle('active', mode === 'single');
+  $('modeMulti').classList.toggle('active', mode === 'multi');
+  $('fileTabs').style.display = mode === 'multi' ? 'flex' : 'none';
+  $('btnRenameFile').style.display = mode === 'multi' ? '' : 'none';
+  $('entryFileSelect').style.display = mode === 'multi' ? '' : 'none';
+
+  if (mode === 'multi') {
+    if (!Object.keys(multiFiles).length) {
+      multiFiles = JSON.parse(JSON.stringify(DEFAULT_MULTI_FILES));
+      activeFile = 'main.py';
+    }
+    if (!multiFiles[activeFile]) activeFile = Object.keys(multiFiles)[0];
+    if (monacoEditor) {
+      monacoEditor.setValue(multiFiles[activeFile] || '');
+      monacoEditor.setModelLanguage(monacoEditor.getModel(), 'python');
+    }
+  } else {
+    if (monacoEditor) {
+      monacoEditor.setValue(singleCodeBackup || DEFAULT_SINGLE_CODE);
+      monacoEditor.setModelLanguage(monacoEditor.getModel(), 'python');
+    }
+  }
+  renderFileTabs();
+  $('fileName').textContent = mode === 'multi' ? '多文件项目' : 'script.py';
+}
+
+function renderFileTabs() {
+  const container = $('fileTabs');
+  container.querySelectorAll('.file-tab').forEach(el => el.remove());
+  if (runMode !== 'multi') return;
+  const order = Object.keys(multiFiles);
+  for (const path of order) {
+    const tab = document.createElement('div');
+    tab.className = 'file-tab' + (path === activeFile ? ' active' : '');
+    tab.dataset.path = path;
+    const name = document.createElement('span');
+    name.textContent = path;
+    name.style.flex = '1';
+    const close = document.createElement('i');
+    close.className = 'tab-close';
+    close.textContent = '×';
+    close.title = '删除文件';
+    tab.appendChild(name);
+    tab.appendChild(close);
+    tab.addEventListener('click', (e) => {
+      if (e.target.classList.contains('tab-close')) {
+        deleteFile(path);
+      } else {
+        openFile(path);
+      }
+    });
+    const entrySelect = $('entryFileSelect');
+    container.insertBefore(tab, entrySelect.closest('.file-tabs-actions') || container.firstChild);
+  }
+  populateEntryFileSelect();
+}
+
+function openFile(path) {
+  saveActiveEditorContent();
+  activeFile = path;
+  if (monacoEditor) {
+    monacoEditor.setValue(multiFiles[path] || '');
+  }
+  renderFileTabs();
+}
+
+function saveActiveEditorContent() {
+  if (runMode === 'multi' && monacoEditor) {
+    multiFiles[activeFile] = monacoEditor.getValue();
+  }
+}
+
+function populateEntryFileSelect() {
+  const sel = $('entryFileSelect');
+  const prev = sel.value;
+  sel.innerHTML = '';
+  for (const path of Object.keys(multiFiles)) {
+    const opt = document.createElement('option');
+    opt.value = path;
+    opt.textContent = path;
+    sel.appendChild(opt);
+  }
+  if (prev && multiFiles[prev]) sel.value = prev;
+  else sel.value = multiFiles['main.py'] ? 'main.py' : Object.keys(multiFiles)[0];
+}
+
+function addFile() {
+  const used = new Set(Object.keys(multiFiles));
+  let i = 1;
+  let name = `file_${i}.py`;
+  while (used.has(name)) { i++; name = `file_${i}.py`; }
+  const custom = prompt('新文件名:', name);
+  if (!custom) return;
+  let newName = custom.trim();
+  if (!newName) return;
+  if (!newName.endsWith('.py')) newName += '.py';
+  if (newName.includes('/') || newName.includes('\\')) {
+    alert('文件名不能包含路径分隔符');
+    return;
+  }
+  if (multiFiles[newName]) { alert('文件已存在'); return; }
+  multiFiles[newName] = '# ' + newName + '\n\n';
+  openFile(newName);
+}
+
+function renameFile() {
+  if (runMode !== 'multi') return;
+  saveActiveEditorContent();
+  const old = activeFile;
+  const custom = prompt('重命名文件:', old);
+  if (!custom) return;
+  let newName = custom.trim();
+  if (!newName || newName === old) return;
+  if (!newName.endsWith('.py')) newName += '.py';
+  if (multiFiles[newName]) { alert('文件已存在'); return; }
+  const content = multiFiles[old];
+  delete multiFiles[old];
+  multiFiles[newName] = content;
+  activeFile = newName;
+  renderFileTabs();
+}
+
+function deleteFile(path) {
+  if (runMode !== 'multi') return;
+  if (Object.keys(multiFiles).length <= 1) { alert('至少保留一个文件'); return; }
+  if (!confirm('删除文件 ' + path + ' ？')) return;
+  delete multiFiles[path];
+  if (activeFile === path) {
+    activeFile = Object.keys(multiFiles)[0];
+    if (monacoEditor) monacoEditor.setValue(multiFiles[activeFile] || '');
+  }
+  renderFileTabs();
 }
 
 function initEditor() {
@@ -473,7 +795,7 @@ function initEditor() {
   const isLight = root.getAttribute('data-theme') === 'light';
   require(['vs/editor/editor.main'], function () {
     monacoEditor = monaco.editor.create($('editorHost'), {
-      value: DEFAULT_CODE,
+      value: DEFAULT_SINGLE_CODE,
       language: 'python',
       theme: isLight ? 'vs' : 'vs-dark',
       fontSize: 14,
@@ -551,9 +873,26 @@ async function runPythonCode() {
   output.innerHTML = '';
   hideDepsProgress();
 
-  const code = monacoEditor.getValue();
-  const body = { mode: 'single', timeout: 120, code: code, fileName: 'script.py' };
-  appendToTerminal('========== 单文件运行 ==========', 'info');
+  let body;
+  if (runMode === 'multi') {
+    saveActiveEditorContent();
+    const files = {};
+    for (const path of Object.keys(multiFiles)) {
+      files[path] = multiFiles[path];
+    }
+    body = {
+      mode: 'multi',
+      timeout: 120,
+      entryFile: $('entryFileSelect').value || 'main.py',
+      venvKey: 'multi_workspace_v1',
+      files: files,
+    };
+    appendToTerminal('========== 多文件运行 ==========', 'info');
+  } else {
+    const code = monacoEditor ? monacoEditor.getValue() : '';
+    body = { mode: 'single', timeout: 120, code: code, fileName: 'script.py' };
+    appendToTerminal('========== 单文件运行 ==========', 'info');
+  }
 
   setRunStatus('preparing', '准备中...');
   isRunning = true;
@@ -710,6 +1049,17 @@ $('btnStop').addEventListener('click', stopPythonCode);
 $('btnCopy').addEventListener('click', copyCode);
 $('btnLoadExample').addEventListener('click', loadExample);
 $('btnTerminalClose').addEventListener('click', hideTerminal);
+$('modeSingle').addEventListener('click', () => switchMode('single'));
+$('modeMulti').addEventListener('click', () => switchMode('multi'));
+$('btnAddFile').addEventListener('click', addFile);
+$('btnRenameFile').addEventListener('click', renameFile);
+$('entryFileSelect').addEventListener('change', (e) => {
+  // 仅更新入口文件选择，不改变编辑器内容
+});
+
+window.addEventListener('beforeunload', () => {
+  saveActiveEditorContent();
+});
 
 document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
