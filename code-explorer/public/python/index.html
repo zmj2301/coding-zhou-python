@@ -5,30 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Python 编程 - Code Explorer</title>
 <style>
-  :root {
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --bg-tertiary: #21262d;
-    --bg-overlay: #30363d;
-    --border-color: #30363d;
-    --border-light: #21262d;
-    --text-primary: #c9d1d9;
-    --text-secondary: #8b949e;
-    --text-tertiary: #6e7681;
-    --accent-blue: #58a6ff;
-    --accent-green: #3fb950;
-    --accent-yellow: #d29922;
-    --accent-red: #f85149;
-    --accent-purple: #a371f7;
-    --accent-orange: #f0883e;
-    --accent-pink: #db61a2;
-    --accent-cyan: #39d353;
-    --radius-sm: 6px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
-  }
+  /* Import shared theme variables */
+  @import '/components/theme.css';
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -39,17 +17,6 @@
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
-  }
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
   }
 
   .page-wrapper {
@@ -84,7 +51,7 @@
     font-weight: 800;
     margin-bottom: 16px;
     letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #58a6ff 0%, #a371f7 50%, #db61a2 100%);
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 50%, var(--accent-pink) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -103,9 +70,7 @@
     margin-top: 32px;
     flex-wrap: wrap;
   }
-  .hero-stat {
-    text-align: center;
-  }
+  .hero-stat { text-align: center; }
   .hero-stat-value {
     font-size: 28px;
     font-weight: 700;
@@ -118,9 +83,7 @@
   }
 
   /* Section */
-  .section {
-    margin-top: 48px;
-  }
+  .section { margin-top: 48px; }
   .section-header {
     display: flex;
     align-items: center;
@@ -167,9 +130,7 @@
   .project-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 3px;
     background: var(--card-accent, var(--accent-blue));
     opacity: 0.8;
@@ -177,7 +138,7 @@
   .project-card:hover {
     border-color: var(--card-accent, var(--accent-blue));
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-lg);
   }
 
   .card-header {
@@ -187,8 +148,7 @@
     margin-bottom: 16px;
   }
   .card-icon {
-    width: 48px;
-    height: 48px;
+    width: 48px; height: 48px;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -243,18 +203,15 @@
     font-size: 12px;
     color: var(--text-tertiary);
   }
-  .card-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
+  .card-meta-item { display: flex; align-items: center; gap: 4px; }
+
   .start-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 8px 18px;
-    background: linear-gradient(135deg, var(--card-accent, var(--accent-blue)), var(--card-accent-2, #388bfd));
-    color: #fff;
+    background: linear-gradient(135deg, var(--card-accent, var(--accent-blue)), var(--card-accent-2, var(--accent-blue-dark)));
+    color: var(--text-on-accent);
     border: none;
     border-radius: var(--radius-sm);
     font-size: 13px;
@@ -266,20 +223,418 @@
   .start-btn:hover {
     opacity: 0.9;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(88,166,255,0.3);
-  }
-  .start-btn svg {
-    width: 14px;
-    height: 14px;
+    box-shadow: var(--shadow-lg);
   }
 
   /* Accent variants */
-  .accent-blue { --card-accent: var(--accent-blue); --card-accent-2: #388bfd; --card-accent-bg: rgba(88,166,255,0.12); }
-  .accent-purple { --card-accent: var(--accent-purple); --card-accent-2: #8957e5; --card-accent-bg: rgba(163,113,247,0.12); }
-  .accent-green { --card-accent: var(--accent-green); --card-accent-2: #2ea043; --card-accent-bg: rgba(63,185,80,0.12); }
-  .accent-orange { --card-accent: var(--accent-orange); --card-accent-2: #d0752c; --card-accent-bg: rgba(240,136,62,0.12); }
-  .accent-pink { --card-accent: var(--accent-pink); --card-accent-2: #c44d8f; --card-accent-bg: rgba(219,97,162,0.12); }
-  .accent-cyan { --card-accent: var(--accent-cyan); --card-accent-2: #2c9a3e; --card-accent-bg: rgba(57,211,83,0.12); }
+  .accent-blue { --card-accent: var(--accent-blue); --card-accent-2: var(--accent-blue-dark); --card-accent-bg: rgba(88,166,255,0.12); }
+  .accent-purple { --card-accent: var(--accent-purple); --card-accent-2: var(--accent-purple-dark); --card-accent-bg: rgba(163,113,247,0.12); }
+  .accent-green { --card-accent: var(--accent-green); --card-accent-2: var(--accent-green-dark); --card-accent-bg: rgba(63,185,80,0.12); }
+  .accent-orange { --card-accent: var(--accent-orange); --card-accent-2: var(--accent-orange-dark); --card-accent-bg: rgba(240,136,62,0.12); }
+  .accent-pink { --card-accent: var(--accent-pink); --card-accent-2: var(--accent-pink-dark); --card-accent-bg: rgba(219,97,162,0.12); }
+  .accent-cyan { --card-accent: var(--accent-cyan); --card-accent-2: var(--accent-cyan-dark); --card-accent-bg: rgba(57,211,83,0.12); }
+
+  /* ===== Code Editor Modal ===== */
+  .editor-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+  }
+  .editor-modal.show { display: flex; }
+
+  .editor-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 1100px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+  }
+  .editor-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .editor-actions { display: flex; gap: 8px; }
+  .editor-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-sans);
+  }
+  .btn-run {
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+    color: var(--text-on-accent);
+  }
+  .btn-run:hover { filter: brightness(1.1); box-shadow: var(--shadow-lg); }
+  .btn-run:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-reset {
+    background: var(--bg-overlay);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+  }
+  .btn-reset:hover { background: var(--bg-tertiary); }
+  .btn-close-editor {
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 20px;
+    padding: 4px 10px;
+  }
+  .btn-close-editor:hover { background: var(--bg-overlay); color: var(--text-primary); }
+
+  /* AI Assistant Panel */
+  .ai-assistant-btn {
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
+    color: var(--text-on-accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ai-assistant-btn:hover {
+    filter: brightness(1.1);
+    box-shadow: var(--shadow-lg);
+  }
+  .ai-panel {
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    width: 380px;
+    height: calc(100vh - 120px);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    display: none;
+    flex-direction: column;
+    box-shadow: var(--shadow-lg);
+    z-index: 9999;
+    overflow: hidden;
+  }
+  .ai-panel.show { display: flex; }
+  .ai-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+  }
+  .ai-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .ai-panel-title-icon {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-on-accent);
+    font-size: 14px;
+  }
+  .ai-panel-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .ai-panel-close:hover { background: var(--bg-overlay); color: var(--text-primary); }
+  .ai-panel-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .ai-tab {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: var(--font-sans);
+  }
+  .ai-tab:hover { color: var(--text-secondary); }
+  .ai-tab.active {
+    color: var(--accent-purple);
+    border-bottom-color: var(--accent-purple);
+    background: rgba(163, 113, 247, 0.1);
+  }
+  .ai-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  .ai-tab-content { display: none; }
+  .ai-tab-content.active { display: block; }
+  .ai-input-group {
+    margin-bottom: 16px;
+  }
+  .ai-input-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 500;
+  }
+  .ai-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .ai-textarea:focus { border-color: var(--accent-purple); }
+  .ai-textarea::placeholder { color: var(--text-muted); }
+  .ai-submit-btn {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-dark));
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+    font-family: var(--font-sans);
+  }
+  .ai-submit-btn:hover { filter: brightness(1.1); }
+  .ai-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .ai-response {
+    margin-top: 16px;
+    padding: 14px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .ai-response.error {
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+  }
+  .ai-response .thinking {
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border-color);
+  }
+  .ai-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 12px;
+    justify-content: center;
+  }
+  .ai-loading-dots span {
+    animation: dotBounce 1.4s infinite;
+    display: inline-block;
+  }
+  .ai-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .ai-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotBounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-6px); opacity: 1; }
+  }
+  .ai-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .ai-quick-btn {
+    padding: 6px 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-sans);
+  }
+  .ai-quick-btn:hover {
+    background: var(--bg-overlay);
+    color: var(--text-primary);
+    border-color: var(--accent-purple);
+  }
+  .ai-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+  .ai-empty-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+  .ai-suggestion-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .ai-suggestion-item {
+    padding: 10px 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    text-align: left;
+    width: 100%;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+  }
+  .ai-suggestion-item:hover {
+    border-color: var(--accent-purple);
+    background: rgba(163, 113, 247, 0.1);
+  }
+
+  .editor-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .editor-code-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 250px;
+  }
+
+  .code-editor {
+    flex: 1;
+    background: var(--term-bg);
+    color: var(--term-text);
+    border: none;
+    outline: none;
+    padding: 16px 20px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none;
+    tab-size: 4;
+    min-height: 250px;
+    max-height: 400px;
+    overflow: auto;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .code-editor::placeholder { color: var(--text-muted); }
+
+  .editor-output-area {
+    background: var(--term-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 14px 20px;
+    max-height: 250px;
+    overflow-y: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .output-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .output-content { white-space: pre-wrap; word-break: break-all; }
+  .output-content .out { color: var(--term-stdout); }
+  .output-content .err { color: var(--term-error); }
+  .output-content .sys { color: var(--term-info); font-style: italic; }
+
+  .editor-footer {
+    padding: 10px 20px;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10001;
+    animation: slideIn 0.3s ease-out;
+  }
+  .toast.success { background: var(--accent-green); }
+  .toast.error { background: var(--accent-red); }
+  .toast.info { background: var(--accent-blue); }
+  @keyframes slideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
 
   /* Responsive */
   @media (max-width: 768px) {
@@ -291,7 +646,28 @@
     .cards-grid { grid-template-columns: 1fr; gap: 16px; }
     .project-card { padding: 18px; }
     .section-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .editor-container { max-height: 95vh; }
+    .code-editor { min-height: 200px; max-height: 300px; }
+    .editor-output-area { max-height: 180px; }
+    .ai-panel { width: 100%; right: 0; top: auto; bottom: 0; height: 50vh; }
   }
+
+  /* ===== Light Theme Overrides ===== */
+  [data-theme="light"] .editor-modal { background: rgba(255, 255, 255, 0.85); }
+  [data-theme="light"] .ai-panel { border-color: var(--border-color); }
+  [data-theme="light"] .hero-badge { background: rgba(9, 105, 218, 0.1); border-color: rgba(9, 105, 218, 0.25); }
+  [data-theme="light"] .card-tag.difficulty-easy { background: rgba(26, 127, 55, 0.12); }
+  [data-theme="light"] .card-tag.difficulty-medium { background: rgba(191, 135, 0, 0.12); }
+  [data-theme="light"] .card-tag.difficulty-hard { background: rgba(207, 34, 46, 0.12); }
+  [data-theme="light"] .ai-tab.active { background: rgba(130, 80, 223, 0.08); }
+  [data-theme="light"] .ai-suggestion-item:hover { background: rgba(130, 80, 223, 0.08); }
+  [data-theme="light"] .card-icon { background: var(--card-accent-bg-light, rgba(9, 105, 218, 0.1)); }
+  [data-theme="light"] .accent-blue .card-icon { background: rgba(9, 105, 218, 0.1); }
+  [data-theme="light"] .accent-purple .card-icon { background: rgba(130, 80, 223, 0.1); }
+  [data-theme="light"] .accent-green .card-icon { background: rgba(26, 127, 55, 0.1); }
+  [data-theme="light"] .accent-orange .card-icon { background: rgba(191, 86, 18, 0.1); }
+  [data-theme="light"] .accent-pink .card-icon { background: rgba(191, 60, 91, 0.1); }
+  [data-theme="light"] .accent-cyan .card-icon { background: rgba(26, 127, 55, 0.1); }
 </style>
 <link rel="stylesheet" href="/components/nav.css">
 </head>
@@ -333,7 +709,7 @@
       在线 Python 编程环境
     </div>
     <h1>Python 编程</h1>
-    <p>通过实战项目快速掌握 Python，从基础语法到高级应用，循序渐进，边学边练。</p>
+    <p>通过实战项目快速掌握 Python，从基础语法到高级应用，循序渐进，边学边练。点击卡片即可在线编写和运行代码。</p>
     <div class="hero-stats">
       <div class="hero-stat">
         <div class="hero-stat-value">8</div>
@@ -547,23 +923,619 @@
 
 </div>
 
+<!-- Code Editor Modal -->
+<div class="editor-modal" id="editorModal">
+  <div class="editor-container">
+    <div class="editor-header">
+      <div class="editor-title">
+        <span id="editorIcon">📘</span>
+        <span id="editorTitle">Python 编程</span>
+        <span style="color: var(--text-muted); font-weight: 400; font-size: 12px;" id="editorSubtitle"></span>
+      </div>
+      <div class="editor-actions">
+        <button class="editor-btn btn-reset" onclick="resetCode()">重置</button>
+        <button class="editor-btn btn-run" id="runBtn" onclick="runCode()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          运行
+        </button>
+        <button class="editor-btn ai-assistant-btn" onclick="toggleAIPanel()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          AI 编程
+        </button>
+        <button class="editor-btn btn-close-editor" onclick="closeEditor()">✕</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <div class="editor-code-area">
+        <textarea class="code-editor" id="codeEditor" spellcheck="false" placeholder="# 在这里编写你的 Python 代码..."></textarea>
+      </div>
+      <div class="editor-output-area">
+        <div class="output-label">
+          <span>📟 运行输出</span>
+          <span id="outputStatus" style="margin-left: auto; font-size: 11px;"></span>
+        </div>
+        <div class="output-content" id="outputContent" style="color: var(--text-muted);">点击"运行"按钮执行代码...</div>
+      </div>
+    </div>
+    <div class="editor-footer">
+      <span>💡 代码在云端沙箱中执行，支持 Python 3.10</span>
+      <span id="editorLang">python</span>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer"></div>
+
+<!-- AI Assistant Panel -->
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-panel-header">
+    <div class="ai-panel-title">
+      <div class="ai-panel-title-icon">🤖</div>
+      <span>AI 编程助手</span>
+    </div>
+    <button class="ai-panel-close" onclick="toggleAIPanel()">✕</button>
+  </div>
+  <div class="ai-panel-tabs">
+    <button class="ai-tab active" data-tab="generate" onclick="switchAITab('generate')">代码生成</button>
+    <button class="ai-tab" data-tab="explain" onclick="switchAITab('explain')">代码解释</button>
+    <button class="ai-tab" data-tab="optimize" onclick="switchAITab('optimize')">代码优化</button>
+  </div>
+  <div class="ai-panel-body">
+    <!-- Generate Tab -->
+    <div class="ai-tab-content active" id="ai-tab-generate">
+      <div class="ai-input-group">
+        <label class="ai-input-label">描述你想要实现的功能</label>
+        <textarea class="ai-textarea" id="generateInput" placeholder="例如：写一个计算斐波那契数列的函数"></textarea>
+        <button class="ai-submit-btn" onclick="generateCode()">
+          ✨ 生成代码
+        </button>
+      </div>
+      <div class="ai-quick-actions">
+        <button class="ai-quick-btn" onclick="setGeneratePrompt('写一个快速排序算法')">快速排序</button>
+        <button class="ai-quick-btn" onclick="setGeneratePrompt('写一个猜数字游戏')">猜数字游戏</button>
+        <button class="ai-quick-btn" onclick="setGeneratePrompt('写一个统计文本中单词频率的函数')">词频统计</button>
+        <button class="ai-quick-btn" onclick="setGeneratePrompt('写一个简单的计算器')">计算器</button>
+      </div>
+      <div id="generateResult"></div>
+    </div>
+
+    <!-- Explain Tab -->
+    <div class="ai-tab-content" id="ai-tab-explain">
+      <div class="ai-input-group">
+        <label class="ai-input-label">选择解释模式</label>
+        <button class="ai-suggestion-item" onclick="explainCurrentCode()">📖 解释当前编辑器中的代码</button>
+      </div>
+      <div class="ai-input-group">
+        <label class="ai-input-label">或者粘贴代码片段</label>
+        <textarea class="ai-textarea" id="explainInput" placeholder="粘贴你想要解释的 Python 代码..."></textarea>
+        <button class="ai-submit-btn" onclick="explainCode()">
+          💡 解释代码
+        </button>
+      </div>
+      <div id="explainResult"></div>
+    </div>
+
+    <!-- Optimize Tab -->
+    <div class="ai-tab-content" id="ai-tab-optimize">
+      <div class="ai-input-group">
+        <label class="ai-input-label">选择优化模式</label>
+        <button class="ai-suggestion-item" onclick="optimizeCurrentCode()">🚀 优化当前编辑器中的代码</button>
+      </div>
+      <div class="ai-input-group">
+        <label class="ai-input-label">或者粘贴代码进行优化</label>
+        <textarea class="ai-textarea" id="optimizeInput" placeholder="粘贴你想要优化的 Python 代码..."></textarea>
+        <button class="ai-submit-btn" onclick="optimizeCode()">
+          ⚡ 获取优化建议
+        </button>
+      </div>
+      <div id="optimizeResult"></div>
+    </div>
+  </div>
+</div>
+
 <script>
-  function startProject(id) {
-    var projects = {
-      'basic-syntax': { name: '基础语法练习', file: 'basic_syntax.py' },
-      'dsa': { name: '数据结构与算法', file: 'dsa.py' },
-      'web-dev': { name: 'Web 开发入门', file: 'app.py' },
-      'data-analysis': { name: '数据分析实战', file: 'analysis.py' },
-      'web-scraper': { name: '爬虫项目', file: 'scraper.py' },
-      'automation': { name: '自动化脚本', file: 'automation.py' },
-      'pygame': { name: 'Pygame 游戏开发', file: 'game.py' },
-      'ml-ai': { name: 'AI 与机器学习', file: 'ml.py' }
-    };
-    var p = projects[id];
-    if (p) {
-      window.location.href = '/?project=' + id;
+// ===== Project Templates =====
+var projectTemplates = {
+  'basic-syntax': {
+    name: '基础语法练习',
+    icon: '📘',
+    code: '# Python 基础语法练习\n# 学习变量、条件、循环、函数\n\n# 1. 变量与数据类型\nname = "Python"\nage = 3\nis_fun = True\nprint(f"{name} 已经 {age} 岁了，{'很有趣' if is_fun else '无聊'}！")\n\n# 2. 条件判断\nscore = 85\nif score >= 90:\n    grade = "A"\nelif score >= 80:\n    grade = "B"\nelif score >= 60:\n    grade = "C"\nelse:\n    grade = "D"\nprint(f"分数 {score} -> 等级 {grade}")\n\n# 3. 循环\nprint("\\n1-5 的平方:")\nfor i in range(1, 6):\n    print(f"  {i}² = {i**2}")\n\n# 4. 函数\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    a, b = 0, 1\n    for _ in range(2, n + 1):\n        a, b = b, a + b\n    return b\n\nprint(f"\\n斐波那契数列前 10 项:")\nfor i in range(10):\n    print(f"  F({i}) = {fibonacci(i)}")\n'
+  },
+  'dsa': {
+    name: '数据结构与算法',
+    icon: '🧩',
+    code: '# 数据结构与算法实战\n\n# 1. 排序算法\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-i-1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n    return arr\n\ndef quick_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quick_sort(left) + middle + quick_sort(right)\n\n# 2. 二分查找\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1\n\n# 测试\ndata = [3, 6, 1, 8, 2, 9, 4, 7, 5]\nprint(f"原始数组: {data}")\nprint(f"冒泡排序: {bubble_sort(data.copy())}")\nprint(f"快速排序: {quick_sort(data.copy())}")\nprint(f"查找元素 7 的位置: {binary_search(quick_sort(data.copy()), 7)}")\n\n# 3. 列表常用操作\nwords = ["Python", "is", "awesome", "and", "powerful"]\nprint(f"\\n单词列表: {words}")\nprint(f"最长单词: {max(words, key=len)}")\nprint(f"单词长度: {list(map(len, words))}")\n'
+  },
+  'web-dev': {
+    name: 'Web 开发入门',
+    icon: '🌐',
+    code: '# Web 开发入门 - Flask 应用示例\n# 注意：此代码仅演示逻辑，实际 Flask 运行需安装 flask\n\n# 1. URL 路由逻辑模拟\nclass SimpleApp:\n    def __init__(self):\n        self.routes = {}\n    \n    def route(self, path):\n        def decorator(func):\n            self.routes[path] = func\n            return func\n        return decorator\n    \n    def handle_request(self, path):\n        if path in self.routes:\n            return self.routes[path]()\n        return "404 Not Found"\n\napp = SimpleApp()\n\n@app.route(\'/\')\ndef home():\n    return "<h1>欢迎来到 Code Explorer!</h1>"\n\n@app.route(\'/about\')\ndef about():\n    return "<p>这是一个在线 Python 编程学习平台</p>"\n\n# 2. 模板渲染\ndef render_template(template, **kwargs):\n    result = template\n    for key, value in kwargs.items():\n        result = result.replace(\'{{ \' + key + \' }}\', str(value))\n    return result\n\n# 3. 数据处理\nusers = [\n    {\'name\': \'Alice\', \'age\': 25, \'role\': \'admin\'},\n    {\'name\': \'Bob\', \'age\': 30, \'role\': \'user\'},\n    {\'name\': \'Charlie\', \'age\': 28, \'role\': \'user\'},\n]\n\nadmin_users = [u for u in users if u[\'role\'] == \'admin\']\nprint(f"管理员用户: {[u['name'] for u in admin_users]}")\n\nuser_template = "<li>{{ name }} ({{ age }}岁) - {{ role }}</li>"\nfor user in users:\n    print(render_template(user_template, **user))\n\n# 4. API 响应格式化\ndef json_response(data):\n    import json\n    return json.dumps(data, ensure_ascii=False, indent=2)\n\napi_result = {\n    \'status\': \'success\',\n    \'data\': users,\n    \'total\': len(users)\n}\nprint(f"\\nAPI 响应:\\n{json_response(api_result)}")\n'
+  },
+  'data-analysis': {
+    name: '数据分析实战',
+    icon: '📊',
+    code: '# 数据分析实战 - 使用纯 Python 实现\n\nimport statistics\n\n# 1. 数据生成\nscores = [78, 85, 92, 67, 88, 95, 73, 81, 90, 64, 77, 83, 89, 71, 86]\nprint("学生成绩数据:", scores)\n\n# 2. 基础统计\nprint(f"\\n--- 基础统计 ---")\nprint(f"学生人数: {len(scores)}")\nprint(f"平均分: {statistics.mean(scores):.1f}")\nprint(f"中位数: {statistics.median(scores):.1f}")\nprint(f"最高分: {max(scores)}")\nprint(f"最低分: {min(scores)}")\nprint(f"标准差: {statistics.stdev(scores):.1f}")\n\n# 3. 数据分析\nranges = {\n    \'优秀 (90-100)\': 0,\n    \'良好 (80-89)\': 0,\n    \'中等 (70-79)\': 0,\n    \'及格 (60-69)\': 0,\n    \'不及格 (<60)\': 0\n}\n\nfor s in scores:\n    if s >= 90:\n        ranges[\'优秀 (90-100)\'] += 1\n    elif s >= 80:\n        ranges[\'良好 (80-89)\'] += 1\n    elif s >= 70:\n        ranges[\'中等 (70-79)\'] += 1\n    elif s >= 60:\n        ranges[\'及格 (60-69)\'] += 1\n    else:\n        ranges[\'不及格 (<60)\'] += 1\n\nprint(f"\\n--- 成绩分布 ---")\nfor grade, count in ranges.items():\n    bar = \'█\' * count\n    pct = count / len(scores) * 100\n    print(f"{grade}: {bar} ({count}人, {pct:.0f}%)")\n\n# 4. 数据清洗\nraw_data = [\n    {\"name\": \"产品A\", \"sales\": 150, \"price\": 29.9},\n    {\"name\": \"产品B\", \"sales\": None, \"price\": 49.9},\n    {\"name\": \"产品C\", \"sales\": 80, \"price\": 19.9},\n    {\"name\": \"产品D\", \"sales\": 200, \"price\": 99.9},\n    {\"name\": \"产品E\", \"sales\": None, \"price\": 14.9},\n]\n\ncleaned = [r for r in raw_data if r[\"sales\"] is not None]\nprint(f\"\\n--- 数据清洗 ---\")\nprint(f\"原始数据: {len(raw_data)} 条\")\nprint(f\"清洗后: {len(cleaned)} 条\")\n\nfor item in cleaned:\n    revenue = item[\"sales\"] * item[\"price\"]\n    print(f\"  {item['name']}: 销量 {item['sales']}, 单价 {item['price']}, 收入 {revenue:.1f}\")\n'
+  },
+  'web-scraper': {
+    name: '爬虫项目',
+    icon: '🕷️',
+    code: '# 爬虫项目 - 数据抓取与解析\n# 注意：此代码演示逻辑，实际网络请求需安装 requests\n\n# 1. HTML 解析模拟\nclass HTMLParser:\n    def __init__(self):\n        self.tags = []\n        self.texts = []\n    \n    def parse(self, html):\n        import re\n        # 提取标签内容\n        titles = re.findall(r'<title>(.*?)</title>', html, re.IGNORECASE)\n        links = re.findall(r'<a[^>]*href=[\\'\"]([^\'\\"]*)[\\'\"][^>]*>(.*?)</a>', html, re.IGNORECASE)\n        paragraphs = re.findall(r'<p[^>]*>(.*?)</p>', html, re.IGNORECASE | re.DOTALL)\n        return {\n            'titles': titles,\n            'links': [(url, text.strip()) for url, text in links],\n            'paragraphs': [p.strip() for p in paragraphs if p.strip()]\n        }\n\n# 2. 模拟网页内容\nfake_html = \"\"\"\n<html>\n<head><title>Code Explorer - Python 学习</title></head>\n<body>\n    <h1>欢迎来到 Code Explorer</h1>\n    <p>这是一个在线 Python 编程学习平台，提供丰富的实战项目。</p>\n    <a href=\"/tutorials/python\">Python 教程</a>\n    <a href=\"/projects/data-analysis\">数据分析项目</a>\n    <a href=\"/projects/web-dev\">Web 开发项目</a>\n    <p>通过实战项目快速掌握 Python 编程技能。</p>\n</body>\n</html>\n\"\"\"\n\nparser = HTMLParser()\nresult = parser.parse(fake_html)\n\nprint(\"=== 网页解析结果 ===\")\nprint(f\"\\n页面标题: {result['titles'][0] if result['titles'] else '无'}\")\n\nprint(f\"\\n找到 {len(result['links'])} 个链接:\")\nfor url, text in result['links']:\n    print(f\"  [{text}] -> {url}\")\n\nprint(f\"\\n找到 {len(result['paragraphs'])} 个段落:\")\nfor i, p in enumerate(result['paragraphs'], 1):\n    print(f\"  {i}. {p[:50]}...\")\n\n# 3. 数据提取与格式化\nprint(f\"\\n=== 数据汇总 ===\")\nprint(f\"共提取: {len(result['titles'])} 个标题, {len(result['links'])} 个链接, {len(result['paragraphs'])} 个段落\")\n'
+  },
+  'automation': {
+    name: '自动化脚本',
+    icon: '⚙️',
+    code: '# 自动化脚本 - 日常任务处理\n\nimport os\nimport datetime\n\n# 1. 批量文件处理\ndef batch_rename(directory, prefix):\n    \"\"\"批量重命名文件\"\"\"\n    result = []\n    for i, filename in enumerate(sorted(os.listdir(directory)), 1):\n        if filename.startswith('.'):\n            continue\n        ext = os.path.splitext(filename)[1]\n        new_name = f\"{prefix}_{i:03d}{ext}\"\n        result.append((filename, new_name))\n    return result\n\n# 2. 文本文件处理\ndef process_text(content):\n    \"\"\"处理文本内容\"\"\"\n    lines = content.strip().split('\\n')\n    stats = {\n        'total_lines': len(lines),\n        'non_empty': len([l for l in lines if l.strip()]),\n        'char_count': len(content),\n        'word_count': len(content.split()),\n    }\n    return stats\n\n# 3. Excel 数据处理（模拟）\ndef process_weekly_report(data):\n    \"\"\"处理周报数据\"\"\"\n    today = datetime.date.today()\n    week_start = today - datetime.timedelta(days=today.weekday())\n    week_end = week_start + datetime.timedelta(days=6)\n    \n    report = {\n        'period': f\"{week_start} ~ {week_end}\",\n        'generated': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),\n        'summary': {},\n    }\n    \n    # 按类别汇总\n    categories = {}\n    for item in data:\n        cat = item.get('category', '其他')\n        if cat not in categories:\n            categories[cat] = {'count': 0, 'total': 0}\n        categories[cat]['count'] += 1\n        categories[cat]['total'] += item.get('value', 0)\n    \n    report['summary'] = categories\n    return report\n\n# 演示\nprint(\"=== 自动化脚本演示 ===\\n\")\n\n# 文本处理\nsample_text = \"\"\"第一行内容\n第二行内容\n\n第四行有内容\n第五行继续\n   \n第七行数据\"\"\"\nstats = process_text(sample_text)\nprint(\"📝 文本统计:\")\nfor key, value in stats.items():\n    print(f\"  {key}: {value}\")\n\n# 周报生成\nsample_data = [\n    {'task': '代码审查', 'category': '开发', 'value': 8},\n    {'task': 'Bug 修复', 'category': '开发', 'value': 12},\n    {'task': '文档编写', 'category': '文档', 'value': 5},\n    {'task': '团队会议', 'category': '会议', 'value': 3},\n    {'task': '代码审查', 'category': '开发', 'value': 6},\n    {'task': '部署测试', 'category': '运维', 'value': 4},\n]\nreport = process_weekly_report(sample_data)\nprint(f\"\\n📊 周报 ({report['period']}):\")\nfor cat, data in report['summary'].items():\n    print(f\"  {cat}: {data['count']} 项任务, 总计 {data['total']} 小时\")\nprint(f\"\\n⏰ 生成时间: {report['generated']}\")\n'
+  },
+  'pygame': {
+    name: 'Pygame 游戏开发',
+    icon: '🎮',
+    code: '# Pygame 游戏开发 - 核心概念演示\n# 注意：此代码演示游戏逻辑，需安装 pygame 才能运行图形\n\nimport math\nimport random\n\n# 1. 游戏实体类\nclass GameObject:\n    def __init__(self, x, y, width, height):\n        self.x = x\n        self.y = y\n        self.width = width\n        self.height = height\n        self.speed_x = 0\n        self.speed_y = 0\n    \n    def move(self, screen_width, screen_height):\n        self.x += self.speed_x\n        self.y += self.speed_y\n        # 边界检测\n        if self.x <= 0 or self.x + self.width >= screen_width:\n            self.speed_x = -self.speed_x\n        if self.y <= 0 or self.y + self.height >= screen_height:\n            self.speed_y = -self.speed_y\n    \n    def collides(self, other):\n        return (self.x < other.x + other.width and\n                self.x + self.width > other.x and\n                self.y < other.y + other.height and\n                self.y + self.height > other.y)\n\n# 2. 游戏循环逻辑\nclass Game:\n    def __init__(self):\n        self.entities = []\n        self.score = 0\n        self.running = True\n        self.game_over = False\n    \n    def spawn_enemy(self, screen_width, screen_height):\n        enemy = GameObject(\n            random.randint(0, screen_width - 30),\n            random.randint(0, screen_height - 30),\n            30, 30\n        )\n        enemy.speed_x = random.uniform(-2, 2)\n        enemy.speed_y = random.uniform(-2, 2)\n        self.entities.append(enemy)\n    \n    def update(self, screen_width, screen_height):\n        for entity in self.entities:\n            entity.move(screen_width, screen_height)\n    \n    def check_collisions(self, player):\n        for entity in self.entities[:]:\n            if player.collides(entity):\n                self.entities.remove(entity)\n                self.score += 10\n\n# 3. 游戏演示\nprint(\"🎮 Pygame 游戏开发 - 核心概念演示\\n\")\n\n# 初始化游戏\ngame = Game()\nplayer = GameObject(400, 300, 40, 40)\nplayer.speed_x = 3\nplayer.speed_y = 2\n\n# 生成敌人\nfor _ in range(5):\n    game.spawn_enemy(800, 600)\n\nprint(f\"游戏初始化: 玩家位置 ({player.x}, {player.y})\")\nprint(f\"生成敌人: {len(game.entities)} 个\\n\")\n\n# 模拟游戏循环\nfor frame in range(100):\n    player.move(800, 600)\n    game.update(800, 600)\n    game.check_collisions(player)\n    \n    if frame % 20 == 0:\n        print(f\"帧 {frame}: 玩家=({player.x},{player.y}), 敌人数={len(game.entities)}, 分数={game.score}\")\n\nprint(f\"\\n游戏结束! 最终得分: {game.score}\")\n\n# 4. 碰撞检测演示\nprint(\"\\n📐 碰撞检测演示:\")\nobj1 = GameObject(100, 100, 50, 50)\nobj2 = GameObject(120, 120, 50, 50)\nobj3 = GameObject(300, 300, 50, 50)\nprint(f\"obj1 vs obj2 (重叠): {obj1.collides(obj2)}\")\nprint(f\"obj1 vs obj3 (分离): {obj1.collides(obj3)}\")\n'
+  },
+  'ml-ai': {
+    name: 'AI 与机器学习',
+    icon: '🤖',
+    code: '# AI 与机器学习 - 基础算法实现\n\nimport math\nimport random\n\n# 1. 线性回归（梯度下降）\nclass LinearRegression:\n    def __init__(self, learning_rate=0.01, epochs=1000):\n        self.learning_rate = learning_rate\n        self.epochs = epochs\n        self.weights = None\n        self.bias = 0\n    \n    def fit(self, X, y):\n        n_features = len(X[0])\n        self.weights = [0.0] * n_features\n        \n        for epoch in range(self.epochs):\n            for i, x in enumerate(X):\n                prediction = self._predict_single(x)\n                error = prediction - y[i]\n                \n                # 更新权重\n                for j in range(n_features):\n                    self.weights[j] -= self.learning_rate * error * x[j]\n                self.bias -= self.learning_rate * error\n    \n    def _predict_single(self, x):\n        return sum(w * xi for w, xi in zip(self.weights, x)) + self.bias\n    \n    def predict(self, X):\n        return [self._predict_single(x) for x in X]\n\n# 2. KNN 分类器\nclass KNNClassifier:\n    def __init__(self, k=3):\n        self.k = k\n        self.X_train = []\n        self.y_train = []\n    \n    def fit(self, X, y):\n        self.X_train = X\n        self.y_train = y\n    \n    def predict(self, X):\n        predictions = []\n        for x in X:\n            distances = []\n            for i, x_train in enumerate(self.X_train):\n                dist = math.sqrt(sum((a - b)**2 for a, b in zip(x, x_train)))\n                distances.append((dist, self.y_train[i]))\n            distances.sort(key=lambda d: d[0])\n            neighbors = [d[1] for d in distances[:self.k]]\n            # 多数投票\n            from collections import Counter\n            predictions.append(Counter(neighbors).most_common(1)[0][0])\n        return predictions\n\n# 3. 模型评估\ndef accuracy_score(y_true, y_pred):\n    correct = sum(1 for a, b in zip(y_true, y_pred) if a == b)\n    return correct / len(y_true) * 100\n\n# 演示\nprint(\"🤖 AI 与机器学习 - 基础算法演示\\n\")\n\n# 线性回归演示\nprint(\"=== 线性回归 ===\")\nX_train = [[1], [2], [3], [4], [5]]\ny_train = [2.1, 3.9, 6.1, 8.0, 9.9]\n\nmodel = LinearRegression(learning_rate=0.01, epochs=500)\nmodel.fit(X_train, y_train)\n\nX_test = [[6], [7], [8]]\npredictions = model.predict(X_test)\nprint(f\"训练数据: {[x[0] for x in X_train]} -> {y_train}\")\nprint(f\"学习到的权重: {model.weights[0]:.2f}, 偏置: {model.bias:.2f}\")\nprint(f\"预测结果: {[round(p, 1) for p in predictions]}\")\nprint(f\"实际值应为: 12.0, 14.0, 16.0\")\n\n# KNN 分类演示\nprint(f\"\\n=== KNN 分类 ===\")\nX_knn = [[1, 2], [2, 3], [3, 1], [5, 4], [6, 5], [7, 6]]\ny_knn = [0, 0, 0, 1, 1, 1]\n\nknn = KNNClassifier(k=3)\nknn.fit(X_knn, y_knn)\n\nX_test_knn = [[2, 2], [6, 4]]\ny_pred = knn.predict(X_test_knn)\nprint(f\"训练数据: {X_knn}\")\nprint(f\"标签: {y_knn}\")\nprint(f\"测试点 {X_test_knn} 预测类别: {y_pred}\")\n'
+  }
+};
+
+var currentProject = null;
+var originalCode = '';
+
+function startProject(id) {
+  var project = projectTemplates[id];
+  if (!project) return;
+  currentProject = id;
+  originalCode = project.code;
+  
+  document.getElementById('editorTitle').textContent = project.name;
+  document.getElementById('editorIcon').textContent = project.icon;
+  document.getElementById('editorSubtitle').textContent = 'Python 3.10';
+  document.getElementById('codeEditor').value = project.code;
+  document.getElementById('outputContent').textContent = '点击"运行"按钮执行代码...';
+  document.getElementById('outputStatus').textContent = '';
+  
+  document.getElementById('editorModal').classList.add('show');
+  setTimeout(function() {
+    document.getElementById('codeEditor').focus();
+  }, 100);
+}
+
+function closeEditor() {
+  document.getElementById('editorModal').classList.remove('show');
+  currentProject = null;
+}
+
+function resetCode() {
+  if (currentProject && projectTemplates[currentProject]) {
+    document.getElementById('codeEditor').value = projectTemplates[currentProject].code;
+    document.getElementById('outputContent').textContent = '代码已重置，点击"运行"重新执行';
+    document.getElementById('outputStatus').textContent = '';
+  }
+}
+
+async function runCode() {
+  var code = document.getElementById('codeEditor').value;
+  var outputEl = document.getElementById('outputContent');
+  var statusEl = document.getElementById('outputStatus');
+  var runBtn = document.getElementById('runBtn');
+  
+  if (!code.trim()) {
+    outputEl.textContent = '⚠ 请输入代码后再运行';
+    outputEl.style.color = 'var(--term-error)';
+    return;
+  }
+  
+  runBtn.disabled = true;
+  runBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-dasharray="30 60"/></svg> 运行中...';
+  statusEl.textContent = '⏳ 执行中...';
+  statusEl.style.color = 'var(--term-info)';
+  outputEl.textContent = '';
+  outputEl.style.color = 'var(--term-stdout)';
+  outputEl.className = 'output-content';
+  
+  try {
+    var response = await fetch('https://piston-meta.mrsasoc.com/api/v2/execute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        language: 'python',
+        version: '3.10.0',
+        files: [{ content: code }],
+        stdin: '',
+        args: [],
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('HTTP ' + response.status);
+    }
+    
+    var result = await response.json();
+    var runResult = result.run || {};
+    
+    var output = runResult.stdout || '';
+    var stderr = runResult.stderr || '';
+    var statusCode = runResult.code;
+    
+    if (output) {
+      outputEl.innerHTML = '<span class="out">' + escapeHtml(output) + '</span>';
+    }
+    if (stderr) {
+      outputEl.innerHTML += '<span class="err">' + escapeHtml(stderr) + '</span>';
+    }
+    if (!output && !stderr) {
+      outputEl.innerHTML = '<span class="sys">(无输出)</span>';
+    }
+    
+    if (statusCode === 0) {
+      statusEl.textContent = '✓ 执行成功';
+      statusEl.style.color = 'var(--term-success)';
+    } else {
+      statusEl.textContent = '✗ 退出码: ' + statusCode;
+      statusEl.style.color = 'var(--term-error)';
+    }
+    
+  } catch (err) {
+    outputEl.innerHTML = '<span class="err">❌ 执行失败: ' + escapeHtml(err.message) + '</span>';
+    statusEl.textContent = '✗ 执行失败';
+    statusEl.style.color = 'var(--term-error)';
+  } finally {
+    runBtn.disabled = false;
+    runBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg> 运行';
+  }
+}
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeEditor();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && document.getElementById('editorModal').classList.contains('show')) {
+    runCode();
+  }
+});
+
+// Toast
+function toast(msg, type) {
+  type = type || 'info';
+  var el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(function() { el.remove(); }, 3000);
+}
+
+// ===== AI Assistant Functions =====
+var AI_API_URL = '/api/ai/chat';
+var aiLoading = false;
+
+function toggleAIPanel() {
+  var panel = document.getElementById('aiPanel');
+  panel.classList.toggle('show');
+}
+
+function switchAITab(tabName) {
+  var tabs = document.querySelectorAll('.ai-tab');
+  var contents = document.querySelectorAll('.ai-tab-content');
+  tabs.forEach(function(t) {
+    t.classList.toggle('active', t.getAttribute('data-tab') === tabName);
+  });
+  contents.forEach(function(c) {
+    c.classList.toggle('active', c.id === 'ai-tab-' + tabName);
+  });
+}
+
+function setGeneratePrompt(text) {
+  document.getElementById('generateInput').value = text;
+}
+
+async function callAIAPI(endpoint, data) {
+  var response = await fetch(AI_API_URL + endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) {
+    throw new Error('API 请求失败: ' + response.status);
+  }
+  return response.json();
+}
+
+function showAIResult(containerId, content, isError, reasoning) {
+  var container = document.getElementById(containerId);
+  var html = '';
+  if (reasoning) {
+    html += '<details style="margin-bottom: 12px; background: var(--bg-tertiary); border-radius: var(--radius-sm); padding: 8px 12px;">';
+    html += '<summary style="cursor: pointer; color: var(--text-muted); font-size: 12px; font-weight: 500;">🤔 思考过程</summary>';
+    html += '<div style="margin-top: 8px; font-size: 12px; color: var(--text-tertiary); white-space: pre-wrap; line-height: 1.5;">' + escapeHtml(reasoning) + '</div>';
+    html += '</details>';
+  }
+  if (isError) {
+    html += '<div class="ai-response error">❌ ' + escapeHtml(content) + '</div>';
+  } else {
+    html += '<div class="ai-response">' + renderCodeBlocks(content) + '</div>';
+  }
+  container.innerHTML = html;
+}
+
+function renderCodeBlocks(text) {
+  if (!text) return '';
+  var html = escapeHtml(text);
+  // Convert ```python blocks to styled code
+  html = html.replace(/```python\s*\n([\s\S]*?)\n```/g, function(match, code) {
+    return '<pre style="background: var(--term-bg); color: var(--term-text); padding: 12px; border-radius: var(--radius-sm); overflow-x: auto; font-size: 12px; margin: 8px 0; border: 1px solid var(--border-color);"><code>' + code + '</code></pre>';
+  });
+  // Convert ``` blocks to styled code
+  html = html.replace(/```\s*\n([\s\S]*?)\n```/g, function(match, code) {
+    return '<pre style="background: var(--term-bg); color: var(--term-text); padding: 12px; border-radius: var(--radius-sm); overflow-x: auto; font-size: 12px; margin: 8px 0; border: 1px solid var(--border-color);"><code>' + code + '</code></pre>';
+  });
+  // Convert **bold** to <strong>
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Convert numbered lists
+  html = html.replace(/(\d+)[.、)）]\s+(.+)/g, '<div style="margin: 4px 0;">$1. $2</div>');
+  return html;
+}
+
+function showAILoading(containerId, message) {
+  var container = document.getElementById(containerId);
+  container.innerHTML = '<div class="ai-loading"><span>' + escapeHtml(message || 'AI 正在思考') + '</span><span class="ai-loading-dots"><span>.</span><span>.</span><span>.</span></span></div>';
+}
+
+async function generateCode() {
+  if (aiLoading) return;
+  var prompt = document.getElementById('generateInput').value.trim();
+  if (!prompt) {
+    toast('请输入功能描述', 'error');
+    return;
+  }
+  
+  aiLoading = true;
+  var btn = event.target.closest('.ai-submit-btn');
+  btn.disabled = true;
+  
+  showAILoading('generateResult', 'AI 正在生成代码');
+  
+  try {
+    var result = await callAIAPI('/generate', {
+      prompt: prompt,
+      language: 'python'
+    });
+    
+    if (result.success && result.code) {
+      showAIResult('generateResult', result.code, false, result.reasoning);
+      if (confirm('代码生成成功！是否要复制到编辑器？')) {
+        document.getElementById('codeEditor').value = result.code;
+        toast('代码已复制到编辑器', 'success');
+      }
+    } else {
+      showAIResult('generateResult', result.error || '生成失败，请重试', true);
+    }
+  } catch (err) {
+    var fallbackCode = generateCodeFallback(prompt);
+    if (fallbackCode) {
+      showAIResult('generateResult', fallbackCode + '\n\n# 注意：这是本地模板生成的示例代码', false);
+      if (confirm('代码生成成功！是否要复制到编辑器？')) {
+        document.getElementById('codeEditor').value = fallbackCode;
+        toast('代码已复制到编辑器', 'success');
+      }
+    } else {
+      showAIResult('generateResult', 'AI 服务暂不可用，请稍后重试或使用预设项目模板', true);
+    }
+  } finally {
+    aiLoading = false;
+    btn.disabled = false;
+  }
+}
+
+function generateCodeFallback(prompt) {
+  var templates = {
+    '排序': '# 排序算法实现\n\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(0, n-i-1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n    return arr\n\ndef quick_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quick_sort(left) + middle + quick_sort(right)\n\n# 测试\ndata = [64, 34, 25, 12, 22, 11, 90]\nprint("原始数组:", data)\nprint("冒泡排序:", bubble_sort(data.copy()))\nprint("快速排序:", quick_sort(data.copy()))\n',
+    '游戏': '# 猜数字游戏\n\nimport random\n\ndef guess_number():\n    target = random.randint(1, 100)\n    attempts = 0\n    max_attempts = 7\n    \n    print("🎮 猜数字游戏！")\n    print(f"我已经想好了一个 1-100 的数字，你有 {max_attempts} 次机会猜！")\n    \n    while attempts < max_attempts:\n        try:\n            guess = int(input(f"\\n第 {attempts+1} 次猜测: "))\n            attempts += 1\n            \n            if guess == target:\n                print(f"\\n🎉 恭喜！你猜对了！答案就是 {target}")\n                print(f"你总共用了 {attempts} 次！")\n                return\n            elif guess < target:\n                print("太小了！再大一点 ⬆️")\n            else:\n                print("太大了！再小一点 ⬇️")\n        except ValueError:\n            print("请输入一个有效的数字！")\n    \n    print(f"\\n😢 游戏结束！正确答案是 {target}")\n\nguess_number()\n',
+    '计算': '# 简单计算器\n\ndef add(a, b):\n    return a + b\n\ndef subtract(a, b):\n    return a - b\n\ndef multiply(a, b):\n    return a * b\n\ndef divide(a, b):\n    if b == 0:\n        raise ValueError("除数不能为零！")\n    return a / b\n\ndef calculator():\n    print("=" * 30)\n    print("   🧮 简单计算器")\n    print("=" * 30)\n    print("\\n可用操作:")\n    print("  +  加法")\n    print("  -  减法")\n    print("  *  乘法")\n    print("  /  除法")\n    print("  q  退出")\n    \n    while True:\n        op = input("\\n请输入运算符 (+, -, *, /, q): ").strip()\n        if op == 'q':\n            print("\\n👋 再见！")\n            break\n        \n        if op not in ('+', '-', '*', '/'):\n            print("❌ 无效的运算符！请重试。")\n            continue\n        \n        try:\n            a = float(input("输入第一个数: "))\n            b = float(input("输入第二个数: "))\n            \n            if op == '+':\n                result = add(a, b)\n            elif op == '-':\n                result = subtract(a, b)\n            elif op == '*':\n                result = multiply(a, b)\n            elif op == '/':\n                result = divide(a, b)\n            \n            print(f"\\n✅ 结果: {a} {op} {b} = {result}")\n        except ValueError as e:\n            print(f"❌ 错误: {e}")\n        except Exception as e:\n            print(f"❌ 发生错误: {e}")\n\ncalculator()\n'
+  };
+  
+  for (var key in templates) {
+    if (prompt.indexOf(key) >= 0) {
+      return templates[key];
     }
   }
+  return null;
+}
+
+async function explainCurrentCode() {
+  var code = document.getElementById('codeEditor').value;
+  if (!code.trim()) {
+    toast('编辑器中没有代码可解释', 'error');
+    return;
+  }
+  document.getElementById('explainInput').value = code;
+  await explainCode();
+}
+
+async function explainCode() {
+  if (aiLoading) return;
+  var code = document.getElementById('explainInput').value.trim();
+  if (!code) {
+    toast('请输入要解释的代码', 'error');
+    return;
+  }
+  
+  aiLoading = true;
+  showAILoading('explainResult', 'AI 正在分析代码');
+  
+  try {
+    var result = await callAIAPI('/explain', {
+      code: code,
+      language: 'python'
+    });
+    
+    if (result.success && result.explanation) {
+      showAIResult('explainResult', result.explanation, false, result.reasoning);
+    } else {
+      var fallbackExplain = explainCodeFallback(code);
+      showAIResult('explainResult', fallbackExplain, false);
+    }
+  } catch (err) {
+    var fallbackExplain = explainCodeFallback(code);
+    showAIResult('explainResult', fallbackExplain);
+  } finally {
+    aiLoading = false;
+  }
+}
+
+function explainCodeFallback(code) {
+  var lines = code.split('\\n');
+  var analysis = [];
+  
+  analysis.push('📝 代码分析结果：\\n');
+  analysis.push('1. **代码行数**: ' + lines.length + ' 行');
+  
+  var functions = [];
+  var variables = [];
+  var imports = [];
+  
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (line.startsWith('def ')) {
+      var funcName = line.substring(4).split('(')[0].trim();
+      functions.push(funcName);
+    } else if (line.startsWith('import ') || line.startsWith('from ')) {
+      imports.push(line);
+    }
+  }
+  
+  if (functions.length > 0) {
+    analysis.push('2. **定义的函数**: ' + functions.join(', '));
+  }
+  
+  if (imports.length > 0) {
+    analysis.push('3. **导入的模块**:');
+    imports.forEach(function(imp) {
+      analysis.push('   - ' + imp);
+    });
+  }
+  
+  analysis.push('\\n💡 **代码功能概述**:');
+  if (code.indexOf('for ') >= 0 || code.indexOf('while ') >= 0) {
+    analysis.push('- 包含循环结构');
+  }
+  if (code.indexOf('if ') >= 0 || code.indexOf('elif ') >= 0) {
+    analysis.push('- 包含条件判断');
+  }
+  if (code.indexOf('class ') >= 0) {
+    analysis.push('- 包含类定义（面向对象编程）');
+  }
+  
+  analysis.push('\\n📖 **如何使用**: 将代码复制到编辑器中，点击"运行"按钮执行。');
+  
+  return analysis.join('\\n');
+}
+
+async function optimizeCurrentCode() {
+  var code = document.getElementById('codeEditor').value;
+  if (!code.trim()) {
+    toast('编辑器中没有代码可优化', 'error');
+    return;
+  }
+  document.getElementById('optimizeInput').value = code;
+  await optimizeCode();
+}
+
+async function optimizeCode() {
+  if (aiLoading) return;
+  var code = document.getElementById('optimizeInput').value.trim();
+  if (!code) {
+    toast('请输入要优化的代码', 'error');
+    return;
+  }
+  
+  aiLoading = true;
+  showAILoading('optimizeResult', 'AI 正在分析优化方案');
+  
+  try {
+    var result = await callAIAPI('/optimize', {
+      code: code,
+      language: 'python'
+    });
+    
+    if (result.success && result.suggestions) {
+      var output = '';
+      if (result.suggestions.length > 0) {
+        output += '💡 **优化建议**：\n\n';
+        output += result.suggestions.map(function(s, i) {
+          return (i + 1) + '. ' + s;
+        }).join('\n');
+        output += '\n';
+      }
+      if (result.optimizedCode) {
+        output += '\n✨ **优化后的代码**：\n```python\n' + result.optimizedCode + '\n```';
+        if (confirm('AI 生成了优化代码，是否要复制到编辑器？')) {
+          document.getElementById('codeEditor').value = result.optimizedCode;
+          toast('优化代码已复制到编辑器', 'success');
+        }
+      } else if (result.analysis) {
+        output += '\n📋 **分析结果**：\n' + result.analysis;
+      }
+      showAIResult('optimizeResult', output, false, result.reasoning);
+    } else {
+      var fallbackResult = optimizeCodeFallback(code);
+      showAIResult('optimizeResult', fallbackResult, false);
+    }
+  } catch (err) {
+    var fallbackResult = optimizeCodeFallback(code);
+    showAIResult('optimizeResult', fallbackResult, false);
+  } finally {
+    aiLoading = false;
+  }
+}
+
+function optimizeCodeFallback(code) {
+  var suggestions = [];
+  var lines = code.split('\\n');
+  
+  // 检查常见问题
+  if (code.length > 500) {
+    suggestions.push('📏 代码较长（' + code.length + '字符），考虑拆分为多个函数');
+  }
+  
+  var longLines = lines.filter(function(l) { return l.length > 100; });
+  if (longLines.length > 0) {
+    suggestions.push('📏 发现 ' + longLines.length + ' 行超过100字符，建议缩短');
+  }
+  
+  if (code.indexOf('print(') >= 0 && code.indexOf('import ') < 0) {
+    suggestions.push('💡 建议添加必要的 import 语句');
+  }
+  
+  var hasComments = code.indexOf('#') >= 0;
+  if (!hasComments && code.length > 100) {
+    suggestions.push('📝 代码较长但缺少注释，建议添加文档字符串和注释');
+  }
+  
+  var output = '💡 **静态分析优化建议**:\\n\\n';
+  if (suggestions.length > 0) {
+    output += suggestions.join('\\n');
+  } else {
+    output += '✅ 代码结构良好，未发现明显问题。';
+    output += '\\n\\n📊 **代码统计**:';
+    output += '\\n- 总行数: ' + lines.length;
+    output += '\\n- 代码字符数: ' + code.length;
+  }
+  
+  output += '\\n\\n🚀 **通用建议**:';
+  output += '\\n- 使用有意义的变量名';
+  output += '\\n- 为函数添加 docstring 文档';
+  output += '\\n- 遵循 PEP 8 编码规范';
+  
+  return output;
+}
 </script>
 <script src="/components/nav.js"></script>
 </body>

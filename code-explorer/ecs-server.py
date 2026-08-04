@@ -1917,6 +1917,22 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             return
 
+        # 下载 local_agent.py 伴生程序
+        if path == '/download/local-agent':
+            agent_file = BASE_DIR / 'local_agent.py'
+            if agent_file.exists():
+                content = agent_file.read_bytes()
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/x-python; charset=utf-8')
+                self.send_header('Content-Disposition', 'attachment; filename="local_agent.py"')
+                self.send_header('Content-Length', str(len(content)))
+                self.send_header('Cache-Control', 'no-store')
+                self.end_headers()
+                self.wfile.write(content)
+                return
+            else:
+                return self.send_error_json('伴生程序文件不存在', 404)
+
         # 尝试匹配静态文件
         if path and not path.startswith('/api/'):
             clean_path = path.lstrip('/')
@@ -2530,6 +2546,179 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 import traceback
                 print(f'AI Error: {traceback.format_exc()}', file=sys.stderr)
                 return self.send_error_json(f'AI 请求失败: {e}', 500)
+
+        # ===== AI 编程助手接口 =====
+        if path == '/api/ai/chat/generate':
+            cu = get_current_user(self)
+            if not cu:
+                return self.send_error_json('请先登录', 401)
+            prompt = body.get('prompt', '').strip()
+            language = body.get('language', 'python')
+            if not prompt:
+                return self.send_error_json('请输入功能描述', 400)
+            try:
+                if not OPENROUTER_API_KEY:
+                    return self.send_error_json('AI 功能未配置', 503)
+                system_prompt = f'''你是一个专业的 Python 代码生成助手。根据用户的描述生成可运行的 Python 代码。
+要求：
+- 代码必须完整可运行，包含必要的 import 语句
+- 添加简洁的中文注释说明关键逻辑
+- 优先使用 Python 标准库，如需第三方库请在代码中注释说明
+- 只返回纯代码，不要解释'''
+                payload = {
+                    'model': 'openrouter/free',
+                    'messages': [
+                        {'role': 'system', 'content': system_prompt},
+                        {'role': 'user', 'content': f'请实现以下功能：\n{prompt}'}
+                    ],
+                    'temperature': 0.3,
+                    'max_tokens': 1500,
+                }
+                headers = {
+                    'Authorization': f'Bearer {OPENROUTER_API_KEY}',
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://codingzhou.dpdns.org',
+                    'X-Title': 'Code Explorer',
+                }
+                req = urllib.request.Request(OPENROUTER_API_URL, data=json.dumps(payload).encode(), headers=headers)
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    result = json.loads(resp.read())
+                    choice = result.get('choices', [{}])[0]
+                    msg = choice.get('message', {})
+                    text = msg.get('content', '') or ''
+                    reasoning = msg.get('reasoning_content', '') or ''
+                    # Extract code from markdown if present
+                    if '```python' in text:
+                        import re as _re
+                        m = _re.search(r'```python\s*\n([\s\S]*?)\n```', text)
+                        if m:
+                            text = m.group(1)
+                    elif '```' in text:
+                        import re as _re
+                        m = _re.search(r'```\s*\n([\s\S]*?)\n```', text)
+                        if m:
+                            text = m.group(1)
+                    record_ai_usage(cu['id'], cu['username'])
+                    return self.send_json({'success': True, 'code': text, 'reasoning': reasoning})
+            except Exception as e:
+                import traceback
+                print(f'AI Generate Error: {traceback.format_exc()}', file=sys.stderr)
+                return self.send_error_json(f'代码生成失败: {e}', 500)
+
+        if path == '/api/ai/chat/explain':
+            cu = get_current_user(self)
+            if not cu:
+                return self.send_error_json('请先登录', 401)
+            code = body.get('code', '').strip()
+            language = body.get('language', 'python')
+            if not code:
+                return self.send_error_json('请输入要解释的代码', 400)
+            try:
+                if not OPENROUTER_API_KEY:
+                    return self.send_error_json('AI 功能未配置', 503)
+                system_prompt = '''你是一个耐心的 Python 代码解释助手。用通俗易懂的中文解释代码的功能和逻辑。
+要求：
+- 分步骤解释代码的执行流程
+- 指出关键的语法和概念
+- 如果代码有问题或可以改进，一并指出
+- 适合初学者理解'''
+                payload = {
+                    'model': 'openrouter/free',
+                    'messages': [
+                        {'role': 'system', 'content': system_prompt},
+                        {'role': 'user', 'content': f'请解释以下 Python 代码：\n\n```python\n{code}\n```'}
+                    ],
+                    'temperature': 0.5,
+                    'max_tokens': 1500,
+                }
+                headers = {
+                    'Authorization': f'Bearer {OPENROUTER_API_KEY}',
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://codingzhou.dpdns.org',
+                    'X-Title': 'Code Explorer',
+                }
+                req = urllib.request.Request(OPENROUTER_API_URL, data=json.dumps(payload).encode(), headers=headers)
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    result = json.loads(resp.read())
+                    choice = result.get('choices', [{}])[0]
+                    msg = choice.get('message', {})
+                    text = msg.get('content', '') or ''
+                    reasoning = msg.get('reasoning_content', '') or ''
+                    record_ai_usage(cu['id'], cu['username'])
+                    return self.send_json({'success': True, 'explanation': text, 'reasoning': reasoning})
+            except Exception as e:
+                import traceback
+                print(f'AI Explain Error: {traceback.format_exc()}', file=sys.stderr)
+                return self.send_error_json(f'代码解释失败: {e}', 500)
+
+        if path == '/api/ai/chat/optimize':
+            cu = get_current_user(self)
+            if not cu:
+                return self.send_error_json('请先登录', 401)
+            code = body.get('code', '').strip()
+            language = body.get('language', 'python')
+            if not code:
+                return self.send_error_json('请输入要优化的代码', 400)
+            try:
+                if not OPENROUTER_API_KEY:
+                    return self.send_error_json('AI 功能未配置', 503)
+                system_prompt = '''你是一个 Python 代码优化专家。分析用户代码并提供优化建议和优化后的代码。
+要求：
+- 从性能、可读性、Pythonic 程度等方面分析
+- 列出具体的优化建议（用中文）
+- 提供优化后的完整代码
+- 如果原代码已经很好，也可以只给出分析'''
+                payload = {
+                    'model': 'openrouter/free',
+                    'messages': [
+                        {'role': 'system', 'content': system_prompt},
+                        {'role': 'user', 'content': f'请优化以下 Python 代码：\n\n```python\n{code}\n```'}
+                    ],
+                    'temperature': 0.3,
+                    'max_tokens': 2000,
+                }
+                headers = {
+                    'Authorization': f'Bearer {OPENROUTER_API_KEY}',
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://codingzhou.dpdns.org',
+                    'X-Title': 'Code Explorer',
+                }
+                req = urllib.request.Request(OPENROUTER_API_URL, data=json.dumps(payload).encode(), headers=headers)
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    result = json.loads(resp.read())
+                    choice = result.get('choices', [{}])[0]
+                    msg = choice.get('message', {})
+                    text = msg.get('content', '') or ''
+                    reasoning = msg.get('reasoning_content', '') or ''
+                    # Parse optimization suggestions and code from response
+                    import re as _re
+                    suggestions = []
+                    optimized_code = ''
+                    # Try to extract code block
+                    code_match = _re.search(r'优化后的代码[：:]*\s*```python\s*\n([\s\S]*?)\n```', text)
+                    if code_match:
+                        optimized_code = code_match.group(1)
+                    else:
+                        code_match = _re.search(r'```python\s*\n([\s\S]*?)\n```', text)
+                        if code_match:
+                            optimized_code = code_match.group(1)
+                    # Extract numbered suggestions
+                    for m in _re.finditer(r'(\d+)[.、)）]\s*([^\n]+)', text):
+                        suggestions.append(f'{m.group(1)}. {m.group(2).strip()}')
+                    if not suggestions:
+                        suggestions = [text[:200]]
+                    record_ai_usage(cu['id'], cu['username'])
+                    return self.send_json({
+                        'success': True,
+                        'suggestions': suggestions,
+                        'optimizedCode': optimized_code,
+                        'analysis': text,
+                        'reasoning': reasoning
+                    })
+            except Exception as e:
+                import traceback
+                print(f'AI Optimize Error: {traceback.format_exc()}', file=sys.stderr)
+                return self.send_error_json(f'代码优化失败: {e}', 500)
 
         if path == '/api/run/start':
             if not check_auth(self):

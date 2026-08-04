@@ -31,6 +31,7 @@ import threading
 import time
 import urllib.parse
 import uuid
+from http.server import ThreadingHTTPServer
 from pathlib import Path
 
 # ==================== 配置 ====================
@@ -524,7 +525,7 @@ class LocalAgentHandler(http.server.BaseHTTPRequestHandler):
         return self._send_error('未找到路由', 404)
 
     def _handle_run(self, data):
-        """处理代码运行请求，使用 SSE 流式返回"""
+        """处理代码运行请求，使用 SSE 流式返回（线程安全）"""
         project = data.get('project', '')
         code = data.get('code', '')
         main_file = data.get('mainFile', '')
@@ -561,12 +562,16 @@ class LocalAgentHandler(http.server.BaseHTTPRequestHandler):
         self._set_cors_headers()
         self.end_headers()
 
+        # 使用队列进行线程安全的通信
+        output_queue = queue.Queue()
+        done_event = threading.Event()
+
         def emit(event, data):
-            payload = f'event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n'
-            self.wfile.write(payload.encode('utf-8'))
-            self.wfile.flush()
+            """线程安全的发射函数"""
+            output_queue.put((event, data))
 
         def stream_run():
+            """在新线程中运行代码"""
             try:
                 emit('status', {'phase': 'preparing', 'runId': run_id,
                                 'message': f'准备执行环境... (Python {sys.version.split()[0]})'})
@@ -596,10 +601,26 @@ class LocalAgentHandler(http.server.BaseHTTPRequestHandler):
                 import traceback
                 emit('error', {'message': f'执行出错: {str(e)}'})
                 emit('done', {'runId': run_id})
+            finally:
+                done_event.set()
 
-        # 在新线程中运行（避免阻塞连接）
+        # 在新线程中运行
         thread = threading.Thread(target=stream_run, daemon=True)
         thread.start()
+
+        # 主线程负责写入 SSE 响应（线程安全）
+        try:
+            while not done_event.is_set() or not output_queue.empty():
+                try:
+                    event, payload = output_queue.get(timeout=0.5)
+                    data_str = json.dumps(payload, ensure_ascii=False)
+                    sse_data = f'event: {event}\ndata: {data_str}\n\n'
+                    self.wfile.write(sse_data.encode('utf-8'))
+                    self.wfile.flush()
+                except queue.Empty:
+                    continue
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
 
 class LocalAgentServer:
@@ -613,7 +634,7 @@ class LocalAgentServer:
 
     def start(self):
         """启动服务器"""
-        self.httpd = http.server.HTTPServer((self.host, self.port), LocalAgentHandler)
+        self.httpd = ThreadingHTTPServer((self.host, self.port), LocalAgentHandler)
         self.httpd.projects_dir = self.projects_dir
 
         print(f"""

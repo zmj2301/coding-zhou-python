@@ -5,28 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>本地运行 - Code Explorer</title>
 <style>
-  :root {
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --bg-tertiary: #21262d;
-    --bg-overlay: #30363d;
-    --border-color: #30363d;
-    --accent-blue: #58a6ff;
-    --accent-green: #3fb950;
-    --accent-purple: #a371f7;
-    --accent-orange: #f0883e;
-    --accent-red: #f85149;
-    --accent-cyan: #39d353;
-    --text-primary: #e6edf3;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  }
+  /* Import shared theme variables */
+  @import '/components/theme.css';
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -43,7 +23,7 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(13, 17, 23, 0.85);
+    background: var(--bg-secondary);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
@@ -161,7 +141,7 @@
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 6px;
-    background: linear-gradient(135deg, #fff, var(--text-secondary));
+    background: linear-gradient(135deg, var(--text-bright), var(--text-secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -192,14 +172,14 @@
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, var(--accent-blue), #1f6feb);
-    color: #fff;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
+    color: var(--text-on-accent);
   }
 
   .btn-primary:hover {
     filter: brightness(1.1);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+    box-shadow: var(--shadow-lg);
   }
 
   .btn-secondary {
@@ -251,8 +231,8 @@
   }
 
   .filter-tab.active {
-    background: linear-gradient(135deg, var(--accent-blue), #1f6feb);
-    color: #fff;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
+    color: var(--text-on-accent);
     border-color: transparent;
   }
 
@@ -423,8 +403,8 @@
   .run-btn {
     flex: 1;
     padding: 10px 16px;
-    background: linear-gradient(135deg, var(--accent-green), #2ea043);
-    color: #fff;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+    color: var(--text-on-accent);
     border: none;
     border-radius: var(--radius-md);
     font-size: 14px;
@@ -632,7 +612,7 @@
     flex: 1;
     padding: 20px 24px;
     overflow-y: auto;
-    background: #0d1117;
+    background: var(--term-bg);
     font-family: monospace;
     font-size: 13px;
     line-height: 1.6;
@@ -731,7 +711,7 @@
 
   .file-code-viewer {
     flex: 1;
-    background: #0d1117;
+    background: var(--term-bg);
     border-radius: var(--radius-md);
     padding: 16px;
     font-family: monospace;
@@ -788,7 +768,7 @@
     right: 24px;
     padding: 14px 20px;
     border-radius: var(--radius-md);
-    color: #fff;
+    color: var(--text-on-accent);
     font-size: 14px;
     font-weight: 500;
     z-index: 9999;
@@ -815,6 +795,28 @@
     .file-dialog-body { flex-direction: column; }
     .file-tree-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); max-height: 200px; }
   }
+
+  /* ===== Light Theme Overrides ===== */
+  [data-theme="light"] body::before {
+    background-image:
+      linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  }
+  [data-theme="light"] .connection-status.connected { background: rgba(26, 127, 55, 0.1); }
+  [data-theme="light"] .connection-status.disconnected { background: rgba(207, 34, 46, 0.1); }
+  [data-theme="light"] .project-icon.python { background: linear-gradient(135deg, rgba(9, 105, 218, 0.15), rgba(26, 127, 55, 0.15)); }
+  [data-theme="light"] .project-icon.web { background: linear-gradient(135deg, rgba(130, 80, 223, 0.15), rgba(191, 86, 18, 0.15)); }
+  [data-theme="light"] .project-icon.file { background: linear-gradient(135deg, rgba(191, 86, 18, 0.15), rgba(207, 34, 46, 0.15)); }
+  [data-theme="light"] .badge-python { background: rgba(9, 105, 218, 0.1); }
+  [data-theme="light"] .badge-web { background: rgba(130, 80, 223, 0.1); }
+  [data-theme="light"] .badge-file { background: rgba(191, 86, 18, 0.1); }
+  [data-theme="light"] .badge-other { background: rgba(140, 149, 159, 0.1); }
+  [data-theme="light"] .run-btn:hover { box-shadow: 0 4px 12px rgba(26, 127, 55, 0.25); }
+  [data-theme="light"] .modal-overlay, [data-theme="light"] .result-panel, [data-theme="light"] .file-dialog {
+    background: rgba(255, 255, 255, 0.85);
+  }
+  [data-theme="light"] .result-line.error { color: var(--accent-red); }
+  [data-theme="light"] .hero-badge { background: rgba(9, 105, 218, 0.1); border-color: rgba(9, 105, 218, 0.25); }
 </style>
 <link rel="stylesheet" href="/components/nav.css">
 </head>
@@ -857,9 +859,15 @@
       <div class="page-subtitle">通过本地伴生程序运行你电脑上的 Python 项目</div>
     </div>
     <div class="page-actions">
+      <div class="connection-status disconnected" id="connStatus" onclick="openHelp()">
+        <span class="status-dot"></span>
+        <span id="connText">○ 未连接 - 点击查看说明</span>
+      </div>
+      <button class="btn btn-ghost" onclick="downloadAgent()">📥 下载伴生程序</button>
       <button class="btn btn-ghost" onclick="openHelp()">📖 使用说明</button>
+      <button class="btn btn-ghost" onclick="openDirSettings()">📂 项目目录</button>
       <button class="btn btn-secondary" onclick="refreshProjects()">🔄 刷新</button>
-      <button class="btn btn-primary" onclick="document.getElementById('portInput').focus(); document.getElementById('portInput').click();">⚙️ 端口设置</button>
+      <button class="btn btn-primary" onclick="openSettings()">⚙️ 端口设置</button>
     </div>
   </div>
 
@@ -886,7 +894,7 @@
   </div>
 </main>
 
-<!-- 隐藏的端口输入 -->
+<!-- 隐藏的端口输入（预留文件选择功能） -->
 <input type="file" id="portInput" style="display:none;" accept=".py" onchange="selectLocalAgentFile(event)">
 
 <!-- 使用说明模态框 -->
@@ -894,14 +902,32 @@
   <div class="modal">
     <h3>🚀 使用说明</h3>
     <p>要使用本地运行功能，你需要在自己的电脑上运行 <code>local_agent.py</code> 伴生程序。</p>
+    
+    <div style="background: var(--bg-tertiary); border-radius: 8px; padding: 16px; margin: 16px 0;">
+      <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 12px; font-size: 14px;">📥 快速开始</p>
+      <button class="btn btn-primary" style="width: 100%; margin-bottom: 12px;" onclick="downloadAgent()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="margin-right: 6px; vertical-align: -2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        下载 local_agent.py
+      </button>
+      <p style="font-size: 12px; color: var(--text-muted); margin: 0;">点击下载伴生程序到本地电脑</p>
+    </div>
+    
+    <p style="font-weight: 600; color: var(--text-primary); margin-top: 16px; font-size: 14px;">📝 详细步骤</p>
     <p><strong>步骤 1：</strong> 下载 <code>local_agent.py</code> 文件到本地电脑。</p>
     <p><strong>步骤 2：</strong> 打开终端（CMD 或 PowerShell），运行：</p>
-    <p style="background: var(--bg-tertiary); padding: 12px; border-radius: 6px; font-family: monospace;">
+    <p style="background: var(--bg-tertiary); padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px;">
       python local_agent.py --projects-dir D:\你的项目目录
     </p>
+    <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">💡 或使用默认端口：python local_agent.py --port 18765 --dir ~/projects</p>
     <p><strong>步骤 3：</strong> 运行成功后，此页面会自动检测到本地伴生程序，你就能看到项目列表并点击运行。</p>
-    <p style="color: var(--text-muted); font-size: 12px; margin-top: 12px;">💡 提示：伴生程序仅在本地监听，不会对外暴露任何数据。</p>
+    
+    <div style="background: rgba(63, 185, 80, 0.1); border: 1px solid rgba(63, 185, 80, 0.2); border-radius: 8px; padding: 12px; margin-top: 16px;">
+      <p style="color: var(--accent-green); font-size: 13px; margin: 0; font-weight: 500;">🔒 安全提示</p>
+      <p style="font-size: 12px; color: var(--text-secondary); margin: 6px 0 0;">伴生程序仅在本地监听，不会对外暴露任何数据。所有通信都在你的浏览器和本地程序之间进行。</p>
+    </div>
+    
     <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeHelp()">稍后再说</button>
       <button class="btn btn-primary" onclick="closeHelp()">我知道了</button>
     </div>
   </div>
@@ -1433,6 +1459,56 @@ function setResultStatus(status, text) {
 
 function closeResult() {
   $('resultPanel').classList.remove('show');
+}
+
+// ===== 本地文件选择（预留功能） =====
+function selectLocalAgentFile(event) {
+  var file = event.target.files && event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    toast('已选择: ' + file.name + ' (' + file.size + ' 字节)', 'info');
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ===== 下载伴生程序 =====
+function downloadAgent() {
+  var url = '/download/local-agent';
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'local_agent.py';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast('伴生程序下载中...', 'info');
+}
+
+// ===== 项目目录路径设置 =====
+var PROJECTS_DIR_KEY = 'localAgentProjectsDir';
+
+function openDirSettings() {
+  var savedDir = localStorage.getItem(PROJECTS_DIR_KEY) || '';
+  var dir = prompt('请输入你的项目目录路径（本地电脑上的路径）：', savedDir);
+  if (dir === null) return;
+  dir = dir.trim();
+  if (!dir) {
+    localStorage.removeItem(PROJECTS_DIR_KEY);
+    toast('已清除项目目录设置', 'info');
+  } else {
+    localStorage.setItem(PROJECTS_DIR_KEY, dir);
+    toast('✓ 项目目录已设置: ' + dir, 'success');
+    // 如果已连接，提示用户重启伴生程序
+    if (state.connected) {
+      toast('请重启 local_agent.py 使目录设置生效', 'info');
+    }
+  }
+}
+
+function getProjectsDir() {
+  return localStorage.getItem(PROJECTS_DIR_KEY) || '';
 }
 </script>
 <script src="/components/nav.js"></script>
