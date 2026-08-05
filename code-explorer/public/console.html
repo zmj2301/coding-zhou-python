@@ -408,6 +408,19 @@ body > * { position: relative; z-index: 1; }
   color: var(--text-tertiary); font-size: 14px;
 }
 .console-error { color: var(--accent-red); }
+.console-loading {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.console-loading .spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--bg-tertiary);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: clSpin 0.75s linear infinite;
+}
+@keyframes clSpin { to { transform: rotate(360deg); } }
+.console-loading.loading-inline { padding: 20px; gap: 10px; }
+.console-loading.loading-inline .spinner { width: 20px; height: 20px; border-width: 2px; }
 
 /* ===== 许愿池喷泉 ===== */
 .wishing-pool-wrap {
@@ -903,39 +916,31 @@ select.apikey-input { cursor: pointer; appearance: none; padding-right: 34px; }
   .guide-table th, .guide-table td { padding: 8px 10px; }
 }
 </style>
-<link rel="stylesheet" href="/components/nav.css">
 </head>
-<body class="ce-has-nav">
+<body>
 
-<!-- Code Explorer Shared Navigation Bar -->
-<div class="ce-nav-wrapper">
-  <div class="ce-top-nav">
-    <div class="ce-top-nav-brand">
-      <div class="ce-top-nav-brand-logo">◈</div>
-      Code Explorer
+<!-- ===== 主题切换 ===== -->
+<button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)">
+  <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+
+<!-- ===== 顶部栏 ===== -->
+<div class="admin-header">
+  <div class="admin-header-left">
+    <a class="admin-back-btn" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      返回
+    </a>
+    <div class="admin-title">
+      <div class="admin-title-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      </div>
+      API 管理控制台
     </div>
-    <div class="ce-top-nav-links">
-      <a class="ce-top-nav-link" href="/" data-nav="/">首页</a>
-      <a class="ce-top-nav-link active" href="/console" data-nav="/console">API Key</a>
-      <a class="ce-top-nav-link" href="/resources/" data-nav="/resources">资源下载</a>
-      <a class="ce-top-nav-link" href="/web-games/" data-nav="/web-games">网页游戏</a>
-      <a class="ce-top-nav-link" href="/scratch" data-nav="/scratch">Scratch</a>
-      <a class="ce-top-nav-link" href="/python/" data-nav="/python">Python 编程</a>
-      <a class="ce-top-nav-link" href="/run/local" data-nav="/run/local">⚡ 本地运行</a>
-    </div>
-    <div class="ce-top-nav-actions">
-      <button class="user-menu-btn hidden" id="ceUserMenuBtn" title="用户菜单">
-        <span id="ceUserName">用户</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </button>
-      <button class="changelog-btn" id="ceChangelogBtn" title="更新日志">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      </button>
-      <button class="theme-toggle-btn" id="ceThemeToggleBtn" title="切换主题">
-        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-    </div>
+  </div>
+<div class="admin-header-right">
+    <span class="admin-username" id="adminUsername"></span>
   </div>
 </div>
 
@@ -959,7 +964,7 @@ select.apikey-input { cursor: pointer; appearance: none; padding-right: 34px; }
     </nav>
     <div class="console-main">
       <div class="console-main-inner">
-        <div id="content"><div class="console-loading">加载中...</div></div>
+        <div id="content"><div class="console-loading"><div class="spinner"></div><span>加载中...</span></div></div>
       </div>
     </div>
   </div>
@@ -978,6 +983,24 @@ const fmtTime = (ts) => {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
+async function fetchWithTimeout(url, options = {}, timeout = 15000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    return res;
+  } catch (err) {
+    if (err.name === 'AbortError') throw new Error('请求超时，请检查网络连接');
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function loadingSpinner(msg) {
+  return `<div class="console-loading"><div class="spinner"></div><span>${esc(msg || '加载中...')}</span></div>`;
+}
+
 // ===== 主题 =====
 const THEME_KEY = 'code_explorer_theme';
 function getTheme() { return localStorage.getItem(THEME_KEY) || 'dark'; }
@@ -995,7 +1018,7 @@ let currentUser = null;
 async function loadPool() {
   const content = $('content');
   try {
-    const authRes = await fetch('/api/auth-check');
+    const authRes = await fetchWithTimeout('/api/auth-check');
     if (!authRes.ok) throw new Error('auth-check returned ' + authRes.status);
     const authData = await authRes.json();
     if (!authData.authenticated) {
@@ -1005,12 +1028,13 @@ async function loadPool() {
     currentUser = authData.user;
     $('adminUsername').textContent = currentUser.username;
 
-    const res = await fetch('/api/ai-pool?days=7');
+    const res = await fetchWithTimeout('/api/ai-pool?days=7');
     if (res.status === 401) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a></div>'; return; }
     const data = await res.json();
     render(data);
   } catch (e) {
-    content.innerHTML = '<div class="console-error">数据加载失败：' + esc(e.message) + '<br><small>如果你刚登录，请刷新页面重试</small></div>';
+    const msg = e.message && e.message.includes('超时') ? e.message : '数据加载失败：' + esc(e.message);
+    content.innerHTML = '<div class="console-error">' + msg + '<br><small>如果你刚登录，请刷新页面重试</small></div>';
   }
 }
 
@@ -1251,17 +1275,17 @@ let apiKeyView = 'mine'; // mine | all
 
 async function loadApiKeys() {
   const content = $('content');
-  content.innerHTML = '<div class="console-loading">加载中...</div>';
+  content.innerHTML = loadingSpinner();
   try {
     if (!currentUser) {
-      const authRes = await fetch('/api/auth-check');
+      const authRes = await fetchWithTimeout('/api/auth-check');
       const authData = await authRes.json();
       if (!authData.authenticated) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>'; return; }
       currentUser = authData.user;
       $('adminUsername').textContent = currentUser.username;
     }
     const url = '/api/api-keys' + (currentUser && currentUser.role === 'admin' ? '?all=' + (apiKeyView === 'all' ? '1' : '0') : '');
-    const res = await fetch(url);
+    const res = await fetchWithTimeout(url);
     if (res.status === 401) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>'; return; }
     const data = await res.json();
     if (data.error) {
@@ -1270,7 +1294,8 @@ async function loadApiKeys() {
     }
     renderApiKeys(data.keys || []);
   } catch (e) {
-    content.innerHTML = '<div class="console-error">加载失败: ' + esc(e.message) + '</div>';
+    const msg = e.message && e.message.includes('超时') ? e.message : '加载失败: ' + esc(e.message);
+    content.innerHTML = '<div class="console-error">' + msg + '</div>';
   }
 }
 
@@ -1444,7 +1469,7 @@ async function createApiKey() {
   const btn = $('createSubmit');
   btn.disabled = true;
   try {
-    const res = await fetch('/api/api-keys', {
+    const res = await fetchWithTimeout('/api/api-keys', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1453,7 +1478,7 @@ async function createApiKey() {
         daily_limit: $('fLimit').value ? parseInt($('fLimit').value) : 0,
         expires_at: getExpireTs()
       })
-    });
+    }, 15000);
     const data = await res.json();
     if (data.success) {
       $('fullKey').textContent = data.key;
@@ -1488,18 +1513,18 @@ function copyApiKey(key) {
 async function deleteApiKey(id, name) {
   if (!confirm(`确定删除 Key「${name}」吗？删除后不可恢复。`)) return;
   try {
-    const res = await fetch(`/api/api-keys/delete?id=${id}`);
+    const res = await fetchWithTimeout(`/api/api-keys/delete?id=${id}`);
     const data = await res.json();
     if (data.success) { loadApiKeys(); } else { alert(data.error || '删除失败'); }
-  } catch (e) { alert('网络错误: ' + e.message); }
+  } catch (e) { alert('网络错误: ' + (e.message.includes('超时') ? e.message : e.message)); }
 }
 
 async function toggleApiKey(id) {
   try {
-    const res = await fetch(`/api/api-keys/toggle?id=${id}`);
+    const res = await fetchWithTimeout(`/api/api-keys/toggle?id=${id}`);
     const data = await res.json();
     if (data.success) { loadApiKeys(); } else { alert(data.error || '操作失败'); }
-  } catch (e) { alert('网络错误: ' + e.message); }
+  } catch (e) { alert('网络错误: ' + (e.message.includes('超时') ? e.message : e.message)); }
 }
 
 // ===== 快速接入指南 =====
@@ -1662,18 +1687,6 @@ function copyGuideCode(lang) {
     toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2000);
-  });
-}
-</script>
-<script src="/components/nav.js"></script>
-<script>
-// Initialize shared nav
-if(window.CENav) window.CENav.init();
-// Sync theme toggle with nav
-var navToggle = document.getElementById('ceThemeToggleBtn');
-if(navToggle){
-  navToggle.addEventListener('click', function(){
-    // Let nav.js handle the toggle
   });
 }
 </script>
