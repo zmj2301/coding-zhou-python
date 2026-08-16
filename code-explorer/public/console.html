@@ -992,11 +992,22 @@ setTheme(getTheme());
 // ===== 数据加载 =====
 let currentUser = null;
 
+async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    return res;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function loadPool() {
   const content = $('content');
   try {
-    const authRes = await fetch('/api/auth-check');
-    if (!authRes.ok) throw new Error('auth-check returned ' + authRes.status);
+    const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
+    if (!authRes.ok) throw new Error('登录状态检查失败 (' + authRes.status + ')');
     const authData = await authRes.json();
     if (!authData.authenticated) {
       content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
@@ -1005,12 +1016,14 @@ async function loadPool() {
     currentUser = authData.user;
     $('adminUsername').textContent = currentUser.username;
 
-    const res = await fetch('/api/ai-pool?days=7');
+    const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 10000);
     if (res.status === 401) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a></div>'; return; }
+    if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
     render(data);
   } catch (e) {
-    content.innerHTML = '<div class="console-error">数据加载失败：' + esc(e.message) + '<br><small>如果你刚登录，请刷新页面重试</small></div>';
+    const msg = e.name === 'AbortError' ? '请求超时，服务器暂时无响应' : esc(e.message);
+    content.innerHTML = '<div class="console-error">数据加载失败：' + msg + '<br><small>如果你刚登录，请刷新页面重试；如果问题持续存在，请联系管理员</small></div>';
   }
 }
 
@@ -1075,7 +1088,7 @@ function render(data) {
       <div class="pool-progress-track">
         <div class="pool-progress-fill" style="width:${pct}%"></div>
       </div>
-      <div class="pool-progress-foot">总可用 1050 = Cloudflare Workers AI 1000 次/天 + OpenRouter Free 50 次/天；池子上限 = 总可用 × 90%（${total} 次/天）。所有登录用户共享此池子，每人用量独立统计。</div>
+      <div class="pool-progress-foot">总可用 = Cloudflare Workers AI 1000 次/天 + OpenRouter Free 50 次/天 + Ollama 本地无限次；池子上限 = 总可用 × 90%（${total} 次/天）。所有登录用户共享此池子，每人用量独立统计。</div>
     </div>
     <div class="wishing-pool-wrap">
       <div class="wishing-pool">
@@ -1141,25 +1154,25 @@ function render(data) {
       <div class="upstream-card">
         <div class="upstream-head">
           <span class="upstream-dot"></span>
-          <span class="upstream-name">Cloudflare Workers AI</span>
+          <span class="upstream-name">🦙 Ollama 本地 AI</span>
         </div>
         <div class="upstream-meta">
-          状态：<b>主通道 · 可用</b><br>
-          每日限额：<b>${p.cloudflareDaily} 次</b><br>
-          模型：<b>@cf/qwen3-coder-30b-a3b-fp8</b><br>
-          计费：<b>免费（10000 neurons/天）</b>
+          状态：<b>主通道 · 本地部署</b><br>
+          每日限额：<b>无限次</b><br>
+          模型：<b>qwen2.5:1.5b</b><br>
+          计费：<b>完全免费</b>
         </div>
       </div>
       <div class="upstream-card">
         <div class="upstream-head">
           <span class="upstream-dot"></span>
-          <span class="upstream-name">智谱 GLM-4.7-Flash</span>
+          <span class="upstream-name">Cloudflare Workers AI</span>
         </div>
         <div class="upstream-meta">
           状态：<b>备用 · 可用</b><br>
-          每日限额：<b>永久免费</b><br>
-          模型：<b>glm-4.7-flash</b><br>
-          计费：<b>免费</b>
+          每日限额：<b>${p.cloudflareDaily} 次</b><br>
+          模型：<b>@cf/qwen3-coder-30b-a3b-fp8</b><br>
+          计费：<b>免费（10000 neurons/天）</b>
         </div>
       </div>
       <div class="upstream-card">
@@ -1254,15 +1267,17 @@ async function loadApiKeys() {
   content.innerHTML = '<div class="console-loading">加载中...</div>';
   try {
     if (!currentUser) {
-      const authRes = await fetch('/api/auth-check');
+      const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
+      if (!authRes.ok) throw new Error('登录状态检查失败 (' + authRes.status + ')');
       const authData = await authRes.json();
       if (!authData.authenticated) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>'; return; }
       currentUser = authData.user;
       $('adminUsername').textContent = currentUser.username;
     }
     const url = '/api/api-keys' + (currentUser && currentUser.role === 'admin' ? '?all=' + (apiKeyView === 'all' ? '1' : '0') : '');
-    const res = await fetch(url);
+    const res = await fetchWithTimeout(url, {}, 10000);
     if (res.status === 401) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>'; return; }
+    if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
     if (data.error) {
       content.innerHTML = '<div class="console-error">' + esc(data.error) + '</div>';
@@ -1270,7 +1285,8 @@ async function loadApiKeys() {
     }
     renderApiKeys(data.keys || []);
   } catch (e) {
-    content.innerHTML = '<div class="console-error">加载失败: ' + esc(e.message) + '</div>';
+    const msg = e.name === 'AbortError' ? '请求超时，服务器暂时无响应' : esc(e.message);
+    content.innerHTML = '<div class="console-error">加载失败：' + msg + '<br><small>请刷新页面重试；如果问题持续存在，请联系管理员</small></div>';
   }
 }
 
@@ -1444,7 +1460,7 @@ async function createApiKey() {
   const btn = $('createSubmit');
   btn.disabled = true;
   try {
-    const res = await fetch('/api/api-keys', {
+    const res = await fetchWithTimeout('/api/api-keys', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1453,7 +1469,8 @@ async function createApiKey() {
         daily_limit: $('fLimit').value ? parseInt($('fLimit').value) : 0,
         expires_at: getExpireTs()
       })
-    });
+    }, 10000);
+    if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
     if (data.success) {
       $('fullKey').textContent = data.key;
@@ -1465,7 +1482,8 @@ async function createApiKey() {
       alert(data.error || '创建失败');
     }
   } catch (e) {
-    alert('网络错误: ' + e.message);
+    const msg = e.name === 'AbortError' ? '请求超时' : e.message;
+    alert('网络错误: ' + msg);
   } finally {
     btn.disabled = false;
   }
@@ -1488,18 +1506,20 @@ function copyApiKey(key) {
 async function deleteApiKey(id, name) {
   if (!confirm(`确定删除 Key「${name}」吗？删除后不可恢复。`)) return;
   try {
-    const res = await fetch(`/api/api-keys/delete?id=${id}`);
+    const res = await fetchWithTimeout(`/api/api-keys/delete?id=${id}`, {}, 8000);
+    if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
     if (data.success) { loadApiKeys(); } else { alert(data.error || '删除失败'); }
-  } catch (e) { alert('网络错误: ' + e.message); }
+  } catch (e) { alert('网络错误: ' + (e.name === 'AbortError' ? '请求超时' : e.message)); }
 }
 
 async function toggleApiKey(id) {
   try {
-    const res = await fetch(`/api/api-keys/toggle?id=${id}`);
+    const res = await fetchWithTimeout(`/api/api-keys/toggle?id=${id}`, {}, 8000);
+    if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
     if (data.success) { loadApiKeys(); } else { alert(data.error || '操作失败'); }
-  } catch (e) { alert('网络错误: ' + e.message); }
+  } catch (e) { alert('网络错误: ' + (e.name === 'AbortError' ? '请求超时' : e.message)); }
 }
 
 // ===== 快速接入指南 =====
