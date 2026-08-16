@@ -1,5 +1,22 @@
 [
   {
+    "version": "2.4.0",
+    "date": "2026-08-16",
+    "title": "Bug 修复 + Ollama 集成：多页主题/超时/导航修复 + 阿里云 ECS 本地 AI 推理",
+    "changes": [
+      "修复 api-key-manager.html 主题切换失效：添加缺失的 applyTheme() 调用，深色/浅色主题可正常切换",
+      "修复 console.html 加载超时：添加 fetchWithTimeout 函数（15秒超时），管理员后台不再白屏",
+      "修复 worker.ts 中 /v1/chat/completions 请求路径写死为 /backend/...，改为统一走 /api/proxy",
+      "修复 index.html 和 worker.ts 中的导航链接失效问题",
+      "修复 ecs-server.py 中 os.path.join 第二个参数包含 \\t（tab 转义）导致路径错误的问题，改为原始字符串",
+      "阿里云 ECS 部署 Ollama：v0.32.13 架构变更需要独立 llama-server 二进制，因服务器无法访问外部源，从 GitHub 下载 llama.cpp b4000 源码本地编译",
+      "编写 Python wrapper（wrapper.py）作为 llama-server 代理，自动过滤 Ollama 特有参数（--chat-template chatml、--flash-attn、--no-webui 等），使 llama.cpp 编译的二进制兼容 Ollama CLI",
+      "新增 code-explorer/test_ollama.py：Ollama 集成测试脚本，覆盖服务状态、AI 对话、健康检查、Code Explorer 接口",
+      "新增 code-explorer/setup_ollama.sh：Ollama 一键部署脚本",
+      "qwen2.5:1.5b 模型在阿里云 ECS 上成功运行对话推理"
+    ]
+  },
+  {
     "version": "2.3.0",
     "date": "2026-08-03",
     "title": "反馈系统全面升级：工单对话式界面 + 状态管理 + 回复功能",
