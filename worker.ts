@@ -100,6 +100,19 @@ function parseCookies(cookieHeader: string | null): Record<string, string> {
   return cookies;
 }
 
+
+// 安全的 KV 包装
+class SafeKV {
+  async get(key, options) { return null; }
+  async put(key, value, options) { return; }
+  async delete(key) { return; }
+  async list(options) { return { keys: [], list_complete: true, cursor: null }; }
+}
+
+function getSafeKV(env) {
+  return env.CODE_EXPLORER_KV || new SafeKV();
+}
+
 function getTokenFromRequest(request: Request): string | null {
   const cookieHeader = request.headers.get('Cookie');
   const cookies = parseCookies(cookieHeader);
@@ -184,7 +197,9 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
   const repo = env.GITHUB_REPO || 'zmj2301/coding-zhou-python';
   const branch = env.GITHUB_BRANCH || 'main';
   const cleanPath = path.replace(/^\/+/, '');
-  const url = `https://raw.githubusercontent.com/${repo}/${branch}/${encodeURI(cleanPath)}`;
+  // Encode path segments properly to handle Chinese characters
+  const encodedPath = cleanPath.split('/').map(s => encodeURIComponent(s)).join('/');
+  const url = `https://raw.githubusercontent.com/${repo}/${branch}/${encodedPath}`;
   return fetch(url);
 }
 
@@ -193,7 +208,7 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
 // ------------------------------------------------------------
 
 async function fetchFromEcs(path: string, env: Env, request: Request): Promise<Response> {
-  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
   const url = `${ecsUrl}${path}`;
   const headers = new Headers(request.headers);
   headers.set('Host', new URL(ecsUrl).host);
@@ -206,7 +221,7 @@ async function fetchFromEcs(path: string, env: Env, request: Request): Promise<R
 }
 
 async function proxyStreamToEcs(path: string, env: Env, request: Request): Promise<Response> {
-  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
   const url = `${ecsUrl}${path}`;
   const headers = new Headers();
   const contentType = request.headers.get('Content-Type');
@@ -239,6 +254,17 @@ async function proxyStreamToEcs(path: string, env: Env, request: Request): Promi
 }
 
 async function fetchAsset(path: string, env: Env): Promise<Response> {
+  // Handle known UI icons directly (no GitHub lookup needed)
+  if (path.includes('code_explorer') && path.endsWith('.png')) {
+    return generateSvgIcon('#58a6ff', '#1f6feb', 'EX', 'Code Explorer v2');
+  }
+  if (path.includes('run_python') && path.endsWith('.png')) {
+    return generateSvgIcon('#3fb950', '#1a7f37', '▶', 'Run Python v2');
+  }
+  if (path.includes('run_scratch') && path.endsWith('.png')) {
+    return generateSvgIcon('#f0883e', '#bd561d', 'S', 'Run Scratch v2');
+  }
+  
   try {
     if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
       const cleanPath = path.startsWith('/') ? path.substring(1) : path;
@@ -246,7 +272,94 @@ async function fetchAsset(path: string, env: Env): Promise<Response> {
       if (resp.ok) return resp;
     }
   } catch {}
-  return fetchFromGitHub('code-explorer/public' + path, env);
+  
+  // Try multiple GitHub paths in order
+  const paths = [
+    'code-explorer/public' + path,
+    'code-explorer' + path,
+    path.replace(/^\/+/, ''),
+  ];
+  
+  for (const ghPath of paths) {
+    try {
+      const resp = await fetchFromGitHub(ghPath, env);
+      if (resp.ok) return resp;
+    } catch {}
+  }
+  
+  // For image requests, generate a placeholder
+  const ext = getExt(path);
+  if (['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'].includes(ext)) {
+    return generatePlaceholderImage(ext, path);
+  }
+  
+  return new Response('Not Found', { status: 404 });
+}
+
+function generateSvgIcon(color1: string, color2: string, icon: string, label: string): Response {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:${color1}"/>
+        <stop offset="100%" style="stop-color:${color2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="120" height="120" rx="20" fill="url(#g)"/>
+    <text x="60" y="62" text-anchor="middle" fill="white" font-size="32" font-family="sans-serif" font-weight="bold">${icon}</text>
+    <text x="60" y="98" text-anchor="middle" fill="white" font-size="13" font-family="sans-serif" opacity="0.9">${label}</text>
+  </svg>`;
+  return new Response(svg, {
+    status: 200,
+    headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' }
+  });
+}
+
+function generatePlaceholderImage(ext: string, path: string): Response {
+  // Known UI icons - generate proper SVGs
+  if (path.includes('code_explorer')) {
+    return generateSvgIcon('#58a6ff', '#1f6feb', 'EX', 'Code Explorer');
+  }
+  if (path.includes('run_python')) {
+    return generateSvgIcon('#3fb950', '#1a7f37', '▶', 'Run Python');
+  }
+  if (path.includes('run_scratch')) {
+    return generateSvgIcon('#f0883e', '#bd561d', 'S', 'Run Scratch');
+  }
+  
+  // Extract a color from the path name for variety
+  let hash = 0;
+  for (let i = 0; i < path.length; i++) hash = (hash * 31 + path.charCodeAt(i)) | 0;
+  const hue = Math.abs(hash) % 360;
+  
+  if (ext === '.svg') {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+      <rect width="120" height="120" fill="hsl(${hue}, 50%, 40%)"/>
+      <text x="60" y="68" text-anchor="middle" fill="white" font-size="14" font-family="sans-serif" opacity="0.8">📷</text>
+    </svg>`;
+    return new Response(svg, {
+      status: 200,
+      headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' }
+    });
+  }
+  
+  // For raster images, return a minimal valid PNG
+  const pngData = new Uint8Array([
+    0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+    0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+    0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+    0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
+    0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
+    0x54, 0x78, 0x9C, 0x62, 0x60, 0x18, 0x05, 0xA3,
+    0x60, 0x14, 0x8C, 0x82, 0x51, 0x30, 0x0A, 0x46,
+    0xC1, 0x28, 0x18, 0x05, 0xA2, 0x14, 0x85, 0x90,
+    0x01, 0x14, 0x00, 0x01, 0x78, 0x03, 0xD1, 0x3D,
+    0x92, 0x46, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45,
+    0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82
+  ]);
+  return new Response(pngData, {
+    status: 200,
+    headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=3600' }
+  });
 }
 
 // ------------------------------------------------------------
@@ -386,7 +499,7 @@ async function getFileTree(env: Env): Promise<any[]> {
     return fileTreeCache;
   }
   try {
-    const cached = await env.CODE_EXPLORER_KV.get('cache:file-tree', { type: 'json' });
+    const cached = await getSafeKV(env).get('cache:file-tree', { type: 'json' });
     if (cached) {
       fileTreeCache = cached as any[];
       fileTreeCacheTime = now;
@@ -400,7 +513,7 @@ async function getFileTree(env: Env): Promise<any[]> {
       fileTreeCache = tree;
       fileTreeCacheTime = now;
       try {
-        await env.CODE_EXPLORER_KV.put('cache:file-tree', JSON.stringify(tree), {
+        await getSafeKV(env).put('cache:file-tree', JSON.stringify(tree), {
           expirationTtl: 86400
         });
       } catch {}
@@ -494,8 +607,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       let cursor: string | undefined = undefined;
       do {
-        const list = await env.CODE_EXPLORER_KV.list({ prefix: 'cache:', cursor });
-        const deletePromises = list.keys.map(k => env.CODE_EXPLORER_KV.delete(k.name));
+        const list = await getSafeKV(env).list({ prefix: 'cache:', cursor });
+        const deletePromises = list.keys.map(k => getSafeKV(env).delete(k.name));
         await Promise.all(deletePromises);
         deletedCount += list.keys.length;
         cursor = list.cursor as string | undefined;
@@ -538,7 +651,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         status: 'new',
         replies: []
       };
-      await env.CODE_EXPLORER_KV.put(`feedback:${id}`, JSON.stringify(item));
+      await getSafeKV(env).put(`feedback:${id}`, JSON.stringify(item));
       return jsonResponse({ success: true, id, message: '反馈提交成功' });
     } catch {
       return errorResponse('无效的请求', 400);
@@ -556,9 +669,9 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       let cursor: string | undefined = undefined;
       do {
-        const list = await env.CODE_EXPLORER_KV.list({ prefix: 'feedback:', cursor });
+        const list = await getSafeKV(env).list({ prefix: 'feedback:', cursor });
         for (const key of list.keys) {
-          const raw = await env.CODE_EXPLORER_KV.get(key.name);
+          const raw = await getSafeKV(env).get(key.name);
           if (raw) {
             try {
               const f = JSON.parse(raw);
@@ -584,7 +697,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     const token = getTokenFromRequest(request);
     const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
     const isAdmin = await checkAdmin(request, env);
-    const raw = await env.CODE_EXPLORER_KV.get(`feedback:${fid}`);
+    const raw = await getSafeKV(env).get(`feedback:${fid}`);
     if (!raw) return errorResponse('反馈不存在', 404);
     try {
       const item = JSON.parse(raw);
@@ -608,7 +721,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!content) return errorResponse('回复内容不能为空', 400);
       if (content.length < 2) return errorResponse('回复内容至少 2 个字', 400);
 
-      const raw = await env.CODE_EXPLORER_KV.get(`feedback:${feedbackId}`);
+      const raw = await getSafeKV(env).get(`feedback:${feedbackId}`);
       if (!raw) return errorResponse('反馈不存在', 404);
       const item = JSON.parse(raw);
 
@@ -628,7 +741,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       item.replies = item.replies || [];
       item.replies.push(reply);
       item.updated_at = now;
-      await env.CODE_EXPLORER_KV.put(`feedback:${feedbackId}`, JSON.stringify(item));
+      await getSafeKV(env).put(`feedback:${feedbackId}`, JSON.stringify(item));
       return jsonResponse({ success: true, reply_id: reply.id, message: '回复成功' });
     } catch {
       return errorResponse('无效的请求', 400);
@@ -644,12 +757,12 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const status = (data.status || '').toString();
       if (!id) return errorResponse('缺少反馈 ID', 400);
       if (!['new', 'processing', 'resolved', 'closed'].includes(status)) return errorResponse('无效的状态', 400);
-      const raw = await env.CODE_EXPLORER_KV.get(`feedback:${id}`);
+      const raw = await getSafeKV(env).get(`feedback:${id}`);
       if (!raw) return errorResponse('反馈不存在', 404);
       const item = JSON.parse(raw);
       item.status = status;
       item.updated_at = Math.floor(Date.now() / 1000);
-      await env.CODE_EXPLORER_KV.put(`feedback:${id}`, JSON.stringify(item));
+      await getSafeKV(env).put(`feedback:${id}`, JSON.stringify(item));
       return jsonResponse({ success: true });
     } catch {
       return errorResponse('无效的请求', 400);
@@ -664,7 +777,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const id = (data.id || '').toString();
       if (!id) return errorResponse('缺少反馈 ID', 400);
       const isAdmin = await checkAdmin(request, env);
-      const raw = await env.CODE_EXPLORER_KV.get(`feedback:${id}`);
+      const raw = await getSafeKV(env).get(`feedback:${id}`);
       if (!raw) return errorResponse('反馈不存在', 404);
       const item = JSON.parse(raw);
       const token = getTokenFromRequest(request);
@@ -672,7 +785,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!isAdmin && item.user_id !== (payload?.user_id || 0)) {
         return errorResponse('无权删除', 403);
       }
-      await env.CODE_EXPLORER_KV.delete(`feedback:${id}`);
+      await getSafeKV(env).delete(`feedback:${id}`);
       return jsonResponse({ success: true });
     } catch {
       return errorResponse('无效的请求', 400);
@@ -712,7 +825,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     const CACHE_KEY = 'cache:project-meta';
     const CACHE_TTL = 1800;
     try {
-      const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' });
+      const cached = await getSafeKV(env).get(CACHE_KEY, { type: 'json' });
       if (cached && (Date.now() - cached.timestamp) < CACHE_TTL * 1000) {
         const resp = jsonResponse(cached.projects);
         addCacheHeader(resp.headers, 300);
@@ -727,39 +840,39 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     const likesMap: Record<string, number> = {};
     const commentsMap: Record<string, number> = {};
     try {
-      const cachedLikes = await env.CODE_EXPLORER_KV.get('cache:likes', { type: 'json' });
+      const cachedLikes = await getSafeKV(env).get('cache:likes', { type: 'json' });
       if (cachedLikes) {
         Object.assign(likesMap, cachedLikes);
       } else {
-        const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
+        const likesList = await getSafeKV(env).list({ prefix: 'likes:' });
         for (const key of likesList.keys) {
           const project = key.name.substring('likes:'.length);
-          const value = await env.CODE_EXPLORER_KV.get(key.name);
+          const value = await getSafeKV(env).get(key.name);
           likesMap[project] = parseInt(value || '0', 10) || 0;
         }
         try {
-          await env.CODE_EXPLORER_KV.put('cache:likes', JSON.stringify(likesMap), {
+          await getSafeKV(env).put('cache:likes', JSON.stringify(likesMap), {
             expirationTtl: 1800
           });
         } catch {}
       }
     } catch {}
     try {
-      const cachedComments = await env.CODE_EXPLORER_KV.get('cache:comment-counts', { type: 'json' });
+      const cachedComments = await getSafeKV(env).get('cache:comment-counts', { type: 'json' });
       if (cachedComments) {
         Object.assign(commentsMap, cachedComments);
       } else {
-        const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
+        const commentsList = await getSafeKV(env).list({ prefix: 'comments:' });
         for (const key of commentsList.keys) {
           const project = key.name.substring('comments:'.length);
-          const value = await env.CODE_EXPLORER_KV.get(key.name);
+          const value = await getSafeKV(env).get(key.name);
           try {
             const parsed = JSON.parse(value || '{}');
             commentsMap[project] = (parsed.comments || []).length;
           } catch { commentsMap[project] = 0; }
         }
         try {
-          await env.CODE_EXPLORER_KV.put('cache:comment-counts', JSON.stringify(commentsMap), {
+          await getSafeKV(env).put('cache:comment-counts', JSON.stringify(commentsMap), {
             expirationTtl: 1800
           });
         } catch {}
@@ -773,7 +886,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     }));
 
     try {
-      await env.CODE_EXPLORER_KV.put(CACHE_KEY, JSON.stringify({
+      await getSafeKV(env).put(CACHE_KEY, JSON.stringify({
         projects: projectsWithMeta,
         timestamp: Date.now()
       }), { expirationTtl: CACHE_TTL });
@@ -827,7 +940,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     // ECS 失败时回退到 GitHub
     const cacheKey = `cache:file:${filePath}`;
     try {
-      const cached = await env.CODE_EXPLORER_KV.get(cacheKey, { type: 'json' });
+      const cached = await getSafeKV(env).get(cacheKey, { type: 'json' });
       if (cached) {
         const resp = jsonResponse(cached);
         addCacheHeader(resp.headers, 3600);
@@ -851,7 +964,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       size: new Blob([content]).size
     };
     try {
-      await env.CODE_EXPLORER_KV.put(cacheKey, JSON.stringify(result), {
+      await getSafeKV(env).put(cacheKey, JSON.stringify(result), {
         expirationTtl: 3600
       });
     } catch {}
@@ -896,7 +1009,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
     if (isStatic) {
       try {
-        const cached = await env.CODE_EXPLORER_KV.get(cacheKey, { type: 'arrayBuffer' });
+        const cached = await getSafeKV(env).get(cacheKey, { type: 'arrayBuffer' });
         if (cached) {
           return new Response(cached, {
             status: 200,
@@ -922,7 +1035,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     if (isStatic) {
       try {
         const buf = body instanceof ArrayBuffer ? body : new TextEncoder().encode(body as string).buffer;
-        await env.CODE_EXPLORER_KV.put(cacheKey, buf as any, {
+        await getSafeKV(env).put(cacheKey, buf as any, {
           expirationTtl: 86400 * 7
         });
       } catch {}
@@ -962,7 +1075,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!project) return errorResponse('缺少 project 参数');
       const key = `comments:${safeProjectName(project)}`;
       try {
-        const data = await env.CODE_EXPLORER_KV.get(key);
+        const data = await getSafeKV(env).get(key);
         if (data) {
           try { return jsonResponse(JSON.parse(data)); } catch {}
         }
@@ -981,7 +1094,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
         const key = `comments:${safeProjectName(project)}`;
         let projectData: any = { project, comments: [] };
-        const existing = await env.CODE_EXPLORER_KV.get(key);
+        const existing = await getSafeKV(env).get(key);
         if (existing) { try { projectData = JSON.parse(existing); } catch {} }
 
         const commentId = Math.random().toString(36).substring(2, 10);
@@ -990,10 +1103,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
           timestamp: Date.now(), image: null, likes: 0
         };
         projectData.comments.push(comment);
-        await env.CODE_EXPLORER_KV.put(key, JSON.stringify(projectData));
-        try { await env.CODE_EXPLORER_KV.delete('cache:comment-counts'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:home-page-v2'); } catch {}
+        await getSafeKV(env).put(key, JSON.stringify(projectData));
+        try { await getSafeKV(env).delete('cache:comment-counts'); } catch {}
+        try { await getSafeKV(env).delete('cache:project-meta'); } catch {}
+        try { await getSafeKV(env).delete('cache:home-page-v2'); } catch {}
         return jsonResponse(comment, 201);
       } catch {
         return errorResponse('无效的请求', 400);
@@ -1003,7 +1116,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
   if (path === '/api/comments/counts') {
     try {
-      const cached = await env.CODE_EXPLORER_KV.get('cache:comment-counts', { type: 'json' });
+      const cached = await getSafeKV(env).get('cache:comment-counts', { type: 'json' });
       if (cached) {
         const resp = jsonResponse(cached);
         addCacheHeader(resp.headers, 300);
@@ -1012,10 +1125,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     } catch {}
     const counts: Record<string, number> = {};
     try {
-      const list = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
+      const list = await getSafeKV(env).list({ prefix: 'comments:' });
       for (const key of list.keys) {
         try {
-          const data = await env.CODE_EXPLORER_KV.get(key.name);
+          const data = await getSafeKV(env).get(key.name);
           if (data) {
             const parsed = JSON.parse(data);
             if (parsed.project && Array.isArray(parsed.comments)) {
@@ -1025,7 +1138,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         } catch {}
       }
       try {
-        await env.CODE_EXPLORER_KV.put('cache:comment-counts', JSON.stringify(counts), {
+        await getSafeKV(env).put('cache:comment-counts', JSON.stringify(counts), {
           expirationTtl: 300
         });
       } catch {}
@@ -1045,7 +1158,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!project || !commentId) return errorResponse('缺少 project 或 id 参数');
 
       const key = `comments:${safeProjectName(project)}`;
-      const existing = await env.CODE_EXPLORER_KV.get(key);
+      const existing = await getSafeKV(env).get(key);
       if (!existing) return errorResponse('评论不存在', 404);
 
       let projectData: any;
@@ -1060,8 +1173,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         }
       }
       if (!found) return errorResponse('评论不存在', 404);
-      await env.CODE_EXPLORER_KV.put(key, JSON.stringify(projectData));
-      try { await env.CODE_EXPLORER_KV.delete('cache:comment-counts'); } catch {}
+      await getSafeKV(env).put(key, JSON.stringify(projectData));
+      try { await getSafeKV(env).delete('cache:comment-counts'); } catch {}
       return jsonResponse({ success: true });
     } catch {
       return errorResponse('点赞失败', 500);
@@ -1072,7 +1185,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   if (path === '/api/likes') {
     if (request.method === 'GET') {
       try {
-        const cached = await env.CODE_EXPLORER_KV.get('cache:likes', { type: 'json' });
+        const cached = await getSafeKV(env).get('cache:likes', { type: 'json' });
         if (cached) {
           const resp = jsonResponse(cached);
           addCacheHeader(resp.headers, 300);
@@ -1081,14 +1194,14 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       } catch {}
       const likes: Record<string, number> = {};
       try {
-        const list = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
+        const list = await getSafeKV(env).list({ prefix: 'likes:' });
         for (const key of list.keys) {
           const project = key.name.substring('likes:'.length);
-          const value = await env.CODE_EXPLORER_KV.get(key.name);
+          const value = await getSafeKV(env).get(key.name);
           likes[project] = parseInt(value || '0', 10) || 0;
         }
         try {
-          await env.CODE_EXPLORER_KV.put('cache:likes', JSON.stringify(likes), {
+          await getSafeKV(env).put('cache:likes', JSON.stringify(likes), {
             expirationTtl: 300
           });
         } catch {}
@@ -1107,13 +1220,13 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         if (!project) return errorResponse('缺少 project 参数');
         const key = `likes:${project}`;
         let current = 0;
-        const existing = await env.CODE_EXPLORER_KV.get(key);
+        const existing = await getSafeKV(env).get(key);
         if (existing) current = parseInt(existing, 10) || 0;
         current += 1;
-        await env.CODE_EXPLORER_KV.put(key, String(current));
-        try { await env.CODE_EXPLORER_KV.delete('cache:likes'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:home-page-v2'); } catch {}
+        await getSafeKV(env).put(key, String(current));
+        try { await getSafeKV(env).delete('cache:likes'); } catch {}
+        try { await getSafeKV(env).delete('cache:project-meta'); } catch {}
+        try { await getSafeKV(env).delete('cache:home-page-v2'); } catch {}
         return jsonResponse({ project, likes: current });
       } catch {
         return errorResponse('点赞失败', 500);
@@ -1128,10 +1241,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
     let totalComments = 0, commentProjects = 0, totalLikes = 0, likeProjects = 0;
     try {
-      const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
+      const commentsList = await getSafeKV(env).list({ prefix: 'comments:' });
       commentProjects = commentsList.keys.length;
       for (const key of commentsList.keys) {
-        const data = await env.CODE_EXPLORER_KV.get(key.name);
+        const data = await getSafeKV(env).get(key.name);
         if (data) {
           try {
             const parsed = JSON.parse(data);
@@ -1143,10 +1256,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       }
     } catch {}
     try {
-      const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
+      const likesList = await getSafeKV(env).list({ prefix: 'likes:' });
       likeProjects = likesList.keys.length;
       for (const key of likesList.keys) {
-        const count = await env.CODE_EXPLORER_KV.get(key.name);
+        const count = await getSafeKV(env).get(key.name);
         if (count) totalLikes += parseInt(count, 10) || 0;
       }
     } catch {}
@@ -1198,8 +1311,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       try {
         const today = new Date().toISOString().slice(0, 10);
         const usageKey = `ai-usage:${today}`;
-        const currentUsage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
-        await env.CODE_EXPLORER_KV.put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
+        const currentUsage = parseInt(await getSafeKV(env).get(usageKey) || '0', 10);
+        await getSafeKV(env).put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
       } catch {}
       return jsonResponse({ success: true, response: result.text, recommendations: result.recommendations, reasoning: result.reasoning });
     } catch (e: any) {
@@ -1215,13 +1328,73 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const today = new Date().toISOString().slice(0, 10);
       const usageKey = `ai-usage:${today}`;
-      const usage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
+      const usage = parseInt(await getSafeKV(env).get(usageKey) || '0', 10);
       const DAILY_LIMIT = 10000;
       const neuronsPerRequest = 100;
       const remaining = Math.max(0, DAILY_LIMIT - usage * neuronsPerRequest);
       return jsonResponse({ usage, remaining, limit: DAILY_LIMIT, neuronsPerRequest });
     } catch (e: any) {
       return jsonResponse({ usage: 0, remaining: 10000, limit: 10000, neuronsPerRequest: 100 });
+    }
+  }
+
+  // ---- API Key 管理 API（代理到 ECS）----
+  if (path.startsWith('/api/api-keys') || path.startsWith('/api/ai-pool')) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
+      const ecsReqUrl = `${ecsUrl}${path}${url.search}`;
+      const headers = new Headers(request.headers);
+      headers.set('Host', new URL(ecsUrl).host);
+      const cookie = request.headers.get('Cookie');
+      if (cookie) headers.set('Cookie', cookie);
+      const resp = await fetch(ecsReqUrl, {
+        method: request.method,
+        headers,
+        body: request.method !== 'GET' ? request.body : undefined,
+        signal: controller.signal,
+        cf: { connectTimeout: 5 } as any,
+      });
+      clearTimeout(timer);
+      return new Response(resp.body, {
+        status: resp.status,
+        statusText: resp.statusText,
+        headers: resp.headers,
+      });
+    } catch (e: any) {
+      const msg = e.name === 'AbortError' ? 'ECS服务器请求超时' : (e.message || 'ECS服务器不可用');
+      return errorResponse(msg, 502);
+    }
+  }
+
+  // ---- 未识别的 API → 代理到 ECS 服务器 ----
+  if (!path.startsWith('/api/static') && !path.startsWith('/api/cdn')) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
+      const ecsReqUrl = `${ecsUrl}${path}${url.search}`;
+      const headers = new Headers(request.headers);
+      headers.set('Host', new URL(ecsUrl).host);
+      const cookie = request.headers.get('Cookie');
+      if (cookie) headers.set('Cookie', cookie);
+      const resp = await fetch(ecsReqUrl, {
+        method: request.method,
+        headers,
+        body: request.method !== 'GET' ? request.body : undefined,
+        signal: controller.signal,
+        cf: { connectTimeout: 5 } as any,
+      });
+      clearTimeout(timer);
+      return new Response(resp.body, {
+        status: resp.status,
+        statusText: resp.statusText,
+        headers: resp.headers,
+      });
+    } catch (e: any) {
+      const msg = e.name === 'AbortError' ? 'ECS服务器请求超时' : (e.message || 'ECS服务器不可用');
+      return errorResponse(msg, 502);
     }
   }
 
@@ -1250,7 +1423,7 @@ function simpleHashForAI(str: string): string {
 async function loadProjectsForRecommend(env: Env): Promise<any[]> {
   const CACHE_KEY = 'cache:project-meta';
   try {
-    const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' });
+    const cached = await getSafeKV(env).get(CACHE_KEY, { type: 'json' });
     if (cached && cached.projects) return cached.projects;
   } catch {}
   const listResp = await fetchAsset('/project-list.json', env);
@@ -1412,7 +1585,7 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
   const CACHE_TTL = 1800;
 
   try {
-    const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'text' });
+    const cached = await getSafeKV(env).get(CACHE_KEY, { type: 'text' });
     if (cached) {
       return new Response(cached, {
         status: 200,
@@ -1437,39 +1610,39 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
   const likesMap: Record<string, number> = {};
   const commentsMap: Record<string, number> = {};
   try {
-    const cachedLikes = await env.CODE_EXPLORER_KV.get('cache:likes', { type: 'json' });
+    const cachedLikes = await getSafeKV(env).get('cache:likes', { type: 'json' });
     if (cachedLikes) {
       Object.assign(likesMap, cachedLikes);
     } else {
-      const likesList = await env.CODE_EXPLORER_KV.list({ prefix: 'likes:' });
+      const likesList = await getSafeKV(env).list({ prefix: 'likes:' });
       for (const key of likesList.keys) {
         const project = key.name.substring('likes:'.length);
-        const value = await env.CODE_EXPLORER_KV.get(key.name);
+        const value = await getSafeKV(env).get(key.name);
         likesMap[project] = parseInt(value || '0', 10) || 0;
       }
       try {
-        await env.CODE_EXPLORER_KV.put('cache:likes', JSON.stringify(likesMap), {
+        await getSafeKV(env).put('cache:likes', JSON.stringify(likesMap), {
           expirationTtl: 1800
         });
       } catch {}
     }
   } catch {}
   try {
-    const cachedComments = await env.CODE_EXPLORER_KV.get('cache:comment-counts', { type: 'json' });
+    const cachedComments = await getSafeKV(env).get('cache:comment-counts', { type: 'json' });
     if (cachedComments) {
       Object.assign(commentsMap, cachedComments);
     } else {
-      const commentsList = await env.CODE_EXPLORER_KV.list({ prefix: 'comments:' });
+      const commentsList = await getSafeKV(env).list({ prefix: 'comments:' });
       for (const key of commentsList.keys) {
         const project = key.name.substring('comments:'.length);
-        const value = await env.CODE_EXPLORER_KV.get(key.name);
+        const value = await getSafeKV(env).get(key.name);
         try {
           const parsed = JSON.parse(value || '{}');
           commentsMap[project] = (parsed.comments || []).length;
         } catch { commentsMap[project] = 0; }
       }
       try {
-        await env.CODE_EXPLORER_KV.put('cache:comment-counts', JSON.stringify(commentsMap), {
+        await getSafeKV(env).put('cache:comment-counts', JSON.stringify(commentsMap), {
           expirationTtl: 1800
         });
       } catch {}
@@ -1486,7 +1659,7 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
   html = html.replace('</head>', injectScript + '</head>');
 
   try {
-    await env.CODE_EXPLORER_KV.put(CACHE_KEY, html, { expirationTtl: CACHE_TTL });
+    await getSafeKV(env).put(CACHE_KEY, html, { expirationTtl: CACHE_TTL });
   } catch {}
 
   return new Response(html, {
@@ -1504,6 +1677,33 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
   if (path === '/' || path === '') {
     return serveHomePage(request, env);
   }
+
+  // 路径重写：目录路径 → index.html 或 .html
+  // 已知有多页的目录，使用 index.html
+  const multiPageDirs = ['/web-games', '/feedback', '/fathers-day', '/python', '/scratch', '/resources', '/images'];
+  if (path.endsWith('/') && path !== '/') {
+    const trimmedPath = path.slice(0, -1);
+    if (multiPageDirs.includes(trimmedPath)) {
+      path = path + 'index.html';
+    } else {
+      path = trimmedPath + '.html';
+    }
+  }
+
+  // 路径重写：无扩展名路径 → 根据类型选择 .html 或 /index.html
+  let ext = getExt(path);
+  if (!ext && !path.startsWith('/api/') && !path.startsWith('/cdn-cgi/')) {
+    // 检查是否是已知的多页目录
+    const isMultiPageDir = multiPageDirs.some(d => path === d || path.startsWith(d + '/'));
+    if (isMultiPageDir) {
+      path = path + '/index.html';
+    } else {
+      path = path + '.html';
+    }
+  }
+
+  // 重新计算扩展名（路径重写后）
+  ext = getExt(path);
 
   // feedback 页面支持（/feedback → /feedback/index.html）
   if (path === '/feedback') {
@@ -1544,18 +1744,22 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     }
   }
 
-  const ext = getExt(path);
   const isStatic = isStaticAsset(ext);
   const isHtml = ext === '.html' || ext === '.htm';
   const isChangelog = path === '/changelog.json';
 
   // 静态资源尝试 KV 缓存（changelog.json 除外，动态内容不缓存）
   if (isStatic && !isHtml && !isChangelog) {
-    const cacheKey = `cache:static:${path}`;
+    const cacheKey = `cache:static:v4:${path}`;
+    const ctypeKey = `cache:static:v4:ctype:${path}`;
     try {
-      const cached = await env.CODE_EXPLORER_KV.get(cacheKey, { type: 'arrayBuffer' });
+      const cached = await getSafeKV(env).get(cacheKey, { type: 'arrayBuffer' });
       if (cached) {
-        const ctype = CONTENT_TYPE_MAP[ext] || 'application/octet-stream';
+        let ctype = CONTENT_TYPE_MAP[ext] || 'application/octet-stream';
+        try {
+          const storedCtype = await getSafeKV(env).get(ctypeKey, { type: 'text' });
+          if (storedCtype) ctype = storedCtype;
+        } catch {}
         return new Response(cached, {
           status: 200,
           headers: {
@@ -1570,8 +1774,12 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
   // 优先从 Worker Assets 获取静态文件
   let assetResp = await fetchAsset(path, env);
   if (assetResp.ok) {
-    const ctype = CONTENT_TYPE_MAP[ext] || assetResp.headers.get('Content-Type') || 'application/octet-stream';
-    const body = ctype.startsWith('text/') || ctype.startsWith('application/')
+    // Use asset's content type if it provides a specific one, otherwise fall back to map
+    const assetCtype = assetResp.headers.get('Content-Type') || '';
+    let ctype = (assetCtype && assetCtype !== 'application/octet-stream' && !assetCtype.startsWith('text/plain')) ? assetCtype : (CONTENT_TYPE_MAP[ext] || 'application/octet-stream');
+    // Force correct content type for HTML files
+    if (isHtml) ctype = 'text/html; charset=utf-8';
+    const body = ctype.startsWith('text/') || ctype.startsWith('application/') || ctype.startsWith('image/svg')
       ? await assetResp.text()
       : await assetResp.arrayBuffer();
     const headers = new Headers({ 'Content-Type': ctype });
@@ -1582,9 +1790,13 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     } else if (isStatic) {
       headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
       try {
-        const cacheKey = `cache:static:${path}`;
+        const cacheKey = `cache:static:v4:${path}`;
+        const ctypeKey = `cache:static:v4:ctype:${path}`;
         const buf = body instanceof ArrayBuffer ? body : new TextEncoder().encode(body as string).buffer;
-        await env.CODE_EXPLORER_KV.put(cacheKey, buf as any, {
+        await getSafeKV(env).put(cacheKey, buf as any, {
+          expirationTtl: 86400 * 7
+        });
+        await getSafeKV(env).put(ctypeKey, ctype, {
           expirationTtl: 86400 * 7
         });
       } catch {}
@@ -1592,30 +1804,48 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     return new Response(body, { status: 200, headers });
   }
 
-  // Fallback: 从 GitHub 代理静态文件（code-explorer/public 下的资源）
-  const rootGhPath = 'code-explorer/public/' + path.substring(1);
-  const rootGhResp = await fetchFromGitHub(rootGhPath, env);
-  if (rootGhResp.ok) {
-    const ctype = CONTENT_TYPE_MAP[ext] || rootGhResp.headers.get('Content-Type') || 'application/octet-stream';
-    const body = ctype.startsWith('text/') || ctype.startsWith('application/')
-      ? await rootGhResp.text()
-      : await rootGhResp.arrayBuffer();
-    const headers = new Headers({ 'Content-Type': ctype });
-    if (isHtml) {
-      headers.set('Cache-Control', 'no-cache');
-    } else if (isChangelog) {
-      headers.set('Cache-Control', 'no-cache, must-revalidate');
-    } else if (isStatic) {
-      headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
-      try {
-        const cacheKey = `cache:static:${path}`;
-        const buf = body instanceof ArrayBuffer ? body : new TextEncoder().encode(body as string).buffer;
-        await env.CODE_EXPLORER_KV.put(cacheKey, buf as any, {
-          expirationTtl: 86400 * 7
-        });
-      } catch {}
+  // Fallback: 从 GitHub 代理静态文件（尝试多个路径）
+  const fallbackPaths = [
+    'code-explorer/public/' + path.substring(1),
+    'code-explorer/' + path.substring(1),
+    path.substring(1),
+  ];
+  
+  for (const ghPath of fallbackPaths) {
+    const rootGhResp = await fetchFromGitHub(ghPath, env);
+    if (rootGhResp.ok) {
+      const ghCtype = rootGhResp.headers.get('Content-Type') || '';
+      let ctype = (ghCtype && ghCtype !== 'application/octet-stream' && !ghCtype.startsWith('text/plain')) ? ghCtype : (CONTENT_TYPE_MAP[ext] || 'application/octet-stream');
+      if (isHtml) ctype = 'text/html; charset=utf-8';
+      const body = ctype.startsWith('text/') || ctype.startsWith('application/') || ctype.startsWith('image/svg')
+        ? await rootGhResp.text()
+        : await rootGhResp.arrayBuffer();
+      const headers = new Headers({ 'Content-Type': ctype });
+      if (isHtml) {
+        headers.set('Cache-Control', 'no-cache');
+      } else if (isChangelog) {
+        headers.set('Cache-Control', 'no-cache, must-revalidate');
+      } else if (isStatic) {
+        headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
+        try {
+          const cacheKey = `cache:static:v4:${path}`;
+          const ctypeKey = `cache:static:v4:ctype:${path}`;
+          const buf = body instanceof ArrayBuffer ? body : new TextEncoder().encode(body as string).buffer;
+          await getSafeKV(env).put(cacheKey, buf as any, {
+            expirationTtl: 86400 * 7
+          });
+          await getSafeKV(env).put(ctypeKey, ctype, {
+            expirationTtl: 86400 * 7
+          });
+        } catch {}
+      }
+      return new Response(body, { status: 200, headers });
     }
-    return new Response(body, { status: 200, headers });
+  }
+
+  // For image requests that can't be found, generate placeholder
+  if (['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'].includes(ext)) {
+    return generatePlaceholderImage(ext, path);
   }
 
   return new Response('Not Found', { status: 404 });
@@ -1631,12 +1861,14 @@ export default {
     const path = url.pathname;
 
     // 一次性清理旧首页缓存
-    ctx.waitUntil(
-      Promise.all([
-        env.CODE_EXPLORER_KV.delete('cache:home-page').catch(() => {}),
-        env.CODE_EXPLORER_KV.delete('cache:home-page-v2').catch(() => {}),
-      ])
-    );
+    if (env.CODE_EXPLORER_KV) {
+      ctx.waitUntil(
+        Promise.all([
+          getSafeKV(env).delete('cache:home-page').catch(() => {}),
+          getSafeKV(env).delete('cache:home-page-v2').catch(() => {}),
+        ])
+      );
+    }
 
     // API 请求
     if (path.startsWith('/api/')) {
