@@ -2825,9 +2825,6 @@ body::before {
     background: var(--bg-primary);
   }
   .admin-page.active { display: flex; }
-  .admin-page.active ~ .top-right-bar {
-    display: none;
-  }
   .admin-page.active ~ .user-dropdown {
     display: none;
   }
@@ -3011,7 +3008,8 @@ body::before {
     .admin-header { padding: 0 16px; }
   }
 
-  /* ========== 右上角按钮组 ========== */
+  /* ========== 右上角按钮组（已迁移至 /components/nav.css） ========== */
+  /*
   .top-right-bar {
     position: fixed; top: 12px; right: 12px;
     z-index: 99997;
@@ -3147,6 +3145,7 @@ body::before {
     border-color: var(--accent-blue);
   }
   .changelog-btn svg { width: 18px; height: 18px; }
+  */
 
   /* ===== 更新日志弹窗 ===== */
   .changelog-modal-overlay {
@@ -3439,6 +3438,7 @@ body::before {
     color: white;
   }
 </style>
+<link rel="stylesheet" href="/components/nav.css">
 </head>
 <body>
 
@@ -3551,19 +3551,36 @@ body::before {
   </div>
 </div>
 
-<!-- ========== 右上角按钮组 ========== -->
-<div class="top-right-bar">
-  <button class="user-menu-btn hidden" id="userMenuBtn" title="用户菜单">
-    <span id="userMenuName" style="font-size:13px;font-weight:500;color:var(--text-primary)">用户</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-  </button>
-  <button class="changelog-btn" id="changelogBtn" title="更新日志">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-  </button>
-  <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)">
-    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-  </button>
+<!-- ========== 顶部导航栏（统一组件） ========== -->
+<div class="ce-nav-wrapper">
+  <div class="ce-top-nav">
+    <div class="ce-top-nav-brand">
+      <div class="ce-top-nav-brand-logo">◈</div>
+      Code Explorer
+    </div>
+    <div class="ce-top-nav-links" id="ceNavLinks">
+      <a class="ce-top-nav-link active" href="/" data-nav="/">首页</a>
+      <a class="ce-top-nav-link" href="/console" data-nav="/console">API Key</a>
+      <a class="ce-top-nav-link" href="/resources/" data-nav="/resources">资源下载</a>
+      <a class="ce-top-nav-link" href="/web-games/" data-nav="/web-games">网页游戏</a>
+      <a class="ce-top-nav-link" href="/scratch" data-nav="/scratch">Scratch</a>
+      <a class="ce-top-nav-link" href="/python/" data-nav="/python">Python 编程</a>
+      <a class="ce-top-nav-link" href="/run/local" data-nav="/run/local">⚡ 本地运行</a>
+    </div>
+    <div class="ce-top-nav-actions">
+      <button class="user-menu-btn hidden" id="ceUserMenuBtn" title="用户菜单">
+        <span id="ceUserName">用户</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="changelog-btn" id="ceChangelogBtn" title="更新日志">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </button>
+      <button class="theme-toggle-btn" id="ceThemeToggleBtn" title="切换主题 (Ctrl+T)">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
 </div>
 <div class="user-dropdown" id="userDropdown">
   <button class="user-dropdown-item" id="profileFromMenu">
@@ -3589,23 +3606,6 @@ body::before {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
     退出登录
   </button>
-</div>
-
-<!-- ===== 顶部导航栏 ===== -->
-<div class="top-nav">
-  <div class="top-nav-brand">
-    <div class="top-nav-brand-logo">◈</div>
-    Code Explorer
-  </div>
-  <div class="top-nav-links">
-    <a class="top-nav-link active" href="/">首页</a>
-    <a class="top-nav-link" href="/console">API Key</a>
-    <a class="top-nav-link" href="/resources/">资源下载</a>
-    <a class="top-nav-link" href="/web-games/">网页游戏</a>
-    <a class="top-nav-link" href="/scratch">Scratch</a>
-    <a class="top-nav-link" href="/python/">Python 编程</a>
-    <a class="top-nav-link" href="/run/local">⚡ 本地运行</a>
-  </div>
 </div>
 
 <!-- ==================== HOME PAGE ==================== -->
@@ -4673,9 +4673,6 @@ async function openProject(projectPath) {
   $('#homePage').style.display = 'none';
   $('#editorPage').style.display = 'flex';
   state.view = 'editor';
-  $('#themeToggleBtn').style.display = 'none';
-  $('#changelogBtn').style.display = 'none';
-  $('#userMenuBtn').style.display = 'none';
 
   state.openTabs = [];
   state.activeTabIdx = -1;
@@ -4713,8 +4710,6 @@ function goHome() {
   state.openTabs = [];
   state.activeTabIdx = -1;
   state.view = 'home';
-  $('#themeToggleBtn').style.display = '';
-  $('#changelogBtn').style.display = '';
   $('#runModeSelect').style.display = 'none';
   $('#entryFileSelect').style.display = 'none';
   $('#btnRun').style.display = 'none';
@@ -4722,10 +4717,6 @@ function goHome() {
   $('#readmeEmpty').style.display = 'flex';
   $('#readmeContent').style.display = 'none';
   $('#readmeContent').innerHTML = '';
-  if (state.isAuthenticated) {
-    $('#userMenuBtn').style.display = '';
-    $('#userMenuBtn').classList.remove('hidden');
-  }
 }
 
 // ==================== POPUP PREVIEW ====================
@@ -4891,11 +4882,15 @@ async function openFile(filePath) {
   const ex = state.openTabs.findIndex(t => t.path === filePath);
   if (ex >= 0) { switchTab(ex); return; }
   try {
-    // 如果当前在项目中且文件路径是相对路径，补全项目路径前缀
     const fullPath = state.currentProject && !filePath.startsWith(state.currentProject.path + '/')
       ? state.currentProject.path + '/' + filePath : filePath;
-    const d = await fetchContent(fullPath);
-    state.openTabs.push({ path: filePath, name: d.name, content: d.content, language: d.language });
+    const name = filePath.split('/').pop() || filePath;
+    if (isImageFile(filePath)) {
+      state.openTabs.push({ path: filePath, name, content: '', language: 'image' });
+    } else {
+      const d = await fetchContent(fullPath);
+      state.openTabs.push({ path: filePath, name: d.name, content: d.content, language: d.language });
+    }
     switchTab(state.openTabs.length - 1);
     $('#fileTree').querySelectorAll('.tree-item.active').forEach(el => el.classList.remove('active'));
     const fe = $('#fileTree').querySelector(`[data-file="${esc(filePath)}"]`);
@@ -4937,7 +4932,17 @@ function showEmptyState() {
 
 function isPreviewable(path) {
   const lower = (path || '').toLowerCase();
-  return lower.endsWith('.html') || lower.endsWith('.htm') || lower.endsWith('.svg')
+  return lower.endsWith('.html') || lower.endsWith('.htm') || lower.endsWith('.svg') ||
+    lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg') ||
+    lower.endsWith('.gif') || lower.endsWith('.webp') || lower.endsWith('.bmp') ||
+    lower.endsWith('.ico')
+}
+
+function isImageFile(path) {
+  const lower = (path || '').toLowerCase();
+  return lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg') ||
+    lower.endsWith('.gif') || lower.endsWith('.webp') || lower.endsWith('.bmp') ||
+    lower.endsWith('.ico') || lower.endsWith('.svg');
 }
 
 function togglePreview() {
@@ -5037,6 +5042,26 @@ async function renderCode() {
   document.getElementById('codePreviewFrame').src = 'about:blank';
   $('#codeViewer').style.display = 'flex';
   document.getElementById('btnPreviewLabel').textContent = '预览';
+
+  if (isImageFile(tab.path)) {
+    const container = document.getElementById('codeViewer');
+    const previewUrl = `/api/files/preview?path=${encodeURIComponent(tab.path)}`;
+    const ext = tab.path.split('.').pop().toLowerCase();
+    const isSvg = ext === 'svg';
+    if (isSvg) {
+      container.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-primary);padding:20px"><img src="${previewUrl}" style="max-width:100%;max-height:100%;object-fit:contain"/></div>`;
+    } else {
+      container.innerHTML = `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-primary);padding:20px;overflow:auto">
+        <div style="color:var(--text-tertiary);font-size:13px;margin-bottom:12px">图片预览 · ${esc(tab.name)}</div>
+        <img src="${previewUrl}" style="max-width:100%;max-height:calc(100% - 40px);object-fit:contain;background:var(--bg-secondary);border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.15)"/>
+      </div>`;
+    }
+    $('#breadcrumb').innerHTML = tab.path.split('/').map((p,i,a) =>
+      `<span>${esc(p)}</span>${i<a.length-1?'<span class="sep">/</span>':''}`).join('');
+    $('#btnCopy').style.display = 'none';
+    $('#btnPreview').style.display = 'none';
+    return;
+  }
 
   try {
     // 显示加载状态
@@ -6699,7 +6724,7 @@ const registerPasswordInput = document.getElementById('registerPasswordInput');
 const registerConfirmInput = document.getElementById('registerConfirmInput');
 const registerSubmitBtn = document.getElementById('registerSubmitBtn');
 const registerError = document.getElementById('registerError');
-const userMenuBtn = document.getElementById('userMenuBtn');
+const userMenuBtn = document.getElementById('ceUserMenuBtn');
 const userDropdown = document.getElementById('userDropdown');
 const openAdminFromMenu = document.getElementById('openAdminFromMenu');
 const openFeedbackMenu = document.getElementById('openFeedbackMenu');
@@ -6758,6 +6783,7 @@ async function checkAuth() {
     if (d.authenticated && d.user) {
       state.currentUser = d.user;
       state.isAuthenticated = true;
+      if (window.CENav) CENav.setUser(d.user.username);
       const isAdmin = d.user.role === 'admin';
       if (openAdminFromMenu) openAdminFromMenu.style.display = isAdmin ? '' : 'none';
       if (openInboxMenu) openInboxMenu.style.display = isAdmin ? '' : 'none';
@@ -6781,8 +6807,7 @@ async function doUserLogin() {
       state.currentUser = d.user;
       state.isAuthenticated = true;
       hideLoginPage();
-      userMenuBtn.classList.remove('hidden');
-      if (document.getElementById('userMenuName')) document.getElementById('userMenuName').textContent = d.user.username;
+      if (window.CENav) CENav.setUser(d.user.username);
       const isAdmin = d.user.role === 'admin';
       openAdminFromMenu.style.display = isAdmin ? '' : 'none';
       openInboxMenu.style.display = isAdmin ? '' : 'none';
@@ -6847,7 +6872,7 @@ async function doLogout() {
   state.isAuthenticated = false;
   hideAdminDashboard();
   hideLoginPage();
-  userMenuBtn.classList.add('hidden');
+  if (window.CENav) CENav.setUser('');
   userDropdown.classList.remove('show');
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
@@ -7153,7 +7178,7 @@ async function clearCache() {
 // ==================== 新增功能 ====================
 
 // ===== A1: 主题切换 =====
-const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeToggleBtn = document.getElementById('ceThemeToggleBtn');
 const THEME_KEY = 'code_explorer_theme';
 
 function getTheme() {
@@ -7174,9 +7199,23 @@ function toggleTheme() {
   setTheme(current === 'dark' ? 'light' : 'dark');
 }
 
-themeToggleBtn.addEventListener('click', toggleTheme);
-const changelogBtn = document.getElementById('changelogBtn');
-if (changelogBtn) changelogBtn.addEventListener('click', openChangelogModal);
+// 主题切换已由 /components/nav.js 统一处理，此处仅保留 Monaco Editor 主题同步
+// 通过 MutationObserver 监听 data-theme 变化
+document.addEventListener('DOMContentLoaded', function() {
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+        var theme = document.documentElement.getAttribute('data-theme') || 'dark';
+        if (window.monacoReady && window.monacoEditor) {
+          window.monaco.editor.setTheme(theme === 'dark' ? 'vs-dark' : 'vs');
+        }
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+});
+
+// 更新日志按钮已由 /components/nav.js 统一处理
 const aboutEntry = document.getElementById('aboutEntry');
 if (aboutEntry) aboutEntry.addEventListener('click', openAboutModal);
 const mindmapEntry = document.getElementById('mindmapEntry');
@@ -7571,9 +7610,6 @@ document.addEventListener('DOMContentLoaded', function() {
     checkAuth().then(authed => {
       if (authed && userMenuBtn) {
         userMenuBtn.classList.remove('hidden');
-        if (state.currentUser && document.getElementById('userMenuName')) {
-          document.getElementById('userMenuName').textContent = state.currentUser.username;
-        }
         if (state.currentUser) {
           const isAdmin = state.currentUser.role === 'admin';
           openAdminFromMenu.style.display = isAdmin ? '' : 'none';
@@ -7616,9 +7652,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (authed) {
       if (userMenuBtn) { userMenuBtn.classList.remove('hidden'); }
-      if (state.currentUser && document.getElementById('userMenuName')) {
-        document.getElementById('userMenuName').textContent = state.currentUser.username;
-      }
       init();
     } else {
       showLoginPage();
@@ -7672,6 +7705,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
+<script src="/components/nav.js"></script>
 </body>
 </html>
 <!-- force-refresh: 1785070272 -->
