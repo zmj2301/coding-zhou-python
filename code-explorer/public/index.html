@@ -7468,11 +7468,15 @@ function showReadmeEmpty() {
 function toggleReadmePanel() {
   const panel = $('#readmePanel');
   const resizer = $('#resizerRight');
-  if (panel.classList.contains('collapsed')) {
-    panel.classList.remove('collapsed');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'flex';
+    if (panel._savedWidth) {
+      panel.style.width = panel._savedWidth + 'px';
+    }
     resizer.style.display = '';
   } else {
-    panel.classList.add('collapsed');
+    panel._savedWidth = panel.offsetWidth;
+    panel.style.display = 'none';
     resizer.style.display = 'none';
   }
 }
@@ -7480,7 +7484,8 @@ function toggleReadmePanel() {
 function closeReadmePanel() {
   const panel = $('#readmePanel');
   const resizer = $('#resizerRight');
-  panel.classList.add('collapsed');
+  panel._savedWidth = panel.offsetWidth;
+  panel.style.display = 'none';
   resizer.style.display = 'none';
 }
 
