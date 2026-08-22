@@ -3152,7 +3152,7 @@ body::before {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0,0,0,0.6);
     display: none; align-items: center; justify-content: center;
-    z-index: 100001;
+    z-index: 100010;
     backdrop-filter: blur(4px);
   }
   .changelog-modal-overlay.active { display: flex; }
@@ -3171,6 +3171,8 @@ body::before {
     border-bottom: 1px solid var(--border-color);
     display: flex; align-items: center; justify-content: space-between;
     flex-shrink: 0;
+    position: relative;
+    z-index: 5;
   }
   .changelog-modal-header h3 { font-size: 16px; font-weight: 600; margin: 0; }
   .changelog-modal-close {
@@ -3178,8 +3180,18 @@ body::before {
     font-size: 24px; cursor: pointer;
     color: var(--text-secondary);
     line-height: 1;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+    transition: all 0.2s;
   }
-  .changelog-modal-close:hover { color: var(--text-primary); }
+  .changelog-modal-close:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
   .changelog-body {
     display: flex; flex: 1; overflow: hidden;
   }
@@ -4746,8 +4758,28 @@ function closePopupPreview() {
   }
 // ESC 关闭弹窗
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape' && $('#popupPreviewOverlay').classList.contains('active')) {
-    closePopupPreview();
+  if (e.key === 'Escape') {
+    // 按优先级检查弹窗
+    if ($('#changelogModalOverlay').classList.contains('active')) {
+      closeChangelogModal();
+      return;
+    }
+    if ($('#popupPreviewOverlay').classList.contains('active')) {
+      closePopupPreview();
+      return;
+    }
+    if ($('#mindmapOverlay').classList.contains('active')) {
+      closeMindmapModal();
+      return;
+    }
+    if ($('#aiRecommendOverlay').classList.contains('active')) {
+      $('#aiRecommendOverlay').classList.remove('active');
+      return;
+    }
+    if ($('#aboutModalOverlay').classList.contains('active')) {
+      closeAboutModal();
+      return;
+    }
   }
 });
 
@@ -5569,7 +5601,7 @@ async function openChangelogModal() {
     renderChangelog(data);
     _changelogLoaded = true;
   } catch (e) {
-    $('#changelogModalBody').innerHTML = '<div class="changelog-loading">加载失败</div>';
+    $('#changelogContent').innerHTML = '<div class="changelog-loading">加载失败</div>';
   }
 }
 
