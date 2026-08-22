@@ -1073,9 +1073,6 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string; needsProjects?: boolean };
       let messages = data.messages;
-      const contextInfo = data.context;
-      const model = data.model;
-      const needsProjects = data.needsProjects !== false; // 默认为 true 保持兼容
 
       // 兼容旧格式: { input } 或 { preferences }
       if (!messages && (data.input || data.preferences)) {
@@ -1088,21 +1085,74 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         return errorResponse('请输入消息', 400);
       }
 
-      // 只在需要时加载项目列表，减少不必要的开销
-      let projects: any[] = [];
-      if (needsProjects) {
-        projects = await loadProjectsForRecommend(env);
-        if (projects.length === 0) return errorResponse('项目列表为空', 503);
+      let aiResponse: { text: string; recommendations: any[]; reasoning?: string };
+      let source: string = 'ollama';
+
+      // 1) 先尝试代理到 ECS 服务器（本地 Ollama AI）
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+      try {
+        const proxyResp = await fetch(`${ecsUrl}/api/recommend`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cookie': request.headers.get('Cookie') || '',
+            'Host': new URL(ecsUrl).host,
+          },
+          body: JSON.stringify({
+            messages,
+            model: data.model || 'ollama',
+            context: data.context,
+          }),
+          cf: { connectTimeout: 5, timeout: 120 },
+        });
+
+        if (proxyResp.ok) {
+          const result = await proxyResp.json();
+          if (result.response || result.recommendations?.length > 0) {
+            aiResponse = {
+              text: result.response || '',
+              recommendations: result.recommendations || [],
+              reasoning: result.reasoning || '',
+            };
+            source = 'ollama';
+          } else {
+            throw new Error('ECS 返回空响应');
+          }
+        } else {
+          throw new Error(`ECS 返回 ${proxyResp.status}`);
+        }
+      } catch (ecsErr) {
+        // 2) ECS 失败，降级到 Zhipu AI
+        try {
+          const projects = await loadProjectsForRecommend(env);
+          aiResponse = await getConversationalAI(messages, projects, env, data.context, 'glm-4.7-flash');
+          source = 'zhipu';
+          if (!aiResponse.text && aiResponse.recommendations.length === 0) {
+            // 3) Zhipu 也失败，降级到 Workers AI
+            aiResponse = await getConversationalAI(messages, projects, env, data.context);
+            source = 'workers';
+          }
+        } catch (aiErr) {
+          // 4) 全部失败
+          return errorResponse(`AI 服务暂不可用，请稍后再试`, 503);
+        }
       }
 
-      const result = await getConversationalAI(messages, projects, env, contextInfo, model);
+      // 记录 Cloudflare KV 用量统计
       try {
         const today = new Date().toISOString().slice(0, 10);
         const usageKey = `ai-usage:${today}`;
         const currentUsage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
         await env.CODE_EXPLORER_KV.put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
       } catch {}
-      return jsonResponse({ success: true, response: result.text, recommendations: result.recommendations, reasoning: result.reasoning });
+
+      return jsonResponse({
+        success: true,
+        response: aiResponse.text,
+        recommendations: aiResponse.recommendations || [],
+        reasoning: aiResponse.reasoning || '',
+        source,
+      });
     } catch (e: any) {
       return errorResponse(`请求失败: ${e.message || e}`, 500);
     }
@@ -1114,6 +1164,15 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
   if (path === '/api/ai-quota') {
     try {
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+      const resp = await fetchFromEcs('/api/ai-quota', env, request);
+      if (resp.ok) {
+        return new Response(await resp.text(), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      // 回退到 KV 统计
       const today = new Date().toISOString().slice(0, 10);
       const usageKey = `ai-usage:${today}`;
       const usage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
@@ -1178,6 +1237,45 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     } catch {}
 
     return errorResponse('资源不存在', 404);
+  }
+
+  if (path === '/api/proxy-download') {
+    const targetUrl = url.searchParams.get('url') || '';
+    if (!targetUrl) return errorResponse('缺少 url 参数', 400);
+
+    // 安全检查：只允许下载特定域名
+    const allowedDomains = ['github.com', 'ollama.com', 'objects.githubusercontent.com', 'codeload.github.com'];
+    let target: URL;
+    try {
+      target = new URL(targetUrl);
+    } catch {
+      return errorResponse('无效的 URL', 400);
+    }
+    if (!allowedDomains.some(d => target.hostname.includes(d))) {
+      return errorResponse('域名不被允许', 403);
+    }
+
+    try {
+      const resp = await fetch(targetUrl, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36' },
+        redirect: 'follow'
+      });
+      if (!resp.ok) return errorResponse(`下载失败: HTTP ${resp.status}`, 502);
+
+      const headers = new Headers();
+      const contentType = resp.headers.get('content-type') || 'application/octet-stream';
+      headers.set('Content-Type', contentType);
+      const contentLength = resp.headers.get('content-length');
+      if (contentLength) headers.set('Content-Length', contentLength);
+
+      return new Response(resp.body, { status: 200, headers });
+    } catch (err: any) {
+      return errorResponse(`代理下载失败: ${err.message}`, 502);
+    }
+  }
+
+  if (path === '/api/proxy-download-status') {
+    return jsonResponse({ status: 'ok', feature: 'proxy-download-available' });
   }
 
   return errorResponse('未找到接口', 404);
