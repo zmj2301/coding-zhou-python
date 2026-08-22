@@ -3145,7 +3145,6 @@ body::before {
     border-color: var(--accent-blue);
   }
   .changelog-btn svg { width: 18px; height: 18px; }
-  */
 
   /* ===== 更新日志弹窗 ===== */
   .changelog-modal-overlay {
@@ -3981,7 +3980,7 @@ body::before {
 <!-- Monaco Editor loaded via CDN -->
 
 <!-- ========== 更新日志弹窗 ========== -->
-<div class="changelog-modal-overlay" id="changelogModalOverlay" onclick="if(event.target===this)closeChangelogModal()">
+<div class="changelog-modal-overlay" id="changelogModalOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:100010;display:none;" onclick="if(event.target===this)closeChangelogModal()">
   <div class="changelog-modal">
     <div class="changelog-modal-header">
       <h3>更新日志</h3>
@@ -5593,7 +5592,9 @@ $('#treeFilter').addEventListener('input', () => {
 let _changelogLoaded = false;
 
 async function openChangelogModal() {
-  $('#changelogModalOverlay').classList.add('active');
+  const overlay = $('#changelogModalOverlay');
+  overlay.style.display = 'flex';
+  overlay.classList.add('active');
   if (_changelogLoaded) return;
   try {
     const res = await fetch('/changelog.json?t=' + Date.now());
@@ -5606,7 +5607,9 @@ async function openChangelogModal() {
 }
 
 function closeChangelogModal() {
-  $('#changelogModalOverlay').classList.remove('active');
+  const overlay = $('#changelogModalOverlay');
+  overlay.style.display = 'none';
+  overlay.classList.remove('active');
 }
 
 function openAboutModal() {
