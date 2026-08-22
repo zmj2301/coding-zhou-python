@@ -90,7 +90,7 @@ body::before {
 }
 body > * { position: relative; z-index: 1; }
 
-/* ===== 主题切换按钮 ===== */
+/* ===== 主题切换按钮（已弃用：使用 /components/nav.css 共享样式） =====
 .theme-toggle-btn {
   position: fixed; top: 12px; right: 56px;
   z-index: 99997;
@@ -112,6 +112,7 @@ body > * { position: relative; z-index: 1; }
 [data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
 [data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
 .theme-toggle-btn .moon-icon { display: none; }
+*/
 
 /* ===== 顶部栏 ===== */
 .admin-header {
@@ -408,6 +409,73 @@ body > * { position: relative; z-index: 1; }
   color: var(--text-tertiary); font-size: 14px;
 }
 .console-error { color: var(--accent-red); }
+
+/* ===== 动态加载指示器 ===== */
+.loading-container {
+  max-width: 420px; margin: 60px auto; text-align: center;
+}
+.loading-elapsed {
+  font-size: 14px; color: var(--text-secondary);
+  margin-bottom: 20px; font-family: var(--font-mono);
+}
+.loading-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.loading-step {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; border-radius: 8px;
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  font-size: 13px; color: var(--text-tertiary);
+  transition: all 0.3s;
+}
+.loading-step.active {
+  color: var(--text-primary);
+  border-color: var(--accent-blue);
+  background: rgba(88,166,255,0.08);
+}
+.loading-step.done {
+  color: var(--accent-green);
+  border-color: rgba(63,185,80,0.4);
+  background: rgba(63,185,80,0.06);
+}
+.loading-step.pending { opacity: 0.5; }
+.step-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+  background: var(--bg-tertiary);
+  flex-shrink: 0;
+}
+.loading-step.active .step-icon {
+  background: var(--accent-blue); color: #fff;
+}
+.loading-step.done .step-icon {
+  background: var(--accent-green); color: #fff;
+}
+.loading-step.pending .step-icon {
+  background: var(--bg-tertiary); color: var(--text-tertiary);
+}
+.loading-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-hint {
+  font-size: 12px; color: var(--text-tertiary);
+  margin-top: 16px; line-height: 1.6;
+}
+.loading-hint a { color: var(--accent-blue); text-decoration: underline; }
+.loading-retry {
+  margin-top: 12px; padding: 8px 20px;
+  background: var(--accent-blue); color: #fff;
+  border: none; border-radius: 8px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-sans);
+}
+.loading-retry:hover { filter: brightness(1.08); }
+.loading-retry:active { transform: translateY(0); }
 
 /* ===== 许愿池喷泉 ===== */
 .wishing-pool-wrap {
@@ -986,14 +1054,13 @@ function setTheme(theme) {
   localStorage.setItem(THEME_KEY, theme);
 }
 function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
-$('themeToggleBtn').addEventListener('click', toggleTheme);
 setTheme(getTheme());
 
 // ===== 数据加载 =====
 let currentUser = null;
 
 async function fetchWithTimeout(url, options = {}, timeout = 10000) {
-  const controller = new AbortController();
+  const controller = new abortController();
   const timer = setTimeout(() => controller.abort(), timeout);
   try {
     const res = await fetch(url, { ...options, signal: controller.signal });
@@ -1003,27 +1070,77 @@ async function fetchWithTimeout(url, options = {}, timeout = 10000) {
   }
 }
 
+// ===== 动态加载指示器 =====
+let _loadingTimer = null;
+let _loadingStart = 0;
+function showLoading(content, steps, currentStep) {
+  if (_loadingTimer) { clearInterval(_loadingTimer); _loadingTimer = null; }
+  _loadingStart = Date.now();
+  const render = () => {
+    const elapsed = ((Date.now() - _loadingStart) / 1000).toFixed(1);
+    const stepsHtml = steps.map((s, i) => {
+      let icon, cls;
+      if (i < currentStep) { icon = '✓'; cls = 'done'; }
+      else if (i === currentStep) { icon = '<span class="loading-spinner"></span>'; cls = 'active'; }
+      else { icon = '○'; cls = 'pending'; }
+      return `<div class="loading-step ${cls}"><span class="step-icon">${icon}</span><span class="step-text">${s}</span></div>`;
+    }).join('');
+    content.innerHTML = `
+      <div class="loading-container">
+        <div class="loading-elapsed">⏱ 已等待 ${elapsed}s</div>
+        <div class="loading-steps">${stepsHtml}</div>
+        <div class="loading-hint">如果长时间无响应，<a href="javascript:location.reload()" style="color:var(--accent-blue)">点击刷新</a> 或检查网络连接</div>
+      </div>`;
+  };
+  render();
+  _loadingTimer = setInterval(render, 200);
+}
+function stopLoading() {
+  if (_loadingTimer) { clearInterval(_loadingTimer); _loadingTimer = null; }
+}
+
 async function loadPool() {
+  stopLoading();
   const content = $('content');
+  const steps = ['检查登录状态...', '加载池子数据...'];
+  showLoading(content, steps, 0);
   try {
     const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
     if (!authRes.ok) throw new Error('登录状态检查失败 (' + authRes.status + ')');
     const authData = await authRes.json();
     if (!authData.authenticated) {
+      stopLoading();
       content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
       return;
     }
     currentUser = authData.user;
     $('adminUsername').textContent = currentUser.username;
+    if (window.CENav) CENav.setUser(currentUser.username);
 
-    const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 10000);
-    if (res.status === 401) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a></div>'; return; }
+    showLoading(content, steps, 1);
+    const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 12000);
+    if (res.status === 401) {
+      stopLoading();
+      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
+      return;
+    }
     if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
+    stopLoading();
     render(data);
   } catch (e) {
-    const msg = e.name === 'AbortError' ? '请求超时，服务器暂时无响应' : esc(e.message);
-    content.innerHTML = '<div class="console-error">数据加载失败：' + msg + '<br><small>如果你刚登录，请刷新页面重试；如果问题持续存在，请联系管理员</small></div>';
+    stopLoading();
+    const msg = e.name === 'AbortError'
+      ? '请求超时（服务器 8 秒内无响应）'
+      : esc(e.message || '未知错误');
+    content.innerHTML = `
+      <div class="console-error" style="padding:40px 20px">
+        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-primary)">数据加载失败</div>
+        <div>${msg}</div>
+        <div style="margin-top:16px;font-size:12px">如果你刚登录，请刷新页面重试</div>
+        <button class="loading-retry" onclick="loadPool()" style="margin-top:16px">🔄 重新加载</button>
+      </div>`;
   }
 }
 
@@ -1245,6 +1362,7 @@ loadPool();
 let currentTab = 'dashboard';
 
 function switchTab(tab) {
+  stopLoading();
   currentTab = tab;
   document.querySelectorAll('.console-nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.tab === tab);
@@ -1263,30 +1381,50 @@ const MASK = k => k ? k.slice(0, 10) + '••••' + k.slice(-4) : '';
 let apiKeyView = 'mine'; // mine | all
 
 async function loadApiKeys() {
+  stopLoading();
   const content = $('content');
-  content.innerHTML = '<div class="console-loading">加载中...</div>';
+  const steps = ['检查登录状态...', '加载 API Key 列表...'];
+  showLoading(content, steps, 0);
   try {
     if (!currentUser) {
       const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
       if (!authRes.ok) throw new Error('登录状态检查失败 (' + authRes.status + ')');
       const authData = await authRes.json();
-      if (!authData.authenticated) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>'; return; }
+      if (!authData.authenticated) {
+        stopLoading();
+        content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
+        return;
+      }
       currentUser = authData.user;
       $('adminUsername').textContent = currentUser.username;
+      if (window.CENav) CENav.setUser(currentUser.username);
     }
+    showLoading(content, steps, 1);
     const url = '/api/api-keys' + (currentUser && currentUser.role === 'admin' ? '?all=' + (apiKeyView === 'all' ? '1' : '0') : '');
     const res = await fetchWithTimeout(url, {}, 10000);
-    if (res.status === 401) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>'; return; }
+    if (res.status === 401) {
+      stopLoading();
+      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
+      return;
+    }
     if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
+    stopLoading();
     if (data.error) {
       content.innerHTML = '<div class="console-error">' + esc(data.error) + '</div>';
       return;
     }
     renderApiKeys(data.keys || []);
   } catch (e) {
-    const msg = e.name === 'AbortError' ? '请求超时，服务器暂时无响应' : esc(e.message);
-    content.innerHTML = '<div class="console-error">加载失败：' + msg + '<br><small>请刷新页面重试；如果问题持续存在，请联系管理员</small></div>';
+    stopLoading();
+    const msg = e.name === 'AbortError' ? '请求超时' : esc(e.message || '未知错误');
+    content.innerHTML = `
+      <div class="console-error" style="padding:40px 20px">
+        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-primary)">加载失败</div>
+        <div>${msg}</div>
+        <button class="loading-retry" onclick="loadApiKeys()" style="margin-top:16px">🔄 重新加载</button>
+      </div>`;
   }
 }
 
@@ -1687,15 +1825,7 @@ function copyGuideCode(lang) {
 </script>
 <script src="/components/nav.js"></script>
 <script>
-// Initialize shared nav
 if(window.CENav) window.CENav.init();
-// Sync theme toggle with nav
-var navToggle = document.getElementById('ceThemeToggleBtn');
-if(navToggle){
-  navToggle.addEventListener('click', function(){
-    // Let nav.js handle the toggle
-  });
-}
 </script>
 </body>
 </html>
