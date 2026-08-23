@@ -1376,7 +1376,24 @@ def get_current_user(handler):
         return None
     user_id = payload.get('user_id')
     if user_id:
-        return get_user_by_id(user_id)
+        user = get_user_by_id(user_id)
+        if user:
+            return user
+    # Handle tokens from Worker (no user_id, use sub/username)
+    username = payload.get('sub') or payload.get('username')
+    if username:
+        user = get_user_by_username(username)
+        if user:
+            return user
+        # Synthetic user for Worker-issued tokens
+        return {
+            'id': 0,
+            'username': username,
+            'role': payload.get('role', 'admin' if payload.get('is_admin') else 'user'),
+            'is_admin': payload.get('is_admin', payload.get('role') == 'admin'),
+            'password_hash': '',
+            'salt': ''
+        }
     return None
 
 
