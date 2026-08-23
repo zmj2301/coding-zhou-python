@@ -1783,7 +1783,7 @@ curl -X POST https://codingzhou.top/api/recommend \\
 const resp = await fetch("https://codingzhou.top/api/recommend", {
   method: "POST",
   headers: {
-    "Authorization": `Bearer ${API_KEY}`,
+    "Authorization": \`Bearer \${API_KEY}\`,
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
@@ -1796,7 +1796,7 @@ const resp = await fetch("https://codingzhou.top/api/recommend", {
 const data = await resp.json();
 if (data.success) {
   console.log(data.response);
-  data.recommendations.forEach(r => console.log(`→ ${r.name}: ${r.reason}`));
+  data.recommendations.forEach(r => console.log(\`→ \${r.name}: \${r.reason}\`));
 } else {
   console.error("错误:", data.error);
 }
@@ -1805,7 +1805,7 @@ if (data.success) {
 const visionResp = await fetch("https://codingzhou.top/api/recommend", {
   method: "POST",
   headers: {
-    "Authorization": `Bearer ${API_KEY}`,
+    "Authorization": \`Bearer \${API_KEY}\`,
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
@@ -1837,11 +1837,11 @@ const resp = await axios.post(
     messages: [{ role: "user", content: "推荐几个 Python 练手项目" }],
     model: "ollama/text"
   },
-  { headers: { Authorization: `Bearer ${API_KEY}` } }
+  { headers: { Authorization: \`Bearer \${API_KEY}\` } }
 );
 if (resp.data.success) {
   console.log(resp.data.response);
-  resp.data.recommendations.forEach(r => console.log(`→ ${r.name}: ${r.reason}`));
+  resp.data.recommendations.forEach(r => console.log(\`→ \${r.name}: \${r.reason}\`));
 } else {
   console.error("错误:", resp.data.error);
 }
@@ -1859,7 +1859,7 @@ const visionResp = await axios.post(
     }],
     model: "ollama/vision"
   },
-  { headers: { Authorization: `Bearer ${API_KEY}` } }
+  { headers: { Authorization: \`Bearer \${API_KEY}\` } }
 );
 console.log(visionResp.data.response);</code></pre>
           </div>
