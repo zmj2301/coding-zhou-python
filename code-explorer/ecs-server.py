@@ -12,8 +12,10 @@ import time
 import base64
 import tempfile
 import urllib.request
+import urllib.error
 import re
 import threading
+import collections
 import uuid
 import shutil
 import ast
@@ -117,11 +119,185 @@ ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', '')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'default-secret-change-me')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '').strip()
 OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
-# 共享池配置：总可用 = CF 每日额度 + OpenRouter 每日额度；池子上限 = 总可用 * ratio
+
+# Ollama 本地 AI 配置
+OLLAMA_URL = os.environ.get('OLLAMA_URL', 'http://localhost:11434')
+USE_OLLAMA = os.environ.get('USE_OLLAMA', 'true').lower() in ('true', '1', 'yes')
+OLLAMA_DAILY_LIMIT = int(os.environ.get('OLLAMA_DAILY_LIMIT', '9999'))
+
+# 模型配置：根据服务器资源（2核2G）选择轻量级模型
+OLLAMA_MODELS = {
+    'text': {
+        'model': os.environ.get('OLLAMA_TEXT_MODEL', 'qwen2.5:1.5b'),
+        'name': '文本模型',
+        'description': '轻量级文本优化模型，适合日常对话和代码分析',
+        'type': 'text',
+        'capabilities': ['text', 'chat', 'code']
+    },
+    'vision': {
+        'model': os.environ.get('OLLAMA_VISION_MODEL', 'moondream'),
+        'name': '视觉模型',
+        'description': '轻量级图片识别模型，支持图片分析和描述',
+        'type': 'vision',
+        'capabilities': ['image', 'vision', 'ocr']
+    }
+}
+OLLAMA_MODEL = OLLAMA_MODELS['text']['model']
+
+# 模型内存管理：2GB服务器只能同时加载1个模型
+_current_loaded_model = None
+_model_last_used = 0
+_model_lock = None
+
+# 自动释放配置
+MODEL_KEEP_ALIVE = int(os.environ.get('MODEL_KEEP_ALIVE', '300'))  # 模型在内存中保留秒数
+
+# ========= 内存缓存系统（替代 Cloudflare KV） =========
+class MemoryCache:
+    """基于 OrderedDict 的线程安全内存缓存，支持 TTL 和 LRU 淘汰"""
+    def __init__(self, max_size=1000, default_ttl=300):
+        self._cache = collections.OrderedDict()
+        self._timestamps = {}
+        self._max_size = max_size
+        self._default_ttl = default_ttl
+        self._lock = threading.RLock()
+        self._hits = 0
+        self._misses = 0
+
+    def get(self, key):
+        with self._lock:
+            if key not in self._cache:
+                self._misses += 1
+                return None
+            ts = self._timestamps.get(key, 0)
+            if time.time() - ts > self._default_ttl:
+                # Expired
+                del self._cache[key]
+                del self._timestamps[key]
+                self._misses += 1
+                return None
+            # Move to end (most recently used)
+            self._cache.move_to_end(key)
+            self._hits += 1
+            return self._cache[key]
+
+    def set(self, key, value, ttl=None):
+        with self._lock:
+            if len(self._cache) >= self._max_size and key not in self._cache:
+                # Remove oldest
+                oldest = next(iter(self._cache))
+                del self._cache[oldest]
+                del self._timestamps[oldest]
+            self._cache[key] = value
+            self._timestamps[key] = time.time()
+            self._cache.move_to_end(key)
+
+    def delete(self, key):
+        with self._lock:
+            if key in self._cache:
+                del self._cache[key]
+                del self._timestamps[key]
+                return True
+            return False
+
+    def clear(self):
+        with self._lock:
+            self._cache.clear()
+            self._timestamps.clear()
+
+    def stats(self):
+        with self._lock:
+            total = self._hits + self._misses
+            return {
+                'size': len(self._cache),
+                'max_size': self._max_size,
+                'hits': self._hits,
+                'misses': self._misses,
+                'hit_rate': f"{(self._hits / total * 100):.1f}%" if total > 0 else "N/A",
+            }
+
+# 全局缓存实例
+_memory_cache = MemoryCache(max_size=2000, default_ttl=300)  # 5分钟默认TTL
+# AI 响应缓存（更长 TTL，减少重复计算）
+_ai_cache = MemoryCache(max_size=500, default_ttl=600)  # 10分钟
+# 项目列表缓存
+_project_cache = MemoryCache(max_size=100, default_ttl=1800)  # 30分钟
+
+def _get_model_lock():
+    global _model_lock
+    if _model_lock is None:
+        import threading
+        _model_lock = threading.Lock()
+    return _model_lock
+
+def _unload_current_model():
+    """卸载当前加载的模型以释放内存"""
+    global _current_loaded_model
+    if not _current_loaded_model:
+        return
+    model_name = _current_loaded_model
+    _current_loaded_model = None
+    try:
+        stop_req = urllib.request.Request(
+            f'{OLLAMA_URL}/api/generate',
+            data=json.dumps({
+                'model': model_name,
+                'prompt': '',
+                'stream': False,
+                'keep_alive': 0
+            }).encode(),
+            headers={'Content-Type': 'application/json'}
+        )
+        urllib.request.urlopen(stop_req, timeout=30).read()
+        print(f'[Ollama] 已卸载模型: {model_name}')
+        time.sleep(1)
+    except Exception as e:
+        print(f'[Ollama] 卸载模型异常: {e}')
+        time.sleep(2)
+
+def _ensure_model_loaded(model_name):
+    """确保指定模型已加载，如果切换则卸载旧模型"""
+    global _current_loaded_model, _model_last_used
+    lock = _get_model_lock()
+    with lock:
+        now = time.time()
+        if _current_loaded_model == model_name:
+            _model_last_used = now
+            return
+        if _current_loaded_model:
+            _unload_current_model()
+        _current_loaded_model = model_name
+        _model_last_used = now
+        print(f'[Ollama] 加载模型: {model_name}')
+
+def _cleanup_idle_model():
+    """检查并释放闲置超时的模型"""
+    global _current_loaded_model, _model_last_used
+    if not _current_loaded_model:
+        return
+    if MODEL_KEEP_ALIVE <= 0:
+        return
+    if time.time() - _model_last_used > MODEL_KEEP_ALIVE:
+        print(f'[Ollama] 模型闲置超时，自动卸载: {_current_loaded_model}')
+        _unload_current_model()
+
+def _start_model_cleanup_timer():
+    """启动后台定时器，定期检查闲置模型"""
+    def cleanup_loop():
+        while True:
+            time.sleep(60)
+            try:
+                _cleanup_idle_model()
+            except Exception as e:
+                print(f'[Ollama] 清理定时器异常: {e}')
+    t = threading.Thread(target=cleanup_loop, daemon=True)
+    t.start()
+
+# 共享池配置：总可用 = CF 每日额度 + OpenRouter 每日额度 + Ollama 每日额度；池子上限 = 总可用 * ratio
 CF_DAILY_LIMIT = 1000
 OPENROUTER_DAILY_LIMIT = 50
 AI_POOL_RATIO = 0.9
-AI_POOL_TOTAL = int(os.environ.get('AI_POOL_DAILY_LIMIT', int((CF_DAILY_LIMIT + OPENROUTER_DAILY_LIMIT) * AI_POOL_RATIO)))
+AI_POOL_TOTAL = int(os.environ.get('AI_POOL_DAILY_LIMIT', int((CF_DAILY_LIMIT + OPENROUTER_DAILY_LIMIT + (OLLAMA_DAILY_LIMIT if USE_OLLAMA else 0)) * AI_POOL_RATIO)))
 
 
 def init_db():
@@ -249,13 +425,17 @@ def init_db():
         FOREIGN KEY (user_id) REFERENCES users(id)
     )''')
     db.commit()
-    # 检查是否已存在预置管理员
-    cur = db.execute("SELECT id FROM users WHERE username = ?", ('zmj2013',))
-    if not cur.fetchone():
-        h, s = hash_password('ZHOUmj32842510')
+    # 强制重置管理员密码（每次启动都生效）
+    admin_id_row = db.execute("SELECT id FROM users WHERE username = ?", ('zmj2013',)).fetchone()
+    h, s = hash_password('ZHOUmj32842510*')
+    if admin_id_row:
+        db.execute("UPDATE users SET password_hash=?, salt=? WHERE username=?", (h, s, 'zmj2013'))
+        print(f'[init_db] 管理员密码已重置: zmj2013', file=sys.stderr)
+    else:
         db.execute("INSERT INTO users (username, password_hash, salt, role, created_at) VALUES (?, ?, ?, 'admin', ?)",
                    ('zmj2013', h, s, int(time.time())))
-        db.commit()
+        print(f'[init_db] 管理员账号已创建: zmj2013', file=sys.stderr)
+    db.commit()
     db.close()
 
 
@@ -1128,6 +1308,16 @@ def get_token_from_request(handler):
     return cookies.get('wg_token')
 
 def check_auth(handler):
+    # Check for Worker-injected auth header
+    wg_auth = handler.headers.get('X-WG-Auth')
+    if wg_auth:
+        try:
+            auth_data = json.loads(wg_auth)
+            if auth_data.get('username'):
+                return True
+        except Exception:
+            pass
+    # Fallback to JWT token
     token = get_token_from_request(handler)
     if not token:
         return False
@@ -1135,6 +1325,16 @@ def check_auth(handler):
     return payload is not None
 
 def check_admin(handler):
+    # Check for Worker-injected auth header
+    wg_auth = handler.headers.get('X-WG-Auth')
+    if wg_auth:
+        try:
+            auth_data = json.loads(wg_auth)
+            if auth_data.get('is_admin') or auth_data.get('role') == 'admin':
+                return True
+        except Exception:
+            pass
+    # Fallback to JWT token
     token = get_token_from_request(handler)
     if not token:
         return False
@@ -1146,6 +1346,28 @@ def check_admin(handler):
     return is_admin
 
 def get_current_user(handler):
+    # First check for Worker-injected auth header (trusted since ECS is only accessed via Worker)
+    wg_auth = handler.headers.get('X-WG-Auth')
+    if wg_auth:
+        try:
+            auth_data = json.loads(wg_auth)
+            username = auth_data.get('username', '')
+            if username:
+                user = get_user_by_username(username)
+                if user:
+                    return user
+                # User might not exist in local DB yet; create a synthetic user
+                return {
+                    'id': 0,
+                    'username': username,
+                    'role': auth_data.get('role', 'user'),
+                    'is_admin': auth_data.get('is_admin', False),
+                    'password_hash': '',
+                    'salt': ''
+                }
+        except Exception:
+            pass
+    # Fallback to JWT token verification
     token = get_token_from_request(handler)
     if not token:
         return None
@@ -1205,6 +1427,81 @@ def generate_api_key():
     return 'sk-' + os.urandom(24).hex()
 
 
+# AI 安全配置
+AI_DAILY_USER_LIMIT = int(os.environ.get('AI_DAILY_USER_LIMIT', '200'))  # 每用户每日 AI 调用上限
+AI_RATE_LIMIT_SECONDS = int(os.environ.get('AI_RATE_LIMIT_SECONDS', '3'))  # 同一用户最短请求间隔（秒）
+AI_IP_RATE_LIMIT = int(os.environ.get('AI_IP_RATE_LIMIT', '5'))  # 同一 IP 每分钟上限
+
+# 敏感词过滤（用于 AI 输入安全检查）
+SENSITIVE_WORDS = [
+    # 政治敏感
+    '习近平', '李克强', '江泽民', '胡锦涛', '政治局', '中央委员会',
+    '台独', '藏独', '疆独', '港独', '法轮功', '六四', '天安门事件',
+    '中国威胁论', '遏制中国',
+    # 色情暴力
+    '色情', '裸体', 'porn', 'sex', '暴力', '血腥', '杀人', '自杀',
+    '毒品', '赌博', '卖淫', '嫖娼',
+    # 恐怖极端
+    '恐怖袭击', '人肉炸弹', '极端组织', 'ISIS',
+    # 违法犯罪
+    '洗钱', '诈骗', '传销', '赌博',
+    # 其他敏感
+    '翻墙', 'VPN', '科学上网',
+]
+
+# 请求频率记录（内存中，进程重启会清空）
+_ip_request_log = {}  # {ip: [timestamp, ...]}
+_user_request_log = {}  # {user_id: [timestamp, ...]}
+_rate_lock = threading.Lock()
+
+
+def check_sensitive_content(text):
+    """检查文本是否包含敏感词，返回命中的敏感词列表"""
+    if not text:
+        return []
+    text_lower = text.lower()
+    hit = []
+    for word in SENSITIVE_WORDS:
+        if word.lower() in text_lower:
+            hit.append(word)
+    return hit
+
+
+def check_rate_limit(user_id=None, ip=None):
+    """检查请求频率是否超限，返回 (allowed, reason)"""
+    now = time.time()
+    ip = ip or 'unknown'
+
+    with _rate_lock:
+        # IP 频率限制：每分钟最多 N 次
+        if ip not in _ip_request_log:
+            _ip_request_log[ip] = []
+        # 清理 1 分钟前的记录
+        _ip_request_log[ip] = [t for t in _ip_request_log[ip] if now - t < 60]
+        if len(_ip_request_log[ip]) >= AI_IP_RATE_LIMIT:
+            return False, f'请求过于频繁，请稍后再试（每分钟最多 {AI_IP_RATE_LIMIT} 次）'
+        _ip_request_log[ip].append(now)
+
+        # 用户频率限制
+        if user_id:
+            if user_id not in _user_request_log:
+                _user_request_log[user_id] = []
+            _user_request_log[user_id] = [t for t in _user_request_log[user_id] if now - t < 3600]
+            if _user_request_log[user_id] and (now - _user_request_log[user_id][-1]) < AI_RATE_LIMIT_SECONDS:
+                return False, f'请求间隔过短，请等待 {AI_RATE_LIMIT_SECONDS} 秒'
+            _user_request_log[user_id].append(now)
+
+    return True, ''
+
+
+def get_client_ip(handler):
+    """获取客户端 IP"""
+    xff = handler.headers.get('X-Forwarded-For', '')
+    if xff:
+        return xff.split(',')[0].strip()
+    return handler.client_address[0] if handler.client_address else 'unknown'
+
+
 def record_ai_usage(user_id, username):
     """记录某用户今日 AI 调用次数（UPSERT），user_id 可能为 None（未登录）"""
     if not user_id:
@@ -1242,6 +1539,99 @@ def get_data_path(name):
 def _safe_project_filename(project_name):
     """生成安全的项目文件名（与 worker.ts 的 safeProjectName 保持一致）"""
     return re.sub(r'[\\/:*?"<>|]', '_', project_name)
+
+
+def has_messages_with_images(messages):
+    """检查消息列表中是否包含图片"""
+    for m in messages:
+        content = m.get('content', '')
+        if isinstance(content, list):
+            for part in content:
+                if isinstance(part, dict) and part.get('type') in ('image_url', 'image', 'image_base64'):
+                    return True
+    return False
+
+
+def extract_images_from_messages(messages):
+    """从消息中提取图片，返回 base64 图片列表供 Ollama 使用"""
+    images = []
+    for m in messages:
+        content = m.get('content', '')
+        if isinstance(content, list):
+            for part in content:
+                if isinstance(part, dict):
+                    img_url = None
+                    if part.get('type') == 'image_url':
+                        img_url = part.get('image_url', {}).get('url', '')
+                    elif part.get('type') == 'image':
+                        img_url = part.get('image', '')
+                    elif part.get('type') == 'image_base64':
+                        img_url = part.get('data', '')
+                    if img_url:
+                        # 如果是 URL 图片，需要下载并转换为 base64
+                        if img_url.startswith('http://') or img_url.startswith('https://'):
+                            try:
+                                img_req = urllib.request.Request(img_url)
+                                with urllib.request.urlopen(img_req, timeout=10) as resp:
+                                    img_data = resp.read()
+                                    img_b64 = base64.b64encode(img_data).decode('utf-8')
+                                    images.append(img_b64)
+                            except Exception:
+                                pass
+                        elif img_url.startswith('data:'):
+                            # data URI，提取 base64 部分
+                            try:
+                                img_b64 = img_url.split(',', 1)[1] if ',' in img_url else ''
+                                if img_b64:
+                                    images.append(img_b64)
+                            except Exception:
+                                pass
+                        else:
+                            # 已是 base64
+                            images.append(img_url)
+    return images
+
+
+def web_search(query, max_results=5):
+    """使用 DuckDuckGo 免费搜索 API 进行联网搜索
+    返回搜索结果列表 [{title, url, snippet}]"""
+    try:
+        # 使用 DuckDuckGo Instant Answer API
+        encoded_query = urllib.parse.quote(query)
+        # DuckDuckGo 没有直接的网页搜索 API，使用更简单的方式
+        # 使用 searx 实例或其他免费方案
+        search_url = f'https://api.duckduckgo.com/?q={encoded_query}&format=json&no_html=1&skip_disambig=1&no_redirect=1'
+        req = urllib.request.Request(search_url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read())
+        
+        results = []
+        # Abstract 部分
+        if data.get('AbstractText'):
+            results.append({
+                'title': data.get('Heading', query),
+                'url': data.get('AbstractURL', ''),
+                'snippet': data['AbstractText']
+            })
+        # Related topics
+        for topic in data.get('RelatedTopics', [])[:max_results]:
+            if isinstance(topic, dict) and 'Text' in topic:
+                results.append({
+                    'title': topic.get('Text', '')[:80],
+                    'url': topic.get('FirstURL', ''),
+                    'snippet': topic.get('Text', '')[:200]
+                })
+        # Answer
+        if data.get('Answer'):
+            results.insert(0, {
+                'title': query,
+                'url': data.get('AnswerURL', ''),
+                'snippet': data['Answer']
+            })
+        return results[:max_results]
+    except Exception as e:
+        print(f'[WebSearch] 搜索失败: {e}', file=sys.stderr)
+        return []
 
 
 def _get_comments_file(project_name):
@@ -1493,6 +1883,67 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 return self.send_json({'usage': 0, 'remaining': AI_POOL_TOTAL, 'limit': AI_POOL_TOTAL, 'neuronsPerRequest': 100})
             finally:
                 db.close()
+
+        if path == '/api/cache-stats':
+            stats = {
+                'memory': _memory_cache.stats(),
+                'ai': _ai_cache.stats(),
+                'projects': _project_cache.stats(),
+            }
+            return self.send_json(stats)
+
+        if path == '/api/cache-clear':
+            _memory_cache.clear()
+            _ai_cache.clear()
+            _project_cache.clear()
+            return self.send_json({'success': True, 'message': '所有缓存已清除'})
+
+        if path == '/api/ollama-status':
+            status = {
+                'enabled': USE_OLLAMA,
+                'url': OLLAMA_URL,
+                'model': OLLAMA_MODEL,
+                'dailyLimit': OLLAMA_DAILY_LIMIT,
+                'available': False,
+                'models': list(OLLAMA_MODELS.values()),
+                'ollamaModels': []
+            }
+            if USE_OLLAMA:
+                try:
+                    ollama_req = urllib.request.Request(f'{OLLAMA_URL}/api/tags')
+                    with urllib.request.urlopen(ollama_req, timeout=5) as resp:
+                        ollama_data = json.loads(resp.read())
+                        status['available'] = True
+                        status['ollamaModels'] = [m.get('name', '') for m in ollama_data.get('models', [])]
+                except Exception:
+                    pass
+            return self.send_json(status)
+
+        if path == '/api/models':
+            available_models = list(OLLAMA_MODELS.values())
+            if USE_OLLAMA:
+                try:
+                    ollama_req = urllib.request.Request(f'{OLLAMA_URL}/api/tags')
+                    with urllib.request.urlopen(ollama_req, timeout=5) as resp:
+                        ollama_data = json.loads(resp.read())
+                        ollama_model_names = {m.get('name', '').split(':')[0] for m in ollama_data.get('models', [])}
+                        for m in available_models:
+                            m['available'] = any(
+                                om.startswith(m['model'].split(':')[0])
+                                for om in ollama_model_names
+                            )
+                except Exception:
+                    for m in available_models:
+                        m['available'] = False
+            else:
+                for m in available_models:
+                    m['available'] = False
+            return self.send_json({
+                'models': available_models,
+                'defaultModel': OLLAMA_MODELS['text']['model'],
+                'ollamaUrl': OLLAMA_URL,
+                'enabled': USE_OLLAMA
+            })
 
         if path == '/api/ai-pool':
             user = get_current_user(self)
@@ -1969,8 +2420,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             return
 
         # 尝试匹配静态文件
-        if path and not path.startswith('/api/'):
-            clean_path = path.lstrip('/')
+        if path == '/' or (path and not path.startswith('/api/')):
+            clean_path = 'index.html' if path == '/' else path.lstrip('/').rstrip('/')
             if clean_path:
                 candidates = [
                     BASE_DIR / clean_path,
@@ -2047,32 +2498,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             return
 
         if path == '/api/register':
-            username = body.get('username', '')
-            password = body.get('password', '')
-            if not username or not password:
-                return self.send_error_json('请输入用户名和密码', 400)
-            if not re.match(r'^[a-zA-Z0-9_]{3,20}$', username):
-                return self.send_error_json('用户名需为3-20位字母、数字或下划线', 400)
-            if len(password) < 6:
-                return self.send_error_json('密码长度至少6位', 400)
-            db = get_db()
-            try:
-                # 检查用户上限（普通用户最多4人）
-                cur = db.execute("SELECT COUNT(*) as cnt FROM users WHERE role = 'user'")
-                count = cur.fetchone()['cnt']
-                if count >= 4:
-                    return self.send_error_json('用户已达上限，无法注册', 400)
-                # 检查用户名是否已存在
-                cur = db.execute("SELECT id FROM users WHERE username = ?", (username,))
-                if cur.fetchone():
-                    return self.send_error_json('用户名已存在', 400)
-                h, s = hash_password(password)
-                db.execute("INSERT INTO users (username, password_hash, salt, role, created_at) VALUES (?, ?, ?, 'user', ?)",
-                           (username, h, s, int(time.time())))
-                db.commit()
-                return self.send_json({'success': True, 'message': '注册成功'})
-            finally:
-                db.close()
+            return self.send_error_json('注册功能已关闭，请联系管理员获取账号', 403)
 
         if path == '/api/logout':
             self.send_response(200)
@@ -2360,7 +2786,36 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         if path == '/api/admin/clear-cache' and self.command == 'POST':
             if not check_admin(self):
                 return self.send_error_json('需要管理员权限', 401)
+            # 清理频率限制缓存
+            with _rate_lock:
+                _ip_request_log.clear()
+                _user_request_log.clear()
             return self.send_json({'success': True, 'message': '缓存已清除'})
+
+        if path == '/api/admin/ai-stats' and self.command == 'GET':
+            if not check_admin(self):
+                return self.send_error_json('需要管理员权限', 401)
+            now = time.time()
+            # 统计当前活跃的 IP 和用户
+            active_ips = {ip: len([t for t in times if now - t < 60]) for ip, times in _ip_request_log.items()}
+            active_users = {uid: len([t for t in times if now - t < 3600]) for uid, times in _user_request_log.items()}
+            today = datetime.datetime.now().strftime('%Y-%m-%d')
+            db = get_db()
+            try:
+                cur = db.execute("SELECT username, SUM(count) as total FROM ai_usage WHERE date = ? GROUP BY username ORDER BY total DESC LIMIT 20", (today,))
+                usage_stats = [{'username': r['username'], 'count': r['total']} for r in cur.fetchall()]
+            finally:
+                db.close()
+            return self.send_json({
+                'activeIPs': len(active_ips),
+                'activeUsers': len(active_users),
+                'todayUsage': usage_stats,
+                'rateLimitConfig': {
+                    'dailyUserLimit': AI_DAILY_USER_LIMIT,
+                    'rateLimitSeconds': AI_RATE_LIMIT_SECONDS,
+                    'ipRateLimit': AI_IP_RATE_LIMIT,
+                }
+            })
 
         if path == '/api/user/conversations':
             user = get_current_user(self)
@@ -2497,7 +2952,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 db.close()
 
         if path == '/api/recommend':
-            # 支持两种认证方式：Cookie 登录 或 API Key
             cu = get_current_user(self)
             if not cu:
                 api_key = get_api_key_from_request(self)
@@ -2506,77 +2960,220 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 if not cu:
                     return self.send_error_json('请先登录或提供有效的 API Key', 401)
             messages = body.get('messages', [])
-            model = body.get('model', 'openrouter/free')
+            model = body.get('model', '')
             if not messages:
                 return self.send_error_json('请输入消息', 400)
+
+            # === 安全检查 1：频率限制 ===
+            client_ip = get_client_ip(self)
+            allowed, reason = check_rate_limit(
+                user_id=cu['id'] if cu else None,
+                ip=client_ip
+            )
+            if not allowed:
+                return self.send_error_json(reason, 429)
+
+            # === 安全检查 2：每日调用次数上限 ===
+            today = datetime.datetime.now().strftime('%Y-%m-%d')
+            db = get_db()
             try:
-                projects = read_json_file(BASE_DIR / 'project-list.json') or []
-                project_list = '\n'.join([
-                    f"- {p.get('name','')} (path: {p.get('path','')}, type: {p.get('type','unknown')}, desc: {p.get('description','none')})"
-                    for p in projects
-                ])
-                system_prompt = f"""你是一个热情友好的编程助手，名叫"小码"。你可以和用户自然地聊天、解答编程问题，也可以推荐项目。
+                cur = db.execute("SELECT COALESCE(SUM(count), 0) AS cnt FROM ai_usage WHERE user_id = ? AND date = ?", (cu['id'], today))
+                row = cur.fetchone()
+                used = row['cnt'] if row else 0
+                if used >= AI_DAILY_USER_LIMIT:
+                    return self.send_error_json(f'今日 AI 调用次数已达上限（{AI_DAILY_USER_LIMIT} 次），请明天再来', 429)
+            finally:
+                db.close()
 
-你的性格：
-- 说话语气像朋友一样自然，不要太正式
-- 推荐项目时要说明推荐理由，让人觉得有说服力
-- 如果用户问了具体需求，就帮他匹配最合适的项目
-- 如果只是聊天，就轻松愉快地聊，不用每次都推荐项目
-- 所有回答必须使用中文，除非用户明确要求使用其他语言
+            # === 安全检查 3：敏感词过滤 ===
+            user_messages = [m.get('content', '') for m in messages if m.get('role') == 'user']
+            all_user_text = ' '.join(user_messages)
+            sensitive_hits = check_sensitive_content(all_user_text)
+            if sensitive_hits:
+                print(f'[AI 安全] 用户 {cu["username"]} 提交敏感内容: {sensitive_hits}', file=sys.stderr)
+                return self.send_error_json('抱歉，您的输入包含不适当内容，请重新输入', 400)
 
-可用的项目列表：
-{project_list}
-
-当用户表达兴趣或需求时，推荐 3-5 个最相关的项目。推荐时在回复末尾附上 JSON 格式：
----RECOMMEND---
-[{{"path": "项目路径", "reason": "推荐理由", "name": "项目名称"}}]
----END---
-没有推荐需求时正常聊天，不要强行推荐。"""
-
-                if not OPENROUTER_API_KEY:
-                    return self.send_error_json('AI 功能未配置 OPENROUTER_API_KEY', 503)
-                api_url = OPENROUTER_API_URL
-                api_key = OPENROUTER_API_KEY
-                payload = {
-                    'model': model,
-                    'messages': [{'role': 'system', 'content': system_prompt}, *messages],
-                    'temperature': 0.7,
-                    'max_tokens': 800,
-                    'reasoning': {'enabled': True},
-                }
-
-                headers = {
-                    'Authorization': f'Bearer {api_key}',
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://codingzhou.dpdns.org',
-                    'X-Title': 'Code Explorer',
-                }
-
-                req = urllib.request.Request(api_url, data=json.dumps(payload).encode(), headers=headers)
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    result = json.loads(resp.read())
-                    choice = result.get('choices', [{}])[0]
-                    msg = choice.get('message', {})
-                    text = msg.get('content', '') or ''
-                    reasoning = msg.get('reasoning_content', '') or ''
-                    recommendations = []
-                    rec_match = re.search(r'---RECOMMEND---\s*([\s\S]*?)\s*---END---', text)
-                    if rec_match:
-                        try:
-                            rec_list = json.loads(rec_match.group(1))
-                            if isinstance(rec_list, list):
-                                recommendations = [r for r in rec_list if r.get('path')][:5]
-                        except Exception:
-                            pass
-                        text = re.sub(r'---RECOMMEND---[\s\S]*?---END---', '', text).strip()
-                    if not text and recommendations:
-                        text = '为你推荐以下项目：'
-                    elif not text:
-                        text = '抱歉，AI 暂时无法生成回复，请稍后再试。'
-                    # 记录本次调用（对当前登录用户计一次池子用量）
+            try:
+                # ========= 内存缓存检查 =========
+                cache_key = hashlib.md5(
+                    json.dumps(messages, sort_keys=True).encode()
+                ).hexdigest()
+                cached = _ai_cache.get(f"ai:{cache_key}")
+                if cached:
+                    # 缓存命中，直接返回
                     if cu:
                         record_ai_usage(cu['id'], cu['username'])
-                    return self.send_json({'success': True, 'response': text, 'reasoning': reasoning, 'recommendations': recommendations})
+                    cached['cached'] = True
+                    cached['serverCache'] = True
+                    return self.send_json(cached)
+
+                projects = read_json_file(BASE_DIR / 'project-list.json') or []
+                # 限制项目数量到20个以控制prompt长度（Ollama小模型处理能力有限）
+                max_projects = min(len(projects), 20)
+                selected_projects = projects[:max_projects]
+                project_list = '\n'.join([
+                    f"- {p.get('name','')} (path: {p.get('path','')}, type: {p.get('type','unknown')})"
+                    for p in selected_projects
+                ])
+                system_prompt = f"""你是编程助手"小码"。和用户自然聊天、解答编程问题、推荐项目。
+
+可用项目（前{max_projects}个）：
+{project_list}
+
+推荐时用JSON格式附在回复末尾：
+---RECOMMEND---
+[{{"path":"项目路径","reason":"理由","name":"名称"}}]
+---END---
+用户: {messages[-1].get('content','')}
+助手:"""
+
+                # === 联网搜索：检测是否需要搜索并注入搜索结果 ===
+                web_search_enabled = body.get('web_search', False)
+                search_query = None
+                if web_search_enabled or any(kw in all_user_text for kw in ['今天', '最新', '最近', '新闻', '天气', '股价', '实时', '现在', '目前', '搜索', 'search']):
+                    # 提取最后一条用户消息作为搜索查询
+                    for m in reversed(messages):
+                        if m.get('role') == 'user':
+                            content = m.get('content', '')
+                            if isinstance(content, str):
+                                search_query = content[:200]
+                            elif isinstance(content, list):
+                                search_query = ' '.join(
+                                    p.get('text', '') or p.get('image_url', {}).get('url', '')
+                                    for p in content if isinstance(p, dict)
+                                )[:200]
+                            if search_query:
+                                break
+
+                search_results_text = ''
+                if search_query:
+                    try:
+                        search_results = web_search(search_query, max_results=3)
+                        if search_results:
+                            search_results_text = '\n\n【联网搜索结果】\n'
+                            for i, r in enumerate(search_results, 1):
+                                search_results_text += f"{i}. [{r['title']}]({r['url']})\n   {r['snippet'][:150]}\n"
+                    except Exception:
+                        pass
+
+                if search_results_text:
+                    system_prompt += search_results_text
+
+                text = ''
+                reasoning = ''
+                ollama_ok = False
+
+                if USE_OLLAMA:
+                    # 模型选择逻辑：支持 ollama/text、ollama/vision 前缀，或直接指定模型名
+                    ollama_model_name = None
+                    if model and model.startswith('ollama/'):
+                        model_key = model[len('ollama/'):]
+                        if model_key in OLLAMA_MODELS:
+                            ollama_model_name = OLLAMA_MODELS[model_key]['model']
+                        else:
+                            ollama_model_name = model_key
+                    elif model and model in OLLAMA_MODELS:
+                        ollama_model_name = OLLAMA_MODELS[model]['model']
+                    else:
+                        ollama_model_name = OLLAMA_MODEL
+
+                    # 检查是否包含图片（vision 模型）
+                    has_images = any(
+                        isinstance(m.get('content'), list) and
+                        any(p.get('type') == 'image_url' or p.get('type') == 'image' for p in m.get('content', []))
+                        for m in messages
+                    )
+
+                    # 如果用户请求视觉模型或包含图片，自动切换到视觉模型
+                    if has_images and ollama_model_name == OLLAMA_MODELS['text']['model']:
+                        ollama_model_name = OLLAMA_MODELS['vision']['model']
+
+                    # 内存管理：确保只加载当前需要的模型
+                    _ensure_model_loaded(ollama_model_name)
+
+                    # 构建 Ollama payload（keep_alive 设置为300秒，配合后台定时器）
+                    ollama_payload = {
+                        'model': ollama_model_name,
+                        'messages': [{'role': 'system', 'content': system_prompt}, *messages],
+                        'stream': False,
+                        'keep_alive': f'{MODEL_KEEP_ALIVE}s',
+                        'options': {'temperature': 0.7}
+                    }
+
+                    # 视觉模型支持：如果有图片，添加 images 字段
+                    if has_messages_with_images(messages):
+                        ollama_payload['images'] = extract_images_from_messages(messages)
+
+                    ollama_req = urllib.request.Request(
+                        f'{OLLAMA_URL}/api/chat',
+                        data=json.dumps(ollama_payload).encode(),
+                        headers={'Content-Type': 'application/json'}
+                    )
+                    try:
+                        with urllib.request.urlopen(ollama_req, timeout=120) as resp:
+                            ollama_result = json.loads(resp.read())
+                            text = ollama_result.get('message', {}).get('content', '') or ''
+                            ollama_ok = bool(text)
+                    except urllib.error.URLError as ollama_err:
+                        print(f'[Ollama] 连接失败: {ollama_err}', file=sys.stderr)
+                    except Exception as ollama_err2:
+                        print(f'[Ollama] 请求异常: {ollama_err2}', file=sys.stderr)
+
+                    # 请求完成后更新最后使用时间，由后台定时器负责自动卸载
+                    if ollama_ok:
+                        global _model_last_used
+                        _model_last_used = time.time()
+
+                if not ollama_ok and OPENROUTER_API_KEY:
+                    api_url = OPENROUTER_API_URL
+                    api_key = OPENROUTER_API_KEY
+                    actual_model = model if model and not model.startswith('ollama/') else 'openrouter/free'
+                    payload = {
+                        'model': actual_model,
+                        'messages': [{'role': 'system', 'content': system_prompt}, *messages],
+                        'temperature': 0.7,
+                        'max_tokens': 800,
+                        'reasoning': {'enabled': True},
+                    }
+                    headers = {
+                        'Authorization': f'Bearer {api_key}',
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': 'https://codingzhou.dpdns.org',
+                        'X-Title': 'Code Explorer',
+                    }
+                    req = urllib.request.Request(api_url, data=json.dumps(payload).encode(), headers=headers)
+                    with urllib.request.urlopen(req, timeout=60) as resp:
+                        result = json.loads(resp.read())
+                        choice = result.get('choices', [{}])[0]
+                        msg = choice.get('message', {})
+                        text = msg.get('content', '') or ''
+                        reasoning = msg.get('reasoning_content', '') or ''
+
+                if not text and not OPENROUTER_API_KEY:
+                    if USE_OLLAMA:
+                        return self.send_error_json('AI 功能不可用：Ollama 未连接且未配置 OpenRouter 备用。请确认 Ollama 服务已启动。', 503)
+                    return self.send_error_json('AI 功能不可用：未配置 AI 服务', 503)
+
+                recommendations = []
+                rec_match = re.search(r'---RECOMMEND---\s*([\s\S]*?)\s*---END---', text)
+                if rec_match:
+                    try:
+                        rec_list = json.loads(rec_match.group(1))
+                        if isinstance(rec_list, list):
+                            recommendations = [r for r in rec_list if r.get('path')][:5]
+                    except Exception:
+                        pass
+                    text = re.sub(r'---RECOMMEND---[\s\S]*?---END---', '', text).strip()
+                if not text and recommendations:
+                    text = '为你推荐以下项目：'
+                elif not text:
+                    text = '抱歉，AI 暂时无法生成回复，请稍后再试。'
+                if cu:
+                    record_ai_usage(cu['id'], cu['username'])
+                # ========= 存储到内存缓存 =========
+                result_data = {'success': True, 'response': text, 'reasoning': reasoning, 'recommendations': recommendations}
+                _ai_cache.set(f"ai:{cache_key}", result_data, ttl=600)
+                return self.send_json(result_data)
             except Exception as e:
                 import traceback
                 print(f'AI Error: {traceback.format_exc()}', file=sys.stderr)
@@ -3141,11 +3738,19 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 init_db()
 
 if __name__ == '__main__':
+    if USE_OLLAMA:
+        os.environ.setdefault('OLLAMA_MAX_LOADED_MODELS', '1')
+        _start_model_cleanup_timer()
+
     print(f'Code Explorer 服务器启动: http://{HOST}:{PORT}')
     print(f'BASE_DIR: {BASE_DIR}')
     print(f'PROJECTS_ROOT: {_find_projects_root()}')
     print(f'USER_PASSWORD: {"已设置" if USER_PASSWORD else "未设置"}')
     print(f'ADMIN_PASSWORD: {"已设置" if ADMIN_PASSWORD else "未设置"}')
-    print(f'OPENROUTER_API_KEY: {"已设置" if OPENROUTER_API_KEY else "未设置"}')
+    print(f'[Ollama] 本地AI: {"启用" if USE_OLLAMA else "禁用"} | 模型: {OLLAMA_MODEL} | URL: {OLLAMA_URL}')
+    if USE_OLLAMA:
+        print(f'[Ollama] 文本模型: {OLLAMA_MODELS["text"]["model"]} | 视觉模型: {OLLAMA_MODELS["vision"]["model"]}')
+        print(f'[Ollama] 模型保留时间: {MODEL_KEEP_ALIVE}秒 | 最大加载数: 1')
+    print(f'[OpenRouter] 备用AI: {"已设置" if OPENROUTER_API_KEY else "未设置"}')
     with http.server.HTTPServer((HOST, PORT), MyHandler) as httpd:
         httpd.serve_forever()
