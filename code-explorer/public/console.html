@@ -2056,7 +2056,7 @@ curl http://39.107.96.165:8765/api/ollama/api/tags \\
           <pre><code>const ECS_URL = "http://39.107.96.165:8765";
 
 // 1. 登录获取 Token
-const loginResp = await fetch(`${ECS_URL}/api/login`, {
+const loginResp = await fetch(\`\${ECS_URL}/api/login\`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -2065,10 +2065,10 @@ const loginResp = await fetch(`${ECS_URL}/api/login`, {
   })
 });
 const { token } = await loginResp.json();
-const headers = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
+const headers = { Authorization: \`Bearer \${token}\`, "Content-Type": "application/json" };
 
 // 2. /api/chat 对话
-const chatResp = await fetch(`${ECS_URL}/api/ollama/api/chat`, {
+const chatResp = await fetch(\`\${ECS_URL}/api/ollama/api/chat\`, {
   method: "POST",
   headers,
   body: JSON.stringify({
@@ -2082,7 +2082,7 @@ const chatResult = await chatResp.json();
 console.log(chatResult.message.content);
 
 // 3. /api/generate 文本生成
-const genResp = await fetch(`${ECS_URL}/api/ollama/api/generate`, {
+const genResp = await fetch(\`\${ECS_URL}/api/ollama/api/generate\`, {
   method: "POST",
   headers,
   body: JSON.stringify({
@@ -2096,7 +2096,7 @@ const genResult = await genResp.json();
 console.log(genResult.response);
 
 // 4. 列出可用模型
-const modelsResp = await fetch(`${ECS_URL}/api/ollama/api/tags`, { headers });
+const modelsResp = await fetch(\`\${ECS_URL}/api/ollama/api/tags\`, { headers });
 const modelsData = await modelsResp.json();
 modelsData.models.forEach(m => console.log("可用模型:", m.name));</code></pre>
         </div>
