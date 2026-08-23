@@ -1114,7 +1114,8 @@ async function loadPool() {
       return;
     }
     currentUser = authData.user;
-    $('adminUsername').textContent = currentUser.username;
+    const ceNameEl = $('ceUserName');
+    if (ceNameEl) ceNameEl.textContent = currentUser.username;
     if (window.CENav) CENav.setUser(currentUser.username);
 
     showLoading(content, steps, 1);
@@ -1396,7 +1397,8 @@ async function loadApiKeys() {
         return;
       }
       currentUser = authData.user;
-      $('adminUsername').textContent = currentUser.username;
+      const ceNameEl = $('ceUserName');
+      if (ceNameEl) ceNameEl.textContent = currentUser.username;
       if (window.CENav) CENav.setUser(currentUser.username);
     }
     showLoading(content, steps, 1);
