@@ -1570,6 +1570,63 @@ if result.get("success"):
 else:
     print("错误:", result.get("error"))</code></pre>
           </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl</span>
+              <button class="quick-copy" onclick="copyGuideCode('curl')">复制代码</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/recommend \\
+  -H "Authorization: Bearer sk-你的密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "messages": [
+      {"role": "user", "content": "推荐几个Python项目"}
+    ]
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript (fetch)</span>
+              <button class="quick-copy" onclick="copyGuideCode('js')">复制代码</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的密钥";
+const resp = await fetch("https://codingzhou.top/api/recommend", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    messages: [
+      { role: "user", content: "推荐几个Python项目" }
+    ]
+  })
+});
+const data = await resp.json();
+if (data.success) console.log(data.response);
+else console.error("错误:", data.error);</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="node">
+            <div class="quick-code-header">
+              <span>Node.js (axios)</span>
+              <button class="quick-copy" onclick="copyGuideCode('node')">复制代码</button>
+            </div>
+            <pre><code>const axios = require("axios");
+
+const API_KEY = "sk-你的密钥";
+const resp = await axios.post("https://codingzhou.top/api/recommend", {
+  messages: [
+    { role: "user", content: "推荐几个Python项目" }
+  ]
+}, {
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`
+  }
+});
+const data = resp.data;
+if (data.success) console.log(data.response);
+else console.error("错误:", data.error);</code></pre>
+          </div>
           <div class="quick-code-block" data-lang="ollama">
             <div class="quick-code-header">
               <span>原生 Ollama API（通过 ECS 代理）</span>
@@ -1624,6 +1681,8 @@ for m in models.get("models", []):
 version = requests.get(f"{ECS_URL}/api/ollama/api/version", headers=headers).json()
 print(f"Ollama 版本: {version.get('version')}")</code></pre>
           </div>
+        </div>
+      </div>
         </div>
       </div>
 
