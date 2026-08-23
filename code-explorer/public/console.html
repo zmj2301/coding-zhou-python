@@ -1680,10 +1680,12 @@ function loadQuickGuide() {
       <div class="guide-section">
         <h3 class="guide-h3">2. 接口说明</h3>
         <table class="guide-table">
-          <tr><td>接口地址</td><td><code>POST https://codingzhou.dpdns.org/api/recommend</code></td></tr>
+          <tr><td>接口地址</td><td><code>POST https://codingzhou.top/api/recommend</code></td></tr>
+          <tr><td>AI 引擎</td><td><strong>Ollama</strong> 本地模型（qwen2.5:1.5b）+ Cloudflare Workers AI 备用</td></tr>
+          <tr><td>模型选择</td><td>默认 <code>ollama/text</code>，可选 <code>ollama/vision</code>（图片识别）</td></tr>
           <tr><td>认证方式</td><td><code>Authorization: Bearer sk-xxx</code> 或请求体中 <code>api_key: "sk-xxx"</code></td></tr>
           <tr><td>Content-Type</td><td><code>application/json</code></td></tr>
-          <tr><td>请求体</td><td><code>{"messages": [{"role": "user", "content": "..."}]}</code></td></tr>
+          <tr><td>请求体</td><td><code>{"messages": [{"role": "user", "content": "..."}], "model": "ollama/text"}</code></td></tr>
           <tr><td>返回格式</td><td><code>{"success": true, "response": "...", "recommendations": [...]}</code></td></tr>
         </table>
       </div>
@@ -1695,45 +1697,81 @@ function loadQuickGuide() {
           <button class="quick-tab" data-lang="curl" onclick="switchGuideTab('curl')">curl</button>
           <button class="quick-tab" data-lang="js" onclick="switchGuideTab('js')">JavaScript</button>
           <button class="quick-tab" data-lang="node" onclick="switchGuideTab('node')">Node.js</button>
+          <button class="quick-tab" data-lang="ollama" onclick="switchGuideTab('ollama')">原生 Ollama</button>
         </div>
         <div class="quick-code" id="guideCode">
           <div class="quick-code-block active" data-lang="python">
             <div class="quick-code-header">
-              <span>Python</span>
+              <span>Python — 调用 CodingZhou API（自动路由 Ollama）</span>
               <button class="quick-copy" onclick="copyGuideCode('python')">复制代码</button>
             </div>
             <pre><code>import requests
 
 API_KEY = "sk-你的密钥"
-url = "https://codingzhou.dpdns.org/api/recommend"
-headers = {
-    "Authorization": f"Bearer {API_KEY}",
-    "Content-Type": "application/json"
-}
-data = {
+BASE_URL = "https://codingzhou.top/api/recommend"
+
+# 基本调用（默认使用 Ollama 文本模型 qwen2.5:1.5b）
+resp = requests.post(BASE_URL, headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
     "messages": [
-        {"role": "user", "content": "推荐几个Python项目"}
-    ]
-}
-resp = requests.post(url, json=data, headers=headers)
+        {"role": "user", "content": "推荐几个 Python 练手项目"}
+    ],
+    "model": "ollama/text"  # 可选：ollama/text | ollama/vision
+}, timeout=120)
+
 result = resp.json()
 if result.get("success"):
     print(result["response"])
+    for r in result.get("recommendations", []):
+        print(f"→ {r['name']} ({r['path']}): {r['reason']}")
 else:
-    print("错误:", result.get("error"))</code></pre>
+    print("错误:", result.get("error"))
+
+# 图片识别（使用视觉模型）
+resp2 = requests.post(BASE_URL, headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "messages": [{
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "这张图片是什么？"},
+            {"type": "image_url", "image_url": {"url": "https://example.com/photo.jpg"}}
+        ]
+    }],
+    "model": "ollama/vision"
+})
+print(resp2.json().get("response"))</code></pre>
           </div>
           <div class="quick-code-block" data-lang="curl">
             <div class="quick-code-header">
-              <span>curl</span>
+              <span>curl — 调用 CodingZhou API</span>
               <button class="quick-copy" onclick="copyGuideCode('curl')">复制代码</button>
             </div>
-            <pre><code>curl -X POST https://codingzhou.dpdns.org/api/recommend \\
+            <pre><code># 基本文本对话
+curl -X POST https://codingzhou.top/api/recommend \\
   -H "Authorization: Bearer sk-你的密钥" \\
   -H "Content-Type: application/json" \\
   -d '{
     "messages": [
-      {"role": "user", "content": "推荐几个Python项目"}
-    ]
+      {"role": "user", "content": "推荐几个 Python 练手项目"}
+    ],
+    "model": "ollama/text"
+  }'
+
+# 视觉模型（图片识别）
+curl -X POST https://codingzhou.top/api/recommend \\
+  -H "Authorization: Bearer sk-你的密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "messages": [{
+      "role": "user",
+      "content": [
+        {"type": "text", "text": "描述这张图片"},
+        {"type": "image_url", "image_url": {"url": "https://example.com/photo.jpg"}}
+      ]
+    }],
+    "model": "ollama/vision"
   }'</code></pre>
           </div>
           <div class="quick-code-block" data-lang="js">
@@ -1742,21 +1780,48 @@ else:
               <button class="quick-copy" onclick="copyGuideCode('js')">复制代码</button>
             </div>
             <pre><code>const API_KEY = "sk-你的密钥";
-const resp = await fetch("https://codingzhou.dpdns.org/api/recommend", {
+
+// 基本文本对话
+const resp = await fetch("https://codingzhou.top/api/recommend", {
   method: "POST",
   headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
+    "Authorization": `Bearer ${API_KEY}`,
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
     messages: [
-      { role: "user", content: "推荐几个Python项目" }
-    ]
+      { role: "user", content: "推荐几个 Python 练手项目" }
+    ],
+    model: "ollama/text"
   })
 });
 const data = await resp.json();
-if (data.success) console.log(data.response);
-else console.error("错误:", data.error);</code></pre>
+if (data.success) {
+  console.log(data.response);
+  data.recommendations.forEach(r => console.log(`→ ${r.name}: ${r.reason}`));
+} else {
+  console.error("错误:", data.error);
+}
+
+// 视觉模型（图片识别）
+const visionResp = await fetch("https://codingzhou.top/api/recommend", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    messages: [{
+      role: "user",
+      content: [
+        { type: "text", text: "描述这张图片" },
+        { type: "image_url", image_url: { url: "https://example.com/photo.jpg" } }
+      ]
+    }],
+    model: "ollama/vision"
+  })
+});
+console.log((await visionResp.json()).response);</code></pre>
           </div>
           <div class="quick-code-block" data-lang="node">
             <div class="quick-code-header">
@@ -1766,18 +1831,83 @@ else console.error("错误:", data.error);</code></pre>
             <pre><code>const axios = require("axios");
 
 const API_KEY = "sk-你的密钥";
-const resp = await axios.post("https://codingzhou.dpdns.org/api/recommend", {
-  messages: [
-    { role: "user", content: "推荐几个Python项目" }
-  ]
-}, {
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`
-  }
-});
-const data = resp.data;
-if (data.success) console.log(data.response);
-else console.error("错误:", data.error);</code></pre>
+
+// 基本文本对话
+const resp = await axios.post(
+  "https://codingzhou.top/api/recommend",
+  {
+    messages: [{ role: "user", content: "推荐几个 Python 练手项目" }],
+    model: "ollama/text"
+  },
+  { headers: { Authorization: `Bearer ${API_KEY}` } }
+);
+if (resp.data.success) {
+  console.log(resp.data.response);
+  resp.data.recommendations.forEach(r => console.log(`→ ${r.name}: ${r.reason}`));
+} else {
+  console.error("错误:", resp.data.error);
+}
+
+// 视觉模型
+const visionResp = await axios.post(
+  "https://codingzhou.top/api/recommend",
+  {
+    messages: [{
+      role: "user",
+      content: [
+        { type: "text", text: "描述这张图片" },
+        { type: "image_url", image_url: { url: "https://example.com/photo.jpg" } }
+      ]
+    }],
+    model: "ollama/vision"
+  },
+  { headers: { Authorization: `Bearer ${API_KEY}` } }
+);
+console.log(visionResp.data.response);</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="ollama">
+            <div class="quick-code-header">
+              <span>原生 Ollama API（直连 ECS 服务器）</span>
+              <button class="quick-copy" onclick="copyGuideCode('ollama')">复制代码</button>
+            </div>
+            <pre><code>import requests
+
+# 直接调用 ECS 服务器上的 Ollama（需内网或 VPN）
+OLLAMA_URL = "http://39.107.96.165:11434"
+
+# 方式1: /api/chat（对话接口，兼容 OpenAI 格式）
+resp = requests.post(f"{OLLAMA_URL}/api/chat", json={
+    "model": "qwen2.5:1.5b",
+    "messages": [
+        {"role": "system", "content": "你是一个编程助手"},
+        {"role": "user", "content": "推荐几个 Python 项目"}
+    ],
+    "stream": False,
+    "options": {"temperature": 0.7}
+}, timeout=120)
+
+result = resp.json()
+print(result.get("message", {}).get("content", ""))
+
+# 方式2: /api/generate（文本生成接口，单轮对话）
+resp2 = requests.post(f"{OLLAMA_URL}/api/generate", json={
+    "model": "qwen2.5:1.5b",
+    "prompt": "用 Python 写一个快速排序",
+    "stream": False,
+    "options": {"temperature": 0.7}
+}, timeout=120)
+
+result2 = resp2.json()
+print(result2.get("response", ""))
+
+# 列出所有可用模型
+models = requests.get(f"{OLLAMA_URL}/api/tags").json()
+for m in models.get("models", []):
+    print(f"可用模型: {m['name']} (大小: {m.get('size', '?')} bytes)")
+
+# 查看 Ollama 服务状态
+version = requests.get(f"{OLLAMA_URL}/api/version").json()
+print(f"Ollama 版本: {version.get('version')}")</code></pre>
           </div>
         </div>
       </div>
@@ -1799,7 +1929,7 @@ else console.error("错误:", data.error);</code></pre>
         <h3 class="guide-h3">5. 限制说明</h3>
         <table class="guide-table">
           <tr><th>限制项</th><th>说明</th></tr>
-          <tr><td>共享池上限</td><td>全平台每天共享池总量为 <strong id="poolLimit">945</strong> 次调用，所有用户共用</td></tr>
+          <tr><td>共享池上限</td><td>全平台每天共享池总量为 <strong id="poolLimit">9944</strong> 次调用，所有用户共用（Ollama 本地无限 + Workers AI 1000 + OpenRouter 50）</td></tr>
           <tr><td>Key 每日限额</td><td>创建 key 时可设置每日调用次数上限，超出后返回 429</td></tr>
           <tr><td>Key 有效期</td><td>创建 key 时可设置过期时间，过期后认证失败</td></tr>
           <tr><td>Key 管理</td><td>key 可随时在控制台禁用或删除，禁用后立即失效</td></tr>
