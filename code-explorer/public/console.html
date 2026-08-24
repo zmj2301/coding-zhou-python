@@ -769,6 +769,20 @@ body > * { position: relative; z-index: 1; }
 }
 .quick-tab.active { background: var(--bg-secondary); color: var(--text-primary); }
 .quick-tab:hover:not(.active) { color: var(--text-primary); }
+.ollama-api-buttons {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+}
+.ollama-api-btn {
+  padding: 8px 16px; border: 1px solid var(--border-color); border-radius: 20px;
+  background: var(--bg-tertiary); color: var(--text-secondary);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-sans);
+}
+.ollama-api-btn:hover { color: var(--text-primary); border-color: var(--accent-blue); }
+.ollama-api-btn.active {
+  background: var(--accent-blue); color: #fff; border-color: var(--accent-blue);
+}
+.ollama-code-group { margin-bottom: 8px; }
 .quick-code-block { display: none; }
 .quick-code-block.active { display: block; }
 .quick-code-header {
@@ -1899,7 +1913,7 @@ function loadOllama() {
     <div class="admin-section">
       <div class="admin-section-title">🦙 Ollama 本地 AI</div>
       <div class="guide-intro">
-        <p>Ollama 是平台的 <strong>主通道 AI</strong>，本地部署在 ECS 服务器上，完全免费、无限次调用。通过 ECS 代理访问，无需开放 11434 端口。</p>
+        <p>Ollama 是平台的 <strong>主通道 AI</strong>，本地部署在 ECS 服务器上，完全免费、无限次调用。通过平台 API Key 认证，无需管理独立账号。</p>
       </div>
     </div>
 
@@ -1914,217 +1928,483 @@ function loadOllama() {
           <div class="upstream-meta">
             状态：<b>主通道 · 本地部署</b><br>
             部署方式：<b>ECS 服务器（39.107.96.165）</b><br>
-            代理端口：<b>8765</b><br>
-            模型：<b>qwen2.5:1.5b（文本）</b>
+            模型：<b>qwen2.5:1.5b（文本）</b><br>
+            限额：<b>无限次 / 完全免费</b>
           </div>
         </div>
         <div class="upstream-card">
           <div class="upstream-head">
             <span class="upstream-dot"></span>
-            <span class="upstream-name">可用模型</span>
+            <span class="upstream-name">调用方式</span>
           </div>
           <div class="upstream-meta">
-            文本模型：<b>qwen2.5:1.5b</b><br>
-            每日限额：<b>无限次</b><br>
-            计费：<b>完全免费</b><br>
-            调用路由：<b>/api/ollama/api/*</b>
+            统一入口：<b>POST /api/ollama/chat</b><br>
+            认证方式：<b>API Key（sk-xxx）</b><br>
+            子路由：<b>通过 path 字段指定</b><br>
+            支持接口：<b>chat / generate / tags / version / show / embed</b>
           </div>
         </div>
       </div>
     </div>
 
     <div class="admin-section">
-      <div class="admin-section-title">通过平台 API 调用（推荐）</div>
+      <div class="admin-section-title">快速开始</div>
       <div class="guide-section">
-        <p>使用 API Key 通过平台统一接口调用，自动路由到 Ollama：</p>
+        <p>所有 Ollama 接口通过统一入口调用，在请求体中用 <code>path</code> 字段指定目标接口：</p>
+        <pre style="background:var(--code-bg);padding:16px;border-radius:8px;font-size:13px;line-height:1.6"><code>POST https://codingzhou.top/api/ollama/chat
+Authorization: Bearer sk-你的API密钥
+Content-Type: application/json
+
+{
+  "path": "/api/chat",    // 目标 Ollama 接口
+  "model": "qwen2.5:1.5b",
+  "messages": [...]
+}</code></pre>
+        <p style="margin-top:12px"><strong>可用 path 值：</strong></p>
         <table class="guide-table">
-          <tr><td>接口地址</td><td><code>POST https://codingzhou.top/api/recommend</code></td></tr>
-          <tr><td>模型选择</td><td><code>ollama/text</code>（文本）或 <code>ollama/vision</code>（图片）</td></tr>
-          <tr><td>认证方式</td><td><code>Authorization: Bearer sk-xxx</code></td></tr>
+          <tr><th>path</th><th>说明</th><th>请求方法</th></tr>
+          <tr><td><code>/api/chat</code></td><td>对话接口（推荐）</td><td>POST</td></tr>
+          <tr><td><code>/api/generate</code></td><td>文本生成</td><td>POST</td></tr>
+          <tr><td><code>/api/tags</code></td><td>列出可用模型</td><td>GET</td></tr>
+          <tr><td><code>/api/version</code></td><td>查看版本信息</td><td>GET</td></tr>
+          <tr><td><code>/api/show</code></td><td>查看模型详情</td><td>POST</td></tr>
+          <tr><td><code>/api/embed</code></td><td>文本嵌入向量</td><td>POST</td></tr>
         </table>
       </div>
     </div>
 
     <div class="admin-section">
-      <div class="admin-section-title">原生 Ollama API（通过 ECS 代理）</div>
+      <div class="admin-section-title">API 调用示例</div>
       <div class="guide-section">
-        <p>直接通过 ECS 代理访问 Ollama 原始接口，适用于需要流式响应、自定义参数等场景：</p>
+        <p>选择下方 API 按钮查看对应的代码示例：</p>
       </div>
-      <div class="quick-tabs" id="ollamaTabs">
-        <button class="quick-tab active" data-lang="ollama-py" onclick="switchOllamaTab('ollama-py')">Python</button>
-        <button class="quick-tab" data-lang="ollama-curl" onclick="switchOllamaTab('ollama-curl')">curl</button>
-        <button class="quick-tab" data-lang="ollama-js" onclick="switchOllamaTab('ollama-js')">JavaScript</button>
+
+      <!-- API 按钮组 -->
+      <div class="ollama-api-buttons">
+        <button class="ollama-api-btn active" data-api="chat" onclick="switchOllamaApi('chat')">💬 /api/chat 对话</button>
+        <button class="ollama-api-btn" data-api="generate" onclick="switchOllamaApi('generate')">✍️ /api/generate 生成</button>
+        <button class="ollama-api-btn" data-api="tags" onclick="switchOllamaApi('tags')">📋 /api/tags 模型列表</button>
+        <button class="ollama-api-btn" data-api="version" onclick="switchOllamaApi('version')">ℹ️ /api/version 版本</button>
+        <button class="ollama-api-btn" data-api="show" onclick="switchOllamaApi('show')">🔍 /api/show 模型详情</button>
+        <button class="ollama-api-btn" data-api="embed" onclick="switchOllamaApi('embed')">📐 /api/embed 嵌入</button>
       </div>
-      <div class="quick-code" id="ollamaCode">
-        <div class="quick-code-block active" data-lang="ollama-py">
-          <div class="quick-code-header">
-            <span>Python — 原生 Ollama API</span>
-            <button class="quick-copy" onclick="copyOllamaCode('ollama-py')">复制代码</button>
-          </div>
-          <pre><code>import requests
 
-# ECS 代理地址（无需开放 11434 端口）
-ECS_URL = "http://39.107.96.165:8765"
+      <!-- 语言 Tab -->
+      <div class="quick-tabs" id="ollamaLangTabs">
+        <button class="quick-tab active" data-lang="py" onclick="switchOllamaLang('py')">Python</button>
+        <button class="quick-tab" data-lang="curl" onclick="switchOllamaLang('curl')">curl</button>
+        <button class="quick-tab" data-lang="js" onclick="switchOllamaLang('js')">JavaScript</button>
+      </div>
 
-# 1. 登录获取 JWT Token
-login_resp = requests.post(f"{ECS_URL}/api/login", json={
-    "username": "zmj2013",
-    "password": "ZHOUmj32842510*"
-}, timeout=30)
-token = login_resp.json()["token"]
-headers = {"Authorization": f"Bearer {token}"}
+      <!-- 代码展示区 -->
+      <div class="quick-code" id="ollamaCodeArea">
 
-# 2. /api/chat（对话接口）
-resp = requests.post(f"{ECS_URL}/api/ollama/api/chat",
-    headers=headers, json={
-        "model": "qwen2.5:1.5b",
-        "messages": [
-            {"role": "system", "content": "你是一个编程助手"},
-            {"role": "user", "content": "推荐几个 Python 项目"}
-        ],
-        "stream": False,
-        "options": {"temperature": 0.7}
-    }, timeout=120)
+        <!-- /api/chat -->
+        <div class="ollama-code-group" data-api-group="chat">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python — /api/chat</span>
+              <button class="quick-copy" onclick="copyOllamaCode('chat','py')">复制</button>
+            </div>
+            <pre><code>import requests
 
-result = resp.json()
-print(result.get("message", {}).get("content", ""))
+API_KEY = "sk-你的API密钥"
+BASE_URL = "https://codingzhou.top/api/ollama/chat"
 
-# 3. /api/generate（文本生成接口）
-resp2 = requests.post(f"{ECS_URL}/api/ollama/api/generate",
-    headers=headers, json={
-        "model": "qwen2.5:1.5b",
-        "prompt": "用 Python 写一个快速排序",
-        "stream": False,
-        "options": {"temperature": 0.7}
-    }, timeout=120)
-
-result2 = resp2.json()
-print(result2.get("response", ""))
-
-# 4. 列出所有可用模型
-models = requests.get(f"{ECS_URL}/api/ollama/api/tags", headers=headers).json()
-for m in models.get("models", []):
-    print(f"可用模型: {m['name']}")
-
-# 5. 查看 Ollama 版本
-version = requests.get(f"{ECS_URL}/api/ollama/api/version", headers=headers).json()
-print(f"Ollama 版本: {version.get('version')}")</code></pre>
-        </div>
-        <div class="quick-code-block" data-lang="ollama-curl">
-          <div class="quick-code-header">
-            <span>curl — 原生 Ollama API</span>
-            <button class="quick-copy" onclick="copyOllamaCode('ollama-curl')">复制代码</button>
-          </div>
-          <pre><code># 1. 登录获取 Token
-TOKEN=$(curl -s -X POST http://39.107.96.165:8765/api/login \\
-  -H "Content-Type: application/json" \\
-  -d '{"username":"zmj2013","password":"ZHOUmj32842510*"}' | python -c "import sys,json;print(json.load(sys.stdin)['token'])")
-
-# 2. /api/chat 对话
-curl -X POST http://39.107.96.165:8765/api/ollama/api/chat \\
-  -H "Authorization: Bearer $TOKEN" \\
-  -H "Content-Type: application/json" \\
-  -d '{
+# 对话请求
+resp = requests.post(BASE_URL, headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "path": "/api/chat",
     "model": "qwen2.5:1.5b",
     "messages": [
+        {"role": "system", "content": "你是一个编程助手"},
+        {"role": "user", "content": "推荐几个 Python 项目"}
+    ],
+    "stream": False,
+    "options": {"temperature": 0.7}
+}, timeout=120)
+
+result = resp.json()
+print(result.get("message", {}).get("content", ""))</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl — /api/chat</span>
+              <button class="quick-copy" onclick="copyOllamaCode('chat','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "path": "/api/chat",
+    "model": "qwen2.5:1.5b",
+    "messages": [
+      {"role": "system", "content": "你是一个编程助手"},
       {"role": "user", "content": "推荐几个 Python 项目"}
     ],
     "stream": false,
     "options": {"temperature": 0.7}
-  }'
-
-# 3. /api/generate 文本生成
-curl -X POST http://39.107.96.165:8765/api/ollama/api/generate \\
-  -H "Authorization: Bearer $TOKEN" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "qwen2.5:1.5b",
-    "prompt": "用 Python 写一个快速排序",
-    "stream": false,
-    "options": {"temperature": 0.7}
-  }'
-
-# 4. 列出可用模型
-curl http://39.107.96.165:8765/api/ollama/api/tags \\
-  -H "Authorization: Bearer $TOKEN"</code></pre>
-        </div>
-        <div class="quick-code-block" data-lang="ollama-js">
-          <div class="quick-code-header">
-            <span>JavaScript — 原生 Ollama API</span>
-            <button class="quick-copy" onclick="copyOllamaCode('ollama-js')">复制代码</button>
+  }'</code></pre>
           </div>
-          <pre><code>const ECS_URL = "http://39.107.96.165:8765";
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript — /api/chat</span>
+              <button class="quick-copy" onclick="copyOllamaCode('chat','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
 
-// 1. 登录获取 Token
-const loginResp = await fetch(\`\${ECS_URL}/api/login\`, {
+// 对话请求
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
   method: "POST",
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
   body: JSON.stringify({
-    username: "zmj2013",
-    password: "ZHOUmj32842510*"
-  })
-});
-const { token } = await loginResp.json();
-const headers = { Authorization: \`Bearer \${token}\`, "Content-Type": "application/json" };
-
-// 2. /api/chat 对话
-const chatResp = await fetch(\`\${ECS_URL}/api/ollama/api/chat\`, {
-  method: "POST",
-  headers,
-  body: JSON.stringify({
+    path: "/api/chat",
     model: "qwen2.5:1.5b",
-    messages: [{ role: "user", content: "推荐几个 Python 项目" }],
+    messages: [
+      { role: "system", content: "你是一个编程助手" },
+      { role: "user", content: "推荐几个 Python 项目" }
+    ],
     stream: false,
     options: { temperature: 0.7 }
   })
 });
-const chatResult = await chatResp.json();
-console.log(chatResult.message.content);
+const result = await resp.json();
+console.log(result.message.content);</code></pre>
+          </div>
+        </div>
 
-// 3. /api/generate 文本生成
-const genResp = await fetch(\`\${ECS_URL}/api/ollama/api/generate\`, {
+        <!-- /api/generate -->
+        <div class="ollama-code-group" data-api-group="generate" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python — /api/generate</span>
+              <button class="quick-copy" onclick="copyOllamaCode('generate','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+BASE_URL = "https://codingzhou.top/api/ollama/chat"
+
+# 文本生成
+resp = requests.post(BASE_URL, headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "path": "/api/generate",
+    "model": "qwen2.5:1.5b",
+    "prompt": "用 Python 写一个快速排序",
+    "stream": False,
+    "options": {"temperature": 0.7}
+}, timeout=120)
+
+result = resp.json()
+print(result.get("response", ""))</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl — /api/generate</span>
+              <button class="quick-copy" onclick="copyOllamaCode('generate','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "path": "/api/generate",
+    "model": "qwen2.5:1.5b",
+    "prompt": "用 Python 写一个快速排序",
+    "stream": false,
+    "options": {"temperature": 0.7}
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript — /api/generate</span>
+              <button class="quick-copy" onclick="copyOllamaCode('generate','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 文本生成
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
   method: "POST",
-  headers,
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
   body: JSON.stringify({
+    path: "/api/generate",
     model: "qwen2.5:1.5b",
     prompt: "用 Python 写一个快速排序",
     stream: false,
     options: { temperature: 0.7 }
   })
 });
-const genResult = await genResp.json();
-console.log(genResult.response);
-
-// 4. 列出可用模型
-const modelsResp = await fetch(\`\${ECS_URL}/api/ollama/api/tags\`, { headers });
-const modelsData = await modelsResp.json();
-modelsData.models.forEach(m => console.log("可用模型:", m.name));</code></pre>
+const result = await resp.json();
+console.log(result.response);</code></pre>
+          </div>
         </div>
+
+        <!-- /api/tags -->
+        <div class="ollama-code-group" data-api-group="tags" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python — /api/tags</span>
+              <button class="quick-copy" onclick="copyOllamaCode('tags','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+
+# 列出所有可用模型
+resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={"path": "/api/tags"}, timeout=30)
+
+for m in resp.json().get("models", []):
+    print(f"可用模型: {m['name']}")</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl — /api/tags</span>
+              <button class="quick-copy" onclick="copyOllamaCode('tags','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{"path": "/api/tags"}'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript — /api/tags</span>
+              <button class="quick-copy" onclick="copyOllamaCode('tags','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 列出所有可用模型
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ path: "/api/tags" })
+});
+const data = await resp.json();
+data.models.forEach(m => console.log("可用模型:", m.name));</code></pre>
+          </div>
+        </div>
+
+        <!-- /api/version -->
+        <div class="ollama-code-group" data-api-group="version" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python — /api/version</span>
+              <button class="quick-copy" onclick="copyOllamaCode('version','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+
+# 查看 Ollama 版本
+resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={"path": "/api/version"}, timeout=10)
+
+version = resp.json()
+print(f"Ollama 版本: {version.get('version')}")</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl — /api/version</span>
+              <button class="quick-copy" onclick="copyOllamaCode('version','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{"path": "/api/version"}'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript — /api/version</span>
+              <button class="quick-copy" onclick="copyOllamaCode('version','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 查看 Ollama 版本
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ path: "/api/version" })
+});
+const data = await resp.json();
+console.log("Ollama 版本:", data.version);</code></pre>
+          </div>
+        </div>
+
+        <!-- /api/show -->
+        <div class="ollama-code-group" data-api-group="show" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python — /api/show</span>
+              <button class="quick-copy" onclick="copyOllamaCode('show','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+
+# 查看模型详情
+resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "path": "/api/show",
+    "name": "qwen2.5:1.5b"
+}, timeout=30)
+
+print(resp.json())</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl — /api/show</span>
+              <button class="quick-copy" onclick="copyOllamaCode('show','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "path": "/api/show",
+    "name": "qwen2.5:1.5b"
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript — /api/show</span>
+              <button class="quick-copy" onclick="copyOllamaCode('show','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 查看模型详情
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    path: "/api/show",
+    name: "qwen2.5:1.5b"
+  })
+});
+console.log(await resp.json());</code></pre>
+          </div>
+        </div>
+
+        <!-- /api/embed -->
+        <div class="ollama-code-group" data-api-group="embed" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python — /api/embed</span>
+              <button class="quick-copy" onclick="copyOllamaCode('embed','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+
+# 文本嵌入向量
+resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "path": "/api/embed",
+    "model": "qwen2.5:1.5b",
+    "input": "你好世界"
+}, timeout=30)
+
+data = resp.json()
+print(f"向量维度: {len(data.get('embedding', []))}")</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl — /api/embed</span>
+              <button class="quick-copy" onclick="copyOllamaCode('embed','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "path": "/api/embed",
+    "model": "qwen2.5:1.5b",
+    "input": "你好世界"
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript — /api/embed</span>
+              <button class="quick-copy" onclick="copyOllamaCode('embed','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 文本嵌入向量
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    path: "/api/embed",
+    model: "qwen2.5:1.5b",
+    input: "你好世界"
+  })
+});
+const data = await resp.json();
+console.log("向量维度:", data.embedding?.length);</code></pre>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <div class="admin-section">
-      <div class="admin-section-title">接口对比</div>
-      <table class="guide-table">
-        <tr><th>特性</th><th>平台统一 API</th><th>原生 Ollama API</th></tr>
-        <tr><td>地址</td><td><code>/api/recommend</code></td><td><code>/api/ollama/api/*</code></td></tr>
-        <tr><td>认证</td><td>API Key（sk-xxx）</td><td>JWT Token（需登录）</td></tr>
-        <tr><td>路由</td><td>自动选择最优上游</td><td>直接访问 Ollama</td></tr>
-        <tr><td>流式响应</td><td>不支持</td><td>支持（stream: true）</td></tr>
-        <tr><td>自定义参数</td><td>有限</td><td>完整 options 支持</td></tr>
-        <tr><td>使用场景</td><td>快速集成、推荐功能</td><td>定制化、流式对话</td></tr>
-      </table>
+      <div class="admin-section-title">获取 API Key</div>
+      <div class="guide-section">
+        <p>1. 登录 <a href="/" style="color:var(--accent-blue)">codingzhou.top</a>（使用管理员或用户密码）</p>
+        <p>2. 进入控制台 →「<a href="javascript:switchTab('apikeys')" style="color:var(--accent-blue)">新建 API</a>」页面</p>
+        <p>3. 创建 API Key，复制后立即使用（完整 Key 仅显示一次）</p>
+        <p>4. 将 Key 替换到上方代码的 <code>"sk-你的API密钥"</code> 处即可调用</p>
+      </div>
     </div>
   `;
 }
 
-function switchOllamaTab(lang) {
-  document.querySelectorAll('#ollamaTabs .quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
-  document.querySelectorAll('#ollamaCode .quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+function switchOllamaApi(api) {
+  // API 按钮高亮
+  document.querySelectorAll('.ollama-api-btn').forEach(b => b.classList.toggle('active', b.dataset.api === api));
+  // 切换代码组
+  document.querySelectorAll('.ollama-code-group').forEach(g => {
+    g.style.display = g.dataset.apiGroup === api ? '' : 'none';
+  });
 }
 
-function copyOllamaCode(lang) {
-  const block = document.querySelector('#ollamaCode .quick-code-block[data-lang="' + lang + '"]');
+function switchOllamaLang(lang) {
+  // 语言 Tab 高亮
+  document.querySelectorAll('#ollamaLangTabs .quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
+  // 在当前可见的代码组内切换语言
+  document.querySelectorAll('.ollama-code-group').forEach(g => {
+    if (g.style.display !== 'none' || g.style.display === '') {
+      g.querySelectorAll('.quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    }
+  });
+}
+
+function copyOllamaCode(api, lang) {
+  const group = document.querySelector('.ollama-code-group[data-api-group="' + api + '"]');
+  if (!group) return;
+  const block = group.querySelector('.quick-code-block[data-lang="' + lang + '"]');
+  if (!block) return;
   const code = block.querySelector('code').textContent;
   navigator.clipboard.writeText(code).then(() => {
     const toast = document.createElement('div');
