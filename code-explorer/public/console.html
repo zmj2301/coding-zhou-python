@@ -1288,7 +1288,7 @@ function render(data) {
     const h = Math.round((t.used / maxTrend) * 120);
     const label = t.date.slice(5).replace('-', '/');
     return `
-      <div class="trend-bar-col" title="${esc(t.date)} · ${t.used} �?>
+      <div class="trend-bar-col" title="${esc(t.date)} · ${t.used} 次">
         <div class="trend-bar-count">${t.used}</div>
         <div class="trend-bar${t.used === 0 ? ' zero' : ''}" style="height:${Math.max(t.used === 0 ? 4 : 8, h)}px"></div>
         <div class="trend-bar-label">${label}</div>
@@ -1549,7 +1549,7 @@ function renderApiKeys(keys) {
         </div>
         <div class="apikey-field">
           <label class="apikey-label">每日调用限额</label>
-          <input class="apikey-input" id="fLimit" type="number" min="1" placeholder="留空表示不限�? autocomplete="off">
+          <input class="apikey-input" id="fLimit" type="number" min="1" placeholder="留空表示不限" autocomplete="off">
           <div class="apikey-hint">�?key 每天最多可调用 /api/recommend 的次�?/div>
         </div>
         <div class="apikey-modal-actions">
@@ -2040,7 +2040,7 @@ resp = requests.post(BASE_URL, headers={
     "path": "/api/chat",
     "model": "qwen2.5:1.5b",
     "messages": [
-        {"role": "system", "content": "你是一个编程助�?},
+        {"role": "system", "content": "你是一个编程助手"},
         {"role": "user", "content": "推荐几个 Python 项目"}
     ],
     "stream": False,
@@ -2062,7 +2062,7 @@ print(result.get("message", {}).get("content", ""))</code></pre>
     "path": "/api/chat",
     "model": "qwen2.5:1.5b",
     "messages": [
-      {"role": "system", "content": "你是一个编程助�?},
+      {"role": "system", "content": "你是一个编程助手"},
       {"role": "user", "content": "推荐几个 Python 项目"}
     ],
     "stream": false,
@@ -2087,7 +2087,7 @@ const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
     path: "/api/chat",
     model: "qwen2.5:1.5b",
     messages: [
-      { role: "system", content: "你是一个编程助�? },
+      { role: "system", content: "你是一个编程助手" },
       { role: "user", content: "推荐几个 Python 项目" }
     ],
     stream: false,
@@ -2117,7 +2117,7 @@ resp = requests.post(BASE_URL, headers={
 }, json={
     "path": "/api/generate",
     "model": "qwen2.5:1.5b",
-    "prompt": "�?Python 写一个快速排�?,
+    "prompt": "帮 Python 写一个快速排查",
     "stream": False,
     "options": {"temperature": 0.7}
 }, timeout=120)
@@ -2136,7 +2136,7 @@ print(result.get("response", ""))</code></pre>
   -d '{
     "path": "/api/generate",
     "model": "qwen2.5:1.5b",
-    "prompt": "�?Python 写一个快速排�?,
+    "prompt": "帮 Python 写一个快速排查",
     "stream": false,
     "options": {"temperature": 0.7}
   }'</code></pre>
@@ -2158,7 +2158,7 @@ const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
   body: JSON.stringify({
     path: "/api/generate",
     model: "qwen2.5:1.5b",
-    prompt: "�?Python 写一个快速排�?,
+    prompt: "帮 Python 写一个快速排查",
     stream: false,
     options: { temperature: 0.7 }
   })
