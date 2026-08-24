@@ -984,11 +984,22 @@ setTheme(getTheme());
 // ===== 数据加载 =====
 let currentUser = null;
 
+async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    return res;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function loadPool() {
   const content = $('content');
   try {
-    const authRes = await fetch('/api/auth-check');
-    if (!authRes.ok) throw new Error('auth-check returned ' + authRes.status);
+    const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
+    if (!authRes.ok) throw new Error('登录状态检查失败 (' + authRes.status + ')');
     const authData = await authRes.json();
     if (!authData.authenticated) {
       content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
@@ -997,12 +1008,14 @@ async function loadPool() {
     currentUser = authData.user;
     $('adminUsername').textContent = currentUser.username;
 
-    const res = await fetch('/api/ai-pool?days=7');
+    const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 10000);
     if (res.status === 401) { content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a></div>'; return; }
+    if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
     render(data);
   } catch (e) {
-    content.innerHTML = '<div class="console-error">数据加载失败：' + esc(e.message) + '<br><small>如果你刚登录，请刷新页面重试</small></div>';
+    const msg = e.name === 'AbortError' ? '请求超时，服务器暂时无响应' : esc(e.message);
+    content.innerHTML = '<div class="console-error">数据加载失败：' + msg + '<br><small>如果你刚登录，请刷新页面重试；如果问题持续存在，请联系管理员</small></div>';
   }
 }
 
@@ -1067,7 +1080,7 @@ function render(data) {
       <div class="pool-progress-track">
         <div class="pool-progress-fill" style="width:${pct}%"></div>
       </div>
-      <div class="pool-progress-foot">总可用 1050 = Cloudflare Workers AI 1000 次/天 + OpenRouter Free 50 次/天；池子上限 = 总可用 × 90%（${total} 次/天）。所有登录用户共享此池子，每人用量独立统计。</div>
+      <div class="pool-progress-foot">总可用 = Cloudflare Workers AI 1000 次/天 + OpenRouter Free 50 次/天 + Ollama 本地无限次；池子上限 = 总可用 × 90%（${total} 次/天）。所有登录用户共享此池子，每人用量独立统计。</div>
     </div>
     <div class="wishing-pool-wrap">
       <div class="wishing-pool">
@@ -1133,25 +1146,25 @@ function render(data) {
       <div class="upstream-card">
         <div class="upstream-head">
           <span class="upstream-dot"></span>
-          <span class="upstream-name">Cloudflare Workers AI</span>
+          <span class="upstream-name">🦙 Ollama 本地 AI</span>
         </div>
         <div class="upstream-meta">
-          状态：<b>主通道 · 可用</b><br>
-          每日限额：<b>${p.cloudflareDaily} 次</b><br>
-          模型：<b>@cf/qwen3-coder-30b-a3b-fp8</b><br>
-          计费：<b>免费（10000 neurons/天）</b>
+          状态：<b>主通道 · 本地部署</b><br>
+          每日限额：<b>无限次</b><br>
+          模型：<b>qwen2.5:1.5b</b><br>
+          计费：<b>完全免费</b>
         </div>
       </div>
       <div class="upstream-card">
         <div class="upstream-head">
           <span class="upstream-dot"></span>
-          <span class="upstream-name">智谱 GLM-4.7-Flash</span>
+          <span class="upstream-name">Cloudflare Workers AI</span>
         </div>
         <div class="upstream-meta">
           状态：<b>备用 · 可用</b><br>
-          每日限额：<b>永久免费</b><br>
-          模型：<b>glm-4.7-flash</b><br>
-          计费：<b>免费</b>
+          每日限额：<b>${p.cloudflareDaily} 次</b><br>
+          模型：<b>@cf/qwen3-coder-30b-a3b-fp8</b><br>
+          计费：<b>免费（10000 neurons/天）</b>
         </div>
       </div>
       <div class="upstream-card">
@@ -1512,7 +1525,9 @@ function loadQuickGuide() {
       <div class="guide-section">
         <h3 class="guide-h3">2. 接口说明</h3>
         <table class="guide-table">
-          <tr><td>接口地址</td><td><code>POST https://codingzhou.dpdns.org/api/recommend</code></td></tr>
+          <tr><td>接口地址</td><td><code>POST https://codingzhou.top/api/recommend</code></td></tr>
+          <tr><td>AI 引擎</td><td><strong>Ollama</strong> 本地模型（qwen2.5:1.5b）+ Cloudflare Workers AI 备用</td></tr>
+          <tr><td>模型选择</td><td>默认 <code>ollama/text</code>，可选 <code>ollama/vision</code>（图片识别）</td></tr>
           <tr><td>认证方式</td><td><code>Authorization: Bearer sk-xxx</code> 或请求体中 <code>api_key: "sk-xxx"</code></td></tr>
           <tr><td>Content-Type</td><td><code>application/json</code></td></tr>
           <tr><td>请求体</td><td><code>{"messages": [{"role": "user", "content": "..."}]}</code></td></tr>
@@ -1527,6 +1542,7 @@ function loadQuickGuide() {
           <button class="quick-tab" data-lang="curl" onclick="switchGuideTab('curl')">curl</button>
           <button class="quick-tab" data-lang="js" onclick="switchGuideTab('js')">JavaScript</button>
           <button class="quick-tab" data-lang="node" onclick="switchGuideTab('node')">Node.js</button>
+          <button class="quick-tab" data-lang="ollama" onclick="switchGuideTab('ollama')">原生 Ollama</button>
         </div>
         <div class="quick-code" id="guideCode">
           <div class="quick-code-block active" data-lang="python">
@@ -1537,7 +1553,7 @@ function loadQuickGuide() {
             <pre><code>import requests
 
 API_KEY = "sk-你的密钥"
-url = "https://codingzhou.dpdns.org/api/recommend"
+url = "https://codingzhou.top/api/recommend"
 headers = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json"
@@ -1559,7 +1575,7 @@ else:
               <span>curl</span>
               <button class="quick-copy" onclick="copyGuideCode('curl')">复制代码</button>
             </div>
-            <pre><code>curl -X POST https://codingzhou.dpdns.org/api/recommend \\
+            <pre><code>curl -X POST https://codingzhou.top/api/recommend \\
   -H "Authorization: Bearer sk-你的密钥" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -1574,7 +1590,7 @@ else:
               <button class="quick-copy" onclick="copyGuideCode('js')">复制代码</button>
             </div>
             <pre><code>const API_KEY = "sk-你的密钥";
-const resp = await fetch("https://codingzhou.dpdns.org/api/recommend", {
+const resp = await fetch("https://codingzhou.top/api/recommend", {
   method: "POST",
   headers: {
     "Authorization": \`Bearer \${API_KEY}\`,
@@ -1598,7 +1614,7 @@ else console.error("错误:", data.error);</code></pre>
             <pre><code>const axios = require("axios");
 
 const API_KEY = "sk-你的密钥";
-const resp = await axios.post("https://codingzhou.dpdns.org/api/recommend", {
+const resp = await axios.post("https://codingzhou.top/api/recommend", {
   messages: [
     { role: "user", content: "推荐几个Python项目" }
   ]
@@ -1610,6 +1626,54 @@ const resp = await axios.post("https://codingzhou.dpdns.org/api/recommend", {
 const data = resp.data;
 if (data.success) console.log(data.response);
 else console.error("错误:", data.error);</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="ollama">
+            <div class="quick-code-header">
+              <span>原生 Ollama</span>
+              <button class="quick-copy" onclick="copyGuideCode('ollama')">复制代码</button>
+            </div>
+            <pre><code>import requests, base64
+
+# 直接调用 ECS 服务器上的 Ollama
+# 需在内网或通过 VPN 访问
+OLLAMA_URL = "http://39.107.96.165:11434"
+
+# 方式1: /api/chat（对话接口）
+resp = requests.post(f"{OLLAMA_URL}/api/chat", json={
+    "model": "qwen2.5:1.5b",
+    "messages": [
+        {"role": "system", "content": "你是一个编程助手"},
+        {"role": "user", "content": "推荐几个 Python 项目"}
+    ],
+    "stream": False
+}, timeout=120)
+result = resp.json()
+print(result.get("message", {}).get("content", ""))
+
+# 方式2: 视觉模型（图片识别）
+with open("photo.jpg", "rb") as f:
+    img_b64 = base64.b64encode(f.read()).decode()
+resp = requests.post(f"{OLLAMA_URL}/api/chat", json={
+    "model": "qwen2.5:1.5b",
+    "messages": [
+        {"role": "user", "content": [
+            {"type": "text", "text": "这张图片是什么？"},
+            {"type": "image", "data": img_b64}
+        ]}
+    ],
+    "stream": False
+}, timeout=120)
+
+# 方式3: /api/generate（单轮文本生成）
+resp = requests.post(f"{OLLAMA_URL}/api/generate", json={
+    "model": "qwen2.5:1.5b",
+    "prompt": "推荐几个 Python 练手项目",
+    "stream": False
+}, timeout=120)
+
+# 方式4: 管理接口
+models = requests.get(f"{OLLAMA_URL}/api/tags").json()   # 列出模型
+status = requests.get(f"{OLLAMA_URL}/api/version").json() # 查看版本</code></pre>
           </div>
         </div>
       </div>
@@ -1631,7 +1695,7 @@ else console.error("错误:", data.error);</code></pre>
         <h3 class="guide-h3">5. 限制说明</h3>
         <table class="guide-table">
           <tr><th>限制项</th><th>说明</th></tr>
-          <tr><td>共享池上限</td><td>全平台每天共享池总量为 <strong id="poolLimit">945</strong> 次调用，所有用户共用</td></tr>
+          <tr><td>共享池上限</td><td>Cloudflare Workers AI 每天 <strong>9944</strong> 次 + Ollama 本地模型无限次</td></tr>
           <tr><td>Key 每日限额</td><td>创建 key 时可设置每日调用次数上限，超出后返回 429</td></tr>
           <tr><td>Key 有效期</td><td>创建 key 时可设置过期时间，过期后认证失败</td></tr>
           <tr><td>Key 管理</td><td>key 可随时在控制台禁用或删除，禁用后立即失效</td></tr>
