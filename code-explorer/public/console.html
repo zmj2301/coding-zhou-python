@@ -1119,6 +1119,9 @@ function showLoading(content, steps, currentStep) {
   _loadingDone = false;
   _loadingStart = Date.now();
 
+  // 强制清理 content 中所有残留的 loading-overlay
+  content.querySelectorAll('.loading-overlay').forEach(el => el.remove());
+
   // 创建独立遮罩层，不替换原有内容
   const overlay = document.createElement('div');
   overlay.className = 'loading-overlay';
@@ -1158,6 +1161,30 @@ function stopLoading() {
     }
     _loadingOverlay = null;
   }
+  // 强制清理页面中所有残留的 loading-overlay（防护性清理）
+  document.querySelectorAll('.loading-overlay').forEach(el => {
+    if (el.parentNode) el.parentNode.removeChild(el);
+  });
+}
+
+// 更新当前加载进度（不创建新遮罩层，只更新显示）
+function updateLoading(steps, currentStep) {
+  if (_loadingDone || !_loadingOverlay || !document.body.contains(_loadingOverlay)) return;
+  const elapsed = ((Date.now() - _loadingStart) / 1000).toFixed(1);
+  const stepsHtml = steps.map((s, i) => {
+    let icon, cls;
+    if (i < currentStep) { icon = '✓'; cls = 'done'; }
+    else if (i === currentStep) { icon = '<span class="loading-spinner"></span>'; cls = 'active'; }
+    else { icon = '○'; cls = 'pending'; }
+    return `<div class="loading-step ${cls}"><span class="step-icon">${icon}</span><span class="step-text">${s}</span></div>`;
+  }).join('');
+  if (_loadingDone || !_loadingOverlay || !document.body.contains(_loadingOverlay)) return;
+  _loadingOverlay.innerHTML = `
+    <div class="loading-container">
+      <div class="loading-elapsed">已等待 ${elapsed}s</div>
+      <div class="loading-steps">${stepsHtml}</div>
+      <div class="loading-hint">如果长时间无响应，<a href="javascript:location.reload()" style="color:var(--accent-blue)">点击刷新</a> 或检查网络连接</div>
+    </div>`;
 }
 
 async function loadPool() {
@@ -1209,7 +1236,15 @@ async function loadPool() {
   }
 }
 
-function render(data) {
+function render(data) {
+  // 确保加载遮罩层已被移除
+  stopLoading();
+  const content = $('content');
+  if (content) {
+    // 强制清理所有残留的 loading-overlay
+    content.querySelectorAll('.loading-overlay').forEach(el => el.remove());
+  }
+  
   const p = data.pool;
   const used = p.used;
   const total = p.total;
@@ -1457,12 +1492,12 @@ async function loadApiKeys() {
         content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
         return;
       }
-      currentUser = authData.user;
-      const ceNameEl = $('ceUserName');
-      if (ceNameEl) ceNameEl.textContent = currentUser.username;
-      if (window.CENav) CENav.setUser(currentUser.username);
-    }
-    showLoading(content, steps, 1);
+      currentUser = authData.user;
+      const ceNameEl = $('ceUserName');
+      if (ceNameEl) ceNameEl.textContent = currentUser.username;
+      if (window.CENav) CENav.setUser(currentUser.username);
+    }
+    updateLoading(steps, 1);
     const url = '/api/api-keys' + (currentUser && currentUser.role === 'admin' ? '?all=' + (apiKeyView === 'all' ? '1' : '0') : '');
     const res = await fetchWithTimeout(url, {}, 20000);
     if (res.status === 401) {
@@ -1494,8 +1529,14 @@ async function loadApiKeys() {
   }
 }
 
-function renderApiKeys(keys) {
-  const content = $('content');
+function renderApiKeys(keys) {
+  // 确保加载遮罩层已被移除
+  stopLoading();
+  const content = $('content');
+  // 强制清理所有残留的 loading-overlay
+  if (content) {
+    content.querySelectorAll('.loading-overlay').forEach(el => el.remove());
+  }
   const isAdmin = currentUser && currentUser.role === 'admin';
   const keyRows = keys.length === 0
     ? '<div class="console-error" style="padding:48px 20px;text-align:center">暂无 API Key，点击右上角创建</div>'
@@ -1727,11 +1768,13 @@ async function toggleApiKey(id) {
 }
 
 // ===== 快速接入指�?=====
-function loadQuickGuide() {
-  stopLoading();
-  
-  const content = $('content');
-  if (!content) return;
+function loadQuickGuide() {
+  stopLoading();
+  
+  const content = $('content');
+  if (!content) return;
+  // 强制清理所有残留的 loading-overlay
+  content.querySelectorAll('.loading-overlay').forEach(el => el.remove());
   content.innerHTML = `
     <div class="admin-section">
       <div class="admin-section-title">快速接入指南</div>
@@ -1962,11 +2005,13 @@ console.log(visionResp.data.response);</code></pre>
 }
 
 // ===== Ollama 独立管理�?=====
-function loadOllama() {
-  stopLoading();
-  
-  const content = $('content');
-  if (!content) return;
+function loadOllama() {
+  stopLoading();
+  
+  const content = $('content');
+  if (!content) return;
+  // 强制清理所有残留的 loading-overlay
+  content.querySelectorAll('.loading-overlay').forEach(el => el.remove());
   content.innerHTML = `
     <div class="admin-section">
       <div class="admin-section-title">🦙 Ollama 本地 AI</div>
