@@ -1091,10 +1091,16 @@ async function fetchWithTimeout(url, options = {}, timeout = 10000) {
 // ===== 动态加载指示器 =====
 let _loadingTimer = null;
 let _loadingStart = 0;
+let _loadingDone = false;
+let _loadingContent = null;
+
 function showLoading(content, steps, currentStep) {
-  if (_loadingTimer) { clearInterval(_loadingTimer); _loadingTimer = null; }
+  stopLoading();
+  _loadingDone = false;
+  _loadingContent = content;
   _loadingStart = Date.now();
   const render = () => {
+    if (_loadingDone || !_loadingContent || !document.body.contains(_loadingContent)) return;
     const elapsed = ((Date.now() - _loadingStart) / 1000).toFixed(1);
     const stepsHtml = steps.map((s, i) => {
       let icon, cls;
@@ -1103,7 +1109,7 @@ function showLoading(content, steps, currentStep) {
       else { icon = '○'; cls = 'pending'; }
       return `<div class="loading-step ${cls}"><span class="step-icon">${icon}</span><span class="step-text">${s}</span></div>`;
     }).join('');
-    content.innerHTML = `
+    _loadingContent.innerHTML = `
       <div class="loading-container">
         <div class="loading-elapsed">⏱ 已等待 ${elapsed}s</div>
         <div class="loading-steps">${stepsHtml}</div>
@@ -1114,12 +1120,14 @@ function showLoading(content, steps, currentStep) {
   _loadingTimer = setInterval(render, 200);
 }
 function stopLoading() {
+  _loadingDone = true;
   if (_loadingTimer) { clearInterval(_loadingTimer); _loadingTimer = null; }
 }
 
 async function loadPool() {
   stopLoading();
   const content = $('content');
+  if (!content) return;
   const steps = ['检查登录状态...', '加载池子数据...'];
   showLoading(content, steps, 0);
   try {
@@ -1137,7 +1145,7 @@ async function loadPool() {
     if (window.CENav) CENav.setUser(currentUser.username);
 
     showLoading(content, steps, 1);
-    const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 12000);
+    const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 20000);
     if (res.status === 401) {
       stopLoading();
       content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
@@ -1146,11 +1154,13 @@ async function loadPool() {
     if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
     stopLoading();
+    _loadingContent = null;
     render(data);
   } catch (e) {
     stopLoading();
+    _loadingContent = null;
     const msg = e.name === 'AbortError'
-      ? '请求超时（服务器 8 秒内无响应）'
+      ? '请求超时（服务器无响应）'
       : esc(e.message || '未知错误');
     content.innerHTML = `
       <div class="console-error" style="padding:40px 20px">
@@ -1395,7 +1405,9 @@ let apiKeyView = 'mine'; // mine | all
 
 async function loadApiKeys() {
   stopLoading();
+  _loadingContent = null;
   const content = $('content');
+  if (!content) return;
   const steps = ['检查登录状态...', '加载 API Key 列表...'];
   showLoading(content, steps, 0);
   try {
@@ -1405,6 +1417,7 @@ async function loadApiKeys() {
       const authData = await authRes.json();
       if (!authData.authenticated) {
         stopLoading();
+        _loadingContent = null;
         content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
         return;
       }
@@ -1415,15 +1428,17 @@ async function loadApiKeys() {
     }
     showLoading(content, steps, 1);
     const url = '/api/api-keys' + (currentUser && currentUser.role === 'admin' ? '?all=' + (apiKeyView === 'all' ? '1' : '0') : '');
-    const res = await fetchWithTimeout(url, {}, 10000);
+    const res = await fetchWithTimeout(url, {}, 20000);
     if (res.status === 401) {
       stopLoading();
+      _loadingContent = null;
       content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
       return;
     }
     if (!res.ok) throw new Error('服务器返回错误 (' + res.status + ')');
     const data = await res.json();
     stopLoading();
+    _loadingContent = null;
     if (data.error) {
       content.innerHTML = '<div class="console-error">' + esc(data.error) + '</div>';
       return;
@@ -1431,7 +1446,8 @@ async function loadApiKeys() {
     renderApiKeys(data.keys || []);
   } catch (e) {
     stopLoading();
-    const msg = e.name === 'AbortError' ? '请求超时' : esc(e.message || '未知错误');
+    _loadingContent = null;
+    const msg = e.name === 'AbortError' ? '请求超时（服务器无响应）' : esc(e.message || '未知错误');
     content.innerHTML = `
       <div class="console-error" style="padding:40px 20px">
         <div style="font-size:36px;margin-bottom:12px">⚠️</div>
@@ -1676,7 +1692,10 @@ async function toggleApiKey(id) {
 
 // ===== 快速接入指南 =====
 function loadQuickGuide() {
+  stopLoading();
+  _loadingContent = null;
   const content = $('content');
+  if (!content) return;
   content.innerHTML = `
     <div class="admin-section">
       <div class="admin-section-title">快速接入指南</div>
@@ -1908,7 +1927,10 @@ console.log(visionResp.data.response);</code></pre>
 
 // ===== Ollama 独立管理页 =====
 function loadOllama() {
+  stopLoading();
+  _loadingContent = null;
   const content = $('content');
+  if (!content) return;
   content.innerHTML = `
     <div class="admin-section">
       <div class="admin-section-title">🦙 Ollama 本地 AI</div>
