@@ -1104,16 +1104,16 @@ function showLoading(content, steps, currentStep) {
     const elapsed = ((Date.now() - _loadingStart) / 1000).toFixed(1);
     const stepsHtml = steps.map((s, i) => {
       let icon, cls;
-      if (i < currentStep) { icon = '�?; cls = 'done'; }
+      if (i < currentStep) { icon = '✓'; cls = 'done'; }
       else if (i === currentStep) { icon = '<span class="loading-spinner"></span>'; cls = 'active'; }
-      else { icon = '�?; cls = 'pending'; }
+      else { icon = '○'; cls = 'pending'; }
       return `<div class="loading-step ${cls}"><span class="step-icon">${icon}</span><span class="step-text">${s}</span></div>`;
     }).join('');
     _loadingContent.innerHTML = `
       <div class="loading-container">
-        <div class="loading-elapsed">�?已等�?${elapsed}s</div>
+        <div class="loading-elapsed">已等待 ${elapsed}s</div>
         <div class="loading-steps">${stepsHtml}</div>
-        <div class="loading-hint">如果长时间无响应�?a href="javascript:location.reload()" style="color:var(--accent-blue)">点击刷新</a> 或检查网络连�?/div>
+        <div class="loading-hint">如果长时间无响应，<a href="javascript:location.reload()" style="color:var(--accent-blue)">点击刷新</a> 或检查网络连�?/div>
       </div>`;
   };
   render();
@@ -1128,15 +1128,15 @@ async function loadPool() {
   stopLoading();
   const content = $('content');
   if (!content) return;
-  const steps = ['检查登录状�?..', '加载池子数据...'];
+  const steps = ['检查登录状态...', '加载池子数据...'];
   showLoading(content, steps, 0);
   try {
     const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
-    if (!authRes.ok) throw new Error('登录状态检查失�?(' + authRes.status + ')');
+    if (!authRes.ok) throw new Error('登录状态检查失败(' + authRes.status + ')');
     const authData = await authRes.json();
     if (!authData.authenticated) {
       stopLoading();
-      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制�?/div>';
+      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
       return;
     }
     currentUser = authData.user;
@@ -1148,10 +1148,10 @@ async function loadPool() {
     const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 20000);
     if (res.status === 401) {
       stopLoading();
-      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制�?/div>';
+      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
       return;
     }
-    if (!res.ok) throw new Error('服务器返回错�?(' + res.status + ')');
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
     const data = await res.json();
     stopLoading();
     _loadingContent = null;
@@ -1228,7 +1228,7 @@ function render(data) {
   const progress = `
     <div class="pool-progress-wrap">
       <div class="pool-progress-head">
-        <span class="pool-progress-label">共享池当日消�?/span>
+        <span class="pool-progress-label">共享池当日消耗</span>
         <span class="pool-progress-meta">${used.toLocaleString()} / ${total.toLocaleString()}</span>
       </div>
       <div class="pool-progress-track">
@@ -1266,7 +1266,7 @@ function render(data) {
       const isSelf = currentUser && u.username === currentUser.username;
       const top = i === 0 ? ' top1' : i === 1 ? ' top2' : i === 2 ? ' top3' : '';
       const roleCls = u.role === 'admin' ? 'admin' : (isSelf ? 'self' : 'user');
-      const roleTxt = u.role === 'admin' ? '管理�? : (isSelf ? '�? : '用户');
+      const roleTxt = u.role === 'admin' ? '管理员' : (isSelf ? '自己' : '用户');
       return `
         <div class="rank-row${isSelf ? ' self' : ''}">
           <div class="rank-index${top}">${i + 1}</div>
@@ -1400,7 +1400,7 @@ function switchTab(tab) {
 }
 
 // ===== API Key 管理 =====
-const MASK = k => k ? k.slice(0, 10) + '•••�? + k.slice(-4) : '';
+const MASK = k => k ? k.slice(0, 10) + '•••...' + k.slice(-4) : '';
 let apiKeyView = 'mine'; // mine | all
 
 async function loadApiKeys() {
@@ -1408,12 +1408,12 @@ async function loadApiKeys() {
   _loadingContent = null;
   const content = $('content');
   if (!content) return;
-  const steps = ['检查登录状�?..', '加载 API Key 列表...'];
+  const steps = ['检查登录状态...', '加载 API Key 列表...'];
   showLoading(content, steps, 0);
   try {
     if (!currentUser) {
       const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
-      if (!authRes.ok) throw new Error('登录状态检查失�?(' + authRes.status + ')');
+      if (!authRes.ok) throw new Error('登录状态检查失败(' + authRes.status + ')');
       const authData = await authRes.json();
       if (!authData.authenticated) {
         stopLoading();
@@ -1435,7 +1435,7 @@ async function loadApiKeys() {
       content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
       return;
     }
-    if (!res.ok) throw new Error('服务器返回错�?(' + res.status + ')');
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
     const data = await res.json();
     stopLoading();
     _loadingContent = null;
@@ -1466,8 +1466,8 @@ function renderApiKeys(keys) {
     : keys.map(k => {
         const now = Math.floor(Date.now() / 1000);
         const st = !k.is_active
-          ? { label: '已禁�?, cls: 'off' }
-          : (k.expires_at && now > k.expires_at) ? { label: '已过�?, cls: 'off' }
+          ? { label: '已禁用', cls: 'off' }
+          : (k.expires_at && now > k.expires_at) ? { label: '已过期', cls: 'off' }
           : { label: '有效', cls: 'on' };
         const expire = k.expires_at ? fmtTime(k.expires_at) : '永久';
         const owner = apiKeyView === 'all' ? `<span class="apikey-owner">${esc(k.username)}</span>` : '';
@@ -1485,13 +1485,13 @@ function renderApiKeys(keys) {
             <div class="apikey-meta">
               <span>创建 <b>${fmtTime(k.created_at)}</b></span>
               <span>过期 <b>${expire}</b></span>
-              <span>调用 <b>${k.calls || 0} �?/b></span>
-              ${k.daily_limit ? `<span>限额 <b>${k.daily_limit} �?�?/b></span>` : ''}
-              ${k.desc ? `<span>用�?<b>${esc(k.desc)}</b></span>` : ''}
+              <span>调用 <b>${k.calls || 0} 次</b></span>
+              ${k.daily_limit ? `<span>限额 <b>${k.daily_limit} 次/天</b></span>` : ''}
+              ${k.desc ? `<span>用途<b>${esc(k.desc)}</b></span>` : ''}
             </div>
           </div>
           <div class="apikey-actions">
-            <button class="apikey-iconbtn" title="${k.is_active ? '禁用' : '启用'}" onclick="toggleApiKey(${k.id})">${k.is_active ? '�? : '�?}</button>
+            <button class="apikey-iconbtn" title="${k.is_active ? '禁用' : '启用'}" onclick="toggleApiKey(${k.id})">${k.is_active ? '●' : '○'}</button>
             <button class="apikey-iconbtn danger" title="删除" onclick="deleteApiKey(${k.id}, '${esc(k.name)}')">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
             </button>
@@ -1530,11 +1530,11 @@ function renderApiKeys(keys) {
           <input class="apikey-input" id="fName" placeholder="如：我的爬虫" maxlength="40" autocomplete="off">
         </div>
         <div class="apikey-field">
-          <label class="apikey-label">用途描�?/label>
+          <label class="apikey-label">用途描述</label>
           <input class="apikey-input" id="fDesc" placeholder="这个 key 用来做什么？" maxlength="100" autocomplete="off">
         </div>
         <div class="apikey-field">
-          <label class="apikey-label">有效�?/label>
+          <label class="apikey-label">有效效期</label>
           <select class="apikey-input" id="fExpire">
             <option value="never">永久有效</option>
             <option value="7">7 天后过期</option>
@@ -1624,7 +1624,7 @@ function getExpireTs() {
 
 async function createApiKey() {
   const name = $('fName').value.trim();
-  if (!name) { alert('请输�?key 名称'); $('fName').focus(); return; }
+  if (!name) { alert('请输入 key 名称'); $('fName').focus(); return; }
   const btn = $('createSubmit');
   btn.disabled = true;
   try {
@@ -1638,11 +1638,11 @@ async function createApiKey() {
         expires_at: getExpireTs()
       })
     }, 10000);
-    if (!res.ok) throw new Error('服务器返回错�?(' + res.status + ')');
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
     const data = await res.json();
     if (data.success) {
       $('fullKey').textContent = data.key;
-      $('successName').textContent = `�?{data.name}」�?属于 ${currentUser.username}`;
+      $('successName').textContent = `「{data.name}」 属于 ${currentUser.username}`;
       $('createModal').style.display = 'none';
       $('successModal').style.display = 'flex';
       $('fName').value = ''; $('fDesc').value = ''; $('fLimit').value = '';
@@ -1675,7 +1675,7 @@ async function deleteApiKey(id, name) {
   if (!confirm(`确定删除 Key�?{name}」吗？删除后不可恢复。`)) return;
   try {
     const res = await fetchWithTimeout(`/api/api-keys/delete?id=${id}`, {}, 8000);
-    if (!res.ok) throw new Error('服务器返回错�?(' + res.status + ')');
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
     const data = await res.json();
     if (data.success) { loadApiKeys(); } else { alert(data.error || '删除失败'); }
   } catch (e) { alert('网络错误: ' + (e.name === 'AbortError' ? '请求超时' : e.message)); }
@@ -1684,7 +1684,7 @@ async function deleteApiKey(id, name) {
 async function toggleApiKey(id) {
   try {
     const res = await fetchWithTimeout(`/api/api-keys/toggle?id=${id}`, {}, 8000);
-    if (!res.ok) throw new Error('服务器返回错�?(' + res.status + ')');
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
     const data = await res.json();
     if (data.success) { loadApiKeys(); } else { alert(data.error || '操作失败'); }
   } catch (e) { alert('网络错误: ' + (e.name === 'AbortError' ? '请求超时' : e.message)); }
