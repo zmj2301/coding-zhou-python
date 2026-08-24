@@ -1261,7 +1261,8 @@ def base64url_encode(data):
     return base64.urlsafe_b64encode(data).rstrip(b'=').decode()
 
 def base64url_decode(s):
-    s += '=' * (4 - len(s) % 4)
+    if len(s) % 4:
+        s += '=' * (4 - len(s) % 4)
     return base64.urlsafe_b64decode(s)
 
 def sign_jwt(payload, secret, expires_in=604800):
@@ -1304,6 +1305,13 @@ def parse_cookies(cookie_header):
     return cookies
 
 def get_token_from_request(handler):
+    # First check Authorization header (Bearer token)
+    auth_header = handler.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header[7:].strip()
+        if token:
+            return token
+    # Fallback to Cookie
     cookies = parse_cookies(handler.headers.get('Cookie'))
     return cookies.get('wg_token')
 
@@ -1355,6 +1363,9 @@ def get_current_user(handler):
             if username:
                 user = get_user_by_username(username)
                 if user:
+                    # Merge DB user with Worker auth data (trust the Worker's role/is_admin)
+                    user['role'] = auth_data.get('role', user.get('role', 'user'))
+                    user['is_admin'] = auth_data.get('is_admin', user.get('is_admin', False))
                     return user
                 # User might not exist in local DB yet; create a synthetic user
                 return {
@@ -1798,6 +1809,34 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
         qs = urllib.parse.parse_qs(parsed.query)
+
+        # ========= Ollama 代理端点 (GET) =========
+        if path.startswith('/api/ollama'):
+            cu = get_current_user(self)
+            if not cu:
+                return self.send_error_json('请先登录', 401)
+            ollama_path = path.replace('/api/ollama', '')
+            if not ollama_path:
+                ollama_path = '/api/tags'
+            target_url = f"{OLLAMA_URL}{ollama_path}"
+            try:
+                req = urllib.request.Request(target_url, method='GET')
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    resp_data = resp.read()
+                    self.send_response(resp.status)
+                    self.send_header('Content-Type', resp.headers.get('Content-Type', 'application/json'))
+                    self.send_header('Content-Length', len(resp_data))
+                    self.end_headers()
+                    self.wfile.write(resp_data)
+            except urllib.error.HTTPError as e:
+                err_body = e.read()
+                self.send_response(e.code)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(err_body)
+            except Exception as e:
+                self.send_error_json(f'Ollama 请求失败: {str(e)}', 500)
+            return
 
         if path == '/api/auth-check':
             user = get_current_user(self)
@@ -2967,6 +3006,47 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 return self.send_json({'success': True, 'key': key, 'name': name})
             finally:
                 db.close()
+
+        # ========= Ollama 代理端点 =========
+        if path.startswith('/api/ollama'):
+            # 代理到 Ollama 服务器
+            cu = get_current_user(self)
+            if not cu:
+                return self.send_error_json('请先登录', 401)
+            
+            # 转发到 Ollama（使用已读取的 raw 数据，避免重复读取 rfile）
+            ollama_path = path.replace('/api/ollama', '')
+            if not ollama_path:
+                ollama_path = '/api/tags'  # 默认列出模型
+            
+            target_url = f"{OLLAMA_URL}{ollama_path}"
+            print(f'[Ollama Proxy] {path} -> {target_url}', file=sys.stderr)
+            
+            try:
+                req = urllib.request.Request(
+                    target_url,
+                    data=raw if raw else None,
+                    method=self.command,
+                    headers={
+                        'Content-Type': self.headers.get('Content-Type', 'application/json'),
+                    }
+                )
+                with urllib.request.urlopen(req, timeout=180) as resp:
+                    resp_data = resp.read()
+                    self.send_response(resp.status)
+                    self.send_header('Content-Type', resp.headers.get('Content-Type', 'application/json'))
+                    self.send_header('Content-Length', len(resp_data))
+                    self.end_headers()
+                    self.wfile.write(resp_data)
+            except urllib.error.HTTPError as e:
+                err_body = e.read()
+                self.send_response(e.code)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(err_body)
+            except Exception as e:
+                self.send_error_json(f'Ollama 请求失败: {str(e)}', 500)
+            return
 
         if path == '/api/recommend':
             cu = get_current_user(self)
