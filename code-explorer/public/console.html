@@ -1,1106 +1,1133 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>API 管理控制�?- Code Explorer</title>
-<style>
-/* ========== CSS Reset & Variables ========== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-
-:root {
-  --bg-primary: #0d1117;
-  --bg-secondary: #161b22;
-  --bg-tertiary: #21262d;
-  --bg-overlay: #30363d;
-  --border-color: #30363d;
-  --border-light: #21262d;
-  --text-primary: #c9d1d9;
-  --text-secondary: #8b949e;
-  --text-tertiary: #6e7681;
-  --accent-blue: #58a6ff;
-  --accent-green: #3fb950;
-  --accent-yellow: #d29922;
-  --accent-red: #f85149;
-  --accent-purple: #a371f7;
-  --accent-orange: #f0883e;
-  --accent-pink: #db61a2;
-  --accent-cyan: #39d353;
-  --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace;
-  --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
-  --transition: 150ms ease;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-}
-
-[data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f6f8fa;
-  --bg-tertiary: #eaeef2;
-  --bg-overlay: #d0d7de;
-  --border-color: #d0d7de;
-  --border-light: #eaeef2;
-  --text-primary: #24292f;
-  --text-secondary: #57606a;
-  --text-tertiary: #8c959f;
-  --accent-blue: #0969da;
-  --accent-green: #1a7f37;
-  --accent-yellow: #bf8700;
-  --accent-red: #cf222e;
-  --accent-purple: #8250df;
-  --accent-orange: #bf5612;
-  --accent-pink: #bf3c5b;
-  --accent-cyan: #1a7f37;
-}
-
-[data-theme="light"] body::before {
-  background-image:
-    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-}
-
-[data-theme="light"] ::-webkit-scrollbar-thumb { background: var(--border-color); }
-
-/* ========== Scrollbar ========== */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#484f58}
-
-body {
-  font-family: var(--font-sans);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
-body > * { position: relative; z-index: 1; }
-
-/* ===== 主题切换按钮（已弃用：使�?/components/nav.css 共享样式�?=====
-.theme-toggle-btn {
-  position: fixed; top: 12px; right: 56px;
-  z-index: 99997;
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-secondary);
-  transition: all 0.15s;
-}
-.theme-toggle-btn:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border-color: var(--accent-blue);
-}
-.theme-toggle-btn svg { width: 18px; height: 18px; }
-[data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
-[data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
-.theme-toggle-btn .moon-icon { display: none; }
-*/
-
-/* ===== 顶部�?===== */
-.admin-header {
-  height: 56px; padding: 0 24px;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-  display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0;
-}
-.admin-header-left {
-  display: flex; align-items: center; gap: 16px;
-}
-.admin-back-btn {
-  display: flex; align-items: center; gap: 6px;
-  padding: 6px 12px; background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: 6px; color: var(--text-secondary);
-  cursor: pointer; font-size: 13px;
-  transition: all 0.15s;
-  text-decoration: none;
-}
-.admin-back-btn:hover {
-  color: var(--text-primary); border-color: var(--text-tertiary);
-  background: var(--bg-tertiary);
-}
-.admin-title {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 16px; font-weight: 600; color: var(--text-primary);
-}
-.admin-title-icon {
-  width: 28px; height: 28px; border-radius: 8px;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff;
-}
-.admin-header-right {
-  display: flex; align-items: center; gap: 12px;
-}
-.admin-refresh-btn, .admin-refresh-btn:disabled { display: none; }
-.admin-username {
-  font-size: 13px; font-weight: 500; color: var(--text-primary);
-  padding: 6px 14px; background: var(--bg-tertiary);
-  border: 1px solid var(--border-color); border-radius: 8px;
-  white-space: nowrap;
-}
-
-/* ===== 主体 ===== */
-.admin-body {
-  flex: 1; overflow: hidden;
-  display: flex; flex-direction: column;
-}
-.admin-body-inner {
-  max-width: 1200px; margin: 0 auto;
-}
-.admin-section { margin-bottom: 32px; }
-.admin-section-title {
-  font-size: 13px; font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase; letter-spacing: 0.5px;
-  margin-bottom: 16px;
-}
-
-/* ===== 卡片 ===== */
-.admin-cards {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-}
-.admin-card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px; padding: 20px;
-  transition: all 0.15s;
-}
-.admin-card:hover {
-  border-color: var(--text-tertiary);
-  transform: translateY(-1px);
-}
-.admin-card-header {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 14px;
-}
-.admin-card-icon {
-  width: 40px; height: 40px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.admin-card-icon.blue { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
-.admin-card-icon.green { background: rgba(63,185,80,0.12); color: var(--accent-green); }
-.admin-card-icon.purple { background: rgba(163,113,247,0.12); color: #a371f7; }
-.admin-card-icon.red { background: rgba(248,81,73,0.12); color: var(--accent-red); }
-.admin-card-icon.yellow { background: rgba(210,153,34,0.12); color: #d29922; }
-.admin-card-title {
-  font-size: 14px; color: var(--text-secondary);
-  font-weight: 500;
-}
-.admin-card-value {
-  font-size: 28px; font-weight: 700;
-  color: var(--text-primary); margin-bottom: 4px;
-  line-height: 1.2;
-}
-.admin-card-desc {
-  font-size: 12px; color: var(--text-tertiary);
-  word-break: break-all;
-  font-family: var(--font-mono);
-}
-
-/* ===== 进度�?===== */
-.pool-progress-wrap {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px; padding: 20px;
-  margin-top: 16px;
-}
-.pool-progress-head {
-  display: flex; align-items: baseline; justify-content: space-between;
-  margin-bottom: 10px;
-}
-.pool-progress-label {
-  font-size: 14px; font-weight: 500; color: var(--text-primary);
-}
-.pool-progress-meta {
-  font-size: 13px; color: var(--text-secondary); font-family: var(--font-mono);
-}
-.pool-progress-track {
-  height: 14px; border-radius: 7px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  overflow: hidden;
-}
-.pool-progress-fill {
-  height: 100%;
-  border-radius: 7px;
-  background: linear-gradient(90deg, #6366f1, #a855f7);
-  transition: width 0.6s ease;
-  width: 0;
-}
-.pool-progress-foot {
-  margin-top: 10px;
-  font-size: 12px; color: var(--text-tertiary);
-  line-height: 1.6;
-}
-
-/* ===== 用户排行 ===== */
-.rank-list {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-top: 16px;
-}
-.rank-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border-light);
-}
-.rank-row:last-child { border-bottom: none; }
-.rank-row.self {
-  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1));
-}
-.rank-index {
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 600;
-  background: var(--bg-tertiary); color: var(--text-secondary);
-  flex-shrink: 0;
-}
-.rank-index.top1 { background: rgba(210,153,34,0.2); color: var(--accent-yellow); }
-.rank-index.top2 { background: rgba(176,190,197,0.2); color: var(--text-secondary); }
-.rank-index.top3 { background: rgba(205,127,50,0.2); color: var(--accent-orange); }
-.rank-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 600; color: #fff;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
-}
-.rank-avatar.admin { background: linear-gradient(135deg, #a371f7, #8957e5); }
-.rank-info { flex: 1; min-width: 0; }
-.rank-name-line {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 14px; font-weight: 500; color: var(--text-primary);
-}
-.rank-role-badge {
-  padding: 2px 8px; border-radius: 10px;
-  font-size: 11px; font-weight: 500;
-}
-.rank-role-badge.admin { background: rgba(163,113,247,0.15); color: var(--accent-purple); }
-.rank-role-badge.user { background: var(--bg-overlay); color: var(--text-tertiary); }
-.rank-role-badge.self { background: rgba(99,102,241,0.2); color: #6366f1; }
-.rank-sub {
-  font-size: 12px; color: var(--text-tertiary); margin-top: 3px;
-}
-.rank-count {
-  font-size: 18px; font-weight: 700; color: var(--text-primary);
-  font-family: var(--font-mono);
-  flex-shrink: 0;
-}
-.rank-count small {
-  font-size: 12px; font-weight: 400; color: var(--text-tertiary);
-}
-
-/* ===== 趋势�?===== */
-.trend-wrap {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 16px;
-}
-.trend-bars {
-  display: flex; align-items: flex-end; gap: 12px;
-  height: 180px;
-  padding: 0 8px;
-}
-.trend-bar-col {
-  flex: 1; display: flex; flex-direction: column; align-items: center;
-  height: 100%; justify-content: flex-end; gap: 8px;
-}
-.trend-bar-count {
-  font-size: 12px; color: var(--text-secondary);
-  font-family: var(--font-mono);
-}
-.trend-bar {
-  width: 100%; max-width: 46px;
-  border-radius: 6px 6px 2px 2px;
-  background: linear-gradient(180deg, #a855f7, #6366f1);
-  min-height: 4px;
-  transition: height 0.6s ease;
-}
-.trend-bar.zero { background: var(--bg-tertiary); }
-.trend-bar-label {
-  font-size: 11px; color: var(--text-tertiary);
-  font-family: var(--font-mono);
-  white-space: nowrap;
-}
-
-/* ===== 上游状�?===== */
-.upstream-list {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-}
-.upstream-card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px; padding: 20px;
-  transition: all 0.15s;
-}
-.upstream-card:hover { border-color: var(--text-tertiary); transform: translateY(-1px); }
-.upstream-head {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 12px;
-}
-.upstream-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--accent-green);
-  box-shadow: 0 0 8px rgba(63,185,80,0.5);
-}
-.upstream-dot.fallback { background: var(--accent-yellow); box-shadow: 0 0 8px rgba(210,153,34,0.5); }
-.upstream-name {
-  font-size: 14px; font-weight: 600; color: var(--text-primary);
-}
-.upstream-meta {
-  font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono);
-  line-height: 1.8;
-}
-.upstream-meta b { color: var(--text-secondary); font-weight: 600; }
-
-/* ===== 快捷入口 ===== */
-.quick-links {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-}
-.quick-link {
-  display: flex; align-items: center; gap: 12px;
-  padding: 16px 20px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  color: var(--text-primary);
-  text-decoration: none;
-  font-size: 14px; font-weight: 500;
-  transition: all 0.15s;
-}
-.quick-link:hover {
-  border-color: var(--text-tertiary);
-  transform: translateY(-1px);
-  color: var(--accent-blue);
-}
-.quick-link svg { width: 20px; height: 20px; flex-shrink: 0; }
-
-/* ===== 加载 / 空�?===== */
-.console-loading, .console-error {
-  text-align: center; padding: 60px 20px;
-  color: var(--text-tertiary); font-size: 14px;
-}
-.console-error { color: var(--accent-red); }
-
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>API 管理控制台 - Code Explorer</title>
+<style>
+/* ========== CSS Reset & Variables ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --bg-overlay: #30363d;
+  --border-color: #30363d;
+  --border-light: #21262d;
+  --text-primary: #c9d1d9;
+  --text-secondary: #8b949e;
+  --text-tertiary: #6e7681;
+  --accent-blue: #58a6ff;
+  --accent-green: #3fb950;
+  --accent-yellow: #d29922;
+  --accent-red: #f85149;
+  --accent-purple: #a371f7;
+  --accent-orange: #f0883e;
+  --accent-pink: #db61a2;
+  --accent-cyan: #39d353;
+  --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace;
+  --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  --transition: 150ms ease;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f6f8fa;
+  --bg-tertiary: #eaeef2;
+  --bg-overlay: #d0d7de;
+  --border-color: #d0d7de;
+  --border-light: #eaeef2;
+  --text-primary: #24292f;
+  --text-secondary: #57606a;
+  --text-tertiary: #8c959f;
+  --accent-blue: #0969da;
+  --accent-green: #1a7f37;
+  --accent-yellow: #bf8700;
+  --accent-red: #cf222e;
+  --accent-purple: #8250df;
+  --accent-orange: #bf5612;
+  --accent-pink: #bf3c5b;
+  --accent-cyan: #1a7f37;
+}
+
+[data-theme="light"] body::before {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: var(--border-color); }
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#484f58}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+body > * { position: relative; z-index: 1; }
+
+/* ===== 主题切换按钮（已弃用：使�?/components/nav.css 共享样式�?=====
+.theme-toggle-btn {
+  position: fixed; top: 12px; right: 56px;
+  z-index: 99997;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+.theme-toggle-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--accent-blue);
+}
+.theme-toggle-btn svg { width: 18px; height: 18px; }
+[data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
+[data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
+.theme-toggle-btn .moon-icon { display: none; }
+*/
+
+/* ===== 顶部�?===== */
+.admin-header {
+  height: 56px; padding: 0 24px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.admin-header-left {
+  display: flex; align-items: center; gap: 16px;
+}
+.admin-back-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px; background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px; color: var(--text-secondary);
+  cursor: pointer; font-size: 13px;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.admin-back-btn:hover {
+  color: var(--text-primary); border-color: var(--text-tertiary);
+  background: var(--bg-tertiary);
+}
+.admin-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 16px; font-weight: 600; color: var(--text-primary);
+}
+.admin-title-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.admin-header-right {
+  display: flex; align-items: center; gap: 12px;
+}
+.admin-refresh-btn, .admin-refresh-btn:disabled { display: none; }
+.admin-username {
+  font-size: 13px; font-weight: 500; color: var(--text-primary);
+  padding: 6px 14px; background: var(--bg-tertiary);
+  border: 1px solid var(--border-color); border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* ===== 主体 ===== */
+.admin-body {
+  flex: 1; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.admin-body-inner {
+  max-width: 1200px; margin: 0 auto;
+}
+.admin-section { margin-bottom: 32px; }
+.admin-section-title {
+  font-size: 13px; font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+/* ===== 卡片 ===== */
+.admin-cards {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.admin-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 20px;
+  transition: all 0.15s;
+}
+.admin-card:hover {
+  border-color: var(--text-tertiary);
+  transform: translateY(-1px);
+}
+.admin-card-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.admin-card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.admin-card-icon.blue { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
+.admin-card-icon.green { background: rgba(63,185,80,0.12); color: var(--accent-green); }
+.admin-card-icon.purple { background: rgba(163,113,247,0.12); color: #a371f7; }
+.admin-card-icon.red { background: rgba(248,81,73,0.12); color: var(--accent-red); }
+.admin-card-icon.yellow { background: rgba(210,153,34,0.12); color: #d29922; }
+.admin-card-title {
+  font-size: 14px; color: var(--text-secondary);
+  font-weight: 500;
+}
+.admin-card-value {
+  font-size: 28px; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 4px;
+  line-height: 1.2;
+}
+.admin-card-desc {
+  font-size: 12px; color: var(--text-tertiary);
+  word-break: break-all;
+  font-family: var(--font-mono);
+}
+
+/* ===== 进度�?===== */
+.pool-progress-wrap {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 20px;
+  margin-top: 16px;
+}
+.pool-progress-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.pool-progress-label {
+  font-size: 14px; font-weight: 500; color: var(--text-primary);
+}
+.pool-progress-meta {
+  font-size: 13px; color: var(--text-secondary); font-family: var(--font-mono);
+}
+.pool-progress-track {
+  height: 14px; border-radius: 7px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+.pool-progress-fill {
+  height: 100%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  transition: width 0.6s ease;
+  width: 0;
+}
+.pool-progress-foot {
+  margin-top: 10px;
+  font-size: 12px; color: var(--text-tertiary);
+  line-height: 1.6;
+}
+
+/* ===== 用户排行 ===== */
+.rank-list {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+.rank-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-light);
+}
+.rank-row:last-child { border-bottom: none; }
+.rank-row.self {
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1));
+}
+.rank-index {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
+  background: var(--bg-tertiary); color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.rank-index.top1 { background: rgba(210,153,34,0.2); color: var(--accent-yellow); }
+.rank-index.top2 { background: rgba(176,190,197,0.2); color: var(--text-secondary); }
+.rank-index.top3 { background: rgba(205,127,50,0.2); color: var(--accent-orange); }
+.rank-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600; color: #fff;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+}
+.rank-avatar.admin { background: linear-gradient(135deg, #a371f7, #8957e5); }
+.rank-info { flex: 1; min-width: 0; }
+.rank-name-line {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 500; color: var(--text-primary);
+}
+.rank-role-badge {
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; font-weight: 500;
+}
+.rank-role-badge.admin { background: rgba(163,113,247,0.15); color: var(--accent-purple); }
+.rank-role-badge.user { background: var(--bg-overlay); color: var(--text-tertiary); }
+.rank-role-badge.self { background: rgba(99,102,241,0.2); color: #6366f1; }
+.rank-sub {
+  font-size: 12px; color: var(--text-tertiary); margin-top: 3px;
+}
+.rank-count {
+  font-size: 18px; font-weight: 700; color: var(--text-primary);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+.rank-count small {
+  font-size: 12px; font-weight: 400; color: var(--text-tertiary);
+}
+
+/* ===== 趋势�?===== */
+.trend-wrap {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+}
+.trend-bars {
+  display: flex; align-items: flex-end; gap: 12px;
+  height: 180px;
+  padding: 0 8px;
+}
+.trend-bar-col {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  height: 100%; justify-content: flex-end; gap: 8px;
+}
+.trend-bar-count {
+  font-size: 12px; color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+.trend-bar {
+  width: 100%; max-width: 46px;
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(180deg, #a855f7, #6366f1);
+  min-height: 4px;
+  transition: height 0.6s ease;
+}
+.trend-bar.zero { background: var(--bg-tertiary); }
+.trend-bar-label {
+  font-size: 11px; color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* ===== 上游状�?===== */
+.upstream-list {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.upstream-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 20px;
+  transition: all 0.15s;
+}
+.upstream-card:hover { border-color: var(--text-tertiary); transform: translateY(-1px); }
+.upstream-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.upstream-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 8px rgba(63,185,80,0.5);
+}
+.upstream-dot.fallback { background: var(--accent-yellow); box-shadow: 0 0 8px rgba(210,153,34,0.5); }
+.upstream-name {
+  font-size: 14px; font-weight: 600; color: var(--text-primary);
+}
+.upstream-meta {
+  font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono);
+  line-height: 1.8;
+}
+.upstream-meta b { color: var(--text-secondary); font-weight: 600; }
+
+/* ===== 快捷入口 ===== */
+.quick-links {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.quick-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  transition: all 0.15s;
+}
+.quick-link:hover {
+  border-color: var(--text-tertiary);
+  transform: translateY(-1px);
+  color: var(--accent-blue);
+}
+.quick-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+/* ===== 加载 / 空�?===== */
+.console-loading, .console-error {
+  text-align: center; padding: 60px 20px;
+  color: var(--text-tertiary); font-size: 14px;
+}
+.console-error { color: var(--accent-red); }
+
 /* ===== 动态加载指示器 ===== */
-.loading-container {
-  max-width: 420px; margin: 60px auto; text-align: center;
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  z-index: 100;
+  border-radius: inherit;
+  animation: loadingFadeIn 0.15s ease-out;
 }
-.loading-elapsed {
-  font-size: 14px; color: var(--text-secondary);
-  margin-bottom: 20px; font-family: var(--font-mono);
+@keyframes loadingFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-.loading-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-.loading-step {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 14px; border-radius: 8px;
-  background: var(--bg-secondary); border: 1px solid var(--border-color);
-  font-size: 13px; color: var(--text-tertiary);
-  transition: all 0.3s;
-}
-.loading-step.active {
-  color: var(--text-primary);
-  border-color: var(--accent-blue);
-  background: rgba(88,166,255,0.08);
-}
-.loading-step.done {
-  color: var(--accent-green);
-  border-color: rgba(63,185,80,0.4);
-  background: rgba(63,185,80,0.06);
-}
-.loading-step.pending { opacity: 0.5; }
-.step-icon {
-  width: 22px; height: 22px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 600;
-  background: var(--bg-tertiary);
-  flex-shrink: 0;
-}
-.loading-step.active .step-icon {
-  background: var(--accent-blue); color: #fff;
-}
-.loading-step.done .step-icon {
-  background: var(--accent-green); color: #fff;
-}
-.loading-step.pending .step-icon {
-  background: var(--bg-tertiary); color: var(--text-tertiary);
-}
-.loading-spinner {
-  width: 14px; height: 14px;
-  border: 2px solid rgba(255,255,255,0.2);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: inline-block;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-hint {
-  font-size: 12px; color: var(--text-tertiary);
-  margin-top: 16px; line-height: 1.6;
-}
-.loading-hint a { color: var(--accent-blue); text-decoration: underline; }
-.loading-retry {
-  margin-top: 12px; padding: 8px 20px;
-  background: var(--accent-blue); color: #fff;
-  border: none; border-radius: 8px;
-  font-size: 13px; font-weight: 600; cursor: pointer;
-  transition: all 0.15s; font-family: var(--font-sans);
-}
-.loading-retry:hover { filter: brightness(1.08); }
-.loading-retry:active { transform: translateY(0); }
-
-/* ===== 许愿池喷�?===== */
-.wishing-pool-wrap {
-  display: flex; align-items: center; gap: 40px;
-  margin-top: 20px;
-}
-.wishing-pool {
-  position: relative; width: 200px; height: 220px; flex-shrink: 0;
-}
-/* 底座（最外圈�?*/
-.wp-base {
-  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 180px; height: 40px;
-  background: linear-gradient(180deg, #f5deb3 0%, #e8c47a 40%, #d4a840 100%);
-  border-radius: 50%;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-}
-/* 底座边缘高光 */
-.wp-base::before {
-  content: ''; position: absolute; top: -3px; left: 5%; right: 5%; height: 6px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0));
-  border-radius: 50%;
-}
-/* 底层水池 */
-.wp-tier1 {
-  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-  width: 160px; height: 50px;
-  background: linear-gradient(180deg, #7dd3d3 0%, #45b8b8 30%, #3a9e9e 100%);
-  border-radius: 50%;
-  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1);
-}
-/* 水面高光 */
-.wp-tier1::before {
-  content: ''; position: absolute; top: 8px; left: 15%; right: 15%; height: 10px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
-  border-radius: 50%;
-}
-/* 中层 */
-.wp-tier2 {
-  position: absolute; bottom: 68px; left: 50%; transform: translateX(-50%);
-  width: 110px; height: 40px;
-  background: linear-gradient(180deg, #8de0e0 0%, #5cc4c4 30%, #45b0b0 100%);
-  border-radius: 50%;
-  box-shadow: inset 0 -4px 10px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.1);
-}
-.wp-tier2::before {
-  content: ''; position: absolute; top: 6px; left: 12%; right: 12%; height: 8px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0));
-  border-radius: 50%;
-}
-/* 顶层 */
-.wp-tier3 {
-  position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
-  width: 60px; height: 28px;
-  background: linear-gradient(180deg, #a8ecec 0%, #6dd0d0 30%, #52baba 100%);
-  border-radius: 50%;
-  box-shadow: inset 0 -3px 8px rgba(0,0,0,0.1);
-}
-.wp-tier3::before {
-  content: ''; position: absolute; top: 4px; left: 10%; right: 10%; height: 6px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
-  border-radius: 50%;
-}
-/* 水柱（顶部喷泉） */
-.wp-spout {
-  position: absolute; bottom: 122px; left: 50%; transform: translateX(-50%);
-  width: 8px; height: 50px;
-  background: linear-gradient(180deg, rgba(120,220,220,0.9), rgba(80,190,190,0.6));
-  border-radius: 4px 4px 2px 2px;
-  clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
-}
-/* 水花飞溅粒子 */
-.wp-splash {
-  position: absolute; bottom: 166px; left: 50%; transform: translateX(-50%);
-  width: 40px; height: 30px;
-}
-.wp-splash-dot {
-  position: absolute; width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(120,220,220,0.8);
-  animation: splashFloat 2s ease-in-out infinite;
-}
-.wp-splash-dot:nth-child(1) { left: 0; top: 10px; animation-delay: 0s; }
-.wp-splash-dot:nth-child(2) { left: 17px; top: 0; animation-delay: 0.3s; }
-.wp-splash-dot:nth-child(3) { right: 0; top: 10px; animation-delay: 0.6s; }
-.wp-splash-dot:nth-child(4) { left: 8px; top: 18px; animation-delay: 0.9s; }
-.wp-splash-dot:nth-child(5) { right: 8px; top: 18px; animation-delay: 1.2s; }
-@keyframes splashFloat {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
-  50% { transform: translateY(-8px) scale(0.6); opacity: 0.3; }
-}
-/* 流水（层间下落动画） */
-.wp-waterfall {
-  position: absolute; left: 50%; transform: translateX(-50%);
-  width: 18px; height: 20px; border-radius: 0 0 9px 9px;
-  background: linear-gradient(180deg, rgba(100,210,210,0.7), rgba(60,180,180,0.3));
-  animation: waterFall 1.8s ease-in-out infinite;
-}
-.wp-waterfall.wf1 { bottom: 72px; animation-delay: 0s; }
-.wp-waterfall.wf2 { bottom: 102px; width: 12px; height: 16px; animation-delay: 0.6s; }
-@keyframes waterFall {
-  0%, 100% { opacity: 0.6; height: 20px; }
-  50% { opacity: 0.2; height: 14px; }
-}
-/* 水中硬币 */
-.wp-coin {
-  position: absolute; bottom: 36px;
-  width: 14px; height: 14px; border-radius: 50%;
-  background: linear-gradient(135deg, #f5d442, #e6b800);
-  border: 2px solid #d4a000;
-  animation: coinBob 3s ease-in-out infinite;
-}
-.wp-coin::after {
-  content: '¥'; position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 8px; font-weight: 700; color: #b8860b;
-}
-.wp-coin:nth-child(1) { left: 30%; animation-delay: 0s; }
-.wp-coin:nth-child(2) { left: 55%; animation-delay: 0.8s; }
-.wp-coin:nth-child(3) { left: 42%; animation-delay: 1.6s; }
-@keyframes coinBob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-3px) rotate(5deg); }
-  75% { transform: translateY(2px) rotate(-3deg); }
-}
-/* 植物装饰 */
-.wp-plant {
-  position: absolute; bottom: 10px;
-}
-.wp-plant-left { left: -8px; }
-.wp-plant-right { right: -8px; }
-.wp-stem {
-  width: 3px; height: 22px; background: #3a7a3a; border-radius: 1px;
-  margin: 0 auto;
-}
-.wp-leaf {
-  width: 14px; height: 8px; border-radius: 0 50% 50% 0;
-  background: linear-gradient(135deg, #4caf50, #2e7d32);
-  position: relative; top: -12px;
-  transform-origin: left center;
-  animation: leafSway 4s ease-in-out infinite;
-}
-.wp-plant-right .wp-leaf {
-  border-radius: 50% 0 0 50%;
-  transform-origin: right center;
-  left: -11px;
-}
-.wp-flower {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: radial-gradient(circle, #ff9800, #f57c00);
-  position: relative; top: -18px; left: 1px;
-}
-@keyframes leafSway {
-  0%, 100% { transform: rotate(-5deg); }
-  50% { transform: rotate(5deg); }
-}
-/* 整体浮动 */
-.wishing-pool {
-  animation: poolFloat 6s ease-in-out infinite;
-}
-@keyframes poolFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-/* 水面波纹动画 */
-.wp-tier1::after, .wp-tier2::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at 40% 40%, rgba(255,255,255,0.15) 0%, transparent 60%);
-  animation: ripple 4s ease-in-out infinite;
-}
-.wp-tier2::after { animation-delay: 1.5s; }
-@keyframes ripple {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.03); }
-}
-/* 亮色主题调整 */
-[data-theme="light"] .wp-base { background: linear-gradient(180deg, #f5e0b0, #e0b860, #c89e30); }
-[data-theme="light"] .wp-tier1 { background: linear-gradient(180deg, #90e8e8, #60d0d0, #50c0c0); }
-[data-theme="light"] .wp-tier2 { background: linear-gradient(180deg, #a0f0f0, #70dada, #60cccc); }
-[data-theme="light"] .wp-tier3 { background: linear-gradient(180deg, #b0f0f0, #80e0e0, #70d0d0); }
-[data-theme="light"] .wp-spout { background: linear-gradient(180deg, rgba(80,200,200,0.8), rgba(60,180,180,0.5)); }
-[data-theme="light"] .wp-splash-dot { background: rgba(80,190,190,0.7); }
-[data-theme="light"] .wp-waterfall { background: linear-gradient(180deg, rgba(80,190,190,0.6), rgba(50,160,160,0.3)); }
-[data-theme="light"] .wp-stem { background: #4a8a4a; }
-[data-theme="light"] .wp-leaf { background: linear-gradient(135deg, #5cb860, #3a8a3a); }
-
-.wishing-pool-info {
-  flex: 1;
-}
-.wishing-pool-title {
-  font-size: 18px; font-weight: 700; color: var(--text-primary);
-  margin-bottom: 8px;
-}
-.wishing-pool-desc {
-  font-size: 13px; color: var(--text-secondary); line-height: 1.7;
-}
-.wishing-pool-desc b {
-  color: var(--accent-blue); font-weight: 600;
-}
-
-/* ===== 左侧导航�?===== */
-.console-layout {
-  display: flex; flex: 1; overflow: hidden;
-}
-.console-sidebar {
-  width: 180px; flex-shrink: 0;
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border-color);
-  padding: 16px 0;
-  display: flex; flex-direction: column; gap: 4px;
-}
-.console-sidebar-title {
-  padding: 8px 20px 12px;
-  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
-.console-nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 20px;
-  font-size: 14px; color: var(--text-secondary);
-  cursor: pointer; transition: all 0.15s;
-  border-left: 3px solid transparent;
-  text-decoration: none;
-}
-.console-nav-item:hover {
-  color: var(--text-primary); background: var(--bg-tertiary);
-}
-.console-nav-item.active {
-  color: var(--accent-blue); background: rgba(88,166,255,0.08);
-  border-left-color: var(--accent-blue); font-weight: 500;
-}
-.console-nav-item svg {
-  width: 18px; height: 18px; flex-shrink: 0;
-}
-.console-main {
-  flex: 1; overflow-y: auto; padding: 32px;
-}
+.loading-container {
+  max-width: 420px; margin: 60px auto; text-align: center;
+}
+.loading-elapsed {
+  font-size: 14px; color: var(--text-secondary);
+  margin-bottom: 20px; font-family: var(--font-mono);
+}
+.loading-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.loading-step {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; border-radius: 8px;
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  font-size: 13px; color: var(--text-tertiary);
+  transition: all 0.3s;
+}
+.loading-step.active {
+  color: var(--text-primary);
+  border-color: var(--accent-blue);
+  background: rgba(88,166,255,0.08);
+}
+.loading-step.done {
+  color: var(--accent-green);
+  border-color: rgba(63,185,80,0.4);
+  background: rgba(63,185,80,0.06);
+}
+.loading-step.pending { opacity: 0.5; }
+.step-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+  background: var(--bg-tertiary);
+  flex-shrink: 0;
+}
+.loading-step.active .step-icon {
+  background: var(--accent-blue); color: #fff;
+}
+.loading-step.done .step-icon {
+  background: var(--accent-green); color: #fff;
+}
+.loading-step.pending .step-icon {
+  background: var(--bg-tertiary); color: var(--text-tertiary);
+}
+.loading-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-hint {
+  font-size: 12px; color: var(--text-tertiary);
+  margin-top: 16px; line-height: 1.6;
+}
+.loading-hint a { color: var(--accent-blue); text-decoration: underline; }
+.loading-retry {
+  margin-top: 12px; padding: 8px 20px;
+  background: var(--accent-blue); color: #fff;
+  border: none; border-radius: 8px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-sans);
+}
+.loading-retry:hover { filter: brightness(1.08); }
+.loading-retry:active { transform: translateY(0); }
+
+/* ===== 许愿池喷�?===== */
+.wishing-pool-wrap {
+  display: flex; align-items: center; gap: 40px;
+  margin-top: 20px;
+}
+.wishing-pool {
+  position: relative; width: 200px; height: 220px; flex-shrink: 0;
+}
+/* 底座（最外圈�?*/
+.wp-base {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 180px; height: 40px;
+  background: linear-gradient(180deg, #f5deb3 0%, #e8c47a 40%, #d4a840 100%);
+  border-radius: 50%;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+/* 底座边缘高光 */
+.wp-base::before {
+  content: ''; position: absolute; top: -3px; left: 5%; right: 5%; height: 6px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0));
+  border-radius: 50%;
+}
+/* 底层水池 */
+.wp-tier1 {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 160px; height: 50px;
+  background: linear-gradient(180deg, #7dd3d3 0%, #45b8b8 30%, #3a9e9e 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1);
+}
+/* 水面高光 */
+.wp-tier1::before {
+  content: ''; position: absolute; top: 8px; left: 15%; right: 15%; height: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+  border-radius: 50%;
+}
+/* 中层 */
+.wp-tier2 {
+  position: absolute; bottom: 68px; left: 50%; transform: translateX(-50%);
+  width: 110px; height: 40px;
+  background: linear-gradient(180deg, #8de0e0 0%, #5cc4c4 30%, #45b0b0 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 -4px 10px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.1);
+}
+.wp-tier2::before {
+  content: ''; position: absolute; top: 6px; left: 12%; right: 12%; height: 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0));
+  border-radius: 50%;
+}
+/* 顶层 */
+.wp-tier3 {
+  position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+  width: 60px; height: 28px;
+  background: linear-gradient(180deg, #a8ecec 0%, #6dd0d0 30%, #52baba 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 -3px 8px rgba(0,0,0,0.1);
+}
+.wp-tier3::before {
+  content: ''; position: absolute; top: 4px; left: 10%; right: 10%; height: 6px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+  border-radius: 50%;
+}
+/* 水柱（顶部喷泉） */
+.wp-spout {
+  position: absolute; bottom: 122px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 50px;
+  background: linear-gradient(180deg, rgba(120,220,220,0.9), rgba(80,190,190,0.6));
+  border-radius: 4px 4px 2px 2px;
+  clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+}
+/* 水花飞溅粒子 */
+.wp-splash {
+  position: absolute; bottom: 166px; left: 50%; transform: translateX(-50%);
+  width: 40px; height: 30px;
+}
+.wp-splash-dot {
+  position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(120,220,220,0.8);
+  animation: splashFloat 2s ease-in-out infinite;
+}
+.wp-splash-dot:nth-child(1) { left: 0; top: 10px; animation-delay: 0s; }
+.wp-splash-dot:nth-child(2) { left: 17px; top: 0; animation-delay: 0.3s; }
+.wp-splash-dot:nth-child(3) { right: 0; top: 10px; animation-delay: 0.6s; }
+.wp-splash-dot:nth-child(4) { left: 8px; top: 18px; animation-delay: 0.9s; }
+.wp-splash-dot:nth-child(5) { right: 8px; top: 18px; animation-delay: 1.2s; }
+@keyframes splashFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-8px) scale(0.6); opacity: 0.3; }
+}
+/* 流水（层间下落动画） */
+.wp-waterfall {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  width: 18px; height: 20px; border-radius: 0 0 9px 9px;
+  background: linear-gradient(180deg, rgba(100,210,210,0.7), rgba(60,180,180,0.3));
+  animation: waterFall 1.8s ease-in-out infinite;
+}
+.wp-waterfall.wf1 { bottom: 72px; animation-delay: 0s; }
+.wp-waterfall.wf2 { bottom: 102px; width: 12px; height: 16px; animation-delay: 0.6s; }
+@keyframes waterFall {
+  0%, 100% { opacity: 0.6; height: 20px; }
+  50% { opacity: 0.2; height: 14px; }
+}
+/* 水中硬币 */
+.wp-coin {
+  position: absolute; bottom: 36px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: linear-gradient(135deg, #f5d442, #e6b800);
+  border: 2px solid #d4a000;
+  animation: coinBob 3s ease-in-out infinite;
+}
+.wp-coin::after {
+  content: '¥'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700; color: #b8860b;
+}
+.wp-coin:nth-child(1) { left: 30%; animation-delay: 0s; }
+.wp-coin:nth-child(2) { left: 55%; animation-delay: 0.8s; }
+.wp-coin:nth-child(3) { left: 42%; animation-delay: 1.6s; }
+@keyframes coinBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(5deg); }
+  75% { transform: translateY(2px) rotate(-3deg); }
+}
+/* 植物装饰 */
+.wp-plant {
+  position: absolute; bottom: 10px;
+}
+.wp-plant-left { left: -8px; }
+.wp-plant-right { right: -8px; }
+.wp-stem {
+  width: 3px; height: 22px; background: #3a7a3a; border-radius: 1px;
+  margin: 0 auto;
+}
+.wp-leaf {
+  width: 14px; height: 8px; border-radius: 0 50% 50% 0;
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  position: relative; top: -12px;
+  transform-origin: left center;
+  animation: leafSway 4s ease-in-out infinite;
+}
+.wp-plant-right .wp-leaf {
+  border-radius: 50% 0 0 50%;
+  transform-origin: right center;
+  left: -11px;
+}
+.wp-flower {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: radial-gradient(circle, #ff9800, #f57c00);
+  position: relative; top: -18px; left: 1px;
+}
+@keyframes leafSway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+/* 整体浮动 */
+.wishing-pool {
+  animation: poolFloat 6s ease-in-out infinite;
+}
+@keyframes poolFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+/* 水面波纹动画 */
+.wp-tier1::after, .wp-tier2::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 40%, rgba(255,255,255,0.15) 0%, transparent 60%);
+  animation: ripple 4s ease-in-out infinite;
+}
+.wp-tier2::after { animation-delay: 1.5s; }
+@keyframes ripple {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.03); }
+}
+/* 亮色主题调整 */
+[data-theme="light"] .wp-base { background: linear-gradient(180deg, #f5e0b0, #e0b860, #c89e30); }
+[data-theme="light"] .wp-tier1 { background: linear-gradient(180deg, #90e8e8, #60d0d0, #50c0c0); }
+[data-theme="light"] .wp-tier2 { background: linear-gradient(180deg, #a0f0f0, #70dada, #60cccc); }
+[data-theme="light"] .wp-tier3 { background: linear-gradient(180deg, #b0f0f0, #80e0e0, #70d0d0); }
+[data-theme="light"] .wp-spout { background: linear-gradient(180deg, rgba(80,200,200,0.8), rgba(60,180,180,0.5)); }
+[data-theme="light"] .wp-splash-dot { background: rgba(80,190,190,0.7); }
+[data-theme="light"] .wp-waterfall { background: linear-gradient(180deg, rgba(80,190,190,0.6), rgba(50,160,160,0.3)); }
+[data-theme="light"] .wp-stem { background: #4a8a4a; }
+[data-theme="light"] .wp-leaf { background: linear-gradient(135deg, #5cb860, #3a8a3a); }
+
+.wishing-pool-info {
+  flex: 1;
+}
+.wishing-pool-title {
+  font-size: 18px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.wishing-pool-desc {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+}
+.wishing-pool-desc b {
+  color: var(--accent-blue); font-weight: 600;
+}
+
+/* ===== 左侧导航�?===== */
+.console-layout {
+  display: flex; flex: 1; overflow: hidden;
+}
+.console-sidebar {
+  width: 180px; flex-shrink: 0;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  padding: 16px 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.console-sidebar-title {
+  padding: 8px 20px 12px;
+  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.console-nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px;
+  font-size: 14px; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.15s;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.console-nav-item:hover {
+  color: var(--text-primary); background: var(--bg-tertiary);
+}
+.console-nav-item.active {
+  color: var(--accent-blue); background: rgba(88,166,255,0.08);
+  border-left-color: var(--accent-blue); font-weight: 500;
+}
+.console-nav-item svg {
+  width: 18px; height: 18px; flex-shrink: 0;
+}
+.console-main {
+  flex: 1; overflow-y: auto; padding: 32px;
+}
 .console-main-inner {
   max-width: 1200px; margin: 0 auto;
+  position: relative;
 }
-
-/* ===== API Key 管理（OpenAI 风格�?==== */
-.apikey-head {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 24px; margin-bottom: 24px; flex-wrap: wrap;
-}
-.apikey-head-title h1 {
-  font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
-  color: var(--text-primary); margin-bottom: 6px;
-}
-.apikey-head-title p {
-  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
-  max-width: 560px;
-}
-.apikey-createbtn {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: var(--accent-green); color: #fff;
-  border: none; padding: 10px 18px; border-radius: 8px;
-  font-size: 14px; font-weight: 600; cursor: pointer;
-  transition: all 0.15s; white-space: nowrap;
-  font-family: var(--font-sans);
-}
-.apikey-createbtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.apikey-createbtn:active { transform: translateY(0); }
-
-.apikey-head-actions {
-  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-}
-.apikey-quickbtn {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: var(--accent-blue); color: #fff;
-  border: none; padding: 10px 18px; border-radius: 8px;
-  font-size: 14px; font-weight: 600; cursor: pointer;
-  transition: all 0.15s; white-space: nowrap;
-  font-family: var(--font-sans);
-}
-.apikey-quickbtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.apikey-quickbtn:active { transform: translateY(0); }
-
-/* 快速接入弹�?*/
-.apikey-quickbtn, .apikey-quick-modal { display: none; }
-.quick-tabs {
-  display: flex; gap: 4px; margin-bottom: 12px;
-  background: var(--bg-tertiary); border-radius: 8px; padding: 3px;
-}
-.quick-tab {
-  flex: 1; padding: 7px 12px; border: none; border-radius: 6px;
-  background: transparent; color: var(--text-secondary);
-  font-size: 13px; font-weight: 500; cursor: pointer;
-  transition: all 0.15s; font-family: var(--font-sans);
-}
-.quick-tab.active { background: var(--bg-secondary); color: var(--text-primary); }
-.quick-tab:hover:not(.active) { color: var(--text-primary); }
-.ollama-api-buttons {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
-}
-.ollama-api-btn {
-  padding: 8px 16px; border: 1px solid var(--border-color); border-radius: 20px;
-  background: var(--bg-tertiary); color: var(--text-secondary);
-  font-size: 13px; font-weight: 500; cursor: pointer;
-  transition: all 0.15s; font-family: var(--font-sans);
-}
-.ollama-api-btn:hover { color: var(--text-primary); border-color: var(--accent-blue); }
-.ollama-api-btn.active {
-  background: var(--accent-blue); color: #fff; border-color: var(--accent-blue);
-}
-.ollama-code-group { margin-bottom: 8px; }
-.quick-code-block { display: none; }
-.quick-code-block.active { display: block; }
-.quick-code-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 14px; background: var(--bg-tertiary);
-  border: 1px solid var(--border-color); border-bottom: none;
-  border-radius: 8px 8px 0 0; font-size: 12px; color: var(--text-secondary);
-}
-.quick-copy {
-  padding: 3px 10px; border: 1px solid var(--border-color);
-  border-radius: 5px; background: transparent; color: var(--text-tertiary);
-  cursor: pointer; font-size: 11px; transition: all 0.15s; font-family: var(--font-sans);
-}
-.quick-copy:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
-.quick-code-block pre {
-  margin: 0; padding: 14px; background: var(--bg-primary);
-  border: 1px solid var(--border-color); border-radius: 0 0 8px 8px;
-  overflow-x: auto; max-height: 320px;
-}
-.quick-code-block code {
-  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7;
-  color: var(--text-primary); white-space: pre;
-}
-
-/* ===== 快速接入指南页 ===== */
-.guide-intro {
-  background: var(--bg-secondary); border: 1px solid var(--border-color);
-  border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;
-  font-size: 14px; line-height: 1.7; color: var(--text-secondary);
-}
-.guide-intro code {
-  background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px;
-  font-family: var(--font-mono); font-size: 13px;
-}
-.guide-section { margin-bottom: 28px; }
-.guide-section p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
-.guide-h3 {
-  font-size: 15px; font-weight: 600; color: var(--text-primary);
-  margin-bottom: 12px;
-}
-.guide-table {
-  width: 100%; border-collapse: collapse; font-size: 13px;
-}
-.guide-table th, .guide-table td {
-  text-align: left; padding: 10px 14px;
-  border: 1px solid var(--border-color);
-}
-.guide-table th {
-  background: var(--bg-tertiary); font-weight: 600; color: var(--text-secondary);
-  font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px;
-}
-.guide-table td { color: var(--text-secondary); }
-.guide-table td:first-child { white-space: nowrap; color: var(--text-primary); }
-.guide-table code {
-  background: var(--bg-tertiary); padding: 1px 5px; border-radius: 3px;
-  font-family: var(--font-mono); font-size: 12px;
-}
-
-.apikey-viewswitch { display: flex; gap: 8px; margin-bottom: 20px; }
-.apikey-viewpill {
-  padding: 7px 16px; border-radius: 99px;
-  border: 1px solid var(--border-color); background: transparent;
-  color: var(--text-secondary); font-size: 13px; cursor: pointer;
-  transition: all 0.15s; font-family: var(--font-sans);
-}
-.apikey-viewpill:hover { border-color: var(--text-tertiary); color: var(--text-primary); }
-.apikey-viewpill.active { background: var(--accent-green); border-color: var(--accent-green); color: #fff; font-weight: 500; }
-
-.apikey-list { display: flex; flex-direction: column; gap: 10px; }
-.apikey-row {
-  display: flex; align-items: center; gap: 16px;
-  padding: 16px 18px; border: 1px solid var(--border-color);
-  border-radius: 10px; transition: all 0.15s;
-}
-.apikey-row:hover { border-color: var(--text-tertiary); }
-.apikey-info { flex: 1; min-width: 0; }
-.apikey-name-line { display: flex; align-items: center; gap: 10px; }
-.apikey-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.apikey-owner {
-  font-size: 11px; padding: 2px 8px; border-radius: 99px;
-  background: var(--bg-tertiary); color: var(--accent-purple);
-  border: 1px solid var(--border-color); white-space: nowrap;
-}
-.apikey-status { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 99px; white-space: nowrap; }
-.apikey-status.on { background: rgba(63,185,80,0.12); color: var(--accent-green); }
-.apikey-status.off { background: rgba(110,118,129,0.12); color: var(--text-tertiary); border: 1px solid var(--border-color); }
-.apikey-mask-line { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.apikey-mask {
-  font-family: var(--font-mono); font-size: 12.5px; color: var(--text-secondary);
-  background: var(--bg-tertiary); border: 1px solid var(--border-color);
-  padding: 5px 10px; border-radius: 6px;
-}
-.apikey-copybtn {
-  font-size: 12px; color: var(--accent-blue); background: transparent;
-  border: none; cursor: pointer; padding: 2px 4px; font-family: var(--font-sans);
-}
-.apikey-copybtn:hover { text-decoration: underline; }
-.apikey-meta {
-  display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 9px;
-  font-size: 12px; color: var(--text-tertiary);
-}
-.apikey-meta b { color: var(--text-secondary); font-weight: 500; }
-.apikey-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; flex-shrink: 0; }
-.apikey-iconbtn {
-  width: 32px; height: 32px; border-radius: 7px;
-  border: 1px solid var(--border-color); background: transparent;
-  color: var(--text-secondary); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s; font-size: 14px;
-}
-.apikey-iconbtn:hover { border-color: var(--text-tertiary); color: var(--text-primary); }
-.apikey-iconbtn.danger:hover { color: var(--accent-red); border-color: var(--accent-red); }
-
-/* Modal */
-.apikey-overlay {
-  position: fixed; inset: 0; background: rgba(15,23,42,0.4);
-  backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center;
-  z-index: 9999; animation: apikeyFade 0.15s;
-}
-.apikey-modal {
-  background: var(--bg-secondary); border: 1px solid var(--border-color);
-  border-radius: 14px; width: 440px; max-width: 92vw; max-height: 88vh;
-  overflow-y: auto; padding: 24px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.15); animation: apikeyUp 0.2s;
-}
-.apikey-modal-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
-.apikey-modal-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
-.apikey-field { margin-bottom: 18px; display: flex; flex-direction: column; }
-.apikey-label { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
-.apikey-req { color: var(--accent-red); }
-.apikey-input {
-  width: 100%; padding: 9px 12px;
-  border: 1px solid var(--border-color); border-radius: 8px;
-  font-size: 14px; color: var(--text-primary); background: var(--bg-tertiary);
-  outline: none; transition: all 0.15s; font-family: var(--font-sans);
-}
-.apikey-input:focus { border-color: var(--accent-green); box-shadow: 0 0 0 3px rgba(63,185,80,0.15); }
-.apikey-input::placeholder { color: var(--text-tertiary); }
-select.apikey-input { cursor: pointer; appearance: none; padding-right: 34px; }
-.apikey-hint { font-size: 12px; color: var(--text-tertiary); margin-top: 5px; }
-.apikey-datefield { margin-top: 10px; }
-.apikey-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
-.apikey-btn-primary {
-  border-radius: 8px; padding: 9px 16px; font-size: 14px; font-weight: 600;
-  cursor: pointer; border: none; background: var(--accent-green); color: #fff;
-  transition: all 0.15s; font-family: var(--font-sans);
-}
-.apikey-btn-primary:hover { filter: brightness(1.08); }
-.apikey-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.apikey-btn-ghost {
-  border-radius: 8px; padding: 9px 16px; font-size: 14px; font-weight: 600;
-  cursor: pointer; background: transparent; border: 1px solid var(--border-color);
-  color: var(--text-secondary); transition: all 0.15s; font-family: var(--font-sans);
-}
-.apikey-btn-ghost:hover { border-color: var(--text-tertiary); color: var(--text-primary); }
-
-/* 成功弹窗 */
-.apikey-success-modal { width: 480px; padding: 28px; }
-.apikey-success-banner {
-  display: flex; align-items: center; gap: 10px;
-  background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3);
-  color: var(--accent-green); padding: 12px 16px; border-radius: 10px;
-  font-size: 13px; font-weight: 600; margin-bottom: 20px;
-}
-.apikey-key-display {
-  background: var(--bg-tertiary); border: 1px solid var(--border-color);
-  border-radius: 10px; padding: 14px; font-family: var(--font-mono);
-  font-size: 13px; word-break: break-all; line-height: 1.6;
-  margin-bottom: 12px; color: var(--text-primary);
-}
-.apikey-key-display .apikey-copybtn { float: right; margin-top: -6px; }
-.apikey-warning {
-  font-size: 12.5px; color: var(--accent-yellow);
-  background: rgba(210,153,34,0.1); border: 1px solid rgba(210,153,34,0.25);
-  padding: 11px 14px; border-radius: 9px; line-height: 1.6;
-}
-
-@keyframes apikeyFade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes apikeyUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* 响应�?*/
-@media (max-width: 768px) {
-  .admin-body { padding: 0; }
-  .admin-header { padding: 0 16px; }
-  .admin-cards { grid-template-columns: 1fr; }
-  .upstream-list { grid-template-columns: 1fr; }
-  .quick-links { grid-template-columns: 1fr; }
-  .trend-bar-label { font-size: 10px; }
-  .wishing-pool-wrap { flex-direction: column; align-items: center; gap: 20px; }
-  .wishing-pool-info { text-align: center; }
-  .console-sidebar { width: 60px; }
-  .console-sidebar-title { display: none; }
-  .console-nav-item { padding: 12px 0; justify-content: center; font-size: 0; }
-  .console-nav-item span { display: none; }
-  .console-main { padding: 16px; }
-  .apikey-head { flex-direction: column; gap: 14px; }
-  .apikey-row { flex-direction: column; align-items: flex-start; }
-  .apikey-actions { flex-direction: row; align-items: center; width: 100%; }
-  .guide-table { font-size: 12px; }
-  .guide-table th, .guide-table td { padding: 8px 10px; }
-}
-</style>
-<link rel="stylesheet" href="/components/nav.css">
-</head>
-<body class="ce-has-nav">
-
-<!-- Code Explorer Shared Navigation Bar -->
-<div class="ce-nav-wrapper">
-  <div class="ce-top-nav">
-    <div class="ce-top-nav-brand">
-      <div class="ce-top-nav-brand-logo">�?/div>
-      Code Explorer
-    </div>
-    <div class="ce-top-nav-links">
-      <a class="ce-top-nav-link" href="/" data-nav="/">首页</a>
-      <a class="ce-top-nav-link active" href="/console" data-nav="/console">API Key</a>
-      <a class="ce-top-nav-link" href="/resources/" data-nav="/resources">资源下载</a>
-      <a class="ce-top-nav-link" href="/web-games/" data-nav="/web-games">网页游戏</a>
-      <a class="ce-top-nav-link" href="/scratch" data-nav="/scratch">Scratch</a>
-      <a class="ce-top-nav-link" href="/python/" data-nav="/python">Python 编程</a>
-      <a class="ce-top-nav-link" href="/run/local" data-nav="/run/local">�?本地运行</a>
-    </div>
-    <div class="ce-top-nav-actions">
-      <button class="user-menu-btn hidden" id="ceUserMenuBtn" title="用户菜单">
-        <span id="ceUserName">用户</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </button>
-      <button class="changelog-btn" id="ceChangelogBtn" title="更新日志">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      </button>
-      <button class="theme-toggle-btn" id="ceThemeToggleBtn" title="切换主题">
-        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== 主体 ===== -->
-<div class="admin-body">
-  <div class="console-layout">
-    <nav class="console-sidebar">
-      <div class="console-sidebar-title">导航</div>
-      <a class="console-nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        <span>控制�?/span>
-      </a>
-      <a class="console-nav-item" data-tab="apikeys" onclick="switchTab('apikeys')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-        <span>新建 API</span>
-      </a>
-      <a class="console-nav-item" data-tab="quickguide" onclick="switchTab('quickguide')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        <span>快速接�?/span>
-      </a>
-      <a class="console-nav-item" data-tab="ollama" onclick="switchTab('ollama')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-        <span>Ollama</span>
-      </a>
-    </nav>
-    <div class="console-main">
-      <div class="console-main-inner">
-        <div id="content"><div class="console-loading">加载�?..</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// ===== 工具函数 =====
-const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmtTime = (ts) => {
-    if (!ts) return '—';
-  const d = new Date(ts * 1000);
-  const now = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  if (d.toDateString() === now.toDateString()) return '今天 ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-};
-
-// ===== 主题 =====
-const THEME_KEY = 'code_explorer_theme';
-function getTheme() { return localStorage.getItem(THEME_KEY) || 'dark'; }
-function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem(THEME_KEY, theme);
-}
-function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
-setTheme(getTheme());
-
-// ===== 数据加载 =====
-let currentUser = null;
-
-async function fetchWithTimeout(url, options = {}, timeout = 10000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeout);
-  try {
-    const res = await fetch(url, { ...options, signal: controller.signal });
-    return res;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-// ===== 动态加载指示器 =====
+#content {
+  position: relative;
+  min-height: 400px;
+}
+
+/* ===== API Key 管理（OpenAI 风格�?==== */
+.apikey-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 24px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.apikey-head-title h1 {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+  color: var(--text-primary); margin-bottom: 6px;
+}
+.apikey-head-title p {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+  max-width: 560px;
+}
+.apikey-createbtn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-green); color: #fff;
+  border: none; padding: 10px 18px; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+  font-family: var(--font-sans);
+}
+.apikey-createbtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.apikey-createbtn:active { transform: translateY(0); }
+
+.apikey-head-actions {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.apikey-quickbtn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-blue); color: #fff;
+  border: none; padding: 10px 18px; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+  font-family: var(--font-sans);
+}
+.apikey-quickbtn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.apikey-quickbtn:active { transform: translateY(0); }
+
+/* 快速接入弹�?*/
+.apikey-quickbtn, .apikey-quick-modal { display: none; }
+.quick-tabs {
+  display: flex; gap: 4px; margin-bottom: 12px;
+  background: var(--bg-tertiary); border-radius: 8px; padding: 3px;
+}
+.quick-tab {
+  flex: 1; padding: 7px 12px; border: none; border-radius: 6px;
+  background: transparent; color: var(--text-secondary);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-sans);
+}
+.quick-tab.active { background: var(--bg-secondary); color: var(--text-primary); }
+.quick-tab:hover:not(.active) { color: var(--text-primary); }
+.ollama-api-buttons {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+}
+.ollama-api-btn {
+  padding: 8px 16px; border: 1px solid var(--border-color); border-radius: 20px;
+  background: var(--bg-tertiary); color: var(--text-secondary);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-sans);
+}
+.ollama-api-btn:hover { color: var(--text-primary); border-color: var(--accent-blue); }
+.ollama-api-btn.active {
+  background: var(--accent-blue); color: #fff; border-color: var(--accent-blue);
+}
+.ollama-code-group { margin-bottom: 8px; }
+.quick-code-block { display: none; }
+.quick-code-block.active { display: block; }
+.quick-code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; background: var(--bg-tertiary);
+  border: 1px solid var(--border-color); border-bottom: none;
+  border-radius: 8px 8px 0 0; font-size: 12px; color: var(--text-secondary);
+}
+.quick-copy {
+  padding: 3px 10px; border: 1px solid var(--border-color);
+  border-radius: 5px; background: transparent; color: var(--text-tertiary);
+  cursor: pointer; font-size: 11px; transition: all 0.15s; font-family: var(--font-sans);
+}
+.quick-copy:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+.quick-code-block pre {
+  margin: 0; padding: 14px; background: var(--bg-primary);
+  border: 1px solid var(--border-color); border-radius: 0 0 8px 8px;
+  overflow-x: auto; max-height: 320px;
+}
+.quick-code-block code {
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7;
+  color: var(--text-primary); white-space: pre;
+}
+
+/* ===== 快速接入指南页 ===== */
+.guide-intro {
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;
+  font-size: 14px; line-height: 1.7; color: var(--text-secondary);
+}
+.guide-intro code {
+  background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 13px;
+}
+.guide-section { margin-bottom: 28px; }
+.guide-section p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.guide-h3 {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.guide-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.guide-table th, .guide-table td {
+  text-align: left; padding: 10px 14px;
+  border: 1px solid var(--border-color);
+}
+.guide-table th {
+  background: var(--bg-tertiary); font-weight: 600; color: var(--text-secondary);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.guide-table td { color: var(--text-secondary); }
+.guide-table td:first-child { white-space: nowrap; color: var(--text-primary); }
+.guide-table code {
+  background: var(--bg-tertiary); padding: 1px 5px; border-radius: 3px;
+  font-family: var(--font-mono); font-size: 12px;
+}
+
+.apikey-viewswitch { display: flex; gap: 8px; margin-bottom: 20px; }
+.apikey-viewpill {
+  padding: 7px 16px; border-radius: 99px;
+  border: 1px solid var(--border-color); background: transparent;
+  color: var(--text-secondary); font-size: 13px; cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-sans);
+}
+.apikey-viewpill:hover { border-color: var(--text-tertiary); color: var(--text-primary); }
+.apikey-viewpill.active { background: var(--accent-green); border-color: var(--accent-green); color: #fff; font-weight: 500; }
+
+.apikey-list { display: flex; flex-direction: column; gap: 10px; }
+.apikey-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 18px; border: 1px solid var(--border-color);
+  border-radius: 10px; transition: all 0.15s;
+}
+.apikey-row:hover { border-color: var(--text-tertiary); }
+.apikey-info { flex: 1; min-width: 0; }
+.apikey-name-line { display: flex; align-items: center; gap: 10px; }
+.apikey-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.apikey-owner {
+  font-size: 11px; padding: 2px 8px; border-radius: 99px;
+  background: var(--bg-tertiary); color: var(--accent-purple);
+  border: 1px solid var(--border-color); white-space: nowrap;
+}
+.apikey-status { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 99px; white-space: nowrap; }
+.apikey-status.on { background: rgba(63,185,80,0.12); color: var(--accent-green); }
+.apikey-status.off { background: rgba(110,118,129,0.12); color: var(--text-tertiary); border: 1px solid var(--border-color); }
+.apikey-mask-line { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.apikey-mask {
+  font-family: var(--font-mono); font-size: 12.5px; color: var(--text-secondary);
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  padding: 5px 10px; border-radius: 6px;
+}
+.apikey-copybtn {
+  font-size: 12px; color: var(--accent-blue); background: transparent;
+  border: none; cursor: pointer; padding: 2px 4px; font-family: var(--font-sans);
+}
+.apikey-copybtn:hover { text-decoration: underline; }
+.apikey-meta {
+  display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 9px;
+  font-size: 12px; color: var(--text-tertiary);
+}
+.apikey-meta b { color: var(--text-secondary); font-weight: 500; }
+.apikey-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; flex-shrink: 0; }
+.apikey-iconbtn {
+  width: 32px; height: 32px; border-radius: 7px;
+  border: 1px solid var(--border-color); background: transparent;
+  color: var(--text-secondary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; font-size: 14px;
+}
+.apikey-iconbtn:hover { border-color: var(--text-tertiary); color: var(--text-primary); }
+.apikey-iconbtn.danger:hover { color: var(--accent-red); border-color: var(--accent-red); }
+
+/* Modal */
+.apikey-overlay {
+  position: fixed; inset: 0; background: rgba(15,23,42,0.4);
+  backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center;
+  z-index: 9999; animation: apikeyFade 0.15s;
+}
+.apikey-modal {
+  background: var(--bg-secondary); border: 1px solid var(--border-color);
+  border-radius: 14px; width: 440px; max-width: 92vw; max-height: 88vh;
+  overflow-y: auto; padding: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15); animation: apikeyUp 0.2s;
+}
+.apikey-modal-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); }
+.apikey-modal-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+.apikey-field { margin-bottom: 18px; display: flex; flex-direction: column; }
+.apikey-label { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+.apikey-req { color: var(--accent-red); }
+.apikey-input {
+  width: 100%; padding: 9px 12px;
+  border: 1px solid var(--border-color); border-radius: 8px;
+  font-size: 14px; color: var(--text-primary); background: var(--bg-tertiary);
+  outline: none; transition: all 0.15s; font-family: var(--font-sans);
+}
+.apikey-input:focus { border-color: var(--accent-green); box-shadow: 0 0 0 3px rgba(63,185,80,0.15); }
+.apikey-input::placeholder { color: var(--text-tertiary); }
+select.apikey-input { cursor: pointer; appearance: none; padding-right: 34px; }
+.apikey-hint { font-size: 12px; color: var(--text-tertiary); margin-top: 5px; }
+.apikey-datefield { margin-top: 10px; }
+.apikey-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+.apikey-btn-primary {
+  border-radius: 8px; padding: 9px 16px; font-size: 14px; font-weight: 600;
+  cursor: pointer; border: none; background: var(--accent-green); color: #fff;
+  transition: all 0.15s; font-family: var(--font-sans);
+}
+.apikey-btn-primary:hover { filter: brightness(1.08); }
+.apikey-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.apikey-btn-ghost {
+  border-radius: 8px; padding: 9px 16px; font-size: 14px; font-weight: 600;
+  cursor: pointer; background: transparent; border: 1px solid var(--border-color);
+  color: var(--text-secondary); transition: all 0.15s; font-family: var(--font-sans);
+}
+.apikey-btn-ghost:hover { border-color: var(--text-tertiary); color: var(--text-primary); }
+
+/* 成功弹窗 */
+.apikey-success-modal { width: 480px; padding: 28px; }
+.apikey-success-banner {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3);
+  color: var(--accent-green); padding: 12px 16px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; margin-bottom: 20px;
+}
+.apikey-key-display {
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: 10px; padding: 14px; font-family: var(--font-mono);
+  font-size: 13px; word-break: break-all; line-height: 1.6;
+  margin-bottom: 12px; color: var(--text-primary);
+}
+.apikey-key-display .apikey-copybtn { float: right; margin-top: -6px; }
+.apikey-warning {
+  font-size: 12.5px; color: var(--accent-yellow);
+  background: rgba(210,153,34,0.1); border: 1px solid rgba(210,153,34,0.25);
+  padding: 11px 14px; border-radius: 9px; line-height: 1.6;
+}
+
+@keyframes apikeyFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes apikeyUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 响应�?*/
+@media (max-width: 768px) {
+  .admin-body { padding: 0; }
+  .admin-header { padding: 0 16px; }
+  .admin-cards { grid-template-columns: 1fr; }
+  .upstream-list { grid-template-columns: 1fr; }
+  .quick-links { grid-template-columns: 1fr; }
+  .trend-bar-label { font-size: 10px; }
+  .wishing-pool-wrap { flex-direction: column; align-items: center; gap: 20px; }
+  .wishing-pool-info { text-align: center; }
+  .console-sidebar { width: 60px; }
+  .console-sidebar-title { display: none; }
+  .console-nav-item { padding: 12px 0; justify-content: center; font-size: 0; }
+  .console-nav-item span { display: none; }
+  .console-main { padding: 16px; }
+  .apikey-head { flex-direction: column; gap: 14px; }
+  .apikey-row { flex-direction: column; align-items: flex-start; }
+  .apikey-actions { flex-direction: row; align-items: center; width: 100%; }
+  .guide-table { font-size: 12px; }
+  .guide-table th, .guide-table td { padding: 8px 10px; }
+}
+</style>
+<link rel="stylesheet" href="/components/nav.css">
+</head>
+<body class="ce-has-nav">
+
+<!-- Code Explorer Shared Navigation Bar -->
+<div class="ce-nav-wrapper">
+  <div class="ce-top-nav">
+    <div class="ce-top-nav-brand">
+      <div class="ce-top-nav-brand-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+      Code Explorer
+    </div>
+    <div class="ce-top-nav-links">
+      <a class="ce-top-nav-link" href="/" data-nav="/">首页</a>
+      <a class="ce-top-nav-link active" href="/console" data-nav="/console">API Key</a>
+      <a class="ce-top-nav-link" href="/resources/" data-nav="/resources">资源下载</a>
+      <a class="ce-top-nav-link" href="/web-games/" data-nav="/web-games">网页游戏</a>
+      <a class="ce-top-nav-link" href="/scratch" data-nav="/scratch">Scratch</a>
+      <a class="ce-top-nav-link" href="/python/" data-nav="/python">Python 编程</a>
+      <a class="ce-top-nav-link" href="/run/local" data-nav="/run/local">💻 本地运行</a>
+    </div>
+    <div class="ce-top-nav-actions">
+      <button class="user-menu-btn hidden" id="ceUserMenuBtn" title="用户菜单">
+        <span id="ceUserName">用户</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button class="changelog-btn" id="ceChangelogBtn" title="更新日志">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </button>
+      <button class="theme-toggle-btn" id="ceThemeToggleBtn" title="切换主题">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 主体 ===== -->
+<div class="admin-body">
+  <div class="console-layout">
+    <nav class="console-sidebar">
+      <div class="console-sidebar-title">导航</div>
+      <a class="console-nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>控制台</span>
+      </a>
+      <a class="console-nav-item" data-tab="apikeys" onclick="switchTab('apikeys')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <span>新建 API</span>
+      </a>
+      <a class="console-nav-item" data-tab="quickguide" onclick="switchTab('quickguide')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span>快速接入</span>
+      </a>
+      <a class="console-nav-item" data-tab="ollama" onclick="switchTab('ollama')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        <span>Ollama</span>
+      </a>
+    </nav>
+    <div class="console-main">
+      <div class="console-main-inner">
+        <div id="content"><div class="console-loading">加载中...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 工具函数 =====
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtTime = (ts) => {
+    if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  if (d.toDateString() === now.toDateString()) return '今天 ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+// ===== 主题 =====
+const THEME_KEY = 'code_explorer_theme';
+function getTheme() { return localStorage.getItem(THEME_KEY) || 'dark'; }
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(THEME_KEY, theme);
+}
+function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
+setTheme(getTheme());
+
+// ===== 数据加载 =====
+let currentUser = null;
+
+async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    return res;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// ===== 动态加载指示器（独立遮罩层，不替换内容） =====
 let _loadingTimer = null;
 let _loadingStart = 0;
 let _loadingDone = false;
-let _loadingContent = null;
-
+let _loadingOverlay = null;  // 独立遮罩层 DOM 引用
+
 function showLoading(content, steps, currentStep) {
   stopLoading();
   _loadingDone = false;
-  _loadingContent = content;
   _loadingStart = Date.now();
+
+  // 创建独立遮罩层，不替换原有内容
+  const overlay = document.createElement('div');
+  overlay.className = 'loading-overlay';
+  content.appendChild(overlay);
+  _loadingOverlay = overlay;
+
   const render = () => {
-    if (_loadingDone || !_loadingContent || !document.body.contains(_loadingContent)) return;
+    // 三重保护：已停止 / 遮罩层不存在 / 遮罩层已脱离DOM
+    if (_loadingDone || !_loadingOverlay || !document.body.contains(_loadingOverlay)) return;
     const elapsed = ((Date.now() - _loadingStart) / 1000).toFixed(1);
     const stepsHtml = steps.map((s, i) => {
       let icon, cls;
@@ -1109,1354 +1136,1369 @@ function showLoading(content, steps, currentStep) {
       else { icon = '○'; cls = 'pending'; }
       return `<div class="loading-step ${cls}"><span class="step-icon">${icon}</span><span class="step-text">${s}</span></div>`;
     }).join('');
-    _loadingContent.innerHTML = `
+    // 写入前再次检查，防止竞态条件
+    if (_loadingDone || !_loadingOverlay || !document.body.contains(_loadingOverlay)) return;
+    _loadingOverlay.innerHTML = `
       <div class="loading-container">
         <div class="loading-elapsed">已等待 ${elapsed}s</div>
         <div class="loading-steps">${stepsHtml}</div>
-        <div class="loading-hint">如果长时间无响应，<a href="javascript:location.reload()" style="color:var(--accent-blue)">点击刷新</a> 或检查网络连�?/div>
+        <div class="loading-hint">如果长时间无响应，<a href="javascript:location.reload()" style="color:var(--accent-blue)">点击刷新</a> 或检查网络连接</div>
       </div>`;
   };
   render();
   _loadingTimer = setInterval(render, 200);
-}
+}
 function stopLoading() {
   _loadingDone = true;
   if (_loadingTimer) { clearInterval(_loadingTimer); _loadingTimer = null; }
-}
-
-async function loadPool() {
-  stopLoading();
-  const content = $('content');
-  if (!content) return;
-  const steps = ['检查登录状态...', '加载池子数据...'];
-  showLoading(content, steps, 0);
-  try {
-    const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
-    if (!authRes.ok) throw new Error('登录状态检查失败(' + authRes.status + ')');
-    const authData = await authRes.json();
-    if (!authData.authenticated) {
-      stopLoading();
-      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
-      return;
+  // 立即从 DOM 中移除遮罩层，确保不影响内容交互
+  if (_loadingOverlay) {
+    if (_loadingOverlay.parentNode) {
+      _loadingOverlay.parentNode.removeChild(_loadingOverlay);
     }
-    currentUser = authData.user;
-    const ceNameEl = $('ceUserName');
-    if (ceNameEl) ceNameEl.textContent = currentUser.username;
-    if (window.CENav) CENav.setUser(currentUser.username);
-
-    showLoading(content, steps, 1);
-    const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 20000);
-    if (res.status === 401) {
-      stopLoading();
-      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
-      return;
-    }
-    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
-    const data = await res.json();
-    stopLoading();
-    _loadingContent = null;
-    render(data);
-  } catch (e) {
-    stopLoading();
-    _loadingContent = null;
-    const msg = e.name === 'AbortError'
-      ? '请求超时（服务器无响应）'
-      : esc(e.message || '未知错误');
-    content.innerHTML = `
-      <div class="console-error" style="padding:40px 20px">
-        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
-        <div style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-primary)">数据加载失败</div>
-        <div>${msg}</div>
-        <div style="margin-top:16px;font-size:12px">如果你刚登录，请刷新页面重试</div>
-        <button class="loading-retry" onclick="loadPool()" style="margin-top:16px">🔄 重新加载</button>
-      </div>`;
+    _loadingOverlay = null;
   }
-}
-
-function render(data) {
-  const p = data.pool;
-  const used = p.used;
-  const total = p.total;
-  const pct = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0;
-  const usersCount = data.users.length;
-  const isAdmin = currentUser && currentUser.role === 'admin';
-
-  const cards = `
-    <div class="admin-cards">
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <div class="admin-card-icon purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          </div>
-          <div class="admin-card-title">池子上限</div>
-        </div>
-        <div class="admin-card-value">${total.toLocaleString()}</div>
-        <div class="admin-card-desc">${esc(p.date)} · 90% 占比</div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <div class="admin-card-icon blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-          <div class="admin-card-title">今日已使�?/div>
-        </div>
-        <div class="admin-card-value">${used.toLocaleString()}</div>
-        <div class="admin-card-desc">${pct}% 已消�?/div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <div class="admin-card-icon green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 6L9 17l-5-5"/></svg>
-          </div>
-          <div class="admin-card-title">剩余额度</div>
-        </div>
-        <div class="admin-card-value">${p.remaining.toLocaleString()}</div>
-        <div class="admin-card-desc">今日剩余可调用次�?/div>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <div class="admin-card-icon yellow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <div class="admin-card-title">参与用户</div>
-        </div>
-        <div class="admin-card-value">${usersCount}</div>
-        <div class="admin-card-desc">今日使用�?AI 的用�?/div>
-      </div>
-    </div>`;
-
-  const progress = `
-    <div class="pool-progress-wrap">
-      <div class="pool-progress-head">
-        <span class="pool-progress-label">共享池当日消耗</span>
-        <span class="pool-progress-meta">${used.toLocaleString()} / ${total.toLocaleString()}</span>
-      </div>
-      <div class="pool-progress-track">
-        <div class="pool-progress-fill" style="width:${pct}%"></div>
-      </div>
-      <div class="pool-progress-foot">总可�?= Cloudflare Workers AI 1000 �?�?+ OpenRouter Free 50 �?�?+ Ollama 本地无限次；池子上限 = 总可�?× 90%�?{total} �?天）。所有登录用户共享此池子，每人用量独立统计�?a href="javascript:switchTab('ollama')" style="color:var(--accent-blue);margin-left:8px">查看 Ollama 详情 �?/a></div>
-    </div>
-    <div class="wishing-pool-wrap">
-      <div class="wishing-pool">
-        <div class="wp-base"></div>
-        <div class="wp-tier1"></div>
-        <div class="wp-tier2"></div>
-        <div class="wp-tier3"></div>
-        <div class="wp-spout"></div>
-        <div class="wp-splash"><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div></div>
-        <div class="wp-waterfall wf1"></div>
-        <div class="wp-waterfall wf2"></div>
-        <div class="wp-coin"></div><div class="wp-coin"></div><div class="wp-coin"></div>
-        <div class="wp-plant wp-plant-left"><div class="wp-stem"></div><div class="wp-leaf"></div><div class="wp-flower"></div></div>
-        <div class="wp-plant wp-plant-right"><div class="wp-stem"></div><div class="wp-leaf"></div></div>
-      </div>
-      <div class="wishing-pool-info">
-        <div class="wishing-pool-title">许愿�?AI 额度</div>
-        <div class="wishing-pool-desc">
-          每位用户使用 AI 推荐时，都会从共享池中消耗一次额度�?br>
-          当日池子剩余 <b>${p.remaining.toLocaleString()}</b> 次可用，<br>
-          已有 <b>${usersCount}</b> 位用户今日许过愿 �?
-        </div>
-      </div>
-    </div>`;
-
-  let ranks = '<div class="console-loading" style="padding:30px">暂无用户数据</div>';
-  if (data.users.length) {
-    ranks = data.users.map((u, i) => {
-      const isSelf = currentUser && u.username === currentUser.username;
-      const top = i === 0 ? ' top1' : i === 1 ? ' top2' : i === 2 ? ' top3' : '';
-      const roleCls = u.role === 'admin' ? 'admin' : (isSelf ? 'self' : 'user');
-      const roleTxt = u.role === 'admin' ? '管理员' : (isSelf ? '自己' : '用户');
-      return `
-        <div class="rank-row${isSelf ? ' self' : ''}">
-          <div class="rank-index${top}">${i + 1}</div>
-          <div class="rank-avatar${u.role === 'admin' ? ' admin' : ''}">${esc((u.username || '?').charAt(0).toUpperCase())}</div>
-          <div class="rank-info">
-            <div class="rank-name-line">
-              <span>${esc(u.username)}</span>
-              <span class="rank-role-badge ${roleCls}">${roleTxt}</span>
-            </div>
-            <div class="rank-sub">最近活跃：${fmtTime(u.lastActive)}</div>
-          </div>
-          <div class="rank-count">${u.used}<small> �?/small></div>
-        </div>`;
-    }).join('');
-  }
-
-  const maxTrend = Math.max(1, ...data.trend.map((t) => t.used));
-  const trendBars = data.trend.map((t) => {
-    const h = Math.round((t.used / maxTrend) * 120);
-    const label = t.date.slice(5).replace('-', '/');
-    return `
-      <div class="trend-bar-col" title="${esc(t.date)} · ${t.used} 次">
-        <div class="trend-bar-count">${t.used}</div>
-        <div class="trend-bar${t.used === 0 ? ' zero' : ''}" style="height:${Math.max(t.used === 0 ? 4 : 8, h)}px"></div>
-        <div class="trend-bar-label">${label}</div>
-      </div>`;
-  }).join('');
-
-  const upstreams = `
-    <div class="upstream-list">
-      <div class="upstream-card">
-        <div class="upstream-head">
-          <span class="upstream-dot"></span>
-          <span class="upstream-name">Cloudflare Workers AI</span>
-        </div>
-        <div class="upstream-meta">
-          状态：<b>备用 · 可用</b><br>
-          每日限额�?b>${p.cloudflareDaily} �?/b><br>
-          模型�?b>@cf/qwen3-coder-30b-a3b-fp8</b><br>
-          计费�?b>免费�?0000 neurons/天）</b>
-        </div>
-      </div>
-      <div class="upstream-card">
-        <div class="upstream-head">
-          <span class="upstream-dot fallback"></span>
-          <span class="upstream-name">OpenRouter Free</span>
-        </div>
-        <div class="upstream-meta">
-          状态：<b>兜底 · 受限</b><br>
-          每日限额�?b>${p.openrouterDaily} �?/b><br>
-          模型�?b>openrouter/free</b><br>
-          计费�?b>免费（含池子基数�?/b>
-        </div>
-      </div>
-    </div>`;
-
-  const quickLinks = `
-    <div class="quick-links">
-      <a class="quick-link" href="/">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        返回主站
-      </a>
-      <a class="quick-link" href="javascript:void(0)" onclick="switchTab('ollama')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-        Ollama
-      </a>
-      ${isAdmin ? `
-      <a class="quick-link" href="/admin">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-        管理员后�?
-      </a>` : ''}
-      <a class="quick-link" href="javascript:void(0)" onclick="toggleTheme()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        切换主题
-      </a>
-    </div>`;
-
-  $('content').innerHTML = `
-    <div class="admin-section">
-      <div class="admin-section-title">共享�?/div>
-      ${cards}
-      ${progress}
-    </div>
-    <div class="admin-section">
-      <div class="admin-section-title">今日用户用量排行</div>
-      <div class="rank-list">${ranks}</div>
-    </div>
-    <div class="admin-section">
-      <div class="admin-section-title">�?7 天趋�?/div>
-      <div class="trend-wrap">
-        <div class="trend-bars">${trendBars}</div>
-      </div>
-    </div>
-    <div class="admin-section">
-      <div class="admin-section-title">上游状�?/div>
-      ${upstreams}
-    </div>
-    <div class="admin-section">
-      <div class="admin-section-title">快捷入口</div>
-      ${quickLinks}
-    </div>`;
-}
-
-document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 't') {
-    e.preventDefault();
-    toggleTheme();
-  }
-});
-
-loadPool();
-
-// ===== 标签页切�?=====
-let currentTab = 'dashboard';
-
-function switchTab(tab) {
-  stopLoading();
-  currentTab = tab;
-  document.querySelectorAll('.console-nav-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.tab === tab);
-  });
-  if (tab === 'dashboard') {
-    loadPool();
-  } else if (tab === 'apikeys') {
-    loadApiKeys();
-  } else if (tab === 'quickguide') {
-    loadQuickGuide();
-  } else if (tab === 'ollama') {
-    loadOllama();
-  }
-}
-
-// ===== API Key 管理 =====
-const MASK = k => k ? k.slice(0, 10) + '•••...' + k.slice(-4) : '';
-let apiKeyView = 'mine'; // mine | all
-
-async function loadApiKeys() {
-  stopLoading();
-  _loadingContent = null;
-  const content = $('content');
-  if (!content) return;
-  const steps = ['检查登录状态...', '加载 API Key 列表...'];
-  showLoading(content, steps, 0);
-  try {
-    if (!currentUser) {
-      const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
-      if (!authRes.ok) throw new Error('登录状态检查失败(' + authRes.status + ')');
-      const authData = await authRes.json();
-      if (!authData.authenticated) {
-        stopLoading();
-        _loadingContent = null;
-        content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
-        return;
-      }
-      currentUser = authData.user;
-      const ceNameEl = $('ceUserName');
-      if (ceNameEl) ceNameEl.textContent = currentUser.username;
-      if (window.CENav) CENav.setUser(currentUser.username);
-    }
-    showLoading(content, steps, 1);
-    const url = '/api/api-keys' + (currentUser && currentUser.role === 'admin' ? '?all=' + (apiKeyView === 'all' ? '1' : '0') : '');
-    const res = await fetchWithTimeout(url, {}, 20000);
-    if (res.status === 401) {
-      stopLoading();
-      _loadingContent = null;
-      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
-      return;
-    }
-    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
-    const data = await res.json();
-    stopLoading();
-    _loadingContent = null;
-    if (data.error) {
-      content.innerHTML = '<div class="console-error">' + esc(data.error) + '</div>';
-      return;
-    }
-    renderApiKeys(data.keys || []);
-  } catch (e) {
-    stopLoading();
-    _loadingContent = null;
-    const msg = e.name === 'AbortError' ? '请求超时（服务器无响应）' : esc(e.message || '未知错误');
-    content.innerHTML = `
-      <div class="console-error" style="padding:40px 20px">
-        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
-        <div style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-primary)">加载失败</div>
-        <div>${msg}</div>
-        <button class="loading-retry" onclick="loadApiKeys()" style="margin-top:16px">🔄 重新加载</button>
-      </div>`;
-  }
-}
-
-function renderApiKeys(keys) {
-  const content = $('content');
-  const isAdmin = currentUser && currentUser.role === 'admin';
-  const keyRows = keys.length === 0
-    ? '<div class="console-error" style="padding:48px 20px;text-align:center">暂无 API Key，点击右上角创建</div>'
-    : keys.map(k => {
-        const now = Math.floor(Date.now() / 1000);
-        const st = !k.is_active
-          ? { label: '已禁用', cls: 'off' }
-          : (k.expires_at && now > k.expires_at) ? { label: '已过期', cls: 'off' }
-          : { label: '有效', cls: 'on' };
-        const expire = k.expires_at ? fmtTime(k.expires_at) : '永久';
-        const owner = apiKeyView === 'all' ? `<span class="apikey-owner">${esc(k.username)}</span>` : '';
-        return `
-        <div class="apikey-row">
-          <div class="apikey-info">
-            <div class="apikey-name-line">
-              <span class="apikey-name">${esc(k.name)}</span>${owner}
-              <span class="apikey-status ${st.cls}">${st.label}</span>
-            </div>
-            <div class="apikey-mask-line">
-              <span class="apikey-mask">${esc(MASK(k.key))}</span>
-              <button class="apikey-copybtn" onclick="copyApiKey('${esc(k.key)}')">复制</button>
-            </div>
-            <div class="apikey-meta">
-              <span>创建 <b>${fmtTime(k.created_at)}</b></span>
-              <span>过期 <b>${expire}</b></span>
-              <span>调用 <b>${k.calls || 0} 次</b></span>
-              ${k.daily_limit ? `<span>限额 <b>${k.daily_limit} 次/天</b></span>` : ''}
-              ${k.desc ? `<span>用途<b>${esc(k.desc)}</b></span>` : ''}
-            </div>
-          </div>
-          <div class="apikey-actions">
-            <button class="apikey-iconbtn" title="${k.is_active ? '禁用' : '启用'}" onclick="toggleApiKey(${k.id})">${k.is_active ? '●' : '○'}</button>
-            <button class="apikey-iconbtn danger" title="删除" onclick="deleteApiKey(${k.id}, '${esc(k.name)}')">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-            </button>
-          </div>
-        </div>`;
-      }).join('');
-
-  const viewSwitch = isAdmin ? `
-    <div class="apikey-viewswitch">
-      <button class="apikey-viewpill ${apiKeyView === 'mine' ? 'active' : ''}" onclick="apiKeyView='mine';loadApiKeys()">我的 Keys</button>
-      <button class="apikey-viewpill ${apiKeyView === 'all' ? 'active' : ''}" onclick="apiKeyView='all';loadApiKeys()">全部用户 Keys</button>
-    </div>` : '';
-
-  content.innerHTML = `
-    <div class="apikey-head">
-      <div class="apikey-head-title">
-        <h1>API keys</h1>
-        <p>创建和管�?API key，用于在外部程序或脚本中调用 AI 推荐接口。完�?key 仅在创建时显示一次�?/p>
-      </div>
-      <button class="apikey-createbtn" onclick="openCreateModal()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-          Create new secret key
-        </button>
-      </div>
-    </div>
-    ${viewSwitch}
-    <div class="apikey-list">${keyRows}</div>
-
-    <!-- 创建弹窗 -->
-    <div class="apikey-overlay" id="createModal" style="display:none">
-      <div class="apikey-modal">
-        <div class="apikey-modal-title">Create new secret key</div>
-        <div class="apikey-modal-sub">为该 key 设置名称与使用限制�?/div>
-        <div class="apikey-field">
-          <label class="apikey-label">Key 名称 <span class="apikey-req">*</span></label>
-          <input class="apikey-input" id="fName" placeholder="如：我的爬虫" maxlength="40" autocomplete="off">
-        </div>
-        <div class="apikey-field">
-          <label class="apikey-label">用途描述</label>
-          <input class="apikey-input" id="fDesc" placeholder="这个 key 用来做什么？" maxlength="100" autocomplete="off">
-        </div>
-        <div class="apikey-field">
-          <label class="apikey-label">有效效期</label>
-          <select class="apikey-input" id="fExpire">
-            <option value="never">永久有效</option>
-            <option value="7">7 天后过期</option>
-            <option value="30">30 天后过期</option>
-            <option value="90">90 天后过期</option>
-            <option value="custom">自定义日期�?/option>
-          </select>
-          <div class="apikey-datefield" id="customDateWrap" style="display:none">
-            <label class="apikey-label">过期日期</label>
-            <input class="apikey-input" id="fCustomDate" type="date">
-          </div>
-        </div>
-        <div class="apikey-field">
-          <label class="apikey-label">每日调用限额</label>
-          <input class="apikey-input" id="fLimit" type="number" min="1" placeholder="留空表示不限" autocomplete="off">
-          <div class="apikey-hint">�?key 每天最多可调用 /api/recommend 的次�?/div>
-        </div>
-        <div class="apikey-modal-actions">
-          <button class="apikey-btn-ghost" onclick="$('createModal').style.display='none'">取消</button>
-          <button class="apikey-btn-primary" id="createSubmit" onclick="createApiKey()">创建</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 创建成功弹窗 -->
-    <div class="apikey-overlay" id="successModal" style="display:none">
-      <div class="apikey-modal apikey-success-modal">
-        <div class="apikey-modal-title">Key created</div>
-        <div class="apikey-modal-sub" id="successName"></div>
-        <div class="apikey-success-banner">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-          创建成功！请保存你的 key
-        </div>
-        <div class="apikey-key-display">
-          <span id="fullKey"></span>
-          <button class="apikey-copybtn" onclick="copyFullKey()">复制</button>
-        </div>
-        <div class="apikey-warning">�?出于安全考虑，此 key 仅显示这一次，关闭后将无法再次查看。若遗失请删除后重新创建�?/div>
-        <div class="apikey-modal-actions">
-          <button class="apikey-btn-primary" onclick="$('successModal').style.display='none';loadApiKeys()">我已保存</button>
-        </div>
-      </div>
-    </div>
-    </div>`;
-}
-
-function openCreateModal() {
-  $('fExpire').value = 'never';
-  $('customDateWrap').style.display = 'none';
-  $('createModal').style.display = 'flex';
-  $('fName').focus();
-}
-
-function openQuickModal() {
-  $('quickModal').style.display = 'flex';
-  // 默认选中第一�?tab
-  switchQuickTab('python');
-}
-
-function switchQuickTab(lang) {
-  document.querySelectorAll('.quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
-  document.querySelectorAll('.quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-}
-
-function copyQuickCode(lang) {
-  const block = document.querySelector(`.quick-code-block[data-lang="${lang}"]`);
-  const code = block.querySelector('code').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    const toast = document.createElement('div');
-    toast.textContent = '代码崚制';
-    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-  });
-}
-
-function getExpireTs() {
-  const sel = $('fExpire').value;
-  if (sel === 'never') return 0;
-  if (sel === 'custom') {
-    const v = $('fCustomDate').value;
-    if (!v) return 0;
-    return Math.floor(new Date(v + 'T23:59:59').getTime() / 1000);
-  }
-  return Math.floor(Date.now() / 1000) + parseInt(sel) * 24 * 3600;
-}
-
-async function createApiKey() {
-  const name = $('fName').value.trim();
-  if (!name) { alert('请输入 key 名称'); $('fName').focus(); return; }
-  const btn = $('createSubmit');
-  btn.disabled = true;
-  try {
-    const res = await fetchWithTimeout('/api/api-keys', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        desc: $('fDesc').value.trim(),
-        daily_limit: $('fLimit').value ? parseInt($('fLimit').value) : 0,
-        expires_at: getExpireTs()
-      })
-    }, 10000);
-    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
-    const data = await res.json();
-    if (data.success) {
-      $('fullKey').textContent = data.key;
-      $('successName').textContent = `「{data.name}」 属于 ${currentUser.username}`;
-      $('createModal').style.display = 'none';
-      $('successModal').style.display = 'flex';
-      $('fName').value = ''; $('fDesc').value = ''; $('fLimit').value = '';
-    } else {
-      alert(data.error || '创建失败');
-    }
-  } catch (e) {
-    const msg = e.name === 'AbortError' ? '请求超时' : e.message;
-    alert('网络错误: ' + msg);
-  } finally {
-    btn.disabled = false;
-  }
-}
-
-function copyFullKey() { copyApiKey($('fullKey').textContent); }
-
-function copyApiKey(key) {
-  navigator.clipboard.writeText(key).then(() => {
-    const toast = document.createElement('div');
-    toast.textContent = '已复制到剪贴板';
-    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-  }).catch(() => {
-    prompt('请手动复制', key);
-  });
-}
-
-async function deleteApiKey(id, name) {
-  if (!confirm(`确定删除 Key�?{name}」吗？删除后不可恢复。`)) return;
-  try {
-    const res = await fetchWithTimeout(`/api/api-keys/delete?id=${id}`, {}, 8000);
-    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
-    const data = await res.json();
-    if (data.success) { loadApiKeys(); } else { alert(data.error || '删除失败'); }
-  } catch (e) { alert('网络错误: ' + (e.name === 'AbortError' ? '请求超时' : e.message)); }
-}
-
-async function toggleApiKey(id) {
-  try {
-    const res = await fetchWithTimeout(`/api/api-keys/toggle?id=${id}`, {}, 8000);
-    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
-    const data = await res.json();
-    if (data.success) { loadApiKeys(); } else { alert(data.error || '操作失败'); }
-  } catch (e) { alert('网络错误: ' + (e.name === 'AbortError' ? '请求超时' : e.message)); }
-}
-
-// ===== 快速接入指�?=====
-function loadQuickGuide() {
-  stopLoading();
-  _loadingContent = null;
-  const content = $('content');
-  if (!content) return;
-  content.innerHTML = `
-    <div class="admin-section">
-      <div class="admin-section-title">快速接入指�?/div>
-      <div class="guide-intro">
-        <p>使用 API Key 通过 <code>/api/recommend</code> 接口调用 AI 推荐功能。支�?<strong>Authorization Bearer</strong> 头认证�?/p>
-      </div>
-
-      <div class="guide-section">
-        <h3 class="guide-h3">1. 创建 API Key</h3>
-        <p>前往左侧�?a href="javascript:switchTab(\'apikeys\')" style="color:var(--accent-blue)">新建 API</a>」页面创建密钥，创建后完�?key 仅显示一次，请立即保存�?/p>
-      </div>
-
-      <div class="guide-section">
-        <h3 class="guide-h3">2. 接口说明</h3>
-        <table class="guide-table">
-          <tr><td>接口地址</td><td><code>POST https://codingzhou.top/api/recommend</code></td></tr>
-          <tr><td>AI 引擎</td><td>主通道 Ollama 本地模型 + Cloudflare Workers AI 备用（自动路由）</td></tr>
-          <tr><td>模型选择</td><td>默认 <code>ollama/text</code>，可�?<code>ollama/vision</code>（图片识别）</td></tr>
-          <tr><td>认证方式</td><td><code>Authorization: Bearer sk-xxx</code> 或请求体�?<code>api_key: "sk-xxx"</code></td></tr>
-          <tr><td>Content-Type</td><td><code>application/json</code></td></tr>
-          <tr><td>请求�?/td><td><code>{"messages": [{"role": "user", "content": "..."}], "model": "ollama/text"}</code></td></tr>
-          <tr><td>返回格式</td><td><code>{"success": true, "response": "...", "recommendations": [...]}</code></td></tr>
-        </table>
-        <p style="margin-top:10px;color:var(--text-tertiary);font-size:12px">💡 原生 Ollama API 调用请前往左侧�?a href="javascript:switchTab('ollama')" style="color:var(--accent-blue)">Ollama</a>」标签页</p>
-      </div>
-
-      <div class="guide-section">
-        <h3 class="guide-h3">3. 代码示例</h3>
-        <div class="quick-tabs" id="guideTabs">
-          <button class="quick-tab active" data-lang="python" onclick="switchGuideTab('python')">Python</button>
-          <button class="quick-tab" data-lang="curl" onclick="switchGuideTab('curl')">curl</button>
-          <button class="quick-tab" data-lang="js" onclick="switchGuideTab('js')">JavaScript</button>
-          <button class="quick-tab" data-lang="node" onclick="switchGuideTab('node')">Node.js</button>
-        </div>
-        <div class="quick-code" id="guideCode">
-          <div class="quick-code-block active" data-lang="python">
-            <div class="quick-code-header">
-              <span>Python �?调用 CodingZhou API</span>
-              <button class="quick-copy" onclick="copyGuideCode('python')">复制代码</button>
-            </div>
-            <pre><code>import requests
-
-API_KEY = "sk-你的密钥"
-BASE_URL = "https://codingzhou.top/api/recommend"
-
-# 基本调用（默认使�?Ollama 文本模型 qwen2.5:1.5b�?
-resp = requests.post(BASE_URL, headers={
-    "Authorization": f"Bearer {API_KEY}"
-}, json={
-    "messages": [
-        {"role": "user", "content": "推荐几个 Python 练手项目"}
-    ],
-    "model": "ollama/text"  # 可选：ollama/text | ollama/vision
-}, timeout=120)
-
-result = resp.json()
-if result.get("success"):
-    print(result["response"])
-    for r in result.get("recommendations", []):
-        print(f"�?{r['name']} ({r['path']}): {r['reason']}")
-else:
-    print("错误:", result.get("error"))
-
-# 图片识别（使用视觉模型）
-resp2 = requests.post(BASE_URL, headers={
-    "Authorization": f"Bearer {API_KEY}"
-}, json={
-    "messages": [{
-        "role": "user",
-        "content": [
-            {"type": "text", "text": "这张图片是什么？"},
-            {"type": "image_url", "image_url": {"url": "https://example.com/photo.jpg"}}
-        ]
-    }],
-    "model": "ollama/vision"
-})
-print(resp2.json().get("response"))</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="curl">
-            <div class="quick-code-header">
-              <span>curl �?调用 CodingZhou API</span>
-              <button class="quick-copy" onclick="copyGuideCode('curl')">复制代码</button>
-            </div>
-            <pre><code># 基本文本对话
-curl -X POST https://codingzhou.top/api/recommend \\
-  -H "Authorization: Bearer sk-你的密钥" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "messages": [
-      {"role": "user", "content": "推荐几个 Python 练手项目"}
-    ],
-    "model": "ollama/text"
-  }'
-
-# 视觉模型（图片识别）
-curl -X POST https://codingzhou.top/api/recommend \\
-  -H "Authorization: Bearer sk-你的密钥" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "messages": [{
-      "role": "user",
-      "content": [
-        {"type": "text", "text": "描述这张图片"},
-        {"type": "image_url", "image_url": {"url": "https://example.com/photo.jpg"}}
-      ]
-    }],
-    "model": "ollama/vision"
-  }'</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="js">
-            <div class="quick-code-header">
-              <span>JavaScript (fetch)</span>
-              <button class="quick-copy" onclick="copyGuideCode('js')">复制代码</button>
-            </div>
-            <pre><code>const API_KEY = "sk-你的密钥";
-
-// 基本文本对话
-const resp = await fetch("https://codingzhou.top/api/recommend", {
-  method: "POST",
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    messages: [
-      { role: "user", content: "推荐几个 Python 练手项目" }
-    ],
-    model: "ollama/text"
-  })
-});
-const data = await resp.json();
-if (data.success) {
-  console.log(data.response);
-  data.recommendations.forEach(r => console.log(\`�?\${r.name}: \${r.reason}\`));
-} else {
-  console.error("错误:", data.error);
-}
-
-// 视觉模型（图片识别）
-const visionResp = await fetch("https://codingzhou.top/api/recommend", {
-  method: "POST",
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    messages: [{
-      role: "user",
-      content: [
-        { type: "text", text: "描述这张图片" },
-        { type: "image_url", image_url: { url: "https://example.com/photo.jpg" } }
-      ]
-    }],
-    model: "ollama/vision"
-  })
-});
-console.log((await visionResp.json()).response);</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="node">
-            <div class="quick-code-header">
-              <span>Node.js (axios)</span>
-              <button class="quick-copy" onclick="copyGuideCode('node')">复制代码</button>
-            </div>
-            <pre><code>const axios = require("axios");
-
-const API_KEY = "sk-你的密钥";
-
-// 基本文本对话
-const resp = await axios.post(
-  "https://codingzhou.top/api/recommend",
-  {
-    messages: [{ role: "user", content: "推荐几个 Python 练手项目" }],
-    model: "ollama/text"
-  },
-  { headers: { Authorization: \`Bearer \${API_KEY}\` } }
-);
-if (resp.data.success) {
-  console.log(resp.data.response);
-  resp.data.recommendations.forEach(r => console.log(\`�?\${r.name}: \${r.reason}\`));
-} else {
-  console.error("错误:", resp.data.error);
-}
-
-// 视觉模型
-const visionResp = await axios.post(
-  "https://codingzhou.top/api/recommend",
-  {
-    messages: [{
-      role: "user",
-      content: [
-        { type: "text", text: "描述这张图片" },
-        { type: "image_url", image_url: { url: "https://example.com/photo.jpg" } }
-      ]
-    }],
-    model: "ollama/vision"
-  },
-  { headers: { Authorization: \`Bearer \${API_KEY}\` } }
-);
-console.log(visionResp.data.response);</code></pre>
-          </div>
-        </div>
-      </div>
-
-      <div class="guide-section">
-        <h3 class="guide-h3">4. 错误码说�?/h3>
-        <table class="guide-table">
-          <tr><th>HTTP 状态码</th><th>错误信息</th><th>说明</th></tr>
-          <tr><td><code>401</code></td><td>请先登录或提供有效的 API Key</td><td>未提供认证信息或 key 无效</td></tr>
-          <tr><td><code>401</code></td><td>请先登录</td><td>API Key 已过期或被禁�?/td></tr>
-          <tr><td><code>400</code></td><td>请输入消�?/td><td>请求体中缺少 <code>messages</code> 字段</td></tr>
-          <tr><td><code>500</code></td><td>AI 请求失败: ...</td><td>上游 AI 服务异常，请稍后重试</td></tr>
-          <tr><td><code>429</code></td><td>请求过于频繁</td><td>超过每日调用限额（如设置�?daily_limit�?/td></tr>
-          <tr><td><code>403</code></td><td>无权限查看全�?Key</td><td>非管理员尝试查看所有用户的 key</td></tr>
-        </table>
-      </div>
-
-      <div class="guide-section">
-        <h3 class="guide-h3">5. 限制说明</h3>
-        <table class="guide-table">
-          <tr><th>限制�?/th><th>说明</th></tr>
-          <tr><td>共享池上�?/td><td>全平台每天共享池总量�?<strong id="poolLimit">9944</strong> 次调用，所有用户共用（Ollama 本地无限 + Workers AI 1000 + OpenRouter 50）。详�?<a href="javascript:switchTab('ollama')" style="color:var(--accent-blue)">Ollama</a> �?/td></tr>
-          <tr><td>Key 每日限额</td><td>创建 key 时可设置每日调用次数上限，超出后返回 429</td></tr>
-          <tr><td>Key 有效�?/td><td>创建 key 时可设置过期时间，过期后认证失败</td></tr>
-          <tr><td>Key 管理</td><td>key 可随时在控制台禁用或删除，禁用后立即失效</td></tr>
-        </table>
-      </div>
-    </div>`;
-}
-
-// ===== Ollama 独立管理�?=====
-function loadOllama() {
-  stopLoading();
-  _loadingContent = null;
-  const content = $('content');
-  if (!content) return;
-  content.innerHTML = `
-    <div class="admin-section">
-      <div class="admin-section-title">🦙 Ollama 本地 AI</div>
-      <div class="guide-intro">
-        <p>Ollama 是平台的 <strong>主通道 AI</strong>，本地部署在 ECS 服务器上，完全免费、无限次调用。通过平台 API Key 认证，无需管理独立账号�?/p>
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">运行状�?/div>
-      <div class="upstream-list">
-        <div class="upstream-card">
-          <div class="upstream-head">
-            <span class="upstream-dot"></span>
-            <span class="upstream-name">Ollama 服务</span>
-          </div>
-          <div class="upstream-meta">
-            状态：<b>主通道 · 本地部署</b><br>
-            部署方式�?b>ECS 服务器（39.107.96.165�?/b><br>
-            模型�?b>qwen2.5:1.5b（文本）</b><br>
-            限额�?b>无限�?/ 完全免费</b>
-          </div>
-        </div>
-        <div class="upstream-card">
-          <div class="upstream-head">
-            <span class="upstream-dot"></span>
-            <span class="upstream-name">调用方式</span>
-          </div>
-          <div class="upstream-meta">
-            统一入口�?b>POST /api/ollama/chat</b><br>
-            认证方式�?b>API Key（sk-xxx�?/b><br>
-            子路由：<b>通过 path 字段指定</b><br>
-            支持接口�?b>chat / generate / tags / version / show / embed</b>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">快速开�?/div>
-      <div class="guide-section">
-        <p>所�?Ollama 接口通过统一入口调用，在请求体中�?<code>path</code> 字段指定目标接口�?/p>
-        <pre style="background:var(--code-bg);padding:16px;border-radius:8px;font-size:13px;line-height:1.6"><code>POST https://codingzhou.top/api/ollama/chat
-Authorization: Bearer sk-你的API密钥
-Content-Type: application/json
-
-{
-  "path": "/api/chat",    // 目标 Ollama 接口
-  "model": "qwen2.5:1.5b",
-  "messages": [...]
-}</code></pre>
-        <p style="margin-top:12px"><strong>可用 path 值：</strong></p>
-        <table class="guide-table">
-          <tr><th>path</th><th>说明</th><th>请求方法</th></tr>
-          <tr><td><code>/api/chat</code></td><td>对话接口（推荐）</td><td>POST</td></tr>
-          <tr><td><code>/api/generate</code></td><td>文本生成</td><td>POST</td></tr>
-          <tr><td><code>/api/tags</code></td><td>列出可用模型</td><td>GET</td></tr>
-          <tr><td><code>/api/version</code></td><td>查看版本信息</td><td>GET</td></tr>
-          <tr><td><code>/api/show</code></td><td>查看模型详情</td><td>POST</td></tr>
-          <tr><td><code>/api/embed</code></td><td>文本嵌入向量</td><td>POST</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">API 调用示例</div>
-      <div class="guide-section">
-        <p>选择下方 API 按钮查看对应的代码示例：</p>
-      </div>
-
-      <!-- API 按钮�?-->
-      <div class="ollama-api-buttons">
-        <button class="ollama-api-btn active" data-api="chat" onclick="switchOllamaApi('chat')">💬 /api/chat 对话</button>
-        <button class="ollama-api-btn" data-api="generate" onclick="switchOllamaApi('generate')">✍️ /api/generate 生成</button>
-        <button class="ollama-api-btn" data-api="tags" onclick="switchOllamaApi('tags')">📋 /api/tags 模型列表</button>
-        <button class="ollama-api-btn" data-api="version" onclick="switchOllamaApi('version')">ℹ️ /api/version 版本</button>
-        <button class="ollama-api-btn" data-api="show" onclick="switchOllamaApi('show')">🔍 /api/show 模型详情</button>
-        <button class="ollama-api-btn" data-api="embed" onclick="switchOllamaApi('embed')">📐 /api/embed 嵌入</button>
-      </div>
-
-      <!-- 语言 Tab -->
-      <div class="quick-tabs" id="ollamaLangTabs">
-        <button class="quick-tab active" data-lang="py" onclick="switchOllamaLang('py')">Python</button>
-        <button class="quick-tab" data-lang="curl" onclick="switchOllamaLang('curl')">curl</button>
-        <button class="quick-tab" data-lang="js" onclick="switchOllamaLang('js')">JavaScript</button>
-      </div>
-
-      <!-- 代码展示�?-->
-      <div class="quick-code" id="ollamaCodeArea">
-
-        <!-- /api/chat -->
-        <div class="ollama-code-group" data-api-group="chat">
-          <div class="quick-code-block" data-lang="py">
-            <div class="quick-code-header">
-              <span>Python �?/api/chat</span>
-              <button class="quick-copy" onclick="copyOllamaCode('chat','py')">复制</button>
-            </div>
-            <pre><code>import requests
-
-API_KEY = "sk-你的API密钥"
-BASE_URL = "https://codingzhou.top/api/ollama/chat"
-
-# 对话请求
-resp = requests.post(BASE_URL, headers={
-    "Authorization": f"Bearer {API_KEY}"
-}, json={
-    "path": "/api/chat",
-    "model": "qwen2.5:1.5b",
-    "messages": [
-        {"role": "system", "content": "你是一个编程助手"},
-        {"role": "user", "content": "推荐几个 Python 项目"}
-    ],
-    "stream": False,
-    "options": {"temperature": 0.7}
-}, timeout=120)
-
-result = resp.json()
-print(result.get("message", {}).get("content", ""))</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="curl">
-            <div class="quick-code-header">
-              <span>curl �?/api/chat</span>
-              <button class="quick-copy" onclick="copyOllamaCode('chat','curl')">复制</button>
-            </div>
-            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
-  -H "Authorization: Bearer sk-你的API密钥" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "path": "/api/chat",
-    "model": "qwen2.5:1.5b",
-    "messages": [
-      {"role": "system", "content": "你是一个编程助手"},
-      {"role": "user", "content": "推荐几个 Python 项目"}
-    ],
-    "stream": false,
-    "options": {"temperature": 0.7}
-  }'</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="js">
-            <div class="quick-code-header">
-              <span>JavaScript �?/api/chat</span>
-              <button class="quick-copy" onclick="copyOllamaCode('chat','js')">复制</button>
-            </div>
-            <pre><code>const API_KEY = "sk-你的API密钥";
-
-// 对话请求
-const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
-  method: "POST",
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    path: "/api/chat",
-    model: "qwen2.5:1.5b",
-    messages: [
-      { role: "system", content: "你是一个编程助手" },
-      { role: "user", content: "推荐几个 Python 项目" }
-    ],
-    stream: false,
-    options: { temperature: 0.7 }
-  })
-});
-const result = await resp.json();
-console.log(result.message.content);</code></pre>
-          </div>
-        </div>
-
-        <!-- /api/generate -->
-        <div class="ollama-code-group" data-api-group="generate" style="display:none">
-          <div class="quick-code-block" data-lang="py">
-            <div class="quick-code-header">
-              <span>Python �?/api/generate</span>
-              <button class="quick-copy" onclick="copyOllamaCode('generate','py')">复制</button>
-            </div>
-            <pre><code>import requests
-
-API_KEY = "sk-你的API密钥"
-BASE_URL = "https://codingzhou.top/api/ollama/chat"
-
-# 文本生成
-resp = requests.post(BASE_URL, headers={
-    "Authorization": f"Bearer {API_KEY}"
-}, json={
-    "path": "/api/generate",
-    "model": "qwen2.5:1.5b",
-    "prompt": "帮 Python 写一个快速排查",
-    "stream": False,
-    "options": {"temperature": 0.7}
-}, timeout=120)
-
-result = resp.json()
-print(result.get("response", ""))</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="curl">
-            <div class="quick-code-header">
-              <span>curl �?/api/generate</span>
-              <button class="quick-copy" onclick="copyOllamaCode('generate','curl')">复制</button>
-            </div>
-            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
-  -H "Authorization: Bearer sk-你的API密钥" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "path": "/api/generate",
-    "model": "qwen2.5:1.5b",
-    "prompt": "帮 Python 写一个快速排查",
-    "stream": false,
-    "options": {"temperature": 0.7}
-  }'</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="js">
-            <div class="quick-code-header">
-              <span>JavaScript �?/api/generate</span>
-              <button class="quick-copy" onclick="copyOllamaCode('generate','js')">复制</button>
-            </div>
-            <pre><code>const API_KEY = "sk-你的API密钥";
-
-// 文本生成
-const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
-  method: "POST",
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    path: "/api/generate",
-    model: "qwen2.5:1.5b",
-    prompt: "帮 Python 写一个快速排查",
-    stream: false,
-    options: { temperature: 0.7 }
-  })
-});
-const result = await resp.json();
-console.log(result.response);</code></pre>
-          </div>
-        </div>
-
-        <!-- /api/tags -->
-        <div class="ollama-code-group" data-api-group="tags" style="display:none">
-          <div class="quick-code-block" data-lang="py">
-            <div class="quick-code-header">
-              <span>Python �?/api/tags</span>
-              <button class="quick-copy" onclick="copyOllamaCode('tags','py')">复制</button>
-            </div>
-            <pre><code>import requests
-
-API_KEY = "sk-你的API密钥"
-
-# 列出所有可用模�?
-resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
-    "Authorization": f"Bearer {API_KEY}"
-}, json={"path": "/api/tags"}, timeout=30)
-
-for m in resp.json().get("models", []):
-    print(f"可用模型: {m['name']}")</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="curl">
-            <div class="quick-code-header">
-              <span>curl �?/api/tags</span>
-              <button class="quick-copy" onclick="copyOllamaCode('tags','curl')">复制</button>
-            </div>
-            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
-  -H "Authorization: Bearer sk-你的API密钥" \\
-  -H "Content-Type: application/json" \\
-  -d '{"path": "/api/tags"}'</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="js">
-            <div class="quick-code-header">
-              <span>JavaScript �?/api/tags</span>
-              <button class="quick-copy" onclick="copyOllamaCode('tags','js')">复制</button>
-            </div>
-            <pre><code>const API_KEY = "sk-你的API密钥";
-
-// 列出所有可用模�?
-const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
-  method: "POST",
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ path: "/api/tags" })
-});
-const data = await resp.json();
-data.models.forEach(m => console.log("可用模型:", m.name));</code></pre>
-          </div>
-        </div>
-
-        <!-- /api/version -->
-        <div class="ollama-code-group" data-api-group="version" style="display:none">
-          <div class="quick-code-block" data-lang="py">
-            <div class="quick-code-header">
-              <span>Python �?/api/version</span>
-              <button class="quick-copy" onclick="copyOllamaCode('version','py')">复制</button>
-            </div>
-            <pre><code>import requests
-
-API_KEY = "sk-你的API密钥"
-
-# 查看 Ollama 版本
-resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
-    "Authorization": f"Bearer {API_KEY}"
-}, json={"path": "/api/version"}, timeout=10)
-
-version = resp.json()
-print(f"Ollama 版本: {version.get('version')}")</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="curl">
-            <div class="quick-code-header">
-              <span>curl �?/api/version</span>
-              <button class="quick-copy" onclick="copyOllamaCode('version','curl')">复制</button>
-            </div>
-            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
-  -H "Authorization: Bearer sk-你的API密钥" \\
-  -H "Content-Type: application/json" \\
-  -d '{"path": "/api/version"}'</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="js">
-            <div class="quick-code-header">
-              <span>JavaScript �?/api/version</span>
-              <button class="quick-copy" onclick="copyOllamaCode('version','js')">复制</button>
-            </div>
-            <pre><code>const API_KEY = "sk-你的API密钥";
-
-// 查看 Ollama 版本
-const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
-  method: "POST",
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ path: "/api/version" })
-});
-const data = await resp.json();
-console.log("Ollama 版本:", data.version);</code></pre>
-          </div>
-        </div>
-
-        <!-- /api/show -->
-        <div class="ollama-code-group" data-api-group="show" style="display:none">
-          <div class="quick-code-block" data-lang="py">
-            <div class="quick-code-header">
-              <span>Python �?/api/show</span>
-              <button class="quick-copy" onclick="copyOllamaCode('show','py')">复制</button>
-            </div>
-            <pre><code>import requests
-
-API_KEY = "sk-你的API密钥"
-
-# 查看模型详情
-resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
-    "Authorization": f"Bearer {API_KEY}"
-}, json={
-    "path": "/api/show",
-    "name": "qwen2.5:1.5b"
-}, timeout=30)
-
-print(resp.json())</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="curl">
-            <div class="quick-code-header">
-              <span>curl �?/api/show</span>
-              <button class="quick-copy" onclick="copyOllamaCode('show','curl')">复制</button>
-            </div>
-            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
-  -H "Authorization: Bearer sk-你的API密钥" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "path": "/api/show",
-    "name": "qwen2.5:1.5b"
-  }'</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="js">
-            <div class="quick-code-header">
-              <span>JavaScript �?/api/show</span>
-              <button class="quick-copy" onclick="copyOllamaCode('show','js')">复制</button>
-            </div>
-            <pre><code>const API_KEY = "sk-你的API密钥";
-
-// 查看模型详情
-const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
-  method: "POST",
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    path: "/api/show",
-    name: "qwen2.5:1.5b"
-  })
-});
-console.log(await resp.json());</code></pre>
-          </div>
-        </div>
-
-        <!-- /api/embed -->
-        <div class="ollama-code-group" data-api-group="embed" style="display:none">
-          <div class="quick-code-block" data-lang="py">
-            <div class="quick-code-header">
-              <span>Python �?/api/embed</span>
-              <button class="quick-copy" onclick="copyOllamaCode('embed','py')">复制</button>
-            </div>
-            <pre><code>import requests
-
-API_KEY = "sk-你的API密钥"
-
-# 文本嵌入向量
-resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
-    "Authorization": f"Bearer {API_KEY}"
-}, json={
-    "path": "/api/embed",
-    "model": "qwen2.5:1.5b",
-    "input": "你好世界"
-}, timeout=30)
-
-data = resp.json()
-print(f"向量维度: {len(data.get('embedding', []))}")</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="curl">
-            <div class="quick-code-header">
-              <span>curl �?/api/embed</span>
-              <button class="quick-copy" onclick="copyOllamaCode('embed','curl')">复制</button>
-            </div>
-            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
-  -H "Authorization: Bearer sk-你的API密钥" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "path": "/api/embed",
-    "model": "qwen2.5:1.5b",
-    "input": "你好世界"
-  }'</code></pre>
-          </div>
-          <div class="quick-code-block" data-lang="js">
-            <div class="quick-code-header">
-              <span>JavaScript �?/api/embed</span>
-              <button class="quick-copy" onclick="copyOllamaCode('embed','js')">复制</button>
-            </div>
-            <pre><code>const API_KEY = "sk-你的API密钥";
-
-// 文本嵌入向量
-const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
-  method: "POST",
-  headers: {
-    "Authorization": \`Bearer \${API_KEY}\`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    path: "/api/embed",
-    model: "qwen2.5:1.5b",
-    input: "你好世界"
-  })
-});
-const data = await resp.json();
-console.log("向量维度:", data.embedding?.length);</code></pre>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">获取 API Key</div>
-      <div class="guide-section">
-        <p>1. 登录 <a href="/" style="color:var(--accent-blue)">codingzhou.top</a>（使用管理员或用户密码）</p>
-        <p>2. 进入控制�?→�?a href="javascript:switchTab('apikeys')" style="color:var(--accent-blue)">新建 API</a>」页�?/p>
-        <p>3. 创建 API Key，复制后立即使用（完�?Key 仅显示一次）</p>
-        <p>4. �?Key 替换到上方代码的 <code>"sk-你的API密钥"</code> 处即可调�?/p>
-      </div>
-    </div>
-  `;
-}
-
-function switchOllamaApi(api) {
-  // API 按钮高亮
-  document.querySelectorAll('.ollama-api-btn').forEach(b => b.classList.toggle('active', b.dataset.api === api));
-  // 切换代码�?
-  document.querySelectorAll('.ollama-code-group').forEach(g => {
-    g.style.display = g.dataset.apiGroup === api ? '' : 'none';
-  });
-}
-
-function switchOllamaLang(lang) {
-  // 语言 Tab 高亮
-  document.querySelectorAll('#ollamaLangTabs .quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
-  // 在当前可见的代码组内切换语言
-  document.querySelectorAll('.ollama-code-group').forEach(g => {
-    if (g.style.display !== 'none' || g.style.display === '') {
-      g.querySelectorAll('.quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-    }
-  });
-}
-
-function copyOllamaCode(api, lang) {
-  const group = document.querySelector('.ollama-code-group[data-api-group="' + api + '"]');
-  if (!group) return;
-  const block = group.querySelector('.quick-code-block[data-lang="' + lang + '"]');
-  if (!block) return;
-  const code = block.querySelector('code').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    const toast = document.createElement('div');
-    toast.textContent = '代码已复制';
-    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 1800);
-  });
-}
-
-function switchGuideTab(lang) {
-  document.querySelectorAll('#guideTabs .quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
-  document.querySelectorAll('#guideCode .quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
-}
-
-function copyGuideCode(lang) {
-  const block = document.querySelector('#guideCode .quick-code-block[data-lang="' + lang + '"]');
-  const code = block.querySelector('code').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    const toast = document.createElement('div');
-    toast.textContent = '代码已复制';
-    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-  });
-}
-</script>
-<script src="/components/nav.js"></script>
-<script>
-if(window.CENav) window.CENav.init();
-</script>
-</body>
-</html>
+}
+
+async function loadPool() {
+  stopLoading();
+  const content = $('content');
+  if (!content) return;
+  const steps = ['检查登录状态...', '加载池子数据...'];
+  showLoading(content, steps, 0);
+  try {
+    const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
+    if (!authRes.ok) throw new Error('登录状态检查失败(' + authRes.status + ')');
+    const authData = await authRes.json();
+    if (!authData.authenticated) {
+      stopLoading();
+      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
+      return;
+    }
+    currentUser = authData.user;
+    const ceNameEl = $('ceUserName');
+    if (ceNameEl) ceNameEl.textContent = currentUser.username;
+    if (window.CENav) CENav.setUser(currentUser.username);
+
+    showLoading(content, steps, 1);
+    const res = await fetchWithTimeout('/api/ai-pool?days=7', {}, 20000);
+    if (res.status === 401) {
+      stopLoading();
+      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再访问控制台</div>';
+      return;
+    }
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
+    const data = await res.json();
+    stopLoading();
+    
+    render(data);
+  } catch (e) {
+    stopLoading();
+    
+    const msg = e.name === 'AbortError'
+      ? '请求超时（服务器无响应）'
+      : esc(e.message || '未知错误');
+    content.innerHTML = `
+      <div class="console-error" style="padding:40px 20px">
+        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-primary)">数据加载失败</div>
+        <div>${msg}</div>
+        <div style="margin-top:16px;font-size:12px">如果你刚登录，请刷新页面重试</div>
+        <button class="loading-retry" onclick="loadPool()" style="margin-top:16px">🔄 重新加载</button>
+      </div>`;
+  }
+}
+
+function render(data) {
+  const p = data.pool;
+  const used = p.used;
+  const total = p.total;
+  const pct = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0;
+  const usersCount = data.users.length;
+  const isAdmin = currentUser && currentUser.role === 'admin';
+
+  const cards = `
+    <div class="admin-cards">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="admin-card-title">池子上限</div>
+        </div>
+        <div class="admin-card-value">${total.toLocaleString()}</div>
+        <div class="admin-card-desc">${esc(p.date)} · 90% 占比</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="admin-card-title">今日已使用</div>
+        </div>
+        <div class="admin-card-value">${used.toLocaleString()}</div>
+        <div class="admin-card-desc">${pct}% 已消耗</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <div class="admin-card-title">剩余额度</div>
+        </div>
+        <div class="admin-card-value">${p.remaining.toLocaleString()}</div>
+        <div class="admin-card-desc">今日剩余可调用次数</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <div class="admin-card-icon yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="admin-card-title">参与用户</div>
+        </div>
+        <div class="admin-card-value">${usersCount}</div>
+        <div class="admin-card-desc">今日使用过 AI 的用户</div>
+      </div>
+    </div>`;
+
+  const progress = `
+    <div class="pool-progress-wrap">
+      <div class="pool-progress-head">
+        <span class="pool-progress-label">共享池当日消耗</span>
+        <span class="pool-progress-meta">${used.toLocaleString()} / ${total.toLocaleString()}</span>
+      </div>
+      <div class="pool-progress-track">
+        <div class="pool-progress-fill" style="width:${pct}%"></div>
+      </div>
+      <div class="pool-progress-foot">总可用 = Cloudflare Workers AI 1000 次/天 + OpenRouter Free 50 次/天 + Ollama 本地无限次；池子上限 = 总可用 × 90%（{total} 次/天）。所有登录用户共享此池子，每人用量独立统计。<a href="javascript:switchTab('ollama')" style="color:var(--accent-blue);margin-left:8px">查看 Ollama 详情 �?/a></div>
+    </div>
+    <div class="wishing-pool-wrap">
+      <div class="wishing-pool">
+        <div class="wp-base"></div>
+        <div class="wp-tier1"></div>
+        <div class="wp-tier2"></div>
+        <div class="wp-tier3"></div>
+        <div class="wp-spout"></div>
+        <div class="wp-splash"><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div><div class="wp-splash-dot"></div></div>
+        <div class="wp-waterfall wf1"></div>
+        <div class="wp-waterfall wf2"></div>
+        <div class="wp-coin"></div><div class="wp-coin"></div><div class="wp-coin"></div>
+        <div class="wp-plant wp-plant-left"><div class="wp-stem"></div><div class="wp-leaf"></div><div class="wp-flower"></div></div>
+        <div class="wp-plant wp-plant-right"><div class="wp-stem"></div><div class="wp-leaf"></div></div>
+      </div>
+      <div class="wishing-pool-info">
+        <div class="wishing-pool-title">许愿池 AI 额度</div>
+        <div class="wishing-pool-desc">
+          每位用户使用 AI 推荐时，都会从共享池中消耗一次额度<br>
+          当日池子剩余 <b>${p.remaining.toLocaleString()}</b> 次可用，<br>
+          已有 <b>${usersCount}</b> 位用户今日许过愿 🎉
+        </div>
+      </div>
+    </div>`;
+
+  let ranks = '<div class="console-loading" style="padding:30px">暂无用户数据</div>';
+  if (data.users.length) {
+    ranks = data.users.map((u, i) => {
+      const isSelf = currentUser && u.username === currentUser.username;
+      const top = i === 0 ? ' top1' : i === 1 ? ' top2' : i === 2 ? ' top3' : '';
+      const roleCls = u.role === 'admin' ? 'admin' : (isSelf ? 'self' : 'user');
+      const roleTxt = u.role === 'admin' ? '管理员' : (isSelf ? '自己' : '用户');
+      return `
+        <div class="rank-row${isSelf ? ' self' : ''}">
+          <div class="rank-index${top}">${i + 1}</div>
+          <div class="rank-avatar${u.role === 'admin' ? ' admin' : ''}">${esc((u.username || '?').charAt(0).toUpperCase())}</div>
+          <div class="rank-info">
+            <div class="rank-name-line">
+              <span>${esc(u.username)}</span>
+              <span class="rank-role-badge ${roleCls}">${roleTxt}</span>
+            </div>
+            <div class="rank-sub">最近活跃：${fmtTime(u.lastActive)}</div>
+          </div>
+          <div class="rank-count">${u.used}<small> 次</small></div>
+        </div>`;
+    }).join('');
+  }
+
+  const maxTrend = Math.max(1, ...data.trend.map((t) => t.used));
+  const trendBars = data.trend.map((t) => {
+    const h = Math.round((t.used / maxTrend) * 120);
+    const label = t.date.slice(5).replace('-', '/');
+    return `
+      <div class="trend-bar-col" title="${esc(t.date)} · ${t.used} 次">
+        <div class="trend-bar-count">${t.used}</div>
+        <div class="trend-bar${t.used === 0 ? ' zero' : ''}" style="height:${Math.max(t.used === 0 ? 4 : 8, h)}px"></div>
+        <div class="trend-bar-label">${label}</div>
+      </div>`;
+  }).join('');
+
+  const upstreams = `
+    <div class="upstream-list">
+      <div class="upstream-card">
+        <div class="upstream-head">
+          <span class="upstream-dot"></span>
+          <span class="upstream-name">Cloudflare Workers AI</span>
+        </div>
+        <div class="upstream-meta">
+          状态：<b>备用 · 可用</b><br>
+          每日限额：<b>${p.cloudflareDaily} 次</b><br>
+          模型：<b>@cf/qwen3-coder-30b-a3b-fp8</b><br>
+          计费：<b>免费（含 10000 neurons/天）</b>
+        </div>
+      </div>
+      <div class="upstream-card">
+        <div class="upstream-head">
+          <span class="upstream-dot fallback"></span>
+          <span class="upstream-name">OpenRouter Free</span>
+        </div>
+        <div class="upstream-meta">
+          状态：<b>兜底 · 受限</b><br>
+          每日限额：<b>${p.openrouterDaily} 次</b><br>
+          模型�?b>openrouter/free</b><br>
+          计费：<b>免费（含池子基数）</b>
+        </div>
+      </div>
+    </div>`;
+
+  const quickLinks = `
+    <div class="quick-links">
+      <a class="quick-link" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        返回主站
+      </a>
+      <a class="quick-link" href="javascript:void(0)" onclick="switchTab('ollama')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        Ollama
+      </a>
+      ${isAdmin ? `
+      <a class="quick-link" href="/admin">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        管理员后台
+      </a>` : ''}
+      <a class="quick-link" href="javascript:void(0)" onclick="toggleTheme()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        切换主题
+      </a>
+    </div>`;
+
+  $('content').innerHTML = `
+    <div class="admin-section">
+      <div class="admin-section-title">共享池</div>
+      ${cards}
+      ${progress}
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">今日用户用量排行</div>
+      <div class="rank-list">${ranks}</div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">近 7 天趋势</div>
+      <div class="trend-wrap">
+        <div class="trend-bars">${trendBars}</div>
+      </div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">上游状态</div>
+      ${upstreams}
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">快捷入口</div>
+      ${quickLinks}
+    </div>`;
+}
+
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 't') {
+    e.preventDefault();
+    toggleTheme();
+  }
+});
+
+loadPool();
+
+// ===== 标签页切换 =====
+let currentTab = 'dashboard';
+
+function switchTab(tab) {
+  stopLoading();
+  currentTab = tab;
+  document.querySelectorAll('.console-nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+  if (tab === 'dashboard') {
+    loadPool();
+  } else if (tab === 'apikeys') {
+    loadApiKeys();
+  } else if (tab === 'quickguide') {
+    loadQuickGuide();
+  } else if (tab === 'ollama') {
+    loadOllama();
+  }
+}
+
+// ===== API Key 管理 =====
+const MASK = k => k ? k.slice(0, 10) + '•••...' + k.slice(-4) : '';
+let apiKeyView = 'mine'; // mine | all
+
+async function loadApiKeys() {
+  stopLoading();
+  
+  const content = $('content');
+  if (!content) return;
+  const steps = ['检查登录状态...', '加载 API Key 列表...'];
+  showLoading(content, steps, 0);
+  try {
+    if (!currentUser) {
+      const authRes = await fetchWithTimeout('/api/auth-check', {}, 8000);
+      if (!authRes.ok) throw new Error('登录状态检查失败(' + authRes.status + ')');
+      const authData = await authRes.json();
+      if (!authData.authenticated) {
+        stopLoading();
+        
+        content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
+        return;
+      }
+      currentUser = authData.user;
+      const ceNameEl = $('ceUserName');
+      if (ceNameEl) ceNameEl.textContent = currentUser.username;
+      if (window.CENav) CENav.setUser(currentUser.username);
+    }
+    showLoading(content, steps, 1);
+    const url = '/api/api-keys' + (currentUser && currentUser.role === 'admin' ? '?all=' + (apiKeyView === 'all' ? '1' : '0') : '');
+    const res = await fetchWithTimeout(url, {}, 20000);
+    if (res.status === 401) {
+      stopLoading();
+      
+      content.innerHTML = '<div class="console-error">请先<a href="/" style="color:var(--accent-blue)">登录</a>后再管理 API Key</div>';
+      return;
+    }
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
+    const data = await res.json();
+    stopLoading();
+    
+    if (data.error) {
+      content.innerHTML = '<div class="console-error">' + esc(data.error) + '</div>';
+      return;
+    }
+    renderApiKeys(data.keys || []);
+  } catch (e) {
+    stopLoading();
+    
+    const msg = e.name === 'AbortError' ? '请求超时（服务器无响应）' : esc(e.message || '未知错误');
+    content.innerHTML = `
+      <div class="console-error" style="padding:40px 20px">
+        <div style="font-size:36px;margin-bottom:12px">⚠️</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-primary)">加载失败</div>
+        <div>${msg}</div>
+        <button class="loading-retry" onclick="loadApiKeys()" style="margin-top:16px">🔄 重新加载</button>
+      </div>`;
+  }
+}
+
+function renderApiKeys(keys) {
+  const content = $('content');
+  const isAdmin = currentUser && currentUser.role === 'admin';
+  const keyRows = keys.length === 0
+    ? '<div class="console-error" style="padding:48px 20px;text-align:center">暂无 API Key，点击右上角创建</div>'
+    : keys.map(k => {
+        const now = Math.floor(Date.now() / 1000);
+        const st = !k.is_active
+          ? { label: '已禁用', cls: 'off' }
+          : (k.expires_at && now > k.expires_at) ? { label: '已过期', cls: 'off' }
+          : { label: '有效', cls: 'on' };
+        const expire = k.expires_at ? fmtTime(k.expires_at) : '永久';
+        const owner = apiKeyView === 'all' ? `<span class="apikey-owner">${esc(k.username)}</span>` : '';
+        return `
+        <div class="apikey-row">
+          <div class="apikey-info">
+            <div class="apikey-name-line">
+              <span class="apikey-name">${esc(k.name)}</span>${owner}
+              <span class="apikey-status ${st.cls}">${st.label}</span>
+            </div>
+            <div class="apikey-mask-line">
+              <span class="apikey-mask">${esc(MASK(k.key))}</span>
+              <button class="apikey-copybtn" onclick="copyApiKey('${esc(k.key)}')">复制</button>
+            </div>
+            <div class="apikey-meta">
+              <span>创建 <b>${fmtTime(k.created_at)}</b></span>
+              <span>过期 <b>${expire}</b></span>
+              <span>调用 <b>${k.calls || 0} 次</b></span>
+              ${k.daily_limit ? `<span>限额 <b>${k.daily_limit} 次/天</b></span>` : ''}
+              ${k.desc ? `<span>用途<b>${esc(k.desc)}</b></span>` : ''}
+            </div>
+          </div>
+          <div class="apikey-actions">
+            <button class="apikey-iconbtn" title="${k.is_active ? '禁用' : '启用'}" onclick="toggleApiKey(${k.id})">${k.is_active ? '●' : '○'}</button>
+            <button class="apikey-iconbtn danger" title="删除" onclick="deleteApiKey(${k.id}, '${esc(k.name)}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+            </button>
+          </div>
+        </div>`;
+      }).join('');
+
+  const viewSwitch = isAdmin ? `
+    <div class="apikey-viewswitch">
+      <button class="apikey-viewpill ${apiKeyView === 'mine' ? 'active' : ''}" onclick="apiKeyView='mine';loadApiKeys()">我的 Keys</button>
+      <button class="apikey-viewpill ${apiKeyView === 'all' ? 'active' : ''}" onclick="apiKeyView='all';loadApiKeys()">全部用户 Keys</button>
+    </div>` : '';
+
+  content.innerHTML = `
+    <div class="apikey-head">
+      <div class="apikey-head-title">
+        <h1>API keys</h1>
+        <p>创建和管�?API key，用于在外部程序或脚本中调用 AI 推荐接口。完�?key 仅在创建时显示一次�?/p>
+      </div>
+      <button class="apikey-createbtn" onclick="openCreateModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          Create new secret key
+        </button>
+      </div>
+    </div>
+    ${viewSwitch}
+    <div class="apikey-list">${keyRows}</div>
+
+    <!-- 创建弹窗 -->
+    <div class="apikey-overlay" id="createModal" style="display:none">
+      <div class="apikey-modal">
+        <div class="apikey-modal-title">Create new secret key</div>
+        <div class="apikey-modal-sub">为该 key 设置名称与使用限制�?/div>
+        <div class="apikey-field">
+          <label class="apikey-label">Key 名称 <span class="apikey-req">*</span></label>
+          <input class="apikey-input" id="fName" placeholder="如：我的爬虫" maxlength="40" autocomplete="off">
+        </div>
+        <div class="apikey-field">
+          <label class="apikey-label">用途描述</label>
+          <input class="apikey-input" id="fDesc" placeholder="这个 key 用来做什么？" maxlength="100" autocomplete="off">
+        </div>
+        <div class="apikey-field">
+          <label class="apikey-label">有效效期</label>
+          <select class="apikey-input" id="fExpire">
+            <option value="never">永久有效</option>
+            <option value="7">7 天后过期</option>
+            <option value="30">30 天后过期</option>
+            <option value="90">90 天后过期</option>
+            <option value="custom">自定义日期�?/option>
+          </select>
+          <div class="apikey-datefield" id="customDateWrap" style="display:none">
+            <label class="apikey-label">过期日期</label>
+            <input class="apikey-input" id="fCustomDate" type="date">
+          </div>
+        </div>
+        <div class="apikey-field">
+          <label class="apikey-label">每日调用限额</label>
+          <input class="apikey-input" id="fLimit" type="number" min="1" placeholder="留空表示不限" autocomplete="off">
+          <div class="apikey-hint">�?key 每天最多可调用 /api/recommend 的次�?/div>
+        </div>
+        <div class="apikey-modal-actions">
+          <button class="apikey-btn-ghost" onclick="$('createModal').style.display='none'">取消</button>
+          <button class="apikey-btn-primary" id="createSubmit" onclick="createApiKey()">创建</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 创建成功弹窗 -->
+    <div class="apikey-overlay" id="successModal" style="display:none">
+      <div class="apikey-modal apikey-success-modal">
+        <div class="apikey-modal-title">Key created</div>
+        <div class="apikey-modal-sub" id="successName"></div>
+        <div class="apikey-success-banner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          创建成功！请保存你的 key
+        </div>
+        <div class="apikey-key-display">
+          <span id="fullKey"></span>
+          <button class="apikey-copybtn" onclick="copyFullKey()">复制</button>
+        </div>
+        <div class="apikey-warning">�?出于安全考虑，此 key 仅显示这一次，关闭后将无法再次查看。若遗失请删除后重新创建�?/div>
+        <div class="apikey-modal-actions">
+          <button class="apikey-btn-primary" onclick="$('successModal').style.display='none';loadApiKeys()">我已保存</button>
+        </div>
+      </div>
+    </div>
+    </div>`;
+}
+
+function openCreateModal() {
+  $('fExpire').value = 'never';
+  $('customDateWrap').style.display = 'none';
+  $('createModal').style.display = 'flex';
+  $('fName').focus();
+}
+
+function openQuickModal() {
+  $('quickModal').style.display = 'flex';
+  // 默认选中第一�?tab
+  switchQuickTab('python');
+}
+
+function switchQuickTab(lang) {
+  document.querySelectorAll('.quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
+  document.querySelectorAll('.quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+}
+
+function copyQuickCode(lang) {
+  const block = document.querySelector(`.quick-code-block[data-lang="${lang}"]`);
+  const code = block.querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '代码崚制';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  });
+}
+
+function getExpireTs() {
+  const sel = $('fExpire').value;
+  if (sel === 'never') return 0;
+  if (sel === 'custom') {
+    const v = $('fCustomDate').value;
+    if (!v) return 0;
+    return Math.floor(new Date(v + 'T23:59:59').getTime() / 1000);
+  }
+  return Math.floor(Date.now() / 1000) + parseInt(sel) * 24 * 3600;
+}
+
+async function createApiKey() {
+  const name = $('fName').value.trim();
+  if (!name) { alert('请输入 key 名称'); $('fName').focus(); return; }
+  const btn = $('createSubmit');
+  btn.disabled = true;
+  try {
+    const res = await fetchWithTimeout('/api/api-keys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        desc: $('fDesc').value.trim(),
+        daily_limit: $('fLimit').value ? parseInt($('fLimit').value) : 0,
+        expires_at: getExpireTs()
+      })
+    }, 10000);
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
+    const data = await res.json();
+    if (data.success) {
+      $('fullKey').textContent = data.key;
+      $('successName').textContent = `「{data.name}」 属于 ${currentUser.username}`;
+      $('createModal').style.display = 'none';
+      $('successModal').style.display = 'flex';
+      $('fName').value = ''; $('fDesc').value = ''; $('fLimit').value = '';
+    } else {
+      alert(data.error || '创建失败');
+    }
+  } catch (e) {
+    const msg = e.name === 'AbortError' ? '请求超时' : e.message;
+    alert('网络错误: ' + msg);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function copyFullKey() { copyApiKey($('fullKey').textContent); }
+
+function copyApiKey(key) {
+  navigator.clipboard.writeText(key).then(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '已复制到剪贴板';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  }).catch(() => {
+    prompt('请手动复制', key);
+  });
+}
+
+async function deleteApiKey(id, name) {
+  if (!confirm(`确定删除 Key 「${name}」吗？删除后不可恢复。`)) return;
+  try {
+    const res = await fetchWithTimeout(`/api/api-keys/delete?id=${id}`, {}, 8000);
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
+    const data = await res.json();
+    if (data.success) { loadApiKeys(); } else { alert(data.error || '删除失败'); }
+  } catch (e) { alert('网络错误: ' + (e.name === 'AbortError' ? '请求超时' : e.message)); }
+}
+
+async function toggleApiKey(id) {
+  try {
+    const res = await fetchWithTimeout(`/api/api-keys/toggle?id=${id}`, {}, 8000);
+    if (!res.ok) throw new Error('服务器返回错误(' + res.status + ')');
+    const data = await res.json();
+    if (data.success) { loadApiKeys(); } else { alert(data.error || '操作失败'); }
+  } catch (e) { alert('网络错误: ' + (e.name === 'AbortError' ? '请求超时' : e.message)); }
+}
+
+// ===== 快速接入指�?=====
+function loadQuickGuide() {
+  stopLoading();
+  
+  const content = $('content');
+  if (!content) return;
+  content.innerHTML = `
+    <div class="admin-section">
+      <div class="admin-section-title">快速接入指南</div>
+      <div class="guide-intro">
+        <p>使用 API Key 通过 <code>/api/recommend</code> 接口调用 AI 推荐功能。支持 <strong>Authorization Bearer</strong> 头认证</p>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">1. 创建 API Key</h3>
+        <p>前往左侧 <a href="javascript:switchTab(\'apikeys\')" style="color:var(--accent-blue)">新建 API</a>」页面创建密钥，创建后完整 key 仅显示一次，请立即保存</p>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">2. 接口说明</h3>
+        <table class="guide-table">
+          <tr><td>接口地址</td><td><code>POST https://codingzhou.top/api/recommend</code></td></tr>
+          <tr><td>AI 引擎</td><td>主通道 Ollama 本地模型 + Cloudflare Workers AI 备用（自动路由）</td></tr>
+          <tr><td>模型选择</td><td>默认 <code>ollama/text</code>，可选 <code>ollama/vision</code>（图片识别）</td></tr>
+          <tr><td>认证方式</td><td><code>Authorization: Bearer sk-xxx</code> 或请求体中 <code>api_key: "sk-xxx"</code></td></tr>
+          <tr><td>Content-Type</td><td><code>application/json</code></td></tr>
+          <tr><td>请求体</td><td><code>{"messages": [{"role": "user", "content": "..."}], "model": "ollama/text"}</code></td></tr>
+          <tr><td>返回格式</td><td><code>{"success": true, "response": "...", "recommendations": [...]}</code></td></tr>
+        </table>
+        <p style="margin-top:10px;color:var(--text-tertiary);font-size:12px">💡 原生 Ollama API 调用请前往左侧 <a href="javascript:switchTab('ollama')" style="color:var(--accent-blue)">Ollama</a>」标签页</p>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">3. 代码示例</h3>
+        <div class="quick-tabs" id="guideTabs">
+          <button class="quick-tab active" data-lang="python" onclick="switchGuideTab('python')">Python</button>
+          <button class="quick-tab" data-lang="curl" onclick="switchGuideTab('curl')">curl</button>
+          <button class="quick-tab" data-lang="js" onclick="switchGuideTab('js')">JavaScript</button>
+          <button class="quick-tab" data-lang="node" onclick="switchGuideTab('node')">Node.js</button>
+        </div>
+        <div class="quick-code" id="guideCode">
+          <div class="quick-code-block active" data-lang="python">
+            <div class="quick-code-header">
+              <span>Python - 调用 CodingZhou API</span>
+              <button class="quick-copy" onclick="copyGuideCode('python')">复制代码</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的密钥"
+BASE_URL = "https://codingzhou.top/api/recommend"
+
+# 基本调用（默认使用 Ollama 文本模型 qwen2.5:1.5b）
+resp = requests.post(BASE_URL, headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "messages": [
+        {"role": "user", "content": "推荐几个 Python 练手项目"}
+    ],
+    "model": "ollama/text"  # 可选：ollama/text | ollama/vision
+}, timeout=120)
+
+result = resp.json()
+if result.get("success"):
+    print(result["response"])
+    for r in result.get("recommendations", []):
+        print(f"�?{r['name']} ({r['path']}): {r['reason']}")
+else:
+    print("错误:", result.get("error"))
+
+# 图片识别（使用视觉模型）
+resp2 = requests.post(BASE_URL, headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "messages": [{
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "这张图片是什么？"},
+            {"type": "image_url", "image_url": {"url": "https://example.com/photo.jpg"}}
+        ]
+    }],
+    "model": "ollama/vision"
+})
+print(resp2.json().get("response"))</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl - 调用 CodingZhou API</span>
+              <button class="quick-copy" onclick="copyGuideCode('curl')">复制代码</button>
+            </div>
+            <pre><code># 基本文本对话
+curl -X POST https://codingzhou.top/api/recommend \\
+  -H "Authorization: Bearer sk-你的密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "messages": [
+      {"role": "user", "content": "推荐几个 Python 练手项目"}
+    ],
+    "model": "ollama/text"
+  }'
+
+# 视觉模型（图片识别）
+curl -X POST https://codingzhou.top/api/recommend \\
+  -H "Authorization: Bearer sk-你的密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "messages": [{
+      "role": "user",
+      "content": [
+        {"type": "text", "text": "描述这张图片"},
+        {"type": "image_url", "image_url": {"url": "https://example.com/photo.jpg"}}
+      ]
+    }],
+    "model": "ollama/vision"
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript (fetch)</span>
+              <button class="quick-copy" onclick="copyGuideCode('js')">复制代码</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的密钥";
+
+// 基本文本对话
+const resp = await fetch("https://codingzhou.top/api/recommend", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    messages: [
+      { role: "user", content: "推荐几个 Python 练手项目" }
+    ],
+    model: "ollama/text"
+  })
+});
+const data = await resp.json();
+if (data.success) {
+  console.log(data.response);
+  data.recommendations.forEach(r => console.log(\`�?\${r.name}: \${r.reason}\`));
+} else {
+  console.error("错误:", data.error);
+}
+
+// 视觉模型（图片识别）
+const visionResp = await fetch("https://codingzhou.top/api/recommend", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    messages: [{
+      role: "user",
+      content: [
+        { type: "text", text: "描述这张图片" },
+        { type: "image_url", image_url: { url: "https://example.com/photo.jpg" } }
+      ]
+    }],
+    model: "ollama/vision"
+  })
+});
+console.log((await visionResp.json()).response);</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="node">
+            <div class="quick-code-header">
+              <span>Node.js (axios)</span>
+              <button class="quick-copy" onclick="copyGuideCode('node')">复制代码</button>
+            </div>
+            <pre><code>const axios = require("axios");
+
+const API_KEY = "sk-你的密钥";
+
+// 基本文本对话
+const resp = await axios.post(
+  "https://codingzhou.top/api/recommend",
+  {
+    messages: [{ role: "user", content: "推荐几个 Python 练手项目" }],
+    model: "ollama/text"
+  },
+  { headers: { Authorization: \`Bearer \${API_KEY}\` } }
+);
+if (resp.data.success) {
+  console.log(resp.data.response);
+  resp.data.recommendations.forEach(r => console.log(\`�?\${r.name}: \${r.reason}\`));
+} else {
+  console.error("错误:", resp.data.error);
+}
+
+// 视觉模型
+const visionResp = await axios.post(
+  "https://codingzhou.top/api/recommend",
+  {
+    messages: [{
+      role: "user",
+      content: [
+        { type: "text", text: "描述这张图片" },
+        { type: "image_url", image_url: { url: "https://example.com/photo.jpg" } }
+      ]
+    }],
+    model: "ollama/vision"
+  },
+  { headers: { Authorization: \`Bearer \${API_KEY}\` } }
+);
+console.log(visionResp.data.response);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">4. 错误码说明</h3>
+        <table class="guide-table">
+          <tr><th>HTTP 状态码</th><th>错误信息</th><th>说明</th></tr>
+          <tr><td><code>401</code></td><td>请先登录或提供有效的 API Key</td><td>未提供认证信息或 key 无效</td></tr>
+          <tr><td><code>401</code></td><td>请先登录</td><td>API Key 已过期或被禁用</td></tr></tr>
+          <tr><td><code>400</code></td><td>请输入消息</td><td>请求体中缺少 <code>messages</code> 字段</td></tr>
+          <tr><td><code>500</code></td><td>AI 请求失败: ...</td><td>上游 AI 服务异常，请稍后重试</td></tr>
+          <tr><td><code>429</code></td><td>请求过于频繁</td><td>超过每日调用限额（如设置了 daily_limit）</td></tr></tr>
+          <tr><td><code>403</code></td><td>无权限查看全部 Key</td><td>非管理员尝试查看所有用户的 key</td></tr>
+        </table>
+      </div>
+
+      <div class="guide-section">
+        <h3 class="guide-h3">5. 限制说明</h3>
+        <table class="guide-table">
+          <tr><th>限制�?/th><th>说明</th></tr>
+          <tr><td>共享池上限</td><td>全平台每天共享池总量：<strong id="poolLimit">9944</strong> 次调用，所有用户共用（Ollama 本地无限 + Workers AI 1000 + OpenRouter 50）。详见 <a href="javascript:switchTab('ollama')" style="color:var(--accent-blue)">Ollama</a> �?/td></tr>
+          <tr><td>Key 每日限额</td><td>创建 key 时可设置每日调用次数上限，超出后返回 429</td></tr>
+          <tr><td>Key 有效期</td><td>创建 key 时可设置过期时间，过期后认证失败</td></tr>
+          <tr><td>Key 管理</td><td>key 可随时在控制台禁用或删除，禁用后立即失效</td></tr>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ===== Ollama 独立管理�?=====
+function loadOllama() {
+  stopLoading();
+  
+  const content = $('content');
+  if (!content) return;
+  content.innerHTML = `
+    <div class="admin-section">
+      <div class="admin-section-title">🦙 Ollama 本地 AI</div>
+      <div class="guide-intro">
+        <p>Ollama 是平台的 <strong>主通道 AI</strong>，本地部署在 ECS 服务器上，完全免费、无限次调用。通过平台 API Key 认证，无需管理独立账号</p>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">运行状态</div>
+      <div class="upstream-list">
+        <div class="upstream-card">
+          <div class="upstream-head">
+            <span class="upstream-dot"></span>
+            <span class="upstream-name">Ollama 服务</span>
+          </div>
+          <div class="upstream-meta">
+            状态：<b>主通道 · 本地部署</b><br>
+            部署方式：<b>ECS 服务器（39.107.96.165）</b><br>
+            模型：<b>qwen2.5:1.5b（文本）</b><br>
+            限额：<b>无限 / 完全免费</b>
+          </div>
+        </div>
+        <div class="upstream-card">
+          <div class="upstream-head">
+            <span class="upstream-dot"></span>
+            <span class="upstream-name">调用方式</span>
+          </div>
+          <div class="upstream-meta">
+            统一入口：<b>POST /api/ollama/chat</b><br>
+            认证方式：<b>API Key（sk-xxx）</b><br>
+            子路由：<b>通过 path 字段指定</b><br>
+            支持接口：<b>chat / generate / tags / version / show / embed</b></b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">快速开始</div>
+      <div class="guide-section">
+        <p>所有 Ollama 接口通过统一入口调用，在请求体中用 <code>path</code> 字段指定目标接口</p>
+        <pre style="background:var(--code-bg);padding:16px;border-radius:8px;font-size:13px;line-height:1.6"><code>POST https://codingzhou.top/api/ollama/chat
+Authorization: Bearer sk-你的API密钥
+Content-Type: application/json
+
+{
+  "path": "/api/chat",    // 目标 Ollama 接口
+  "model": "qwen2.5:1.5b",
+  "messages": [...]
+}</code></pre>
+        <p style="margin-top:12px"><strong>可用 path 值：</strong></p>
+        <table class="guide-table">
+          <tr><th>path</th><th>说明</th><th>请求方法</th></tr>
+          <tr><td><code>/api/chat</code></td><td>对话接口（推荐）</td><td>POST</td></tr>
+          <tr><td><code>/api/generate</code></td><td>文本生成</td><td>POST</td></tr>
+          <tr><td><code>/api/tags</code></td><td>列出可用模型</td><td>GET</td></tr>
+          <tr><td><code>/api/version</code></td><td>查看版本信息</td><td>GET</td></tr>
+          <tr><td><code>/api/show</code></td><td>查看模型详情</td><td>POST</td></tr>
+          <tr><td><code>/api/embed</code></td><td>文本嵌入向量</td><td>POST</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">API 调用示例</div>
+      <div class="guide-section">
+        <p>选择下方 API 按钮查看对应的代码示例：</p>
+      </div>
+
+      <!-- API 按钮�?-->
+      <div class="ollama-api-buttons">
+        <button class="ollama-api-btn active" data-api="chat" onclick="switchOllamaApi('chat')">💬 /api/chat 对话</button>
+        <button class="ollama-api-btn" data-api="generate" onclick="switchOllamaApi('generate')">✍️ /api/generate 生成</button>
+        <button class="ollama-api-btn" data-api="tags" onclick="switchOllamaApi('tags')">📋 /api/tags 模型列表</button>
+        <button class="ollama-api-btn" data-api="version" onclick="switchOllamaApi('version')">ℹ️ /api/version 版本</button>
+        <button class="ollama-api-btn" data-api="show" onclick="switchOllamaApi('show')">🔍 /api/show 模型详情</button>
+        <button class="ollama-api-btn" data-api="embed" onclick="switchOllamaApi('embed')">📐 /api/embed 嵌入</button>
+      </div>
+
+      <!-- 语言 Tab -->
+      <div class="quick-tabs" id="ollamaLangTabs">
+        <button class="quick-tab active" data-lang="py" onclick="switchOllamaLang('py')">Python</button>
+        <button class="quick-tab" data-lang="curl" onclick="switchOllamaLang('curl')">curl</button>
+        <button class="quick-tab" data-lang="js" onclick="switchOllamaLang('js')">JavaScript</button>
+      </div>
+
+      <!-- 代码展示�?-->
+      <div class="quick-code" id="ollamaCodeArea">
+
+        <!-- /api/chat -->
+        <div class="ollama-code-group" data-api-group="chat">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python - /api/chat</span>
+              <button class="quick-copy" onclick="copyOllamaCode('chat','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+BASE_URL = "https://codingzhou.top/api/ollama/chat"
+
+# 对话请求
+resp = requests.post(BASE_URL, headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "path": "/api/chat",
+    "model": "qwen2.5:1.5b",
+    "messages": [
+        {"role": "system", "content": "你是一个编程助手"},
+        {"role": "user", "content": "推荐几个 Python 项目"}
+    ],
+    "stream": False,
+    "options": {"temperature": 0.7}
+}, timeout=120)
+
+result = resp.json()
+print(result.get("message", {}).get("content", ""))</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl - /api/chat</span>
+              <button class="quick-copy" onclick="copyOllamaCode('chat','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "path": "/api/chat",
+    "model": "qwen2.5:1.5b",
+    "messages": [
+      {"role": "system", "content": "你是一个编程助手"},
+      {"role": "user", "content": "推荐几个 Python 项目"}
+    ],
+    "stream": false,
+    "options": {"temperature": 0.7}
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript - /api/chat</span>
+              <button class="quick-copy" onclick="copyOllamaCode('chat','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 对话请求
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    path: "/api/chat",
+    model: "qwen2.5:1.5b",
+    messages: [
+      { role: "system", content: "你是一个编程助手" },
+      { role: "user", content: "推荐几个 Python 项目" }
+    ],
+    stream: false,
+    options: { temperature: 0.7 }
+  })
+});
+const result = await resp.json();
+console.log(result.message.content);</code></pre>
+          </div>
+        </div>
+
+        <!-- /api/generate -->
+        <div class="ollama-code-group" data-api-group="generate" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python - /api/generate</span>
+              <button class="quick-copy" onclick="copyOllamaCode('generate','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+BASE_URL = "https://codingzhou.top/api/ollama/chat"
+
+# 文本生成
+resp = requests.post(BASE_URL, headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "path": "/api/generate",
+    "model": "qwen2.5:1.5b",
+    "prompt": "帮 Python 写一个快速排查",
+    "stream": False,
+    "options": {"temperature": 0.7}
+}, timeout=120)
+
+result = resp.json()
+print(result.get("response", ""))</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl - /api/generate</span>
+              <button class="quick-copy" onclick="copyOllamaCode('generate','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "path": "/api/generate",
+    "model": "qwen2.5:1.5b",
+    "prompt": "帮 Python 写一个快速排查",
+    "stream": false,
+    "options": {"temperature": 0.7}
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript - /api/generate</span>
+              <button class="quick-copy" onclick="copyOllamaCode('generate','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 文本生成
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    path: "/api/generate",
+    model: "qwen2.5:1.5b",
+    prompt: "帮 Python 写一个快速排查",
+    stream: false,
+    options: { temperature: 0.7 }
+  })
+});
+const result = await resp.json();
+console.log(result.response);</code></pre>
+          </div>
+        </div>
+
+        <!-- /api/tags -->
+        <div class="ollama-code-group" data-api-group="tags" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python - /api/tags</span>
+              <button class="quick-copy" onclick="copyOllamaCode('tags','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+
+# 列出所有可用模型
+resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={"path": "/api/tags"}, timeout=30)
+
+for m in resp.json().get("models", []):
+    print(f"可用模型: {m['name']}")</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl - /api/tags</span>
+              <button class="quick-copy" onclick="copyOllamaCode('tags','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{"path": "/api/tags"}'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript - /api/tags</span>
+              <button class="quick-copy" onclick="copyOllamaCode('tags','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 列出所有可用模型?
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ path: "/api/tags" })
+});
+const data = await resp.json();
+data.models.forEach(m => console.log("可用模型:", m.name));</code></pre>
+          </div>
+        </div>
+
+        <!-- /api/version -->
+        <div class="ollama-code-group" data-api-group="version" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python - /api/version</span>
+              <button class="quick-copy" onclick="copyOllamaCode('version','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+
+# 查看 Ollama 版本
+resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={"path": "/api/version"}, timeout=10)
+
+version = resp.json()
+print(f"Ollama 版本: {version.get('version')}")</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl - /api/version</span>
+              <button class="quick-copy" onclick="copyOllamaCode('version','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{"path": "/api/version"}'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript - /api/version</span>
+              <button class="quick-copy" onclick="copyOllamaCode('version','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 查看 Ollama 版本
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ path: "/api/version" })
+});
+const data = await resp.json();
+console.log("Ollama 版本:", data.version);</code></pre>
+          </div>
+        </div>
+
+        <!-- /api/show -->
+        <div class="ollama-code-group" data-api-group="show" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python - /api/show</span>
+              <button class="quick-copy" onclick="copyOllamaCode('show','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+
+# 查看模型详情
+resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "path": "/api/show",
+    "name": "qwen2.5:1.5b"
+}, timeout=30)
+
+print(resp.json())</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl - /api/show</span>
+              <button class="quick-copy" onclick="copyOllamaCode('show','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "path": "/api/show",
+    "name": "qwen2.5:1.5b"
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript - /api/show</span>
+              <button class="quick-copy" onclick="copyOllamaCode('show','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 查看模型详情
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    path: "/api/show",
+    name: "qwen2.5:1.5b"
+  })
+});
+console.log(await resp.json());</code></pre>
+          </div>
+        </div>
+
+        <!-- /api/embed -->
+        <div class="ollama-code-group" data-api-group="embed" style="display:none">
+          <div class="quick-code-block" data-lang="py">
+            <div class="quick-code-header">
+              <span>Python - /api/embed</span>
+              <button class="quick-copy" onclick="copyOllamaCode('embed','py')">复制</button>
+            </div>
+            <pre><code>import requests
+
+API_KEY = "sk-你的API密钥"
+
+# 文本嵌入向量
+resp = requests.post("https://codingzhou.top/api/ollama/chat", headers={
+    "Authorization": f"Bearer {API_KEY}"
+}, json={
+    "path": "/api/embed",
+    "model": "qwen2.5:1.5b",
+    "input": "你好世界"
+}, timeout=30)
+
+data = resp.json()
+print(f"向量维度: {len(data.get('embedding', []))}")</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="curl">
+            <div class="quick-code-header">
+              <span>curl - /api/embed</span>
+              <button class="quick-copy" onclick="copyOllamaCode('embed','curl')">复制</button>
+            </div>
+            <pre><code>curl -X POST https://codingzhou.top/api/ollama/chat \\
+  -H "Authorization: Bearer sk-你的API密钥" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "path": "/api/embed",
+    "model": "qwen2.5:1.5b",
+    "input": "你好世界"
+  }'</code></pre>
+          </div>
+          <div class="quick-code-block" data-lang="js">
+            <div class="quick-code-header">
+              <span>JavaScript - /api/embed</span>
+              <button class="quick-copy" onclick="copyOllamaCode('embed','js')">复制</button>
+            </div>
+            <pre><code>const API_KEY = "sk-你的API密钥";
+
+// 文本嵌入向量
+const resp = await fetch("https://codingzhou.top/api/ollama/chat", {
+  method: "POST",
+  headers: {
+    "Authorization": \`Bearer \${API_KEY}\`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    path: "/api/embed",
+    model: "qwen2.5:1.5b",
+    input: "你好世界"
+  })
+});
+const data = await resp.json();
+console.log("向量维度:", data.embedding?.length);</code></pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">获取 API Key</div>
+      <div class="guide-section">
+        <p>1. 登录 <a href="/" style="color:var(--accent-blue)">codingzhou.top</a>（使用管理员或用户密码）</p>
+        <p>2. 进入控制台→<a href="javascript:switchTab('apikeys')" style="color:var(--accent-blue)">新建 API</a>」页面</p>
+        <p>3. 创建 API Key，复制后立即使用（完整 Key 仅显示一次）</p>
+        <p>4. 将 Key 替换到上方代码的 <code>"sk-你的API密钥"</code> 处即可调用</p>
+      </div>
+    </div>
+  `;
+  // 初始化：显示第一个 API (chat) 的 Python 代码示例
+  switchOllamaApi('chat');
+  switchOllamaLang('py');
+}
+
+function switchOllamaApi(api) {
+  // API 按钮高亮
+  document.querySelectorAll('.ollama-api-btn').forEach(b => b.classList.toggle('active', b.dataset.api === api));
+  // 切换代码组
+  document.querySelectorAll('.ollama-code-group').forEach(g => {
+    g.style.display = g.dataset.apiGroup === api ? '' : 'none';
+  });
+  // 初始化语言代码块（默认显示 Python）
+  const activeLang = document.querySelector('#ollamaLangTabs .quick-tab.active');
+  switchOllamaLang(activeLang ? activeLang.dataset.lang : 'py');
+}
+
+function switchOllamaLang(lang) {
+  // 语言 Tab 高亮
+  document.querySelectorAll('#ollamaLangTabs .quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
+  // 在当前可见的代码组内切换语言
+  document.querySelectorAll('.ollama-code-group').forEach(g => {
+    if (g.style.display !== 'none' || g.style.display === '') {
+      g.querySelectorAll('.quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    }
+  });
+}
+
+function copyOllamaCode(api, lang) {
+  const group = document.querySelector('.ollama-code-group[data-api-group="' + api + '"]');
+  if (!group) return;
+  const block = group.querySelector('.quick-code-block[data-lang="' + lang + '"]');
+  if (!block) return;
+  const code = block.querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '代码已复制';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 1800);
+  });
+}
+
+function switchGuideTab(lang) {
+  document.querySelectorAll('#guideTabs .quick-tab').forEach(t => t.classList.toggle('active', t.dataset.lang === lang));
+  document.querySelectorAll('#guideCode .quick-code-block').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+}
+
+function copyGuideCode(lang) {
+  const block = document.querySelector('#guideCode .quick-code-block[data-lang="' + lang + '"]');
+  const code = block.querySelector('code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const toast = document.createElement('div');
+    toast.textContent = '代码已复制';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 20px;background:var(--accent-green);color:#fff;border-radius:8px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.3)';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  });
+}
+</script>
+<script src="/components/nav.js"></script>
+<script>
+if(window.CENav) window.CENav.init();
+</script>
+</body>
+</html>
