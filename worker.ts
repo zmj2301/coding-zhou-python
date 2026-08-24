@@ -132,7 +132,94 @@ async function checkAdmin(request: Request, env: Env): Promise<boolean> {
   const token = getTokenFromRequest(request);
   if (!token) return false;
   const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
-  return payload !== null && payload.is_admin === true;
+  return payload !== null && payload.role === 'admin';
+}
+
+async function injectAuthHeaders(headers: Headers, request: Request, env: Env): Promise<void> {
+  const token = getTokenFromRequest(request);
+  if (token) {
+    const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+    if (payload) {
+      const authData = JSON.stringify({
+        username: payload.sub || payload.username || 'user',
+        is_admin: payload.role === 'admin',
+        role: payload.role || 'user'
+      });
+      headers.set('X-WG-Auth', authData);
+    }
+  }
+}
+
+// ------------------------------------------------------------
+// 敏感词过滤（与 ECS 侧保持一致）
+// ------------------------------------------------------------
+const SENSITIVE_WORDS = [
+  // 政治敏感
+  '习近平', '李克强', '江泽民', '胡锦涛', '政治局', '中央委员会',
+  '台独', '藏独', '疆独', '港独', '法轮功', '六四', '天安门事件',
+  '中国威胁论', '遏制中国',
+  // 色情暴力
+  '色情', '裸体', 'porn', 'sex', '暴力', '血腥', '杀人', '自杀',
+  '毒品', '赌博', '卖淫', '嫖娼',
+  // 恐怖极端
+  '恐怖袭击', '人肉炸弹', '极端组织', 'ISIS',
+  // 违法犯罪
+  '洗钱', '诈骗', '传销',
+  // 其他敏感
+  '翻墙', 'VPN', '科学上网',
+];
+
+function checkSensitiveContent(text: string): string[] {
+  if (!text) return [];
+  const textLower = text.toLowerCase();
+  const hits: string[] = [];
+  for (const word of SENSITIVE_WORDS) {
+    if (textLower.includes(word.toLowerCase())) hits.push(word);
+  }
+  return hits;
+}
+
+// 构造 Worker → ECS 的鉴权头（API Key 场景下使用，替代 injectAuthHeaders）
+function buildWGAuthHeaders(headers: Headers, username: string, role: string, isAdmin: boolean): void {
+  const authData = JSON.stringify({ username, role: role || 'user', is_admin: !!isAdmin });
+  headers.set('X-WG-Auth', authData);
+}
+
+// 提取并校验 API Key（返回 key 记录 + username）
+async function verifyApiKey(env: Env, providedKey: string): Promise<{ ok: boolean; key?: any; username?: string; error?: string; status?: number }> {
+  if (!providedKey || !providedKey.startsWith('sk-')) {
+    return { ok: false, error: '无效的 API Key 格式（需 sk- 开头）', status: 401 };
+  }
+  try {
+    const keysListStr = await getSafeKV(env).get('api-keys:list');
+    const keys = keysListStr ? JSON.parse(keysListStr) : [];
+    const match = keys.find((k: any) => k.key === providedKey);
+    if (!match) return { ok: false, error: '无效的 API Key', status: 401 };
+    if (match.is_active === 0 || match.is_active === false) return { ok: false, error: 'API Key 已被禁用', status: 401 };
+    if (match.expires_at && match.expires_at > 0) {
+      const nowSec = Math.floor(Date.now() / 1000);
+      if (nowSec > match.expires_at) return { ok: false, error: 'API Key 已过期', status: 401 };
+    }
+    return { ok: true, key: match, username: match.username || 'user' };
+  } catch (e: any) {
+    return { ok: false, error: 'API Key 校验失败: ' + (e.message || e), status: 500 };
+  }
+}
+
+// 简单的每日调用计数（KV），返回 { ok, remaining, limit }
+async function checkDailyUsage(env: Env, username: string, limit: number = 200): Promise<{ ok: boolean; remaining: number; limit: number; used: number }> {
+  const today = new Date().toISOString().slice(0, 10);
+  const usageKey = `ollama-usage:${username}:${today}`;
+  try {
+    const used = parseInt((await getSafeKV(env).get(usageKey)) || '0', 10);
+    if (used >= limit) {
+      return { ok: false, remaining: 0, limit, used };
+    }
+    await getSafeKV(env).put(usageKey, String(used + 1), { expirationTtl: 86400 });
+    return { ok: true, remaining: limit - used - 1, limit, used };
+  } catch (e) {
+    return { ok: true, remaining: limit, limit, used: 0 };
+  }
 }
 
 function jsonResponse(data: any, status: number = 200): Response {
@@ -199,7 +286,8 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
   const cleanPath = path.replace(/^\/+/, '');
   // Encode path segments properly to handle Chinese characters
   const encodedPath = cleanPath.split('/').map(s => encodeURIComponent(s)).join('/');
-  const url = `https://raw.githubusercontent.com/${repo}/${branch}/${encodedPath}`;
+  // Add cache-busting parameter to avoid stale CDN copies
+  const url = `https://raw.githubusercontent.com/${repo}/${branch}/${encodedPath}?_=${Date.now()}`;
   return fetch(url);
 }
 
@@ -208,7 +296,7 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
 // ------------------------------------------------------------
 
 async function fetchFromEcs(path: string, env: Env, request: Request): Promise<Response> {
-  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:80';
   const url = `${ecsUrl}${path}`;
   const headers = new Headers(request.headers);
   headers.set('Host', new URL(ecsUrl).host);
@@ -217,17 +305,19 @@ async function fetchFromEcs(path: string, env: Env, request: Request): Promise<R
   if (cookie) {
     headers.set('Cookie', cookie);
   }
+  await injectAuthHeaders(headers, request, env);
   return fetch(url, { method: request.method, headers });
 }
 
 async function proxyStreamToEcs(path: string, env: Env, request: Request): Promise<Response> {
-  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:80';
   const url = `${ecsUrl}${path}`;
   const headers = new Headers();
   const contentType = request.headers.get('Content-Type');
   if (contentType) headers.set('Content-Type', contentType);
   const cookie = request.headers.get('Cookie');
   if (cookie) headers.set('Cookie', cookie);
+  await injectAuthHeaders(headers, request, env);
   headers.set('Accept', 'text/event-stream');
   const body = request.method === 'POST' ? await request.text() : undefined;
   const ecsResp = await fetch(url, {
@@ -253,7 +343,62 @@ async function proxyStreamToEcs(path: string, env: Env, request: Request): Promi
   return new Response(readable, { status: ecsResp.status, headers: responseHeaders });
 }
 
+// ===== Console 注入：添加动态加载进度指示器 =====
+const CONSOLE_INJECT_CSS = `
+.loading-container{max-width:420px;margin:60px auto;text-align:center}
+.loading-elapsed{font-size:14px;color:var(--text-secondary);margin-bottom:20px;font-family:var(--font-mono)}
+.loading-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.loading-step{display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:8px;background:var(--bg-secondary);border:1px solid var(--border-color);font-size:13px;color:var(--text-tertiary);transition:all .3s}
+.loading-step.active{color:var(--text-primary);border-color:var(--accent-blue);background:rgba(88,166,255,.08)}
+.loading-step.done{color:var(--accent-green);border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.06)}
+.loading-step.pending{opacity:.5}
+.step-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;background:var(--bg-tertiary);flex-shrink:0}
+.loading-step.active .step-icon{background:var(--accent-blue);color:#fff}
+.loading-step.done .step-icon{background:var(--accent-green);color:#fff}
+.loading-step.pending .step-icon{background:var(--bg-tertiary);color:var(--text-tertiary)}
+.loading-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-hint{font-size:12px;color:var(--text-tertiary);margin-top:16px;line-height:1.6}
+.loading-hint a{color:var(--accent-blue);text-decoration:underline}
+.loading-retry{margin-top:12px;padding:8px 20px;background:var(--accent-blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font-sans)}
+.loading-retry:hover{filter:brightness(1.08)}
+.loading-retry:active{transform:translateY(0)}
+`;
+
+const CONSOLE_INJECT_JS = `
+<script>
+// === 注入：动态加载进度 + 超时处理 ===
+async function fetchWithTimeout(url, options={}, timeout=10000){const c=new AbortController();const t=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(url,{...options,signal:c.signal});return r}finally{clearTimeout(t)}}
+let _lt=null,_ls=0;
+function showLoading(c,steps,cs){if(_lt){clearInterval(_lt);_lt=null}_ls=Date.now();const r=()=>{const e=((Date.now()-_ls)/1000).toFixed(1);const h=steps.map((s,i)=>{let ic,cl;if(i<cs){ic='\\u2713';cl='done'}else if(i===cs){ic='<span class=\"loading-spinner\"></span>';cl='active'}else{ic='\\u25CB';cl='pending'}return '<div class=\"loading-step '+cl+'\"><span class=\"step-icon\">'+ic+'</span><span class=\"step-text\">'+s+'</span></div>'}).join('');c.innerHTML='<div class=\"loading-container\"><div class=\"loading-elapsed\">\\u23F1 已等待 '+e+'s</div><div class=\"loading-steps\">'+h+'</div><div class=\"loading-hint\">如果长时间无响应，请<a href=\"javascript:location.reload()\" style=\"color:var(--accent-blue)\">点击刷新</a>或检查网络</div></div>'};r();_lt=setInterval(r,200)}
+function stopLoading(){if(_lt){clearInterval(_lt);_lt=null}}
+async function loadPool(){stopLoading();const c=document.getElementById('content');const s=['检查登录状态...','加载池子数据...'];showLoading(c,s,0);try{const a=await fetchWithTimeout('/api/auth-check',{},8000);if(!a.ok)throw new Error('登录状态检查失败 ('+a.status+')');const d=await a.json();if(!d.authenticated){stopLoading();c.innerHTML='<div class=\"console-error\">请先<a href=\"/\" style=\"color:var(--accent-blue)\">登录</a>后访问控制台</div>';return}currentUser=d.user;const ceEl=document.getElementById('ceUserName');if(ceEl)ceEl.textContent=currentUser.username;if(window.CENav)window.CENav.setUser(currentUser.username);showLoading(c,s,1);const r=await fetchWithTimeout('/api/ai-pool?days=7',{},12000);if(r.status===401){stopLoading();c.innerHTML='<div class=\"console-error\">请先<a href=\"/\" style=\"color:var(--accent-blue)\">登录</a></div>';return}if(!r.ok)throw new Error('服务器返回错误 ('+r.status+')');const data=await r.json();stopLoading();render(data)}catch(e){stopLoading();const m=e.name==='AbortError'?'请求超时（服务器无响应）':e.message||'未知错误';c.innerHTML='<div class=\"console-error\" style=\"padding:40px 20px\"><div style=\"font-size:36px;margin-bottom:12px\">\\u26A0\\uFE0F</div><div style=\"font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-primary)\">数据加载失败</div><div>'+m+'</div><button class=\"loading-retry\" onclick=\"loadPool()\" style=\"margin-top:16px\">\\u{1F504} 重新加载</button></div>'}}
+async function loadApiKeys(){stopLoading();const c=document.getElementById('content');const s=['检查登录状态...','加载 API Key 列表...'];showLoading(c,s,0);try{if(!currentUser){const a=await fetchWithTimeout('/api/auth-check',{},8000);if(!a.ok)throw new Error('登录状态检查失败 ('+a.status+')');const d=await a.json();if(!d.authenticated){stopLoading();c.innerHTML='<div class=\"console-error\">请先<a href=\"/\" style=\"color:var(--accent-blue)\">登录</a></div>';return}currentUser=d.user;const ceEl=document.getElementById('ceUserName');if(ceEl)ceEl.textContent=currentUser.username;if(window.CENav)window.CENav.setUser(currentUser.username)}showLoading(c,s,1);const u='/api/api-keys'+(currentUser&&currentUser.role==='admin'?'?all='+(apiKeyView==='all'?'1':'0'):'');const r=await fetchWithTimeout(u,{},10000);if(r.status===401){stopLoading();c.innerHTML='<div class=\"console-error\">请先<a href=\"/\" style=\"color:var(--accent-blue)\">登录</a></div>';return}if(!r.ok)throw new Error('服务器返回错误 ('+r.status+')');const data=await r.json();stopLoading();if(data.error){c.innerHTML='<div class=\"console-error\">'+data.error+'</div>';return}renderApiKeys(data.keys||[])}catch(e){stopLoading();const m=e.name==='AbortError'?'请求超时':e.message||'未知错误';c.innerHTML='<div class=\"console-error\" style=\"padding:40px 20px\"><div style=\"font-size:36px;margin-bottom:12px\">\\u26A0\\uFE0F</div><div style=\"font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text-primary)\">加载失败</div><div>'+m+'</div><button class=\"loading-retry\" onclick=\"loadApiKeys()\" style=\"margin-top:16px\">\\u{1F504} 重新加载</button></div>'}}
+function switchTab(t){stopLoading();currentTab=t;document.querySelectorAll('.console-nav-item').forEach(el=>{el.classList.toggle('active',el.dataset.tab===t)});if(t==='dashboard'){loadPool()}else if(t==='apikeys'){loadApiKeys()}else if(t==='quickguide'){loadQuickGuide()}}
+loadPool();
+</script>
+`;
+
+async function fetchConsoleWithInjection(env: Env): Promise<Response> {
+  // console.html now has its own loading UI and error handling built-in.
+  // No injection needed - just return the file directly from GitHub.
+  const ghResp = await fetchFromGitHub('code-explorer/public/console.html', env);
+  if (!ghResp.ok) return ghResp;
+  return ghResp;
+}
+
 async function fetchAsset(path: string, env: Env): Promise<Response> {
+  // Special handling for /console - inject loading progress UI
+  if (path === '/console' || path === '/console.html') {
+    return fetchConsoleWithInjection(env);
+  }
+
+  // Special handling for /index.html - always fetch from GitHub to avoid stale assets
+  if (path === '/index.html') {
+    const ghResp = await fetchFromGitHub('code-explorer/public/index.html', env);
+    if (ghResp.ok) return ghResp;
+  }
+
   // Handle known UI icons directly (no GitHub lookup needed)
   if (path.includes('code_explorer') && path.endsWith('.png')) {
     return generateSvgIcon('#58a6ff', '#1f6feb', 'EX', 'Code Explorer v2');
@@ -544,8 +689,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         if (payload) {
           user = {
             id: 1,
-            username: payload.sub || 'user',
-            role: payload.is_admin ? 'admin' : 'user'
+            username: payload.sub || payload.username || 'user',
+            role: payload.role || 'user'
           };
         }
       }
@@ -557,16 +702,27 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const data = await request.json();
       const password = data.password || '';
-      if (!env.USER_PASSWORD) return errorResponse('服务器未设置密码', 500);
-      if (password !== env.USER_PASSWORD) return errorResponse('密码错误', 401);
+      if (!env.USER_PASSWORD && !env.ADMIN_PASSWORD) return errorResponse('服务器未设置密码', 500);
+      
+      // Determine role based on password
+      let userRole = 'user';
+      if (env.ADMIN_PASSWORD && password === env.ADMIN_PASSWORD) {
+        userRole = 'admin';
+      } else if (env.USER_PASSWORD && password === env.USER_PASSWORD) {
+        userRole = 'user';
+      } else {
+        return errorResponse('密码错误', 401);
+      }
+      
+      const username = data.username || (userRole === 'admin' ? 'admin' : 'user');
       const token = await signJwt(
-        { sub: data.username || 'user', is_admin: false },
+        { sub: username, role: userRole },
         env.JWT_SECRET || 'default-secret-change-me',
         604800
       );
       const resp = jsonResponse({
         token,
-        user: { id: 1, username: data.username || 'user', role: 'user' }
+        user: { id: userRole === 'admin' ? 0 : 1, username, role: userRole }
       });
       return setCookie(resp, 'wg_token', token, 604800);
     } catch {
@@ -574,7 +730,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     }
   }
 
-  if (path === '/api/logout' && request.method === 'POST') {
+  if (path === '/api/logout') {
     const resp = jsonResponse({ success: true });
     return clearCookie(resp, 'wg_token');
   }
@@ -586,7 +742,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!env.ADMIN_PASSWORD) return errorResponse('服务器未设置管理员密码', 500);
       if (password !== env.ADMIN_PASSWORD) return errorResponse('管理员密码错误', 401);
       const token = await signJwt(
-        { sub: 'admin', is_admin: true },
+        { sub: 'admin', role: 'admin' },
         env.JWT_SECRET || 'default-secret-change-me',
         604800
       );
@@ -615,6 +771,85 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       } while (cursor);
     } catch {}
     return jsonResponse({ success: true, message: `缓存已清除，共删除 ${deletedCount} 个缓存项` });
+  }
+
+  // ---- Bootstrap 端点：一次返回首屏所有数据 ----
+  if (path === '/api/bootstrap') {
+    const CACHE_KEY = 'cache:bootstrap';
+    const CACHE_TTL = 60;
+    try {
+      const cached = await getSafeKV(env).get(CACHE_KEY, { type: 'json' });
+      if (cached && (Date.now() - (cached.timestamp || 0)) < CACHE_TTL * 1000) {
+        const resp = jsonResponse(cached);
+        resp.headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=300');
+        return resp;
+      }
+    } catch {}
+
+    // 并发获取：项目列表 + 认证状态 + 文件树
+    const [listResp, authResult, treeData] = await Promise.all([
+      fetchAsset('/project-list.json', env),
+      checkAuth(request, env),
+      getFileTree(env).catch(() => [])
+    ]);
+
+    let projects: any[] = [];
+    if (listResp.ok) {
+      try { projects = await listResp.json(); } catch {}
+    }
+
+    // 合并点赞/评论数
+    const likesMap: Record<string, number> = {};
+    const commentsMap: Record<string, number> = {};
+    try {
+      const cachedLikes = await getSafeKV(env).get('cache:likes', { type: 'json' });
+      if (cachedLikes) Object.assign(likesMap, cachedLikes);
+    } catch {}
+    try {
+      const cachedComments = await getSafeKV(env).get('cache:comment-counts', { type: 'json' });
+      if (cachedComments) Object.assign(commentsMap, cachedComments);
+    } catch {}
+
+    const projectsWithMeta = projects.map(p => ({
+      ...p,
+      likes: likesMap[p.path] || 0,
+      comments: commentsMap[p.path] || 0
+    }));
+
+    // 获取用户信息
+    let user = null;
+    if (authResult) {
+      const token = getTokenFromRequest(request);
+      if (token) {
+        const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+        if (payload) {
+          user = {
+            id: 1,
+            username: payload.sub || payload.username || 'user',
+            role: payload.role || 'user'
+          };
+        }
+      }
+    }
+
+    const bootstrap = {
+      projects: projectsWithMeta,
+      authenticated: authResult,
+      user,
+      fileTree: treeData,
+      passwordSet: Boolean(env.USER_PASSWORD),
+      timestamp: Date.now()
+    };
+
+    try {
+      await getSafeKV(env).put(CACHE_KEY, JSON.stringify(bootstrap), {
+        expirationTtl: CACHE_TTL
+      });
+    } catch {}
+
+    const resp = jsonResponse(bootstrap);
+    resp.headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=300');
+    return resp;
   }
 
   // ---- 意见反馈 API ----
@@ -792,8 +1027,50 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     }
   }
 
+  // ---- 更新日志 API（混合缓存：GitHub + KV）----
+  if (path === '/api/changelog') {
+    const CACHE_KEY = 'cache:changelog';
+    const CACHE_TTL = 300;
+    try {
+      const cached = await getSafeKV(env).get(CACHE_KEY, { type: 'json' });
+      if (cached && (Date.now() - (cached.fetchedAt || 0)) < CACHE_TTL * 1000) {
+        const resp = jsonResponse({ ...cached, cached: true });
+        resp.headers.set('Cache-Control', 'public, max-age=60');
+        return resp;
+      }
+    } catch {}
+    try {
+      const ghResp = await fetchAsset('/changelog.json', env);
+      if (ghResp.ok) {
+        const data = await ghResp.json();
+        const latest = Array.isArray(data) ? data[0] : data;
+        const result = {
+          version: latest?.version || 'unknown',
+          date: latest?.date || '',
+          title: latest?.title || '',
+          changes: latest?.changes || [],
+          all: Array.isArray(data) ? data : [latest],
+          cached: false,
+          fetchedAt: Date.now()
+        };
+        try {
+          await getSafeKV(env).put(CACHE_KEY, JSON.stringify(result), {
+            expirationTtl: CACHE_TTL
+          });
+        } catch {}
+        const resp = jsonResponse(result);
+        resp.headers.set('Cache-Control', 'no-cache, must-revalidate');
+        return resp;
+      }
+    } catch (e: any) {
+      return errorResponse(`加载更新日志失败: ${e.message || e}`, 502);
+    }
+    return errorResponse('更新日志不可用', 504);
+  }
+
   // ---- 需要认证的 API ----
-  const needAuth = path.startsWith('/api/files/') ||
+  const publicFileEndpoints = ['/api/files/preview', '/api/files/search'];
+  const needAuth = (path.startsWith('/api/files/') && !publicFileEndpoints.includes(path)) ||
     path.startsWith('/api/comments') ||
     path.startsWith('/api/run/') ||
     path === '/api/likes' ||
@@ -1283,7 +1560,15 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- AI 对话 API ----
   if (path === '/api/recommend' && request.method === 'POST') {
     try {
-      const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string; needsProjects?: boolean };
+      // 先解析请求体（可能同时用于 API Key 认证和业务逻辑）
+      let rawBody: any = {};
+      try {
+        const bodyText = await request.text();
+        rawBody = bodyText ? JSON.parse(bodyText) : {};
+      } catch (e: any) {
+        return errorResponse('请求体不是合法 JSON: ' + (e.message || e), 400);
+      }
+      const data = rawBody as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string; needsProjects?: boolean; api_key?: string };
       let messages = data.messages;
       const contextInfo = data.context;
       const model = data.model;
@@ -1300,27 +1585,265 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         return errorResponse('请输入消息', 400);
       }
 
-      // 只在需要时加载项目列表，减少不必要的开销
-      let projects: any[] = [];
-      if (needsProjects) {
-        projects = await loadProjectsForRecommend(env);
-        if (projects.length === 0) return errorResponse('项目列表为空', 503);
+      // ===== API Key 认证（Authorization: Bearer sk-xxx 或请求体 api_key）=====
+      // 记录 API Key 认证信息，供后续 ECS 转发时注入凭证
+      let apiKeyAuth: { username: string; role: string; is_admin: boolean } | null = null;
+
+      // 提取 API Key：优先从 Authorization 头，其次从请求体 api_key 字段
+      const authHeader = request.headers.get('Authorization') || '';
+      let providedKey = '';
+      if (authHeader.startsWith('Bearer ')) {
+        const candidate = authHeader.slice(7).trim();
+        if (candidate.startsWith('sk-')) providedKey = candidate;
+      }
+      if (!providedKey && data.api_key && typeof data.api_key === 'string' && data.api_key.startsWith('sk-')) {
+        providedKey = data.api_key;
       }
 
-      const result = await getConversationalAI(messages, projects, env, contextInfo, model);
+      if (providedKey) {
+        // 校验 API Key 是否有效
+        try {
+          const keysListStr = await getSafeKV(env).get('api-keys:list');
+          const keys = keysListStr ? JSON.parse(keysListStr) : [];
+          const match = keys.find((k: any) => k.key === providedKey);
+          if (!match) {
+            return errorResponse('无效的 API Key，请检查 sk-xxx 是否正确', 401);
+          }
+          if (match.is_active === 0 || match.is_active === false) {
+            return errorResponse('API Key 已被禁用', 401);
+          }
+          if (match.expires_at && match.expires_at > 0) {
+            const nowSec = Math.floor(Date.now() / 1000);
+            if (nowSec > match.expires_at) {
+              return errorResponse('API Key 已过期', 401);
+            }
+          }
+          apiKeyAuth = {
+            username: match.username || 'user',
+            role: match.role || 'user',
+            is_admin: match.role === 'admin',
+          };
+          // 更新用量统计
+          try {
+            const keysListStr2 = await getSafeKV(env).get('api-keys:list');
+            const keys2 = keysListStr2 ? JSON.parse(keysListStr2) : [];
+            const idx = keys2.findIndex((k: any) => k.key === providedKey);
+            if (idx >= 0) {
+              keys2[idx].calls = (keys2[idx].calls || 0) + 1;
+              keys2[idx].last_used_at = Math.floor(Date.now() / 1000);
+              await getSafeKV(env).put('api-keys:list', JSON.stringify(keys2));
+            }
+          } catch {}
+        } catch (authErr: any) {
+          return errorResponse('API Key 校验失败: ' + (authErr.message || authErr), 500);
+        }
+      }
+
+      // 生成缓存 key（基于 messages 内容的 hash）
+      const cacheKey = 'ai-cache:' + simpleHashForAI(JSON.stringify(messages));
+
+      // 优先检查 KV 缓存（Worker 端缓存，10 分钟有效）
+      try {
+        const cached = await getSafeKV(env).get(cacheKey, { type: 'json' });
+        if (cached && cached.text) {
+          return jsonResponse({ success: true, response: cached.text, recommendations: cached.recommendations || [], reasoning: cached.reasoning || '', source: 'kv-cache', cached: true });
+        }
+      } catch {}
+
+      // 优先使用 ECS 服务器代理（本地 Ollama AI，带缓存）
+      let aiResponse: { text: string; recommendations: any[]; reasoning?: string };
+      let aiSource: string = 'workers';
+
+      if (model === 'ollama' || !model) {
+        const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:80';
+        try {
+          const ecsHeaders = new Headers();
+          ecsHeaders.set('Content-Type', 'application/json');
+          const cookie = request.headers.get('Cookie');
+          if (cookie) ecsHeaders.set('Cookie', cookie);
+          ecsHeaders.set('Host', new URL(ecsUrl).host);
+          await injectAuthHeaders(ecsHeaders, request, env);
+          const proxyResp = await fetch(`${ecsUrl}/api/recommend`, {
+            method: 'POST',
+            headers: ecsHeaders,
+            body: JSON.stringify({
+              messages,
+              model: 'ollama',
+              context: { folder: contextInfo?.folder },
+            }),
+            cf: { connectTimeout: 5, timeout: 120 } as any,
+          });
+
+          if (proxyResp.ok) {
+            const result = await proxyResp.json();
+            if (result.response || (result.recommendations && result.recommendations.length > 0)) {
+              aiResponse = {
+                text: result.response || '',
+                recommendations: result.recommendations || [],
+                reasoning: result.reasoning || '',
+              };
+              aiSource = result.serverCache ? 'ecs-cache' : 'ecs';
+            } else {
+              throw new Error('ECS 返回空响应');
+            }
+          } else {
+            throw new Error(`ECS 返回 ${proxyResp.status}`);
+          }
+        } catch (ecsErr) {
+          // ECS 失败，降级到 Workers AI
+          console.error('ECS AI 调用失败，降级到 Workers AI:', ecsErr);
+          let projects: any[] = [];
+          if (needsProjects) {
+            projects = await loadProjectsForRecommend(env);
+            if (projects.length === 0) return errorResponse('项目列表为空', 503);
+          }
+          const result = await getConversationalAI(messages, projects, env, contextInfo);
+          aiResponse = { text: result.text, recommendations: result.recommendations, reasoning: result.reasoning };
+          aiSource = 'workers';
+        }
+      } else {
+        // 非 ollama 模型，直接走 Workers AI / Zhipu
+        let projects: any[] = [];
+        if (needsProjects) {
+          projects = await loadProjectsForRecommend(env);
+          if (projects.length === 0) return errorResponse('项目列表为空', 503);
+        }
+        const result = await getConversationalAI(messages, projects, env, contextInfo, model);
+        aiResponse = { text: result.text, recommendations: result.recommendations, reasoning: result.reasoning };
+        aiSource = model || 'workers';
+      }
+
+      // 存入 KV 缓存（供后续相同请求使用）
+      if (aiResponse.text) {
+        try {
+          await getSafeKV(env).put(cacheKey, JSON.stringify(aiResponse), { expirationTtl: 600 });
+        } catch {}
+      }
+
+      // 记录用量统计
       try {
         const today = new Date().toISOString().slice(0, 10);
         const usageKey = `ai-usage:${today}`;
         const currentUsage = parseInt(await getSafeKV(env).get(usageKey) || '0', 10);
         await getSafeKV(env).put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
       } catch {}
-      return jsonResponse({ success: true, response: result.text, recommendations: result.recommendations, reasoning: result.reasoning });
+      return jsonResponse({ success: true, response: aiResponse.text, recommendations: aiResponse.recommendations, reasoning: aiResponse.reasoning, source: aiSource });
     } catch (e: any) {
       return errorResponse(`请求失败: ${e.message || e}`, 500);
     }
   }
 
   if (path === '/api/recommend' && request.method === 'OPTIONS') {
+    return optionsResponse();
+  }
+
+  // ===== Ollama 独立代理接口（API Key 认证，直连 Ollama）=====
+  if (path === '/api/ollama/chat' && (request.method === 'POST' || request.method === 'GET')) {
+    try {
+      // 解析请求体
+      let rawBody: any = {};
+      if (request.method === 'POST') {
+        try {
+          const bodyText = await request.text();
+          rawBody = bodyText ? JSON.parse(bodyText) : {};
+        } catch (e: any) {
+          return errorResponse('请求体不是合法 JSON: ' + (e.message || e), 400);
+        }
+      }
+
+      // 提取 API Key：优先 Authorization 头，其次请求体 api_key
+      const authHeader = request.headers.get('Authorization') || '';
+      let providedKey = '';
+      if (authHeader.startsWith('Bearer ')) {
+        const candidate = authHeader.slice(7).trim();
+        if (candidate.startsWith('sk-')) providedKey = candidate;
+      }
+      if (!providedKey && rawBody.api_key && typeof rawBody.api_key === 'string' && rawBody.api_key.startsWith('sk-')) {
+        providedKey = rawBody.api_key;
+      }
+      if (!providedKey) {
+        return errorResponse('请在 Authorization 头提供 Bearer sk-xxx API Key', 401);
+      }
+
+      // 校验 API Key
+      const keyCheck = await verifyApiKey(env, providedKey);
+      if (!keyCheck.ok) {
+        return errorResponse(keyCheck.error || 'API Key 校验失败', keyCheck.status || 401);
+      }
+      const username = keyCheck.username!;
+      const keyRecord = keyCheck.key!;
+
+      // 每日调用限额检查
+      const dailyLimit = parseInt(keyRecord.daily_limit || '200', 10);
+      const usageCheck = await checkDailyUsage(env, username, dailyLimit);
+      if (!usageCheck.ok) {
+        return errorResponse(`今日调用次数已用完（${dailyLimit} 次），请明天再试`, 429);
+      }
+
+      // 敏感词过滤（提取所有用户输入文本）
+      const textsToCheck: string[] = [];
+      if (rawBody.messages && Array.isArray(rawBody.messages)) {
+        for (const msg of rawBody.messages) {
+          if (msg.content) {
+            if (typeof msg.content === 'string') textsToCheck.push(msg.content);
+            else if (Array.isArray(msg.content)) {
+              for (const part of msg.content) {
+                if (part.type === 'text' && typeof part.text === 'string') textsToCheck.push(part.text);
+              }
+            }
+          }
+        }
+      }
+      if (rawBody.prompt) textsToCheck.push(String(rawBody.prompt));
+      const allText = textsToCheck.join(' ');
+      const sensitiveHits = checkSensitiveContent(allText);
+      if (sensitiveHits.length > 0) {
+        return errorResponse(`输入内容包含敏感词: ${sensitiveHits.join('、')}`, 400);
+      }
+
+      // 确定 Ollama 子路径
+      const ollamaPath = rawBody.path || '/api/chat';
+      const validPaths = ['/api/chat', '/api/generate', '/api/tags', '/api/version', '/api/show', '/api/embed'];
+      if (!validPaths.includes(ollamaPath)) {
+        return errorResponse(`不支持的 Ollama 路径: ${ollamaPath}`, 400);
+      }
+
+      // 构造转发请求（注入 X-WG-Auth 让 ECS 识别 API Key 用户）
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:80';
+      const ecsHeaders = new Headers();
+      ecsHeaders.set('Content-Type', request.headers.get('Content-Type') || 'application/json');
+      ecsHeaders.set('Host', new URL(ecsUrl).host);
+      buildWGAuthHeaders(ecsHeaders, username, keyRecord.role || 'user', keyRecord.role === 'admin');
+
+      // 构造要转发的 body（去掉 api_key 字段，其余原样透传）
+      const forwardBody: any = {};
+      for (const k of Object.keys(rawBody)) {
+        if (k !== 'api_key' && k !== 'path') forwardBody[k] = rawBody[k];
+      }
+
+      const proxyResp = await fetch(`${ecsUrl}/api/ollama${ollamaPath}`, {
+        method: request.method,
+        headers: ecsHeaders,
+        body: request.method === 'POST' ? JSON.stringify(forwardBody) : undefined,
+        cf: { connectTimeout: 5, timeout: 180 } as any,
+      });
+
+      // 读取响应体
+      const respText = await proxyResp.text();
+      const respHeaders = new Headers(proxyResp.headers);
+      respHeaders.set('Content-Type', proxyResp.headers.get('Content-Type') || 'application/json');
+
+      return new Response(respText, {
+        status: proxyResp.status,
+        statusText: proxyResp.statusText,
+        headers: respHeaders,
+      });
+    } catch (e: any) {
+      return errorResponse('Ollama 请求失败: ' + (e.message || e), 500);
+    }
+  }
+
+  if (path === '/api/ollama/chat' && request.method === 'OPTIONS') {
     return optionsResponse();
   }
 
@@ -1338,25 +1861,187 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     }
   }
 
-  // ---- API Key 管理 API（代理到 ECS）----
+  // ---- API Key 管理 API（使用 KV 存储）----
   if (path.startsWith('/api/api-keys') || path.startsWith('/api/ai-pool')) {
+    // For ai-pool, read from KV (pushed by ECS server)
+    if (path === '/api/ai-pool') {
+      try {
+        const poolDataStr = await getSafeKV(env).get('ai-pool:latest');
+        if (poolDataStr) {
+          const poolData = JSON.parse(poolDataStr);
+          return jsonResponse(poolData, 200);
+        }
+        return errorResponse('池子数据尚未同步，请稍候刷新', 503);
+      } catch (e: any) {
+        return errorResponse('数据加载失败', 502);
+      }
+    }
+
+    // For API keys, handle directly in Worker with KV
+    if (path === '/api/api-keys') {
+      if (request.method === 'GET') {
+        // List API keys
+        try {
+          const token = getTokenFromRequest(request);
+          if (!token) return errorResponse('请先登录', 401);
+          const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret');
+          if (!payload) return errorResponse('请先登录', 401);
+          
+          const showAll = url.searchParams.get('all') === '1';
+          const username = payload.sub || payload.username || 'user';
+          const isAdmin = payload.role === 'admin';
+          
+          if (showAll && !isAdmin) {
+            return errorResponse('无权限查看全部 Key', 403);
+          }
+          
+          // Get all API keys from KV
+          const keysListStr = await getSafeKV(env).get('api-keys:list');
+          let keys = keysListStr ? JSON.parse(keysListStr) : [];
+          
+          // Filter based on role
+          if (!showAll) {
+            keys = keys.filter((k: any) => k.username === username);
+          }
+          
+          // Sort by created_at descending
+          keys.sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0));
+          
+          return jsonResponse({ keys }, 200);
+        } catch (e: any) {
+          return errorResponse('加载失败: ' + (e.message || '未知错误'), 500);
+        }
+      }
+
+      if (request.method === 'POST') {
+        // Create new API key
+        try {
+          const token = getTokenFromRequest(request);
+          if (!token) return errorResponse('请先登录', 401);
+          const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret');
+          if (!payload) return errorResponse('请先登录', 401);
+          
+          const username = payload.sub || payload.username || 'user';
+          const userRole = payload.role || 'user';
+          
+          const bodyText = await request.text();
+          const body = bodyText ? JSON.parse(bodyText) : {};
+          
+          const name = (body.name || '').trim() || `Key-${Date.now()}`;
+          const desc = (body.desc || '').trim().slice(0, 100);
+          const dailyLimit = Math.max(0, parseInt(body.daily_limit as string) || 0);
+          const expiresAt = Math.max(0, parseInt(body.expires_at as string) || 0);
+          
+          // Generate API key
+          const keyId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+          const apiKey = 'sk-' + keyId;
+          
+          const newKey = {
+            id: Date.now(),
+            user_id: 0,
+            username,
+            key: apiKey,
+            name,
+            desc,
+            daily_limit: dailyLimit,
+            expires_at: expiresAt,
+            created_at: Math.floor(Date.now() / 1000),
+            last_used_at: 0,
+            is_active: 1,
+            calls: 0,
+            role: userRole
+          };
+          
+          // Add to KV
+          const keysListStr = await getSafeKV(env).get('api-keys:list');
+          const keys = keysListStr ? JSON.parse(keysListStr) : [];
+          keys.push(newKey);
+          await getSafeKV(env).put('api-keys:list', JSON.stringify(keys));
+          
+          return jsonResponse({ success: true, key: apiKey, name }, 200);
+        } catch (e: any) {
+          return errorResponse('创建失败: ' + (e.message || '未知错误'), 500);
+        }
+      }
+    }
+
+    // Handle /api/api-keys/delete and /api/api-keys/toggle
+    if (path === '/api/api-keys/delete' || path === '/api/api-keys/toggle') {
+      try {
+        const token = getTokenFromRequest(request);
+        if (!token) return errorResponse('请先登录', 401);
+        const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret');
+        if (!payload) return errorResponse('请先登录', 401);
+        
+        const username = payload.sub || payload.username || 'user';
+        const isAdmin = payload.role === 'admin';
+        
+        let keyId: number;
+        if (request.method === 'GET') {
+          keyId = parseInt(url.searchParams.get('id') || '0');
+        } else {
+          const bodyText = await request.text();
+          const body = bodyText ? JSON.parse(bodyText) : {};
+          keyId = parseInt(body.id || '0');
+        }
+        
+        if (!keyId) return errorResponse('缺少 id 参数', 400);
+        
+        const keysListStr = await getSafeKV(env).get('api-keys:list');
+        let keys = keysListStr ? JSON.parse(keysListStr) : [];
+        
+        if (path === '/api/api-keys/delete') {
+          // Delete
+          if (isAdmin) {
+            keys = keys.filter((k: any) => k.id !== keyId);
+          } else {
+            keys = keys.filter((k: any) => !(k.id === keyId && k.username === username));
+          }
+          await getSafeKV(env).put('api-keys:list', JSON.stringify(keys));
+          return jsonResponse({ success: true }, 200);
+        }
+        
+        if (path === '/api/api-keys/toggle') {
+          // Toggle active
+          let found = false;
+          for (const k of keys) {
+            if (k.id === keyId) {
+              if (!isAdmin && k.username !== username) {
+                return errorResponse('无权限操作', 403);
+              }
+              k.is_active = k.is_active ? 0 : 1;
+              found = true;
+              break;
+            }
+          }
+          if (!found) return errorResponse('未找到 Key', 404);
+          await getSafeKV(env).put('api-keys:list', JSON.stringify(keys));
+          return jsonResponse({ success: true }, 200);
+        }
+      } catch (e: any) {
+        return errorResponse('操作失败: ' + (e.message || '未知错误'), 500);
+      }
+    }
+
+    // Default fallback for unhandled /api/api-keys paths
+    if (path.startsWith('/api/api-keys')) {
+      return errorResponse('接口不存在', 404);
+    }
+
+    // For other ECS API paths that need proxy
     try {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 8000);
-      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:80';
       const ecsReqUrl = `${ecsUrl}${path}${url.search}`;
       const headers = new Headers(request.headers);
       headers.set('Host', new URL(ecsUrl).host);
       const cookie = request.headers.get('Cookie');
       if (cookie) headers.set('Cookie', cookie);
+      await injectAuthHeaders(headers, request, env);
       const resp = await fetch(ecsReqUrl, {
         method: request.method,
         headers,
         body: request.method !== 'GET' ? request.body : undefined,
-        signal: controller.signal,
-        cf: { connectTimeout: 5 } as any,
       });
-      clearTimeout(timer);
       return new Response(resp.body, {
         status: resp.status,
         statusText: resp.statusText,
@@ -1373,12 +2058,13 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 8000);
-      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:8765';
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:80';
       const ecsReqUrl = `${ecsUrl}${path}${url.search}`;
       const headers = new Headers(request.headers);
       headers.set('Host', new URL(ecsUrl).host);
       const cookie = request.headers.get('Cookie');
       if (cookie) headers.set('Cookie', cookie);
+      await injectAuthHeaders(headers, request, env);
       const resp = await fetch(ecsReqUrl, {
         method: request.method,
         headers,
@@ -1784,11 +2470,17 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
       : await assetResp.arrayBuffer();
     const headers = new Headers({ 'Content-Type': ctype });
     if (isHtml) {
-      headers.set('Cache-Control', 'no-cache');
+      headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=300');
     } else if (isChangelog) {
       headers.set('Cache-Control', 'no-cache, must-revalidate');
     } else if (isStatic) {
-      headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
+      // 图片/字体等大资源使用 1 年 immutable 强缓存（URL 含版本号时安全）
+      const isImage = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico'].includes(ext);
+      if (isImage) {
+        headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+      } else {
+        headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
+      }
       try {
         const cacheKey = `cache:static:v4:${path}`;
         const ctypeKey = `cache:static:v4:ctype:${path}`;
@@ -1822,11 +2514,16 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
         : await rootGhResp.arrayBuffer();
       const headers = new Headers({ 'Content-Type': ctype });
       if (isHtml) {
-        headers.set('Cache-Control', 'no-cache');
+        headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=300');
       } else if (isChangelog) {
         headers.set('Cache-Control', 'no-cache, must-revalidate');
       } else if (isStatic) {
-        headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
+        const isImage = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico'].includes(ext);
+        if (isImage) {
+          headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+        } else {
+          headers.set('Cache-Control', `public, max-age=${86400 * 30}`);
+        }
         try {
           const cacheKey = `cache:static:v4:${path}`;
           const ctypeKey = `cache:static:v4:ctype:${path}`;
