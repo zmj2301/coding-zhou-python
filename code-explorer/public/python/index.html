@@ -30,6 +30,26 @@
     --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
   }
 
+  [data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f6f8fa;
+    --bg-tertiary: #eaeef2;
+    --bg-overlay: #d0d7de;
+    --border-color: #d0d7de;
+    --border-light: #eaeef2;
+    --text-primary: #24292f;
+    --text-secondary: #57606a;
+    --text-tertiary: #8c959f;
+    --accent-blue: #0969da;
+    --accent-green: #1a7f37;
+    --accent-yellow: #bf8700;
+    --accent-red: #cf222e;
+    --accent-purple: #8250df;
+    --accent-orange: #bf5612;
+    --accent-pink: #bf3c5b;
+    --accent-cyan: #1a7f37;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -50,6 +70,12 @@
     background-size: 40px 40px;
     pointer-events: none;
     z-index: 0;
+  }
+
+  [data-theme="light"] body::before {
+    background-image:
+      linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
   }
 
   .page-wrapper {
@@ -78,6 +104,11 @@
     font-size: 13px;
     font-weight: 500;
     margin-bottom: 20px;
+  }
+
+  [data-theme="light"] .hero-badge {
+    background: rgba(9, 105, 218, 0.08);
+    border-color: rgba(9, 105, 218, 0.2);
   }
   .hero h1 {
     font-size: 48px;
@@ -180,6 +211,10 @@
     box-shadow: 0 12px 32px rgba(0,0,0,0.3);
   }
 
+  [data-theme="light"] .project-card:hover {
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  }
+
   .card-header {
     display: flex;
     align-items: center;
@@ -229,6 +264,10 @@
   .card-tag.difficulty-medium { background: rgba(210,153,34,0.15); color: var(--accent-yellow); }
   .card-tag.difficulty-hard { background: rgba(248,81,73,0.15); color: var(--accent-red); }
 
+  [data-theme="light"] .card-tag.difficulty-easy { background: rgba(26,127,55,0.1); }
+  [data-theme="light"] .card-tag.difficulty-medium { background: rgba(191,135,0,0.1); }
+  [data-theme="light"] .card-tag.difficulty-hard { background: rgba(207,34,46,0.1); }
+
   .card-footer {
     display: flex;
     align-items: center;
@@ -268,6 +307,10 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(88,166,255,0.3);
   }
+
+  [data-theme="light"] .start-btn:hover {
+    box-shadow: 0 4px 12px rgba(9,105,218,0.25);
+  }
   .start-btn svg {
     width: 14px;
     height: 14px;
@@ -280,6 +323,13 @@
   .accent-orange { --card-accent: var(--accent-orange); --card-accent-2: #d0752c; --card-accent-bg: rgba(240,136,62,0.12); }
   .accent-pink { --card-accent: var(--accent-pink); --card-accent-2: #c44d8f; --card-accent-bg: rgba(219,97,162,0.12); }
   .accent-cyan { --card-accent: var(--accent-cyan); --card-accent-2: #2c9a3e; --card-accent-bg: rgba(57,211,83,0.12); }
+
+  [data-theme="light"] .accent-blue { --card-accent-2: #0550ae; --card-accent-bg: rgba(9,105,218,0.1); }
+  [data-theme="light"] .accent-purple { --card-accent-2: #6639ba; --card-accent-bg: rgba(130,80,223,0.1); }
+  [data-theme="light"] .accent-green { --card-accent-2: #116329; --card-accent-bg: rgba(26,127,55,0.1); }
+  [data-theme="light"] .accent-orange { --card-accent-2: #9a3e0a; --card-accent-bg: rgba(191,86,18,0.1); }
+  [data-theme="light"] .accent-pink { --card-accent-2: #96283e; --card-accent-bg: rgba(191,60,91,0.1); }
+  [data-theme="light"] .accent-cyan { --card-accent-2: #116329; --card-accent-bg: rgba(26,127,55,0.1); }
 
   /* Responsive */
   @media (max-width: 768px) {
@@ -326,6 +376,33 @@
       </button>
     </div>
   </div>
+</div>
+
+<!-- 用户下拉菜单（与导航栏 ceUserMenuBtn 配合使用） -->
+<div class="user-dropdown" id="userDropdown">
+  <button class="user-dropdown-item" id="profileFromMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    个人资料
+  </button>
+  <div class="user-dropdown-divider"></div>
+  <button class="user-dropdown-item" id="openFeedbackMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    提交意见
+  </button>
+  <div class="user-dropdown-divider"></div>
+  <button class="user-dropdown-item" id="openAdminFromMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+    管理员后台
+  </button>
+  <button class="user-dropdown-item" id="openInboxMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+    意见箱
+  </button>
+  <div class="user-dropdown-divider"></div>
+  <button class="user-dropdown-item danger" id="logoutFromMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    退出登录
+  </button>
 </div>
 
 <div class="page-wrapper">
