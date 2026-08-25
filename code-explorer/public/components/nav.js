@@ -84,6 +84,10 @@
       btn.style.display = 'flex';
       var nameEl = document.getElementById('ceUserName') || document.getElementById('userMenuName');
       if (nameEl) nameEl.textContent = userName;
+    } else {
+      // 无本地用户信息时也显示按钮，允许点击展开常用菜单项
+      btn.classList.remove('hidden');
+      btn.style.display = 'flex';
     }
 
     var dropdown = document.getElementById('userDropdown');
