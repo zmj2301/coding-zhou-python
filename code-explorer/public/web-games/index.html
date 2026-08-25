@@ -31,13 +31,36 @@
     --neon-purple: 0 0 20px rgba(163, 113, 247, 0.4), 0 0 40px rgba(163, 113, 247, 0.2);
     --neon-green: 0 0 20px rgba(63, 185, 80, 0.4), 0 0 40px rgba(63, 185, 80, 0.2);
   }
+  [data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f6f8fa;
+    --bg-tertiary: #eaeef2;
+    --bg-overlay: #d0d7de;
+    --border-color: #d0d7de;
+    --border-light: #eaeef2;
+    --text-primary: #24292f;
+    --text-secondary: #57606a;
+    --text-tertiary: #8c959f;
+    --accent-blue: #0969da;
+    --accent-green: #1a7f37;
+    --accent-yellow: #bf8700;
+    --accent-red: #cf222e;
+    --accent-purple: #8250df;
+    --accent-pink: #bf3c5b;
+    --accent-cyan: #1a7f37;
+    --border-glow: rgba(9, 105, 218, 0.4);
+    --neon-blue: 0 0 16px rgba(9, 105, 218, 0.25);
+    --neon-purple: 0 0 16px rgba(130, 80, 223, 0.22);
+    --neon-green: 0 0 16px rgba(26, 127, 55, 0.22);
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: #0a0e1a;
+    background: var(--bg-primary);
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
     font-family: var(--font-sans);
+    color: var(--text-primary);
   }
   body::before {
     content: '';
@@ -655,7 +678,7 @@
     text-align: right;
   }
 
-  /* 用户菜单 */
+  /* 用户菜单（已弃用：使用 /components/nav.css 共享样式）
   .user-menu-btn {
     position: fixed; top: 16px; right: 16px;
     z-index: 99997;
@@ -687,6 +710,7 @@
     from { opacity: 0; transform: translateY(-8px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  */
   .user-dropdown-item {
     display: flex; align-items: center; gap: 12px;
     padding: 12px 20px;
@@ -850,7 +874,7 @@
   </div>
 </div>
 
-<!-- 用户菜单 -->
+<!-- 用户菜单
 <button class="user-menu-btn hidden" id="userMenuBtn">U</button>
 <div class="user-dropdown" id="userDropdown">
   <button class="user-dropdown-item" id="openAdminFromMenu">
@@ -863,6 +887,7 @@
     退出登录
   </button>
 </div>
+-->
 
 <!-- Hero 区域 -->
 <div class="hero">
