@@ -13,6 +13,7 @@
     --text-primary: #e6edf3;
     --text-secondary: #8b949e;
     --text-tertiary: #6e7681;
+    --bg-raised: #0d1117;
     --accent-blue: #58a6ff;
     --accent-green: #3fb950;
     --accent-red: #f85149;
@@ -32,6 +33,7 @@
     --text-primary: #24292f;
     --text-secondary: #57606a;
     --text-tertiary: #8c959f;
+    --bg-raised: #eaeef2;
     --accent-blue: #0969da;
     --accent-green: #1a7f37;
     --accent-red: #cf222e;
@@ -228,7 +230,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    background: #0d1117;
+    background: var(--bg-raised);
     overflow: hidden;
   }
   #projectActions {
@@ -675,7 +677,13 @@
     loadingText.textContent = '验证登录状态中...';
     return fetch(AUTH_CHECK_URL, { credentials: 'include' })
       .then(function(r) { return r.json(); })
-      .then(function(data) { return data.authenticated === true; })
+      .then(function(data) {
+        var authed = data.authenticated === true;
+        if (authed && data.user && data.user.username && window.CENav) {
+          window.CENav.setUser(data.user.username);
+        }
+        return authed;
+      })
       .catch(function() { return false; });
   }
 
