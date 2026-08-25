@@ -5476,8 +5476,8 @@ async function downloadProject() {
   try {
     toast('正在打包下载...');
     const path = encodeURIComponent(state.currentProject.path);
-    // 使用 fetch 而非 api() 以便正确处理二进制响应
-    const resp = await fetch(`/api/files/download?path=${path}`, {
+    // 使用 fetch 而非 api() 以便正确处理二进制响应 (使用 /export 绕过 Cloudflare 对 /download 的拦截)
+    const resp = await fetch(`/api/files/export?path=${path}`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     });
     if (!resp.ok) {
