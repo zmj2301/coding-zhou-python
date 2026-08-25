@@ -1344,6 +1344,49 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     return resp;
   }
 
+  // ---- 项目下载 API（需要更长超时）----
+  if (path === '/api/files/download') {
+    const filePath = url.searchParams.get('path') || '';
+    if (!filePath) return errorResponse('缺少 path 参数');
+    if (filePath.includes('..') || filePath.startsWith('/')) return errorResponse('访问被拒绝：路径越界', 403);
+
+    // 使用更长超时（60秒），因为打包 ZIP 可能需要时间
+    try {
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165:80';
+      const ecsReqUrl = `${ecsUrl}${path}${url.search}`;
+      const headers = new Headers(request.headers);
+      headers.set('Host', new URL(ecsUrl).host);
+      const cookie = request.headers.get('Cookie');
+      if (cookie) headers.set('Cookie', cookie);
+      await injectAuthHeaders(headers, request, env);
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 60000);
+
+      const resp = await fetch(ecsReqUrl, {
+        method: request.method,
+        headers,
+        body: request.method !== 'GET' ? request.body : undefined,
+        signal: controller.signal,
+        cf: { connectTimeout: 10, timeout: 120 } as any,
+      });
+      clearTimeout(timer);
+
+      // 转发响应头（保留 Content-Disposition 等）
+      const respHeaders = new Headers(resp.headers);
+      respHeaders.set('Access-Control-Allow-Origin', '*');
+
+      return new Response(resp.body, {
+        status: resp.status,
+        statusText: resp.statusText,
+        headers: respHeaders,
+      });
+    } catch (e: any) {
+      const msg = e.name === 'AbortError' ? '打包超时：项目文件过多，请稍后重试或联系管理员' : (e.message || '下载失败');
+      return errorResponse(msg, 502);
+    }
+  }
+
   // ---- 评论 API ----
   if (path === '/api/comments') {
     const project = url.searchParams.get('project') || '';
