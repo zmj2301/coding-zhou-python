@@ -916,6 +916,9 @@
   🚀 使用 HTML5 Canvas 与原生 JavaScript 开发 · 兼容现代浏览器 · 畅玩无极限
 </div>
 
+<!-- 先加载 nav.js，确保 nav.html 先加载 -->
+<script src="/components/nav.js"></script>
+
 <script>
 // 工具函数
 function setCookie(name, value, days) {
@@ -931,7 +934,7 @@ function delCookie(name) {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
 }
 
-// 元素引用
+// 元素引用 - 先获取不依赖 nav 的元素
 const authPage = document.getElementById('authPage');
 const userLoginForm = document.getElementById('userLoginForm');
 const adminLoginForm = document.getElementById('adminLoginForm');
@@ -948,18 +951,20 @@ const adminBackBtn = document.getElementById('adminBackBtn');
 const adminRefreshBtn = document.getElementById('adminRefreshBtn');
 const adminLogoutBtn = document.getElementById('adminLogoutBtn');
 const adminDashboardContent = document.getElementById('adminDashboardContent');
-const ceUserMenuBtn = document.getElementById('ceUserMenuBtn');
-const userDropdown = document.getElementById('userDropdown');
-const openAdminFromMenu = document.getElementById('openAdminFromMenu');
-const logoutFromMenu = document.getElementById('logoutFromMenu');
 
-// API 封装
+// 依赖 nav.html 的变量 - 在 nav:ready 事件中初始化
+let ceUserMenuBtn = null;
+let userDropdown = null;
+let openAdminFromMenu = null;
+let logoutFromMenu = null;
+
+// 安全的 API 封装（处理 ceUserMenuBtn 可能为 null 的情况）
 async function api(url, opts = {}) {
   const res = await fetch(url, opts);
   if (res.status === 401) {
     delCookie('wg_token');
-    ceUserMenuBtn.classList.add('hidden');
-    userDropdown.classList.remove('show');
+    if (ceUserMenuBtn) ceUserMenuBtn.classList.add('hidden');
+    if (userDropdown) userDropdown.classList.remove('show');
     hideAdminDashboard();
     showLoginPage(false);
     throw new Error('登录已过期，请重新登录');
@@ -972,8 +977,8 @@ async function api(url, opts = {}) {
 function showLoginPage(showUser = true) {
   authPage.classList.add('active');
   adminPage.classList.remove('active');
-  ceUserMenuBtn.classList.add('hidden');
-  userDropdown.classList.remove('show');
+  if (ceUserMenuBtn) ceUserMenuBtn.classList.add('hidden');
+  if (userDropdown) userDropdown.classList.remove('show');
   if (showUser) {
     userLoginForm.style.display = 'block';
     adminLoginForm.style.display = 'none';
@@ -1013,7 +1018,7 @@ async function doUserLogin() {
     if (resp.ok && data.token) {
       setCookie('wg_token', data.token, 7);
       hideLoginPage();
-      ceUserMenuBtn.classList.remove('hidden');
+      if (ceUserMenuBtn) ceUserMenuBtn.classList.remove('hidden');
       reloadCoverImages();
     } else {
       loginErrorMsg.textContent = data.error || '密码错误';
@@ -1048,7 +1053,7 @@ async function doAdminLogin() {
     if (r.ok && d.token) {
       setCookie('wg_token', d.token, 7);
       hideLoginPage();
-      ceUserMenuBtn.classList.remove('hidden');
+      if (ceUserMenuBtn) ceUserMenuBtn.classList.remove('hidden');
       showAdminDashboard();
       reloadCoverImages();
     } else {
@@ -1069,8 +1074,8 @@ async function doLogout() {
     await fetch('/api/logout', { method: 'POST' });
   } catch (e) {}
   delCookie('wg_token');
-  ceUserMenuBtn.classList.add('hidden');
-  userDropdown.classList.remove('show');
+  if (ceUserMenuBtn) ceUserMenuBtn.classList.add('hidden');
+  if (userDropdown) userDropdown.classList.remove('show');
   hideAdminDashboard();
   showLoginPage(true);
 }
@@ -1079,7 +1084,7 @@ async function doLogout() {
 function showAdminDashboard() {
   authPage.classList.remove('active');
   adminPage.classList.add('active');
-  userDropdown.classList.remove('show');
+  if (userDropdown) userDropdown.classList.remove('show');
   loadDashboard();
 }
 function hideAdminDashboard() {
@@ -1257,20 +1262,40 @@ function reloadCoverImages() {
   });
 }
 
-// 用户菜单
-ceUserMenuBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  userDropdown.classList.toggle('show');
-});
-document.addEventListener('click', () => {
-  userDropdown.classList.remove('show');
-});
-openAdminFromMenu.addEventListener('click', () => {
-  showAdminDashboard();
-});
-logoutFromMenu.addEventListener('click', () => {
-  doLogout();
-});
+// 初始化依赖 nav.html 的功能
+function initNavDependentFeatures() {
+  ceUserMenuBtn = document.getElementById('ceUserMenuBtn');
+  userDropdown = document.getElementById('userDropdown');
+  openAdminFromMenu = document.getElementById('openAdminFromMenu');
+  logoutFromMenu = document.getElementById('logoutFromMenu');
+
+  if (ceUserMenuBtn) {
+    ceUserMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (userDropdown) userDropdown.classList.toggle('show');
+    });
+  }
+  document.addEventListener('click', () => {
+    if (userDropdown) userDropdown.classList.remove('show');
+  });
+  if (openAdminFromMenu) {
+    openAdminFromMenu.addEventListener('click', () => {
+      showAdminDashboard();
+    });
+  }
+  if (logoutFromMenu) {
+    logoutFromMenu.addEventListener('click', () => {
+      doLogout();
+    });
+  }
+}
+
+// 监听 nav:ready 事件来初始化依赖 nav.html 的功能
+document.addEventListener('nav:ready', initNavDependentFeatures);
+// 如果 nav 已经就绪（同步加载的情况），立即初始化
+if (document.querySelector('.ce-top-nav') || document.getElementById('ceUserMenuBtn')) {
+  initNavDependentFeatures();
+}
 
 // 登录表单切换
 switchToAdmin.addEventListener('click', () => {
@@ -1380,7 +1405,7 @@ document.head.appendChild(style);
     const data = await resp.json();
     if (data.authenticated) {
       hideLoginPage();
-      ceUserMenuBtn.classList.remove('hidden');
+      if (ceUserMenuBtn) ceUserMenuBtn.classList.remove('hidden');
     } else {
       showLoginPage(true);
     }
@@ -1389,6 +1414,5 @@ document.head.appendChild(style);
   }
 })();
 </script>
-<script src="/components/nav.js"></script>
 </body>
 </html>
