@@ -3604,11 +3604,11 @@ body::before {
     提交意见
   </button>
   <div class="user-dropdown-divider"></div>
-  <button class="user-dropdown-item" id="openAdminFromMenu" style="display:none">
+  <button class="user-dropdown-item" id="openAdminFromMenu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
     管理员后台
   </button>
-  <button class="user-dropdown-item" id="openInboxMenu" style="display:none">
+  <button class="user-dropdown-item" id="openInboxMenu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
     意见箱
   </button>
@@ -6819,9 +6819,8 @@ async function checkAuth() {
       state.currentUser = d.user;
       state.isAuthenticated = true;
       if (window.CENav) CENav.setUser(d.user.username);
-      const isAdmin = d.user.role === 'admin';
-      if (openAdminFromMenu) openAdminFromMenu.style.display = isAdmin ? '' : 'none';
-      if (openInboxMenu) openInboxMenu.style.display = isAdmin ? '' : 'none';
+      if (openAdminFromMenu) openAdminFromMenu.style.display = '';
+      if (openInboxMenu) openInboxMenu.style.display = '';
     }
     return d.authenticated;
   }
@@ -6843,9 +6842,8 @@ async function doUserLogin() {
       state.isAuthenticated = true;
       hideLoginPage();
       if (window.CENav) CENav.setUser(d.user.username);
-      const isAdmin = d.user.role === 'admin';
-      openAdminFromMenu.style.display = isAdmin ? '' : 'none';
-      openInboxMenu.style.display = isAdmin ? '' : 'none';
+      openAdminFromMenu.style.display = '';
+      openInboxMenu.style.display = '';
       loginUsernameInput.value = '';
       loginPasswordInput.value = '';
       loginError.textContent = '';
@@ -7646,9 +7644,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (authed && userMenuBtn) {
         userMenuBtn.classList.remove('hidden');
         if (state.currentUser) {
-          const isAdmin = state.currentUser.role === 'admin';
-          openAdminFromMenu.style.display = isAdmin ? '' : 'none';
-          openInboxMenu.style.display = isAdmin ? '' : 'none';
+          openAdminFromMenu.style.display = '';
+          openInboxMenu.style.display = '';
         }
       }
       state.isAuthenticated = authed;
