@@ -342,8 +342,43 @@
     .project-card { padding: 18px; }
     .section-header { flex-direction: column; align-items: flex-start; gap: 4px; }
   }
+
+  /* ============ 课程内编程编辑器 ============ */
+  .course-editor-overlay { display: none; position: fixed; inset: 0; z-index: 1200; flex-direction: column; background: #0f1620; color: #e6edf3; }
+  .course-editor-overlay.open { display: flex; }
+  .course-editor-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; background: #161d29; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .course-editor-btn-back { background: rgba(255,255,255,.06); color: #e6edf3; border: 1px solid rgba(255,255,255,.12); padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .course-editor-btn-back:hover { background: rgba(255,255,255,.12); }
+  .course-editor-title { font-size: 15px; font-weight: 600; }
+  .course-editor-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .course-run-btn { background: linear-gradient(135deg,#2563eb,#4f46e5); color: #fff; border: none; padding: 7px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
+  .course-run-btn.stop { background: #dc2626; }
+  .course-run-btn:hover { filter: brightness(1.1); }
+  .course-editor-host { flex: 1; min-height: 0; }
+  .course-editor-terminal { flex: none; height: 38%; min-height: 160px; display: none; flex-direction: column; background: #0b0f16; border-top: 1px solid rgba(255,255,255,.1); }
+  .course-editor-terminal.open { display: flex; }
+  .course-editor-terminal-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; font-size: 13px; color: rgba(230,237,243,.7); background: #121826; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .course-editor-terminal-head button { background: none; border: none; color: #9aa4b2; cursor: pointer; }
+  .course-terminal-output { margin: 0; padding: 12px 14px; overflow: auto; flex: 1; font: 12px/1.6 "JetBrains Mono",Consolas,monospace; white-space: pre-wrap; word-break: break-word; }
+  .course-terminal-output .stdout { color: #a7f3d0; }
+  .course-terminal-output .stderr { color: #fda4af; }
+  .course-terminal-output .error { color: #fca5a5; }
+  .course-terminal-output .success { color: #86efac; }
+  .course-terminal-output .info { color: #93c5fd; }
+  .course-run-status { font-size: 13px; color: #9aa4b2; white-space: nowrap; }
+  .course-run-status.running { color: #fca5a5; }
+  [data-theme="light"] .course-editor-overlay { background: #ffffff; color: #1f2328; }
+  [data-theme="light"] .course-editor-toolbar { background: #f6f8fa; border-bottom: 1px solid rgba(0,0,0,.08); }
+  [data-theme="light"] .course-editor-btn-back { background: rgba(0,0,0,.04); color: #1f2328; border-color: rgba(0,0,0,.1); }
+  [data-theme="light"] .course-editor-title { color: #1f2328; }
+  [data-theme="light"] .course-editor-terminal { background: #fbfbfb; border-top: 1px solid rgba(0,0,0,.1); }
+  [data-theme="light"] .course-editor-terminal-head { background: #f0f2f5; color: #57606a; border-bottom: 1px solid rgba(0,0,0,.08); }
 </style>
 <link rel="stylesheet" href="/components/nav.css">
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<script>
+  require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' } });
+</script>
 </head>
 <body class="ce-has-nav">
 
@@ -627,22 +662,196 @@
 
 </div>
 
+<!-- ========== 课程内编程编辑器 Overlay（点击课程卡片打开，不跳转首页） ========== -->
+<div id="courseEditorOverlay" class="course-editor-overlay">
+  <div class="course-editor-toolbar">
+    <button class="course-editor-btn-back" onclick="closeCourseEditor()" type="button">← 返回课程</button>
+    <span id="courseEditorTitle" class="course-editor-title">Python</span>
+    <div class="course-editor-actions">
+      <span id="courseRunStatus" class="course-run-status"></span>
+      <button id="courseBtnRun" class="course-run-btn" onclick="runCourseCode()" type="button">▶ 运行</button>
+      <button id="courseBtnStop" class="course-run-btn stop" onclick="stopCourseCode()" type="button" style="display:none">■ 停止</button>
+    </div>
+  </div>
+  <div id="courseEditorHost" class="course-editor-host"></div>
+  <div id="courseTerminal" class="course-editor-terminal">
+    <div class="course-editor-terminal-head">
+      <span>运行输出</span>
+      <button onclick="hideCourseTerminal()" type="button">收起</button>
+    </div>
+    <pre id="courseTerminalOutput" class="course-terminal-output"></pre>
+  </div>
+</div>
+
 <script>
+  var COURSE_PROJECTS = {
+    'basic-syntax': { name: '基础语法练习', file: 'basic_syntax.py', code: 'print("Hello, Coding Zhou!")\nname = input("请输入你的名字：")\nage = int(input("请输入你的年龄："))\nprint(f"你好，{name}！明年你就是 {age + 1} 岁啦。")' },
+    'dsa': { name: '数据结构与算法', file: 'dsa.py', code: '# 数据结构与算法：演示栈（Stack）\nstack = []\nstack.append(1)\nstack.append(2)\nstack.append(3)\nprint("栈顶弹出：", stack.pop())\nprint("当前栈：", stack)' },
+    'web-dev': { name: 'Web 开发入门', file: 'app.py', code: '# Web 开发入门：简单 HTTP 服务器\nfrom http.server import HTTPServer, BaseHTTPRequestHandler\n\nclass Handler(BaseHTTPRequestHandler):\n    def do_GET(self):\n        self.send_response(200)\n        self.send_header("Content-Type", "text/html; charset=utf-8")\n        self.end_headers()\n        self.wfile.write("<h1>Hello Coding Zhou</h1>".encode())\n\ndef main():\n    server = HTTPServer(("0.0.0.0", 8000), Handler)\n    print("服务器已启动：http://127.0.0.1:8000")\n    server.serve_forever()\n\nif __name__ == "__main__":\n    main()' },
+    'data-analysis': { name: '数据分析实战', file: 'analysis.py', code: '# 数据分析实战：简单数据统计\ndata = [3.1, 2.8, 4.0, 3.5, 5.2, 4.8, 3.9]\navg = sum(data) / len(data)\nprint("平均值：", round(avg, 2))\nprint("最大值：", max(data), " 最小值：", min(data))' },
+    'web-scraper': { name: '爬虫项目', file: 'scraper.py', code: '# 爬虫项目：抓取网页标题（示例链接，可自行修改）\nimport urllib.request\nimport re\n\nurl = "https://example.com"\nhtml = urllib.request.urlopen(url, timeout=10).read().decode("utf-8", "ignore")\ntitle = re.search(r"<title>(.*?)</title>", html, re.S)\nprint("网页标题：", title.group(1) if title else "未找到")' },
+    'automation': { name: '自动化脚本', file: 'automation.py', code: '# 自动化脚本：批量重命名文件（请先在运行环境准备 my_files 目录）\nimport os\n\nfolder = "my_files"\nif not os.path.isdir(folder):\n    print("目录不存在：", folder)\nelse:\n    for i, name in enumerate(os.listdir(folder)):\n        old = os.path.join(folder, name)\n        new = os.path.join(folder, "file_" + str(i) + ".txt")\n        if os.path.isfile(old) and old != new:\n            os.rename(old, new)\n            print("重命名：", name, "->", "file_" + str(i) + ".txt")' },
+    'pygame': { name: 'Pygame 游戏开发', file: 'game.py', code: '# Pygame 游戏开发：一个会运动的小球\nimport pygame\n\npygame.init()\nscreen = pygame.display.set_mode((640, 480))\nclock = pygame.time.Clock()\nx, y, vx, vy = 320, 240, 3, 3\nrunning = True\nwhile running:\n    for e in pygame.event.get():\n        if e.type == pygame.QUIT:\n            running = False\n    x += vx; y += vy\n    if x <= 10 or x >= 630: vx = -vx\n    if y <= 10 or y >= 470: vy = -vy\n    screen.fill((15, 22, 32))\n    pygame.draw.circle(screen, (66, 135, 245), (x, y), 10)\n    pygame.display.flip()\n    clock.tick(60)\npygame.quit()' },
+    'ml-ai': { name: 'AI 与机器学习', file: 'ml.py', code: '# AI 与机器学习：用 scikit-learn 训练一个简单分类器\nfrom sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.metrics import accuracy_score\n\nX, y = load_iris(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\nmodel = KNeighborsClassifier(n_neighbors=3)\nmodel.fit(X_train, y_train)\npred = model.predict(X_test)\nprint("准确率：", accuracy_score(y_test, pred))' }
+  };
+
+  var courseEditor = null;
+  var courseIsRunning = false;
+  var courseRunAbort = null;
+  var courseRunId = null;
+  var courseFileName = 'script.py';
+
+  function $ce(id) { return document.getElementById(id); }
+
+  function courseTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'vs-dark';
+  }
+
   function startProject(id) {
-    var projects = {
-      'basic-syntax': { name: '基础语法练习', file: 'basic_syntax.py' },
-      'dsa': { name: '数据结构与算法', file: 'dsa.py' },
-      'web-dev': { name: 'Web 开发入门', file: 'app.py' },
-      'data-analysis': { name: '数据分析实战', file: 'analysis.py' },
-      'web-scraper': { name: '爬虫项目', file: 'scraper.py' },
-      'automation': { name: '自动化脚本', file: 'automation.py' },
-      'pygame': { name: 'Pygame 游戏开发', file: 'game.py' },
-      'ml-ai': { name: 'AI 与机器学习', file: 'ml.py' }
-    };
-    var p = projects[id];
-    if (p) {
-      window.location.href = '/?project=' + id;
+    var p = COURSE_PROJECTS[id];
+    if (!p) return;
+    $ce('courseEditorTitle').textContent = p.name;
+    courseFileName = p.file;
+    setCourseStatus(null);
+    hideCourseTerminal();
+    $ce('courseEditorOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    if (courseEditor) {
+      courseEditor.setValue(p.code);
+      courseEditor.setModelLanguage(courseEditor.getModel(), 'python');
+      return;
     }
+    require(['vs/editor/editor.main'], function () {
+      courseEditor = monaco.editor.create($ce('courseEditorHost'), {
+        value: p.code,
+        language: 'python',
+        theme: courseTheme(),
+        automaticLayout: true,
+        fontSize: 14,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false
+      });
+      courseEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCourseCode);
+    });
+  }
+
+  function closeCourseEditor() {
+    if (courseIsRunning) stopCourseCode();
+    $ce('courseEditorOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function setCourseStatus(status, text) {
+    var el = $ce('courseRunStatus');
+    el.className = 'course-run-status' + (status ? ' ' + status : '');
+    el.textContent = text || (status === 'running' || status === 'preparing' || status === 'installing' ? '运行中...' : '');
+    if (status === 'running' || status === 'preparing' || status === 'installing' || status === 'venv' || status === 'copying' || status === 'analyzing') {
+      $ce('courseBtnRun').textContent = '运行中...';
+      $ce('courseBtnStop').style.display = '';
+    } else {
+      $ce('courseBtnRun').textContent = '▶ 运行';
+      $ce('courseBtnStop').style.display = 'none';
+    }
+  }
+
+  function showCourseTerminal() { $ce('courseTerminal').classList.add('open'); }
+  function hideCourseTerminal() { $ce('courseTerminal').classList.remove('open'); }
+
+  function appendCourseOut(text, cls) {
+    var out = $ce('courseTerminalOutput');
+    var div = document.createElement('div');
+    if (cls) div.className = cls;
+    div.textContent = text;
+    out.appendChild(div);
+    out.scrollTop = out.scrollHeight;
+  }
+
+  async function runCourseCode() {
+    if (courseIsRunning) return;
+    if (!courseEditor) return;
+    showCourseTerminal();
+    var out = $ce('courseTerminalOutput');
+    out.innerHTML = '';
+    var body = { mode: 'single', timeout: 120, code: courseEditor.getValue(), fileName: courseFileName };
+    appendCourseOut('========== 开始运行 ==========', 'info');
+    setCourseStatus('preparing', '准备中...');
+    courseIsRunning = true;
+    courseRunAbort = new AbortController();
+    courseRunId = null;
+    try {
+      var res = await fetch('/api/run/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: courseRunAbort.signal
+      });
+      if (!res.ok) {
+        var errMsg = 'HTTP ' + res.status;
+        try { var j = await res.json(); errMsg = j.error || errMsg; } catch (e) {}
+        if (res.status === 401) errMsg = '请先登录（返回首页登录后即可运行代码）';
+        throw new Error(errMsg);
+      }
+      var reader = res.body.getReader();
+      var decoder = new TextDecoder();
+      var sseBuffer = '';
+      while (true) {
+        var r = await reader.read();
+        if (r.done) break;
+        sseBuffer += decoder.decode(r.value, { stream: true });
+        var parts = sseBuffer.split('\n\n');
+        sseBuffer = parts.pop() || '';
+        for (var k = 0; k < parts.length; k++) {
+          var lines = parts[k].split('\n');
+          var eventType = 'message';
+          var dataStr = '';
+          for (var li = 0; li < lines.length; li++) {
+            if (lines[li].indexOf('event: ') === 0) eventType = lines[li].substring(7).trim();
+            else if (lines[li].indexOf('data: ') === 0) dataStr += lines[li].substring(6);
+          }
+          if (!dataStr) continue;
+          try {
+            var data = JSON.parse(dataStr);
+            if (eventType === 'status') {
+              if (data.runId) courseRunId = data.runId;
+              setCourseStatus(data.phase, data.message);
+              appendCourseOut('[系统] ' + data.message, 'info');
+            } else if (eventType === 'deps') {
+              setCourseStatus('installing', '安装依赖...');
+              appendCourseOut('[依赖] ' + (data.message || ''), 'info');
+            } else if (eventType === 'stdout') {
+              appendCourseOut(data.text, 'stdout');
+            } else if (eventType === 'stderr') {
+              appendCourseOut(data.text, 'stderr');
+            } else if (eventType === 'exit') {
+              appendCourseOut('', 'stdout');
+              if (data.code === 0) { appendCourseOut('========== ' + data.message + ' ==========', 'success'); setCourseStatus(null); }
+              else if (data.timedOut) { appendCourseOut('========== ' + data.message + ' ==========', 'error'); setCourseStatus('error', '超时'); }
+              else { appendCourseOut('========== ' + data.message + ' ==========', 'error'); setCourseStatus('error', '出错'); }
+              courseIsRunning = false;
+            } else if (eventType === 'error') {
+              appendCourseOut('[错误] ' + data.message, 'error');
+              setCourseStatus('error', '失败');
+              courseIsRunning = false;
+            }
+          } catch (parseErr) { console.error('SSE parse error:', parseErr, dataStr); }
+        }
+      }
+    } catch (e) {
+      if (e.name === 'AbortError') { appendCourseOut('[已被用户停止]', 'info'); setCourseStatus(null); }
+      else { appendCourseOut('错误: ' + (e.message || e), 'error'); setCourseStatus('error', '失败'); }
+      courseIsRunning = false;
+    }
+  }
+
+  async function stopCourseCode() {
+    if (!courseIsRunning) return;
+    if (courseRunAbort) courseRunAbort.abort();
+    if (courseRunId) {
+      try { await fetch('/api/run/stop', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ runId: courseRunId }) }); } catch (e) {}
+    }
+    setCourseStatus(null);
+    courseIsRunning = false;
   }
 </script>
 <script src="/components/nav.js"></script>
