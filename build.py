@@ -103,6 +103,16 @@ def main():
         print('  跳过: changelog.json 不存在')
 
     print()
+    print('步骤 2.55: 复制 AGENTS.md 到 share 目录...')
+    share_dir = PUBLIC_DIR / 'share'
+    share_dir.mkdir(parents=True, exist_ok=True)
+    agents_src = BASE_DIR / 'AGENTS.md'
+    if agents_src.exists():
+        copy_file(agents_src, share_dir / 'agents.md')
+    else:
+        print('  跳过: AGENTS.md 不存在')
+
+    print()
     print('步骤 2.6: 复制 python 导航页...')
     python_src = CODE_EXPLORER_DIR / 'code-explorer' / 'python'
     if python_src.exists():
