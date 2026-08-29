@@ -238,12 +238,26 @@ async function proxyStreamToEcs(path: string, env: Env, request: Request): Promi
   return new Response(readable, { status: ecsResp.status, headers: responseHeaders });
 }
 
+// 给 text/* 和 application/json 响应补 charset=utf-8，防止浏览器按系统默认编码（GBK）解 UTF-8 导致乱码
+function ensureUtf8Charset(resp: Response): Response {
+  const ct = resp.headers.get('content-type') || resp.headers.get('Content-Type') || '';
+  if (!ct) return resp;
+  // text/* 系列 + application/json + application/javascript，都补 charset=utf-8
+  if ((ct.startsWith('text/') || ct.startsWith('application/json') || ct.startsWith('application/javascript')) && !/charset=/i.test(ct)) {
+    const newCt = ct + '; charset=utf-8';
+    const headers = new Headers(resp.headers);
+    headers.set('Content-Type', newCt);
+    return new Response(resp.body, { status: resp.status, statusText: resp.statusText, headers });
+  }
+  return resp;
+}
+
 async function fetchAsset(path: string, env: Env): Promise<Response> {
   try {
     if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
       const cleanPath = path.startsWith('/') ? path.substring(1) : path;
       const resp = await env.ASSETS.fetch(new Request('/' + cleanPath));
-      if (resp.ok) return resp;
+      if (resp.ok) return ensureUtf8Charset(resp);
     }
   } catch {}
   // 先尝试 code-explorer/public/，再尝试 public/
@@ -251,7 +265,7 @@ async function fetchAsset(path: string, env: Env): Promise<Response> {
   if (!resp.ok) {
     resp = await fetchFromGitHub('public' + path, env);
   }
-  return resp;
+  return ensureUtf8Charset(resp);
 }
 
 // ------------------------------------------------------------

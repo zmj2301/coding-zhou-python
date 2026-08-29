@@ -1,5 +1,15 @@
 ﻿[
     {
+        "version":  "2.4.4",
+        "date":  "2026-08-29",
+        "title":  "修复静态资源乱码：fetchAsset 统一补 Content-Type charset=utf-8",
+        "changes":  [
+                        "新增 ensureUtf8Charset() 补 charset=utf-8",
+                        "修复 codingzhou.top/share/agents.md 中文锟斤拷乱码",
+                        "Worker Assets.fetch 返回的 Content-Type 不带 charset 时中文 Windows 按 GBK 解 UTF-8 会炸"
+                    ]
+    },
+    {
         "version":  "2.4.3",
         "date":  "2026-08-29",
         "title":  "AGENTS.md 发布到公开路径 codingzhou.top/share/agents.md + build.py 自动复制",
