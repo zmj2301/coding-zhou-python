@@ -624,7 +624,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
   // ---- 项目列表 API（轻量级，合并点赞/评论数）----
   if (path === '/api/projects/list') {
-    const CACHE_KEY = 'cache:project-meta';
+    const CACHE_KEY = 'cache:project-meta-v2';
     const CACHE_TTL = 1800;
     try {
       const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' });
@@ -907,8 +907,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         projectData.comments.push(comment);
         await env.CODE_EXPLORER_KV.put(key, JSON.stringify(projectData));
         try { await env.CODE_EXPLORER_KV.delete('cache:comment-counts'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:home-page-v2'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:project-meta-v2'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:home-page-v3'); } catch {}
         return jsonResponse(comment, 201);
       } catch {
         return errorResponse('无效的请求', 400);
@@ -1027,8 +1027,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         current += 1;
         await env.CODE_EXPLORER_KV.put(key, String(current));
         try { await env.CODE_EXPLORER_KV.delete('cache:likes'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:project-meta'); } catch {}
-        try { await env.CODE_EXPLORER_KV.delete('cache:home-page-v2'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:project-meta-v2'); } catch {}
+        try { await env.CODE_EXPLORER_KV.delete('cache:home-page-v3'); } catch {}
         return jsonResponse({ project, likes: current });
       } catch {
         return errorResponse('点赞失败', 500);
@@ -1315,7 +1315,7 @@ function simpleHashForAI(str: string): string {
 }
 
 async function loadProjectsForRecommend(env: Env): Promise<any[]> {
-  const CACHE_KEY = 'cache:project-meta';
+  const CACHE_KEY = 'cache:project-meta-v2';
   try {
     const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' });
     if (cached && cached.projects) return cached.projects;
@@ -1475,7 +1475,7 @@ async function getConversationalAI(messages: { role: string; content: string }[]
 // 首页服务（内联项目数据 + KV 缓存）
 // ------------------------------------------------------------
 async function serveHomePage(request: Request, env: Env): Promise<Response> {
-  const CACHE_KEY = 'cache:home-page-v2';
+  const CACHE_KEY = 'cache:home-page-v3';
   const CACHE_TTL = 1800;
 
   try {
@@ -1698,15 +1698,6 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname;
-
-    // 同步清理旧缓存（await 确保后续路由读到干净的 KV）
-    try {
-      await Promise.all([
-        env.CODE_EXPLORER_KV.delete('cache:home-page'),
-        env.CODE_EXPLORER_KV.delete('cache:home-page-v2'),
-        env.CODE_EXPLORER_KV.delete('cache:project-meta'),
-      ]);
-    } catch {}
 
     // API 请求
     if (path.startsWith('/api/')) {
