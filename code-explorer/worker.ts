@@ -1699,13 +1699,14 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // 一次性清理旧首页缓存
-    ctx.waitUntil(
-      Promise.all([
-        env.CODE_EXPLORER_KV.delete('cache:home-page').catch(() => {}),
-        env.CODE_EXPLORER_KV.delete('cache:home-page-v2').catch(() => {}),
-      ])
-    );
+    // 同步清理旧缓存（await 确保后续路由读到干净的 KV）
+    try {
+      await Promise.all([
+        env.CODE_EXPLORER_KV.delete('cache:home-page'),
+        env.CODE_EXPLORER_KV.delete('cache:home-page-v2'),
+        env.CODE_EXPLORER_KV.delete('cache:project-meta'),
+      ]);
+    } catch {}
 
     // API 请求
     if (path.startsWith('/api/')) {
