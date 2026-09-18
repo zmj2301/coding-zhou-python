@@ -1,4 +1,23 @@
-﻿[
+[
+    {
+        "version":  "2.5.0",
+        "date":  "2026-09-18",
+        "title":  "三栏应用式布局重构：左侧导航 + 中间筛选器 + 右侧项目广场",
+        "changes":  [
+                        "删除旧 .top-nav 顶部导航栏与 .home-page 单页外壳，新建 .app-shell 三栏布局",
+                        "左侧 .app-sidebar（200px↔60px 可折叠）：品牌Logo + 广场/资源/账户 三组导航 + 快捷链接 + 底部主题/更新日志/用户菜单",
+                        "中间 .app-filter（240px 可隐藏）：筛选器头部 + 类型折叠组（全部/网页游戏/游戏/AI/工具/其他）pill 按钮",
+                        "右侧 .app-main：主头部（项目广场标题 + 搜索框 + 筛选切换）+ 项目计数 + 项目卡片网格 + AI 助手嵌入区",
+                        "新增 switchSidebarView() 视图路由函数：plaza/home/ai-asst/about/mindmap 视图切换",
+                        "原首页轮播/最近访问/收藏移入 #homeExtras 容器，默认隐藏，通过侧栏「首页」入口访问",
+                        "筛选按钮样式从 .filter-tab 重命名为 .filter-pill，保留 data-filter 逻辑",
+                        "renderCategoryIndex() 简化为仅更新 #plazaCount badge",
+                        "侧栏折叠/筛选器隐藏状态通过 localStorage 持久化",
+                        "移动端响应式：侧栏变为滑入抽屉，筛选器变为 overlay sheet，动态注入汉堡按钮",
+                        "主题切换/更新日志/用户菜单按钮从右上角移至侧栏底部",
+                        "用户下拉菜单位置从右上角调整为侧栏底部上方"
+                    ]
+    },
     {
         "version":  "2.4.4",
         "date":  "2026-08-29",

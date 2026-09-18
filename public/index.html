@@ -130,15 +130,370 @@ body::before {
 /* ================================================================ */
 /*  HOME PAGE                                                        */
 /* ================================================================ */
-.home-page {
+/* ===== 三栏应用式布局 (App Shell) ===== */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* 左侧导航栏 */
+.app-sidebar {
+  flex-shrink: 0;
+  width: 200px;
+  background: color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 200ms ease;
+}
+body.sidebar-collapsed .app-sidebar { width: 60px; }
+body.sidebar-collapsed .app-sidebar .sidebar-brand-text,
+body.sidebar-collapsed .app-sidebar .sidebar-group-label,
+body.sidebar-collapsed .app-sidebar .sidebar-item-label,
+body.sidebar-collapsed .app-sidebar .sidebar-badge,
+body.sidebar-collapsed .app-sidebar .sidebar-version,
+body.sidebar-collapsed .app-sidebar .sidebar-footer-icon span,
+body.sidebar-collapsed .app-sidebar .sidebar-quick-links { display: none; }
+body.sidebar-collapsed .app-sidebar .sidebar-item {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  flex-shrink: 0;
+}
+.sidebar-logo {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
+}
+.sidebar-brand-text {
+  font-size: 14px; font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  font-family: var(--font-display);
+}
+.sidebar-collapse-btn {
+  margin-left: auto;
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: transparent;
+  border: none; cursor: pointer;
+  color: var(--text-tertiary);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 200ms ease;
+  flex-shrink: 0;
+}
+.sidebar-collapse-btn:hover {
+  background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
+  color: var(--text-primary);
+}
+.sidebar-collapse-btn svg { width: 14px; height: 14px; }
+body.sidebar-collapsed .sidebar-collapse-btn { transform: rotate(180deg); }
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.sidebar-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 14px 4px;
+  white-space: nowrap;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 150ms ease;
+  border-left: 3px solid transparent;
+  white-space: nowrap;
+  user-select: none;
+  text-decoration: none;
+}
+.sidebar-item:hover {
+  background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  color: var(--text-primary);
+}
+.sidebar-item.active {
+  background: color-mix(in srgb, var(--accent-blue) 12%, transparent);
+  color: var(--accent-blue);
+  border-left-color: var(--accent-blue);
+  font-weight: 600;
+}
+.sidebar-item-icon {
+  width: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+.sidebar-item-icon svg { width: 16px; height: 16px; }
+.sidebar-item-label { flex: 1; }
+.sidebar-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  padding: 1px 8px;
+  min-width: 20px;
+  text-align: center;
+}
+.sidebar-item.active .sidebar-badge {
+  background: color-mix(in srgb, var(--accent-blue) 20%, transparent);
+  color: var(--accent-blue);
+}
+
+.sidebar-quick-links {
+  padding: 4px 14px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.sidebar-quick-link {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: all 150ms ease;
+}
+.sidebar-quick-link:hover {
+  background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  color: var(--text-primary);
+}
+
+.sidebar-footer {
+  flex-shrink: 0;
+  border-top: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  padding: 8px 0;
+}
+.sidebar-footer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0 8px;
+}
+.sidebar-footer-icon button {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  transition: all 150ms ease;
+}
+.sidebar-footer-icon button:hover {
+  background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  color: var(--text-primary);
+}
+.sidebar-footer-icon svg { width: 16px; height: 16px; }
+.sidebar-footer-icon .user-menu-btn {
+  width: auto;
+  padding: 4px 8px;
+  gap: 4px;
+  font-size: 12px;
+  box-shadow: none;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.sidebar-footer-icon .user-menu-btn:hover {
+  background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  border-color: color-mix(in srgb, var(--border-color) 50%, transparent);
+}
+.sidebar-version {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  padding: 4px 0;
+}
+
+/* 中间筛选器 */
+.app-filter {
+  flex-shrink: 0;
+  width: 240px;
+  background: color-mix(in srgb, var(--bg-primary) 50%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  overflow-y: auto;
+  transition: width 200ms ease, margin-left 200ms ease;
+}
+body.filter-hidden .app-filter {
+  width: 0;
+  margin-left: -1px;
+  overflow: hidden;
+}
+.filter-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.filter-toggle-btn {
+  font-size: 12px;
+  color: var(--accent-blue);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 150ms ease;
+}
+.filter-toggle-btn:hover { opacity: 0.7; }
+.filter-group {
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 40%, transparent);
+  padding: 8px 0;
+}
+.filter-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+.filter-group-head .caret {
+  transition: transform 200ms ease;
+  font-size: 11px;
+}
+.filter-group.collapsed .caret { transform: rotate(-90deg); }
+.filter-group.collapsed .filter-group-body { display: none; }
+.filter-group-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 16px 12px;
+}
+.filter-pill {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--bg-tertiary) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 40%, transparent);
+  cursor: pointer;
+  transition: all 150ms ease;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+.filter-pill:hover {
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--accent-blue) 40%, transparent);
+}
+.filter-pill.active {
+  background: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-blue) 30%, transparent);
+}
+
+/* 右侧主内容 */
+.app-main {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  position: relative;
-  z-index: 1;
 }
+.main-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 12px;
+  gap: 16px;
+}
+.main-head h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  letter-spacing: -0.5px;
+}
+.main-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.main-search input {
+  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  color: var(--text-primary);
+  font-size: 13px;
+  width: 280px;
+  outline: none;
+  transition: all 200ms ease;
+  font-family: var(--font-sans);
+}
+.main-search input:focus {
+  border-color: color-mix(in srgb, var(--accent-blue) 50%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-blue) 12%, transparent);
+}
+.main-search kbd {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+.main-sub {
+  padding: 0 24px 8px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+.main-sub span { font-weight: 600; color: var(--text-secondary); }
+.main-filter-toggle {
+  display: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.home-extras { padding: 0 24px; }
+
+/* 移动端侧栏抽屉遮罩 */
+.sidebar-drawer-overlay {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 99990;
+}
+.sidebar-drawer-overlay.show { display: block; }
 
 /* ===== 轮播 ===== */
 .home-top-row {
@@ -236,228 +591,7 @@ body::before {
   font-weight: 500;
 }
 
-/* Section header */
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px 16px;
-}
-.section-header h2 {
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-}
-.section-header .header-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.section-header .hero-search {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-}
-.section-header .hero-search input {
-  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-  border-radius: var(--radius-md);
-  padding: 6px 12px;
-  color: var(--text-primary);
-  font-size: 13px;
-  width: 220px;
-  outline: none;
-  transition: all 200ms ease;
-  font-family: var(--font-sans);
-}
-.section-header .hero-search input:focus {
-  border-color: color-mix(in srgb, #8b5cf6 50%, transparent);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
-}
-.section-header .hero-search kbd {
-  font-size: 11px;
-  padding: 2px 6px;
-  background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
-  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-  border-radius: 4px;
-  color: var(--text-tertiary);
-  font-family: var(--font-mono);
-}
-.section-header .filter-tabs {
-  display: flex;
-  gap: 4px;
-  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-  border-radius: var(--radius-lg);
-  padding: 3px;
-}
-.filter-tab {
-  padding: 5px 14px;
-  border-radius: var(--radius-md);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: all 200ms ease;
-  font-family: var(--font-sans);
-}
-.filter-tab:hover {
-  color: var(--text-primary);
-  background: color-mix(in srgb, var(--bg-tertiary) 50%, transparent);
-}
-.filter-tab.active {
-  background: linear-gradient(135deg, #2dd4bf, #8b5cf6);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-}
-.filter-tab.ai-tab {
-  color: var(--accent-purple);
-}
-.filter-tab.ai-tab.active {
-  background: linear-gradient(135deg, #a855f7, #6366f1);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);
-}
-.view-toggle {
-  display: flex;
-  align-items: center;
-  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-  border-radius: var(--radius-md);
-  padding: 3px;
-}
-.view-btn {
-  width: 28px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  transition: all 200ms ease;
-}
-.view-btn:hover { color: var(--text-primary); }
-.view-btn.active {
-  background: linear-gradient(135deg, #2dd4bf, #8b5cf6);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
-}
-.view-btn svg { width: 14px; height: 14px; }
-
-/* Cards Grid */
-/* ===== Category Index Sidebar ===== */
-.project-list-layout {
-  display: flex;
-  gap: 16px;
-  padding: 0 24px 48px;
-}
-.category-sidebar {
-  flex-shrink: 0;
-  width: 200px;
-  background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
-  border-radius: var(--radius-lg);
-  padding: 8px 0;
-  position: sticky;
-  top: 16px;
-  align-self: flex-start;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18), 0 1px 2px rgba(0,0,0,0.08);
-}
-.category-index-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  cursor: pointer;
-  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, padding 200ms ease;
-  border-left: 3px solid transparent;
-  font-size: 13px;
-  color: var(--text-secondary);
-  user-select: none;
-}
-.category-index-item:hover {
-  background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
-  color: var(--text-primary);
-}
-.category-index-item.active {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-blue) 14%, transparent), transparent);
-  color: var(--text-primary);
-  border-left-color: var(--accent-blue);
-  font-weight: 600;
-}
-.category-index-icon {
-  font-size: 16px;
-  width: 22px;
-  text-align: center;
-  flex-shrink: 0;
-}
-.category-index-label {
-  flex: 1;
-  font-size: 13px;
-}
-.category-index-count {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  background: var(--bg-tertiary);
-  border-radius: 12px;
-  padding: 2px 9px;
-  min-width: 22px;
-  text-align: center;
-  flex-shrink: 0;
-  transition: background 200ms ease, color 200ms ease;
-}
-.category-index-item.active .category-index-count {
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-  color: #fff;
-}
-
-/* ===== About Section ===== */
-.about-entry {
-  border-top: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
-  margin-top: 4px;
-  padding-top: 12px;
-  transition: background 200ms ease, color 200ms ease;
-}
-.about-entry:hover {
-  background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
-  color: var(--text-primary);
-}
-
-.mindmap-entry { cursor: pointer; transition: background 200ms ease, color 200ms ease; }
-.mindmap-entry:hover {
-  background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
-  color: var(--text-primary);
-}
-
-.ai-recommend-entry {
-  border-top: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
-  margin-top: 4px;
-  padding-top: 12px;
-  cursor: pointer;
-  background: linear-gradient(135deg, rgba(20,184,166,0.10), rgba(168,85,247,0.10));
-  transition: background 200ms ease, color 200ms ease, transform 200ms ease;
-}
-.ai-recommend-entry:hover {
-  background: linear-gradient(135deg, rgba(20,184,166,0.20), rgba(168,85,247,0.20));
-  color: var(--text-primary);
-}
+/* (旧 .section-header / .filter-tab / .project-list-layout / .category-sidebar 样式已移至 App Shell 布局) */
 
 /* ===== AI Recommend Modal ===== */
 .ai-recommend-overlay {
@@ -2880,8 +3014,6 @@ body::before {
   .sidebar { width: 100% !important; max-width: 100% !important; max-height: 180px; border-right: none; border-bottom: 1px solid var(--border-color); }
   .resizer, .resizer-horizontal { display: none; }
   .code-panel { min-height: 280px; }
-  .category-sidebar { display: none; }
-  .project-list-layout { padding: 0 16px 48px; }
 }
 @media (max-width: 768px) {
   /* ===== 整体布局 ===== */
@@ -2892,20 +3024,40 @@ body::before {
   .toolbar-actions { gap: 2px; }
   .toolbar-btn { width: 40px; height: 40px; padding: 8px; }
 
+  /* ===== 三栏布局移动端适配 ===== */
+  .app-sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 99991;
+    width: 240px;
+    transform: translateX(-100%);
+    transition: transform 250ms ease;
+  }
+  body.sidebar-open .app-sidebar { transform: translateX(0); }
+  body.sidebar-open .sidebar-drawer-overlay { display: block; }
+  .app-filter {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    z-index: 99991;
+    width: 280px;
+    transform: translateX(100%);
+    transition: transform 250ms ease;
+    background: var(--bg-primary);
+  }
+  body.filter-open .app-filter { transform: translateX(0); }
+  body.filter-open .sidebar-drawer-overlay { display: block; }
+  .main-filter-toggle { display: flex; }
+  .sidebar-collapse-btn { display: none; }
+  .main-head { padding: 12px 16px 8px; }
+  .main-head h1 { font-size: 18px; }
+  .main-search input { width: 160px; font-size: 14px; }
+  .main-search kbd { display: none; }
+  .main-sub { padding: 0 16px 8px; }
+  .home-extras { padding: 0 16px; }
+
   /* ===== 首页适配 ===== */
   .home-top-row { flex-direction: column; gap: 16px; padding: 16px 16px 0; }
   .carousel { max-width: 100%; }
   .carousel-slide img { max-height: 240px; }
   .home-stats { flex-direction: row; flex-wrap: wrap; gap: 12px; justify-content: center; min-width: 0; }
-  .header-right { flex-wrap: wrap; gap: 8px; }
-  .hero-search { max-width: 100%; margin-left: 0; }
-  .hero-search input { font-size: 14px; padding: 8px 10px; width: 160px; }
-  .hero-search kbd { display: none; }
-  .section-header { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 16px; }
-  .section-header h2 { font-size: 16px; }
-  .filter-tabs { gap: 4px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .filter-tabs::-webkit-scrollbar { display: none; }
-  .filter-tab { font-size: 12px; padding: 6px 12px; white-space: nowrap; flex-shrink: 0; }
   .home-stats { padding: 8px 16px; flex-wrap: wrap; gap: 12px; font-size: 13px; }
   .home-top-row { padding: 16px 16px 0; }
 
@@ -2920,7 +3072,7 @@ body::before {
 
   /* ===== 底部导航栏 ===== */
   .mobile-bottom-nav { display: flex; }
-  .project-list-layout { padding-bottom: 64px; }
+  .app-main { padding-bottom: 0; }
   .home-stats { padding-bottom: 56px; }
 
   /* ===== 登录页单栏布局 ===== */
@@ -3426,15 +3578,8 @@ body::before {
     .admin-section { margin-bottom: 24px; }
   }
 
-  /* ========== 右上角按钮组 ========== */
-  .top-right-bar {
-    position: fixed; top: 12px; right: 12px;
-    z-index: 99997;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-direction: row-reverse;
-  }
+  /* ========== 按钮 (已移入侧栏底部) ========== */
+  .top-right-bar { display: none; }
 
   .user-menu-btn {
     padding: 6px 12px;
@@ -3460,7 +3605,7 @@ body::before {
   }
   .user-menu-btn.hidden { display: none; }
   .user-dropdown {
-    position: fixed; top: 56px; right: 12px;
+    position: fixed; bottom: 56px; left: 12px;
     z-index: 99998;
     background: color-mix(in srgb, var(--bg-secondary) 75%, transparent);
     backdrop-filter: blur(24px);
@@ -3522,50 +3667,7 @@ body::before {
   [data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
   .theme-toggle-btn .moon-icon { display: none; }
 
-  /* ===== 顶部导航栏 ===== */
-  .top-nav {
-    position: sticky; top: 0; z-index: 9998;
-    height: 56px;
-    background: color-mix(in srgb, var(--bg-secondary) 65%, transparent);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-    display: flex; align-items: center;
-    padding: 0 24px; gap: 8px;
-  }
-  .top-nav-brand {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 15px; font-weight: 700; color: var(--text-primary);
-    margin-right: 24px; white-space: nowrap;
-    font-family: var(--font-sans);
-  }
-  .top-nav-brand-logo {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: linear-gradient(135deg, #2dd4bf, #8b5cf6);
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 12px; font-weight: 700;
-    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-  }
-  .top-nav-links {
-    display: flex; align-items: center; gap: 2px; flex: 1;
-  }
-  .top-nav-link {
-    padding: 7px 16px; border-radius: 999px;
-    font-size: 13px; font-weight: 500;
-    color: var(--text-secondary); text-decoration: none;
-    transition: all 200ms ease; cursor: pointer;
-    white-space: nowrap;
-  }
-  .top-nav-link:hover {
-    color: var(--text-primary);
-    background: color-mix(in srgb, var(--bg-tertiary) 50%, transparent);
-  }
-  .top-nav-link.active {
-    color: #fff;
-    background: linear-gradient(135deg, #2dd4bf, #8b5cf6);
-    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
-  }
+  /* (旧 .top-nav 样式已移除，改用 .app-sidebar) */
 
   /* ===== 更新日志按钮 ===== */
   .changelog-btn {
@@ -4027,20 +4129,7 @@ body::before {
   </div>
 </div>
 
-<!-- ========== 右上角按钮组 ========== -->
-<div class="top-right-bar">
-  <button class="user-menu-btn hidden" id="userMenuBtn" title="用户菜单">
-    <span id="userMenuName" style="font-size:13px;font-weight:500;color:var(--text-primary)">用户</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-  </button>
-  <button class="changelog-btn" id="changelogBtn" title="更新日志">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-  </button>
-  <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)">
-    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-  </button>
-</div>
+<!-- ========== 用户下拉菜单（保持独立，由 JS 定位） ========== -->
 <div class="user-dropdown" id="userDropdown">
   <button class="user-dropdown-item" id="profileFromMenu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -4067,99 +4156,185 @@ body::before {
   </button>
 </div>
 
-<!-- ===== 顶部导航栏 ===== -->
-<div class="top-nav">
-  <div class="top-nav-brand">
-    <div class="top-nav-brand-logo">◈</div>
-    Code Explorer
-  </div>
-  <div class="top-nav-links">
-    <a class="top-nav-link active" href="/">首页</a>
-    <a class="top-nav-link" href="/console">API Key</a>
-    <a class="top-nav-link" href="/resources/">资源下载</a>
-    <a class="top-nav-link" href="/web-games/">网页游戏</a>
-    <a class="top-nav-link" href="/scratch">Scratch</a>
-    <a class="top-nav-link" href="/python/">Python 编程</a>
-    <a class="top-nav-link" href="/run/local">⚡ 本地运行</a>
-  </div>
-</div>
+<!-- 移动端抽屉遮罩 -->
+<div class="sidebar-drawer-overlay" id="drawerOverlay"></div>
 
-<!-- ==================== HOME PAGE ==================== -->
-<div class="home-page" id="homePage">
-  <div class="home-top-row">
-    <div class="carousel">
-      <div class="carousel-slides">
-        <div class="carousel-slide active">
-          <img src="/images/code_explorer.png" alt="Code Explorer">
-        </div>
-        <div class="carousel-slide">
-          <img src="/images/run_python.png" alt="Run Python">
-        </div>
-        <div class="carousel-slide">
-          <img src="/images/run_scratch.png" alt="Run Scratch">
-        </div>
+<!-- ==================== 三栏应用式布局 ==================== -->
+<div class="app-shell">
+
+  <!-- ====== 左侧导航栏 ====== -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-brand">
+      <span class="sidebar-logo">CE</span>
+      <span class="sidebar-brand-text">Code Explorer</span>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="折叠侧栏">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- 广场 -->
+      <div class="sidebar-group-label">广场</div>
+      <a class="sidebar-item active" data-view="plaza" id="navPlaza">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        <span class="sidebar-item-label">项目广场</span>
+        <span class="sidebar-badge" id="plazaCount">0</span>
+      </a>
+      <a class="sidebar-item" data-view="home" id="navHome">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span class="sidebar-item-label">首页 (轮播/最近/收藏)</span>
+      </a>
+      <a class="sidebar-item" data-view="resources" href="/resources/">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </span>
+        <span class="sidebar-item-label">资源下载</span>
+      </a>
+      <a class="sidebar-item" data-view="ai-asst" id="navAiAsst">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/></svg>
+        </span>
+        <span class="sidebar-item-label">AGENTS 手册</span>
+      </a>
+
+      <!-- 资源 -->
+      <div class="sidebar-group-label">资源</div>
+      <a class="sidebar-item" data-view="about" id="navAbout">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </span>
+        <span class="sidebar-item-label">关于</span>
+      </a>
+      <a class="sidebar-item" data-view="mindmap" id="navMindmap">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </span>
+        <span class="sidebar-item-label">思维导图</span>
+      </a>
+
+      <!-- 账户 -->
+      <div class="sidebar-group-label">账户</div>
+      <a class="sidebar-item" id="sidebarLogin">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span class="sidebar-item-label" id="sidebarLoginLabel">登录/注册</span>
+      </a>
+      <a class="sidebar-item" data-view="apikey" href="/console">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg>
+        </span>
+        <span class="sidebar-item-label">API 密钥</span>
+      </a>
+
+      <!-- 快捷链接 -->
+      <div class="sidebar-quick-links">
+        <a class="sidebar-quick-link" href="/web-games/">网页游戏</a>
+        <a class="sidebar-quick-link" href="/scratch">Scratch</a>
+        <a class="sidebar-quick-link" href="/python/">Python</a>
+        <a class="sidebar-quick-link" href="/run/local">本地运行</a>
       </div>
-      <div class="carousel-dots" id="carouselDots">
-        <span class="carousel-dot active" data-index="0"></span>
-        <span class="carousel-dot" data-index="1"></span>
-        <span class="carousel-dot" data-index="2"></span>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-icon">
+        <button class="user-menu-btn hidden" id="userMenuBtn" title="用户菜单">
+          <span id="userMenuName" style="font-size:12px;font-weight:500;color:var(--text-primary)">用户</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <button class="changelog-btn" id="changelogBtn" title="更新日志" style="width:32px;height:32px;border-radius:8px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </button>
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题 (Ctrl+T)" style="width:32px;height:32px;border-radius:8px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+      <div class="sidebar-version">v2.5.0</div>
+    </div>
+  </aside>
+
+  <!-- ====== 中间筛选器 ====== -->
+  <aside class="app-filter" id="appFilter">
+    <div class="filter-head">
+      <span>筛选器</span>
+      <button class="filter-toggle-btn" id="filterToggleBtn">隐藏筛选器</button>
+    </div>
+    <div class="filter-group" id="filterGroupType">
+      <div class="filter-group-head" id="filterGroupHead">
+        类型 <span class="caret">▾</span>
+      </div>
+      <div class="filter-group-body" id="filterTabs">
+        <button class="filter-pill active" data-filter="all">全部</button>
+        <button class="filter-pill" data-filter="web-game">网页游戏</button>
+        <button class="filter-pill" data-filter="game">游戏</button>
+        <button class="filter-pill" data-filter="ai">AI</button>
+        <button class="filter-pill" data-filter="tool">工具</button>
+        <button class="filter-pill" data-filter="other">其他</button>
+        <button class="filter-pill ai-pill" id="aiFilterTab" data-filter="__ai_asst__">✨ AI 助手</button>
       </div>
     </div>
-    <div class="home-stats" id="homeStats"></div>
-  </div>
+  </aside>
 
-  <!-- 最近访问区域 -->
-  <div class="recent-section" id="recentSection">
-    <div class="recent-header">
-      <h3>🕐 最近访问</h3>
-      <button class="recent-clear-btn" id="clearRecentBtn">清除记录</button>
-    </div>
-    <div class="recent-items" id="recentItems"></div>
-  </div>
-
-  <!-- 我的收藏区域 -->
-  <div class="recent-section" id="bookmarkSection">
-    <div class="recent-header">
-      <h3>⭐ 我的收藏</h3>
-      <button class="recent-clear-btn" id="clearBookmarkBtn">清除收藏</button>
-    </div>
-    <div class="recent-items" id="bookmarkItems"></div>
-  </div>
-
-  <div class="section-header">
-    <h2>项目列表</h2>
-    <div class="header-right">
-      <div class="hero-search" id="heroSearch">
-        <input type="text" id="heroSearchInput" placeholder="搜索项目或文件..." autocomplete="off">
+  <!-- ====== 右侧主内容 ====== -->
+  <main class="app-main" id="homePage">
+    <header class="main-head">
+      <h1>项目广场</h1>
+      <div class="main-search" id="heroSearch">
+        <input type="text" id="heroSearchInput" placeholder="输入项目名称或关键词搜索..." autocomplete="off">
         <kbd>Ctrl+P</kbd>
       </div>
-      <div class="filter-tabs" id="filterTabs">
-        <button class="filter-tab active" data-filter="all">全部</button>
-        <button class="filter-tab" data-filter="web-game">网页游戏</button>
-        <button class="filter-tab" data-filter="game">游戏</button>
-        <button class="filter-tab" data-filter="ai">AI</button>
-        <button class="filter-tab" data-filter="tool">工具</button>
-        <button class="filter-tab" data-filter="other">其他</button>
-        <button class="filter-tab ai-tab" id="aiFilterTab" data-filter="__ai_asst__">✨ AI 助手</button>
+      <button class="main-filter-toggle" id="mainFilterToggle">筛选</button>
+    </header>
+    <div class="main-sub">共 <span id="projectCount">0</span> 个项目</div>
+
+    <!-- 首页附加内容（轮播/最近/收藏，默认隐藏，点击侧栏「首页」显示） -->
+    <div class="home-extras" id="homeExtras" hidden>
+      <div class="home-top-row">
+        <div class="carousel">
+          <div class="carousel-slides">
+            <div class="carousel-slide active">
+              <img src="/images/code_explorer.png" alt="Code Explorer">
+            </div>
+            <div class="carousel-slide">
+              <img src="/images/run_python.png" alt="Run Python">
+            </div>
+            <div class="carousel-slide">
+              <img src="/images/run_scratch.png" alt="Run Scratch">
+            </div>
+          </div>
+          <div class="carousel-dots" id="carouselDots">
+            <span class="carousel-dot active" data-index="0"></span>
+            <span class="carousel-dot" data-index="1"></span>
+            <span class="carousel-dot" data-index="2"></span>
+          </div>
+        </div>
+        <div class="home-stats" id="homeStats"></div>
+      </div>
+
+      <!-- 最近访问区域 -->
+      <div class="recent-section" id="recentSection">
+        <div class="recent-header">
+          <h3>🕐 最近访问</h3>
+          <button class="recent-clear-btn" id="clearRecentBtn">清除记录</button>
+        </div>
+        <div class="recent-items" id="recentItems"></div>
+      </div>
+
+      <!-- 我的收藏区域 -->
+      <div class="recent-section" id="bookmarkSection">
+        <div class="recent-header">
+          <h3>⭐ 我的收藏</h3>
+          <button class="recent-clear-btn" id="clearBookmarkBtn">清除收藏</button>
+        </div>
+        <div class="recent-items" id="bookmarkItems"></div>
       </div>
     </div>
-  </div>
-  <div class="project-list-layout">
-    <div class="category-sidebar">
-      <div class="category-index" id="categoryIndex"></div>
-      <div class="category-index-item about-entry" id="aboutEntry">
-        <span class="category-index-icon">️</span>
-        <span class="category-index-label">关于</span>
-      </div>
-      <div class="category-index-item mindmap-entry" id="mindmapEntry">
-        <span class="category-index-icon"></span>
-        <span class="category-index-label">思维导图</span>
-      </div>
-      <div class="category-index-item ai-recommend-entry" id="aiAssistantEntry">
-        <span class="category-index-icon">✨</span>
-        <span class="category-index-label">AI 助手</span>
-      </div>
-    </div>
+
     <div class="cards-grid" id="cardsGrid">
       <div class="home-loading" style="grid-column:1/-1;padding:60px">
         <div class="spinner"></div>
@@ -4252,7 +4427,7 @@ body::before {
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 
 <!-- 移动端底部导航栏 -->
@@ -4948,57 +5123,9 @@ const CATEGORY_CONFIG = [
 ];
 
 function renderCategoryIndex(projects) {
-  const container = $('#categoryIndex');
-  if (!container) return;
-
-  const counts = {};
-  CATEGORY_CONFIG.forEach(c => { counts[c.filter] = 0; });
-
-  projects.forEach(p => {
-    if (p.type === 'popup-preview') {
-      counts['other'] = (counts['other'] || 0) + 1;
-    } else if (counts[p.type] !== undefined) {
-      counts[p.type]++;
-    } else {
-      counts['other'] = (counts['other'] || 0) + 1;
-    }
-  });
-
-  counts['all'] = projects.length;
-
-  const currentFilter = state.currentFilter || 'all';
-
-  container.innerHTML = CATEGORY_CONFIG.map(c => {
-    const isActive = c.filter === currentFilter;
-    return `
-      <div class="category-index-item ${isActive ? 'active' : ''}" data-filter="${c.filter}">
-        <span class="category-index-icon">${c.icon}</span>
-        <span class="category-index-label">${c.label}</span>
-        <span class="category-index-count">${counts[c.filter]}</span>
-      </div>
-    `;
-  }).join('');
-
-  container.querySelectorAll('.category-index-item').forEach(item => {
-    item.addEventListener('click', () => {
-      // 关闭 AI 助手页面
-      closeAIAssistant();
-      const filter = item.dataset.filter;
-      state.currentFilter = filter;
-
-      container.querySelectorAll('.category-index-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-
-      const tabs = $('#filterTabs');
-      if (tabs) {
-        tabs.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-        const tab = tabs.querySelector(`[data-filter="${filter}"]`);
-        if (tab) tab.classList.add('active');
-      }
-
-      renderCards(state.projects, filter, $('#heroSearchInput').value);
-    });
-  });
+  // 旧 category-sidebar 已移除，仅更新侧栏 badge 数量
+  const plazaCount = $('#plazaCount');
+  if (plazaCount) plazaCount.textContent = projects.length;
 }
 
 function renderCards(projects, filter = 'all', searchQuery = '') {
@@ -5015,6 +5142,10 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
     );
   }
   const grid = $('#cardsGrid');
+
+  // 更新项目数显示
+  const countEl = $('#projectCount');
+  if (countEl) countEl.textContent = filtered.length;
 
   if (filtered.length === 0) {
     grid.innerHTML = `<div class="home-loading" style="grid-column:1/-1;padding:60px"><span>没有匹配的项目</span></div>`;
@@ -6017,7 +6148,7 @@ $('#heroSearchInput').addEventListener('keydown', e => {
 document.getElementById('heroSearch').addEventListener('click', () => $('#heroSearchInput').focus());
 
 $('#filterTabs').addEventListener('click', e => {
-  if (!e.target.classList.contains('filter-tab')) return;
+  if (!e.target.classList.contains('filter-pill')) return;
   // 点击 AI 助手标签
   if (e.target.dataset.filter === '__ai_asst__') {
     openAIAssistant();
@@ -6025,16 +6156,12 @@ $('#filterTabs').addEventListener('click', e => {
   }
   // 关闭 AI 助手页面
   closeAIAssistant();
-  $('#filterTabs').querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  $('#filterTabs').querySelectorAll('.filter-pill').forEach(t => t.classList.remove('active'));
   e.target.classList.add('active');
   state.currentFilter = e.target.dataset.filter;
 
-  const idx = $('#categoryIndex');
-  if (idx) {
-    idx.querySelectorAll('.category-index-item').forEach(i => i.classList.remove('active'));
-    const item = idx.querySelector(`[data-filter="${state.currentFilter}"]`);
-    if (item) item.classList.add('active');
-  }
+  // 切换到项目广场视图
+  switchSidebarView('plaza');
 
   renderCards(state.projects, state.currentFilter, $('#heroSearchInput').value);
 });
@@ -6241,12 +6368,9 @@ function mbNavClick(page) {
   if (target) target.classList.add('active');
   // 根据页面类型执行操作
   if (page === 'home') {
-    // 关闭 AI 助手（如果打开）
-    if (document.getElementById('aiAsstPage').classList.contains('active')) {
-      closeAIAssistant();
-    }
-    document.getElementById('cardsGrid').style.display = 'grid';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // 切换到项目广场视图
+    switchSidebarView('plaza');
+    document.querySelector('.app-main').scrollTo({ top: 0, behavior: 'smooth' });
   } else if (page === 'about') {
     openAboutModal();
   } else if (page === 'mindmap') {
@@ -6270,14 +6394,14 @@ function openAIAssistant() {
   document.getElementById('cardsGrid').style.display = 'none';
   const page = document.getElementById('aiAsstPage');
   if (page) page.classList.add('active');
-  // 更新左侧分类索引高亮
-  document.querySelectorAll('.category-index-item').forEach(function(i) { i.classList.remove('active'); });
-  var entry = document.getElementById('aiAssistantEntry');
-  if (entry) entry.classList.add('active');
-  // 更新顶部 filter tabs：高亮 AI 助手按钮
+  // 更新侧栏导航高亮
+  document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
+  var navAi = document.getElementById('navAiAsst');
+  if (navAi) navAi.classList.add('active');
+  // 更新筛选器：高亮 AI 助手按钮
   var tabs = document.getElementById('filterTabs');
   if (tabs) {
-    tabs.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+    tabs.querySelectorAll('.filter-pill').forEach(function(t) { t.classList.remove('active'); });
     var aiTab = document.getElementById('aiFilterTab');
     if (aiTab) aiTab.classList.add('active');
   }
@@ -6285,6 +6409,9 @@ function openAIAssistant() {
   document.querySelectorAll('.mb-nav-item').forEach(function(i) { i.classList.remove('active'); });
   var mbAi = document.querySelector('.mb-nav-item[data-page="ai"]');
   if (mbAi) mbAi.classList.add('active');
+  // 隐藏首页附加内容
+  var extras = document.getElementById('homeExtras');
+  if (extras) extras.hidden = true;
   aiAsstInitModel();
   aiAsstLoadConvs();
   aiAsstSetupInput();
@@ -6299,12 +6426,14 @@ function closeAIAssistant() {
   // 恢复全部 filter 高亮，取消 AI 助手高亮
   var tabs = document.getElementById('filterTabs');
   if (tabs) {
-    tabs.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+    tabs.querySelectorAll('.filter-pill').forEach(function(t) { t.classList.remove('active'); });
   }
-  var allTab = document.querySelector('.filter-tab[data-filter="all"]');
+  var allTab = document.querySelector('.filter-pill[data-filter="all"]');
   if (allTab) allTab.classList.add('active');
-  var allItem = document.querySelector('.category-index-item[data-filter="all"]');
-  if (allItem) allItem.classList.add('active');
+  // 恢复侧栏到项目广场
+  document.querySelectorAll('.sidebar-item').forEach(function(i) { i.classList.remove('active'); });
+  var navPlaza = document.getElementById('navPlaza');
+  if (navPlaza) navPlaza.classList.add('active');
   // 恢复底部导航栏到首页
   document.querySelectorAll('.mb-nav-item').forEach(function(i) { i.classList.remove('active'); });
   var mbHome = document.querySelector('.mb-nav-item[data-page="home"]');
@@ -7323,6 +7452,9 @@ async function doUserLogin() {
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
       if (document.getElementById('userMenuName')) document.getElementById('userMenuName').textContent = d.user.username;
+      // 更新侧栏登录标签
+      var sLabel = document.getElementById('sidebarLoginLabel');
+      if (sLabel) sLabel.textContent = d.user.username;
       const isAdmin = d.user.role === 'admin';
       openAdminFromMenu.style.display = isAdmin ? '' : 'none';
       openInboxMenu.style.display = isAdmin ? '' : 'none';
@@ -7389,6 +7521,9 @@ async function doLogout() {
   hideLoginPage();
   userMenuBtn.classList.add('hidden');
   userDropdown.classList.remove('show');
+  // 恢复侧栏登录标签
+  var sLabel = document.getElementById('sidebarLoginLabel');
+  if (sLabel) sLabel.textContent = '登录/注册';
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
   document.getElementById('homePage').classList.add('active');
@@ -7717,16 +7852,134 @@ function toggleTheme() {
 themeToggleBtn.addEventListener('click', toggleTheme);
 const changelogBtn = document.getElementById('changelogBtn');
 if (changelogBtn) changelogBtn.addEventListener('click', openChangelogModal);
-const aboutEntry = document.getElementById('aboutEntry');
-if (aboutEntry) aboutEntry.addEventListener('click', openAboutModal);
-const mindmapEntry = document.getElementById('mindmapEntry');
-if (mindmapEntry) mindmapEntry.addEventListener('click', openMindmapModal);
-const aiRecommendEntry = document.getElementById('aiRecommendEntry');
-if (aiRecommendEntry) aiRecommendEntry.addEventListener('click', openAIRecommendModal);
-const aiAssistantEntry = document.getElementById('aiAssistantEntry');
-if (aiAssistantEntry) aiAssistantEntry.addEventListener('click', openAIAssistant);
+const navAbout = document.getElementById('navAbout');
+if (navAbout) navAbout.addEventListener('click', openAboutModal);
+const navMindmap = document.getElementById('navMindmap');
+if (navMindmap) navMindmap.addEventListener('click', openMindmapModal);
+const navAiAsst = document.getElementById('navAiAsst');
+if (navAiAsst) navAiAsst.addEventListener('click', openAIAssistant);
 const aiRecommendInput = document.getElementById('aiRecommendInput');
 if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
+
+// ===== 三栏布局交互 =====
+function switchSidebarView(view) {
+  const extras = $('#homeExtras');
+  const cardsGrid = $('#cardsGrid');
+  const aiPage = $('#aiAsstPage');
+  // 关闭 AI 助手（如打开）
+  if (view !== 'ai-asst' && aiPage.classList.contains('active')) {
+    closeAIAssistant();
+  }
+  if (view === 'plaza') {
+    if (extras) extras.hidden = true;
+    if (cardsGrid) cardsGrid.style.display = 'grid';
+    if (aiPage) aiPage.classList.remove('active');
+  } else if (view === 'home') {
+    if (extras) extras.hidden = false;
+    if (cardsGrid) cardsGrid.style.display = 'grid';
+    if (aiPage) aiPage.classList.remove('active');
+  } else if (view === 'ai-asst') {
+    if (extras) extras.hidden = true;
+    openAIAssistant();
+  }
+  // 更新侧栏高亮
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap' };
+  var navId = navMap[view];
+  if (navId) { var el = document.getElementById(navId); if (el) el.classList.add('active'); }
+}
+
+// 侧栏导航点击
+document.querySelectorAll('.sidebar-item[data-view]').forEach(item => {
+  item.addEventListener('click', e => {
+    if (item.hasAttribute('href') && item.getAttribute('data-view') !== 'plaza' && item.getAttribute('data-view') !== 'home' && item.getAttribute('data-view') !== 'ai-asst' && item.getAttribute('data-view') !== 'about' && item.getAttribute('data-view') !== 'mindmap') return;
+    e.preventDefault();
+    const view = item.dataset.view;
+    if (view) switchSidebarView(view);
+    // 移动端关闭抽屉
+    if (window.innerWidth <= 768) {
+      document.body.classList.remove('sidebar-open');
+    }
+  });
+});
+
+// 侧栏折叠
+const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
+if (sidebarCollapseBtn) {
+  // 恢复上次状态
+  try { if (localStorage.getItem('sidebar-collapsed') === '1') document.body.classList.add('sidebar-collapsed'); } catch {}
+  sidebarCollapseBtn.addEventListener('click', () => {
+    document.body.classList.toggle('sidebar-collapsed');
+    try { localStorage.setItem('sidebar-collapsed', document.body.classList.contains('sidebar-collapsed') ? '1' : '0'); } catch {}
+  });
+}
+
+// 筛选器隐藏/显示
+const filterToggleBtn = document.getElementById('filterToggleBtn');
+if (filterToggleBtn) {
+  try { if (localStorage.getItem('filter-hidden') === '1') document.body.classList.add('filter-hidden'); } catch {}
+  filterToggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('filter-hidden');
+    try { localStorage.setItem('filter-hidden', document.body.classList.contains('filter-hidden') ? '1' : '0'); } catch {}
+    filterToggleBtn.textContent = document.body.classList.contains('filter-hidden') ? '显示筛选器' : '隐藏筛选器';
+  });
+  // 初始化文本
+  filterToggleBtn.textContent = document.body.classList.contains('filter-hidden') ? '显示筛选器' : '隐藏筛选器';
+}
+
+// 筛选器折叠组
+const filterGroupHead = document.getElementById('filterGroupHead');
+if (filterGroupHead) {
+  filterGroupHead.addEventListener('click', () => {
+    const group = document.getElementById('filterGroupType');
+    if (group) group.classList.toggle('collapsed');
+  });
+}
+
+// 移动端抽屉
+const drawerOverlay = document.getElementById('drawerOverlay');
+const mainFilterToggle = document.getElementById('mainFilterToggle');
+if (drawerOverlay) {
+  drawerOverlay.addEventListener('click', () => {
+    document.body.classList.remove('sidebar-open');
+    document.body.classList.remove('filter-open');
+  });
+}
+if (mainFilterToggle) {
+  mainFilterToggle.addEventListener('click', () => {
+    document.body.classList.toggle('filter-open');
+  });
+}
+
+// 侧栏登录/注册按钮
+const sidebarLogin = document.getElementById('sidebarLogin');
+if (sidebarLogin) {
+  sidebarLogin.addEventListener('click', () => {
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    if (userMenuBtn && !userMenuBtn.classList.contains('hidden')) {
+      // 已登录，打开用户菜单
+      document.getElementById('userDropdown').classList.toggle('show');
+    } else {
+      // 未登录，打开登录页
+      showLoginPage();
+    }
+  });
+}
+
+// 移动端汉堡菜单（动态添加到 main-head）
+if (window.innerWidth <= 768) {
+  const mainHead = document.querySelector('.main-head');
+  if (mainHead && !document.getElementById('mobileMenuToggle')) {
+    const hamburger = document.createElement('button');
+    hamburger.id = 'mobileMenuToggle';
+    hamburger.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+    hamburger.style.cssText = 'width:36px;height:36px;border-radius:8px;background:transparent;border:1px solid var(--border-color);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);flex-shrink:0;';
+    mainHead.insertBefore(hamburger, mainHead.firstChild);
+    hamburger.addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-open');
+    });
+  }
+}
 
 // ===== 轮播 =====
 (function() {
@@ -8109,6 +8362,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (state.currentUser && document.getElementById('userMenuName')) {
           document.getElementById('userMenuName').textContent = state.currentUser.username;
         }
+        // 更新侧栏登录标签
+        var sLabel = document.getElementById('sidebarLoginLabel');
+        if (sLabel && state.currentUser) sLabel.textContent = state.currentUser.username;
         if (state.currentUser) {
           const isAdmin = state.currentUser.role === 'admin';
           openAdminFromMenu.style.display = isAdmin ? '' : 'none';
@@ -8154,6 +8410,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (state.currentUser && document.getElementById('userMenuName')) {
         document.getElementById('userMenuName').textContent = state.currentUser.username;
       }
+      // 更新侧栏登录标签
+      var sLabel2 = document.getElementById('sidebarLoginLabel');
+      if (sLabel2 && state.currentUser) sLabel2.textContent = state.currentUser.username;
       init();
     } else {
       showLoginPage();
