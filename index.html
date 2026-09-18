@@ -503,6 +503,11 @@ body.filter-hidden .app-filter {
   color: var(--text-secondary);
   cursor: pointer;
 }
+/* 桌面端筛选器被隐藏时，主区显示「筛选」按钮以便重新展开 */
+body.filter-hidden .main-filter-toggle {
+  display: inline-flex;
+  align-items: center;
+}
 .home-extras { padding: 0 24px; }
 
 /* 移动端侧栏抽屉遮罩 */
@@ -2541,6 +2546,127 @@ body.filter-hidden .app-filter {
   border: none;
   border-top: 1px solid var(--border-color);
   margin: 20px 0;
+}
+
+/* README Drawer - 项目卡片右侧弹出 */
+.readme-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+  z-index: 1000;
+}
+.readme-drawer-backdrop.show {
+  opacity: 1;
+  visibility: visible;
+}
+.readme-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 420px;
+  max-width: 92vw;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.35);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.readme-drawer.show {
+  transform: translateX(0);
+}
+.readme-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.readme-drawer-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.readme-drawer-sub {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+.readme-drawer-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.readme-drawer-close:hover {
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+}
+.readme-drawer-close svg {
+  width: 16px;
+  height: 16px;
+}
+.readme-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+.readme-drawer-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+.readme-drawer-footer {
+  flex-shrink: 0;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-color);
+}
+.readme-drawer-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.readme-drawer-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+.readme-drawer-generated-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
 }
 
 /* Sidebar */
@@ -4622,6 +4748,29 @@ body.filter-hidden .app-filter {
   </div>
 </div>
 
+<!-- ==================== README DRAWER (项目卡片右侧弹出) ==================== -->
+<div class="readme-drawer-backdrop" id="readmeDrawerBackdrop"></div>
+<div class="readme-drawer" id="readmeDrawer" aria-hidden="true">
+  <div class="readme-drawer-header">
+    <div>
+      <div class="readme-drawer-title" id="readmeDrawerTitle">项目说明</div>
+      <div class="readme-drawer-sub" id="readmeDrawerSub"></div>
+    </div>
+    <button class="readme-drawer-close" id="readmeDrawerClose" title="关闭">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="readme-drawer-body" id="readmeDrawerBody">
+    <div class="readme-drawer-loader">
+      <div class="spinner" style="margin-bottom:10px"></div>
+      <div>正在扫描 README...</div>
+    </div>
+  </div>
+  <div class="readme-drawer-footer">
+    <button class="readme-drawer-btn" id="readmeDrawerStart">开始</button>
+  </div>
+</div>
+
 <!-- Search overlay -->
 <div class="search-overlay" id="searchOverlay" style="display:none">
   <div class="search-dialog">
@@ -5251,7 +5400,7 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
       return;
     }
     const card = e.target.closest('.project-card');
-    if (card) openProject(card.dataset.project);
+    if (card) openProjectReadme(card.dataset.project);
   };
 }
 
@@ -5352,6 +5501,120 @@ function goHome() {
     $('#userMenuBtn').style.display = '';
     $('#userMenuBtn').classList.remove('hidden');
   }
+}
+
+// ==================== README DRAWER (项目卡片右侧弹出) ====================
+let _drawerActiveProject = null;
+
+function openProjectReadme(projectPath) {
+  const project = state.projects.find(p => p.path === projectPath);
+  if (!project) return;
+
+  // 系统文件禁止访问
+  if (project.type === 'system-file') {
+    showToast('系统文件，暂不支持访问');
+    return;
+  }
+
+  // 登录检查：网页游戏和弹出预览是公开的，其余需登录（与 openProject 保持一致）
+  const needsAuth = project.type !== 'web-game' && project.type !== 'popup-preview';
+  if (needsAuth && !state.isAuthenticated) {
+    showAuthPromptModal(project.name);
+    return;
+  }
+
+  _drawerActiveProject = project;
+  $('#readmeDrawerTitle').textContent = project.name;
+  $('#readmeDrawerSub').textContent = project.desc || '项目说明';
+  $('#readmeDrawerBody').innerHTML =
+    '<div class="readme-drawer-loader"><div class="spinner" style="margin-bottom:10px"></div><div>正在扫描 README...</div></div>';
+  $('#readmeDrawerBackdrop').classList.add('show');
+  $('#readmeDrawer').classList.add('show');
+  $('#readmeDrawer').setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  loadReadmeDrawer(project);
+}
+
+async function loadReadmeDrawer(project) {
+  try {
+    const res = await fetch(`/api/projects/readme?path=${encodeURIComponent(project.path)}`);
+    const data = await res.json();
+    const body = $('#readmeDrawerBody');
+    if (data.found && data.content) {
+      body.innerHTML = '<div class="readme-content"></div>';
+      const contentEl = body.firstElementChild;
+      if (typeof marked !== 'undefined') {
+        contentEl.innerHTML = marked.parse(data.content);
+      } else {
+        contentEl.innerHTML = '<pre style="white-space:pre-wrap;font-family:var(--font-mono);font-size:13px">' + esc(data.content) + '</pre>';
+      }
+    } else {
+      // 未找到 README：根据项目信息自动生成简介（仅预览展示，不写入项目目录）
+      body.innerHTML =
+        '<div class="readme-drawer-generated-notice">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M12 8v4m0 4h.01M10.29 3.86l-8.1 14A2 2 0 0 0 3.9 20.5h16.2a2 2 0 0 0 1.71-3.64l-8.1-14a2 2 0 0 0-3.42 0z"/></svg>' +
+        '该项目未提供 README，已自动生成一份简介。</div>' +
+        '<div class="readme-content">' + generatedReadmeHtml(project) + '</div>';
+    }
+  } catch (err) {
+    $('#readmeDrawerBody').innerHTML =
+      '<div class="readme-content"><p style="color:var(--accent-red)">加载 README 失败：' + esc(err.message) + '</p></div>';
+  }
+}
+
+function generatedReadmeHtml(project) {
+  const name = esc(project.name || '');
+  const desc = esc(project.desc || '暂无详细描述');
+  const typeLabel =
+    project.type === 'web-game' ? '网页游戏' :
+    project.type === 'popup-preview' ? '节日祝福' :
+    project.type === 'game' ? '游戏' :
+    project.type === 'ai' ? 'AI' :
+    project.type === 'tool' ? '工具' :
+    project.type === 'system-file' ? '系统文件' : '其他';
+  return '<h1>' + name + '</h1>' +
+    '<p>' + desc + '</p>' +
+    '<h2>项目简介</h2>' +
+    '<p>' + name + ' 是一个基于 Python 的' + typeLabel + '项目，提供简洁直观的交互体验。</p>' +
+    '<h2>功能特点</h2>' +
+    '<ul>' +
+      '<li>' + typeLabel + '交互体验</li>' +
+      '<li>轻量易用，启动即用</li>' +
+      '<li>代码结构清晰，便于阅读与扩展</li>' +
+    '</ul>' +
+    '<h2>文件信息</h2>' +
+    '<ul>' +
+      '<li>文件数量：' + (project.fileCount || '-') + '</li>' +
+      (project.mainFile ? '<li>主文件：<code>' + esc(project.mainFile) + '</code></li>' : '') +
+      (project.lastModified ? '<li>最近更新：' + esc(project.lastModified) + '</li>' : '') +
+    '</ul>';
+}
+
+function closeReadmeDrawer() {
+  $('#readmeDrawerBackdrop').classList.remove('show');
+  $('#readmeDrawer').classList.remove('show');
+  $('#readmeDrawer').setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+function initReadmeDrawer() {
+  $('#readmeDrawerClose').addEventListener('click', closeReadmeDrawer);
+  $('#readmeDrawerBackdrop').addEventListener('click', closeReadmeDrawer);
+  $('#readmeDrawerStart').addEventListener('click', function() {
+    const project = _drawerActiveProject;
+    closeReadmeDrawer();
+    if (project) openProject(project.path);
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && $('#readmeDrawer').classList.contains('show')) closeReadmeDrawer();
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initReadmeDrawer);
+} else {
+  initReadmeDrawer();
 }
 
 // ==================== POPUP PREVIEW ====================
@@ -7966,7 +8229,15 @@ if (drawerOverlay) {
 }
 if (mainFilterToggle) {
   mainFilterToggle.addEventListener('click', () => {
-    document.body.classList.toggle('filter-open');
+    if (window.innerWidth <= 768) {
+      // 移动端切换筛选器抽屉
+      document.body.classList.toggle('filter-open');
+    } else {
+      // 桌面端切换筛选器面板隐藏/显示
+      document.body.classList.toggle('filter-hidden');
+      try { localStorage.setItem('filter-hidden', document.body.classList.contains('filter-hidden') ? '1' : '0'); } catch {}
+      if (filterToggleBtn) filterToggleBtn.textContent = document.body.classList.contains('filter-hidden') ? '显示筛选器' : '隐藏筛选器';
+    }
   });
 }
 

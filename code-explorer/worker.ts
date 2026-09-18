@@ -775,6 +775,32 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     return resp;
   }
 
+  if (path === '/api/projects/readme') {
+    // 扫描项目 README：依次尝试常见大小写文件名，找不到则返回 found:false（由前端生成预览）
+    const projPath = url.searchParams.get('path') || '';
+    if (!projPath) return errorResponse('缺少 path 参数');
+    if (projPath.includes('..') || projPath.startsWith('/')) return errorResponse('访问被拒绝：路径越界', 403);
+    const readmeNames = ['README.md', 'readme.md', 'Readme.md', 'README.markdown', 'README.MD', 'readme.markdown'];
+    for (const name of readmeNames) {
+      const filePath = `${projPath}/${name}`;
+      try {
+        const ghResp = await fetchFromGitHub(filePath, env);
+        if (ghResp.ok) {
+          const content = await ghResp.text();
+          if (content && content.trim()) {
+            const result = { found: true, path: filePath, name, content };
+            const resp = jsonResponse(result);
+            addCacheHeader(resp.headers, 3600);
+            return resp;
+          }
+        }
+      } catch {}
+    }
+    const resp = jsonResponse({ found: false, path: projPath });
+    addCacheHeader(resp.headers, 360);
+    return resp;
+  }
+
   if (path === '/api/files/preview') {
     const filePath = url.searchParams.get('path') || '';
     if (!filePath) return errorResponse('缺少 path 参数');
