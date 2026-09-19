@@ -4591,7 +4591,7 @@ body.preview-active .app-preview { display: flex; }
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
-      <div class="sidebar-version">v2.6.1</div>
+      <div class="sidebar-version">v2.6.2</div>
     </div>
   </aside>
 
@@ -4997,7 +4997,6 @@ body.preview-active .app-preview { display: flex; }
   </div>
   <div class="readme-drawer-footer">
     <button class="readme-drawer-btn" id="readmeDrawerStart">开始</button>
-    <button class="readme-drawer-btn" id="readmeDrawerPreview" style="background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);margin-top:8px">预览</button>
     <button class="readme-drawer-btn" id="readmeDrawerDownload" style="background:transparent;color:var(--text-secondary);border:1px solid var(--border-color);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       下载为 ZIP
@@ -5842,11 +5841,6 @@ function initReadmeDrawer() {
     const project = _drawerActiveProject;
     closeReadmeDrawer();
     if (project) openProject(project.path);
-  });
-  $('#readmeDrawerPreview').addEventListener('click', function() {
-    const project = _drawerActiveProject;
-    closeReadmeDrawer();
-    if (project) openProjectPreview(project);
   });
   $('#readmeDrawerDownload').addEventListener('click', function() {
     const project = _drawerActiveProject;
@@ -8575,11 +8569,15 @@ function switchSidebarView(view) {
     if (extras) extras.hidden = true;
     openAIAssistant();
   } else if (view === 'preview') {
-    // 在线预览：显示引导页（无项目选中时）
+    // 在线编辑：直接进入编辑器空状态
     if (extras) extras.hidden = true;
     if (cardsGrid) cardsGrid.style.display = 'none';
     if (aiPage) aiPage.classList.remove('active');
-    showPreviewGuidance();
+    document.body.classList.add('editor-active');
+    $('#homePage').style.display = '';
+    $('#editorPage').style.display = '';
+    state.view = 'editor';
+    showEmptyState();
   }
   // 更新侧栏高亮
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
