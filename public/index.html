@@ -7256,7 +7256,13 @@ function aiAsstExportConv() {
     const exportData = {
       title: title,
       exportTime: new Date().toISOString(),
-      messages: AI_ASST.messages.map(m => ({ role: m.role, content: m.content }))
+      messages: AI_ASST.messages.map(m => {
+        const o = { role: m.role, content: m.content };
+        if (m.recommendations) o.recommendations = m.recommendations;
+        if (m.reasoning) o.reasoning = m.reasoning;
+        if (m.source) o.source = m.source;
+        return o;
+      })
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -7329,7 +7335,7 @@ async function aiAsstSend(prefilled) {
     aiAsstRemoveTyping();
       const data = await resp.json();
       if (data.success) {
-        AI_ASST.messages.push({ role: 'assistant', content: data.response || '', source: data.source });
+        AI_ASST.messages.push({ role: 'assistant', content: data.response || '', source: data.source, recommendations: data.recommendations || [], reasoning: data.reasoning || '' });
         aiAsstAddMsg('assistant', data.response, data.recommendations, data.reasoning, data.source);
       if (AI_ASST.currentConv !== null) {
         AI_ASST.conversations[AI_ASST.currentConv].messages = [...AI_ASST.messages];
@@ -7440,7 +7446,7 @@ function aiAsstRenderMsgs() {
       '</div></div>';
     return;
   }
-  AI_ASST.messages.forEach(m => aiAsstAddMsg(m.role, m.content));
+  AI_ASST.messages.forEach(m => aiAsstAddMsg(m.role, m.content, m.recommendations, m.reasoning, m.source));
 }
 
 function aiAsstClearAll() {
