@@ -303,7 +303,7 @@
         "type": "file",
         "path": "img/game_over.jfif",
         "ext": ".jfif",
-        "lastModified": 1785762144853
+        "lastModified": 1785830339946
       },
       {
         "name": "game_over.png",
@@ -487,62 +487,62 @@
     "type": "file",
     "path": "asseats.py",
     "ext": ".py",
-    "lastModified": 1785762144794
+    "lastModified": 1785830339939
   },
   {
     "name": "fix_boss_animation.py",
     "type": "file",
     "path": "fix_boss_animation.py",
     "ext": ".py",
-    "lastModified": 1785762144795
+    "lastModified": 1785830339940
   },
   {
     "name": "main.py",
     "type": "file",
     "path": "main.py",
     "ext": ".py",
-    "lastModified": 1785762144914
+    "lastModified": 1785830339948
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
     "ext": ".md",
-    "lastModified": 1785762144792
+    "lastModified": 1785830339937
   },
   {
     "name": "text.py",
     "type": "file",
     "path": "text.py",
     "ext": ".py",
-    "lastModified": 1785762144916
+    "lastModified": 1785830339949
   },
   {
     "name": "texts.py",
     "type": "file",
     "path": "texts.py",
     "ext": ".py",
-    "lastModified": 1785762144917
+    "lastModified": 1785830339950
   },
   {
     "name": "variables.txt",
     "type": "file",
     "path": "variables.txt",
     "ext": ".txt",
-    "lastModified": 1785762144918
+    "lastModified": 1785830339951
   },
   {
     "name": "variables_with_details.txt",
     "type": "file",
     "path": "variables_with_details.txt",
     "ext": ".txt",
-    "lastModified": 1785762144919
+    "lastModified": 1785830339953
   },
   {
     "name": "游戏变量列表.docx",
     "type": "file",
     "path": "游戏变量列表.docx",
     "ext": ".docx",
-    "lastModified": 1785762144921
+    "lastModified": 1785830339956
   }
 ]

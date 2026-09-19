@@ -1,0 +1,22 @@
+[
+  {
+    "name": "ai-usage:2026-09-18",
+    "expiration": 1789825390
+  },
+  {
+    "name": "cache:comment-counts",
+    "expiration": 1789779924
+  },
+  {
+    "name": "cache:file:Python ????/README.md",
+    "expiration": 1789781746
+  },
+  {
+    "name": "cache:likes",
+    "expiration": 1789779924
+  },
+  {
+    "name": "cache:project-meta-v2",
+    "expiration": 1789779925
+  }
+]

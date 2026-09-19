@@ -1,0 +1,576 @@
+﻿==================================================
+  构建 Cloudflare Pages 项目
+==================================================
+
+清理旧的 public 目录...
+
+步骤 1: 生成文件树和项目列表 JSON...
+=== Code Explorer 文件树生成器 ===
+
+根目录: E:\coding-zhou\Python
+输出目录: E:\coding-zhou\Python\code-explorer\public
+
+[1/3] 扫描项目文件夹...
+OK: 已生成 project-list.json (61 个项目)
+[2/3] 生成项目文件树...
+OK: 已生成 61 个项目文件树
+[3/3] 生成完整文件树...
+OK: 已生成 file-tree.json (54 个顶级目录)
+
+=== 完成 ===
+
+步骤 2: 复制首页 index.html...
+  复制: Python\index.html -> Python\public\index.html
+
+步骤 2.1: 复制控制台 console.html...
+  复制: Python\console.html -> Python\public\console.html
+
+步骤 2.3: 复制反馈页 feedback.html...
+  复制: Python\feedback.html -> Python\public\feedback.html
+
+步骤 2.2: 复制 images 目录...
+  复制: Python\code-explorer\public\images\code_explorer.png -> Python\public\images\code_explorer.png
+  复制: Python\code-explorer\public\images\covers\ai_poker.jpg -> Python\public\images\covers\ai_poker.jpg
+  复制: Python\code-explorer\public\images\covers\chinese_chess.jpg -> Python\public\images\covers\chinese_chess.jpg
+  复制: Python\code-explorer\public\images\covers\code_explorer.jpg -> Python\public\images\covers\code_explorer.jpg
+  复制: Python\code-explorer\public\images\covers\codinghou.jpg -> Python\public\images\covers\codinghou.jpg
+  复制: Python\code-explorer\public\images\covers\daily_motivation.jpg -> Python\public\images\covers\daily_motivation.jpg
+  复制: Python\code-explorer\public\images\covers\fathers_day.jpg -> Python\public\images\covers\fathers_day.jpg
+  复制: Python\code-explorer\public\images\covers\fathers_day_blessing.jpg -> Python\public\images\covers\fathers_day_blessing.jpg
+  复制: Python\code-explorer\public\images\covers\fun_games.jpg -> Python\public\images\covers\fun_games.jpg
+  复制: Python\code-explorer\public\images\covers\idiom_chain.jpg -> Python\public\images\covers\idiom_chain.jpg
+  复制: Python\code-explorer\public\images\covers\light_up_hometown.jpg -> Python\public\images\covers\light_up_hometown.jpg
+  复制: Python\code-explorer\public\images\covers\math_war.jpg -> Python\public\images\covers\math_war.jpg
+  复制: Python\code-explorer\public\images\covers\math_war_web.jpg -> Python\public\images\covers\math_war_web.jpg
+  复制: Python\code-explorer\public\images\covers\my_world.jpg -> Python\public\images\covers\my_world.jpg
+  复制: Python\code-explorer\public\images\covers\plane_war.jpg -> Python\public\images\covers\plane_war.jpg
+  复制: Python\code-explorer\public\images\covers\portfolio.jpg -> Python\public\images\covers\portfolio.jpg
+  复制: Python\code-explorer\public\images\covers\pvz_web.jpg -> Python\public\images\covers\pvz_web.jpg
+  复制: Python\code-explorer\public\images\covers\python_3d_shooter.jpg -> Python\public\images\covers\python_3d_shooter.jpg
+  复制: Python\code-explorer\public\images\covers\python_ai_chess.jpg -> Python\public\images\covers\python_ai_chess.jpg
+  复制: Python\code-explorer\public\images\covers\python_ai_image_gen.jpg -> Python\public\images\covers\python_ai_image_gen.jpg
+  复制: Python\code-explorer\public\images\covers\python_ai_practice.jpg -> Python\public\images\covers\python_ai_practice.jpg
+  复制: Python\code-explorer\public\images\covers\python_black_myth.jpg -> Python\public\images\covers\python_black_myth.jpg
+  复制: Python\code-explorer\public\images\covers\python_bus_query.jpg -> Python\public\images\covers\python_bus_query.jpg
+  复制: Python\code-explorer\public\images\covers\python_calculator.jpg -> Python\public\images\covers\python_calculator.jpg
+  复制: Python\code-explorer\public\images\covers\python_camera.jpg -> Python\public\images\covers\python_camera.jpg
+  复制: Python\code-explorer\public\images\covers\python_community.jpg -> Python\public\images\covers\python_community.jpg
+  复制: Python\code-explorer\public\images\covers\python_fruit_ninja.jpg -> Python\public\images\covers\python_fruit_ninja.jpg
+  复制: Python\code-explorer\public\images\covers\python_github_query.jpg -> Python\public\images\covers\python_github_query.jpg
+  复制: Python\code-explorer\public\images\covers\python_gomoku.jpg -> Python\public\images\covers\python_gomoku.jpg
+  复制: Python\code-explorer\public\images\covers\python_handwriting.jpg -> Python\public\images\covers\python_handwriting.jpg
+  复制: Python\code-explorer\public\images\covers\python_ice_fire.jpg -> Python\public\images\covers\python_ice_fire.jpg
+  复制: Python\code-explorer\public\images\covers\python_idiom_chain.jpg -> Python\public\images\covers\python_idiom_chain.jpg
+  复制: Python\code-explorer\public\images\covers\python_image_recognition.jpg -> Python\public\images\covers\python_image_recognition.jpg
+  复制: Python\code-explorer\public\images\covers\python_learning.jpg -> Python\public\images\covers\python_learning.jpg
+  复制: Python\code-explorer\public\images\covers\python_mc_farm.jpg -> Python\public\images\covers\python_mc_farm.jpg
+  复制: Python\code-explorer\public\images\covers\python_minecraft.jpg -> Python\public\images\covers\python_minecraft.jpg
+  复制: Python\code-explorer\public\images\covers\python_practice.jpg -> Python\public\images\covers\python_practice.jpg
+  复制: Python\code-explorer\public\images\covers\python_pvz.jpg -> Python\public\images\covers\python_pvz.jpg
+  复制: Python\code-explorer\public\images\covers\python_schedule.jpg -> Python\public\images\covers\python_schedule.jpg
+  复制: Python\code-explorer\public\images\covers\python_shooter.jpg -> Python\public\images\covers\python_shooter.jpg
+  复制: Python\code-explorer\public\images\covers\python_spell_check.jpg -> Python\public\images\covers\python_spell_check.jpg
+  复制: Python\code-explorer\public\images\covers\python_tower_defense.jpg -> Python\public\images\covers\python_tower_defense.jpg
+  复制: Python\code-explorer\public\images\covers\python_tts_ai.jpg -> Python\public\images\covers\python_tts_ai.jpg
+  复制: Python\code-explorer\public\images\covers\python_tts_offline.jpg -> Python\public\images\covers\python_tts_offline.jpg
+  复制: Python\code-explorer\public\images\covers\python_weather.jpg -> Python\public\images\covers\python_weather.jpg
+  复制: Python\code-explorer\public\images\covers\python_wechat_ai.jpg -> Python\public\images\covers\python_wechat_ai.jpg
+  复制: Python\code-explorer\public\images\covers\sheep_game.jpg -> Python\public\images\covers\sheep_game.jpg
+  复制: Python\code-explorer\public\images\covers\stroop_training.jpg -> Python\public\images\covers\stroop_training.jpg
+  复制: Python\code-explorer\public\images\covers\web_games.jpg -> Python\public\images\covers\web_games.jpg
+  复制: Python\code-explorer\public\images\covers\weird_ai_tools.jpg -> Python\public\images\covers\weird_ai_tools.jpg
+  复制: Python\code-explorer\public\images\run_python.png -> Python\public\images\run_python.png
+  复制: Python\code-explorer\public\images\run_scratch.png -> Python\public\images\run_scratch.png
+
+步骤 2.5: 复制 changelog.json...
+  复制: Python\changelog.json -> Python\public\changelog.json
+
+步骤 2.6: 复制 python 导航页...
+  复制: Python\code-explorer\python\index.html -> Python\public\python\index.html
+
+步骤 2.7: 复制 project-list.json...
+  复制: Python\code-explorer\public\project-list.json -> Python\public\project-list.json
+
+步骤 2.7: 复制 project-trees 目录...
+  复制: Python\code-explorer\public\project-trees\02 侯老师编程网站相关素材.json -> Python\public\project-trees\02 侯老师编程网站相关素材.json
+  复制: Python\code-explorer\public\project-trees\codinghou.json -> Python\public\project-trees\codinghou.json
+  复制: Python\code-explorer\public\project-trees\converter.json -> Python\public\project-trees\converter.json
+  复制: Python\code-explorer\public\project-trees\deepseek_v3_tokenizer.json -> Python\public\project-trees\deepseek_v3_tokenizer.json
+  复制: Python\code-explorer\public\project-trees\fathers-day.json -> Python\public\project-trees\fathers-day.json
+  复制: Python\code-explorer\public\project-trees\functions.json -> Python\public\project-trees\functions.json
+  复制: Python\code-explorer\public\project-trees\GitHub文件.json -> Python\public\project-trees\GitHub文件.json
+  复制: Python\code-explorer\public\project-trees\image-proxy.json -> Python\public\project-trees\image-proxy.json
+  复制: Python\code-explorer\public\project-trees\images.json -> Python\public\project-trees\images.json
+  复制: Python\code-explorer\public\project-trees\output.json -> Python\public\project-trees\output.json
+  复制: Python\code-explorer\public\project-trees\portfolio.json -> Python\public\project-trees\portfolio.json
+  复制: Python\code-explorer\public\project-trees\python 3D射击.json -> Python\public\project-trees\python 3D射击.json
+  复制: Python\code-explorer\public\project-trees\python AI实战.json -> Python\public\project-trees\python AI实战.json
+  复制: Python\code-explorer\public\project-trees\Python AI象棋对战 - 副本.json -> Python\public\project-trees\Python AI象棋对战 - 副本.json
+  复制: Python\code-explorer\public\project-trees\Python AI象棋对战.json -> Python\public\project-trees\Python AI象棋对战.json
+  复制: Python\code-explorer\public\project-trees\Python github项目查询.json -> Python\public\project-trees\Python github项目查询.json
+  复制: Python\code-explorer\public\project-trees\Python mc农场.json -> Python\public\project-trees\Python mc农场.json
+  复制: Python\code-explorer\public\project-trees\Python 公交车查询.json -> Python\public\project-trees\Python 公交车查询.json
+  复制: Python\code-explorer\public\project-trees\Python 单词纠错.json -> Python\public\project-trees\Python 单词纠错.json
+  复制: Python\code-explorer\public\project-trees\Python 塔防游戏.json -> Python\public\project-trees\Python 塔防游戏.json
+  复制: Python\code-explorer\public\project-trees\python 天气可视化.json -> Python\public\project-trees\python 天气可视化.json
+  复制: Python\code-explorer\public\project-trees\Python 微信自动回复AI.json -> Python\public\project-trees\Python 微信自动回复AI.json
+  复制: Python\code-explorer\public\project-trees\python 成语接龙.json -> Python\public\project-trees\python 成语接龙.json
+  复制: Python\code-explorer\public\project-trees\python 我的世界.json -> Python\public\project-trees\python 我的世界.json
+  复制: Python\code-explorer\public\project-trees\Python 手写识别.json -> Python\public\project-trees\Python 手写识别.json
+  复制: Python\code-explorer\public\project-trees\python 日程表.json -> Python\public\project-trees\python 日程表.json
+  复制: Python\code-explorer\public\project-trees\python 计算机.json -> Python\public\project-trees\python 计算机.json
+  复制: Python\code-explorer\public\project-trees\python 逗神文化管理.json -> Python\public\project-trees\python 逗神文化管理.json
+  复制: Python\code-explorer\public\project-trees\python-stroop训练.json -> Python\public\project-trees\python-stroop训练.json
+  复制: Python\code-explorer\public\project-trees\python-学习资料.json -> Python\public\project-trees\python-学习资料.json
+  复制: Python\code-explorer\public\project-trees\Python人生重开模拟器.json -> Python\public\project-trees\Python人生重开模拟器.json
+  复制: Python\code-explorer\public\project-trees\Python图像识别.json -> Python\public\project-trees\Python图像识别.json
+  复制: Python\code-explorer\public\project-trees\Python实践.json -> Python\public\project-trees\Python实践.json
+  复制: Python\code-explorer\public\project-trees\Python射击游戏.json -> Python\public\project-trees\Python射击游戏.json
+  复制: Python\code-explorer\public\project-trees\python文字转语音.json -> Python\public\project-trees\python文字转语音.json
+  复制: Python\code-explorer\public\project-trees\Python文字转语音无AI版.json -> Python\public\project-trees\Python文字转语音无AI版.json
+  复制: Python\code-explorer\public\project-trees\Python桌面宠物.json -> Python\public\project-trees\Python桌面宠物.json
+  复制: Python\code-explorer\public\project-trees\python植物大战僵尸.json -> Python\public\project-trees\python植物大战僵尸.json
+  复制: Python\code-explorer\public\project-trees\Python水果忍者.json -> Python\public\project-trees\Python水果忍者.json
+  复制: Python\code-explorer\public\project-trees\python海龟汤.json -> Python\public\project-trees\python海龟汤.json
+  复制: Python\code-explorer\public\project-trees\python父亲节祝福.json -> Python\public\project-trees\python父亲节祝福.json
+  复制: Python\code-explorer\public\project-trees\python连接摄像头.json -> Python\public\project-trees\python连接摄像头.json
+  复制: Python\code-explorer\public\project-trees\python黑神话悟空.json -> Python\public\project-trees\python黑神话悟空.json
+  复制: Python\code-explorer\public\project-trees\Scratch水果忍者-素材.json -> Python\public\project-trees\Scratch水果忍者-素材.json
+  复制: Python\code-explorer\public\project-trees\web-games__chinese-chess.json -> Python\public\project-trees\web-games__chinese-chess.json
+  复制: Python\code-explorer\public\project-trees\web-games__idiom-chain.json -> Python\public\project-trees\web-games__idiom-chain.json
+  复制: Python\code-explorer\public\project-trees\web-games__math-war.json -> Python\public\project-trees\web-games__math-war.json
+  复制: Python\code-explorer\public\project-trees\web-games__my-world.json -> Python\public\project-trees\web-games__my-world.json
+  复制: Python\code-explorer\public\project-trees\web-games__plane-war.json -> Python\public\project-trees\web-games__plane-war.json
+  复制: Python\code-explorer\public\project-trees\web-games__pvz_tmp.json -> Python\public\project-trees\web-games__pvz_tmp.json
+  复制: Python\code-explorer\public\project-trees\web-games__shared.json -> Python\public\project-trees\web-games__shared.json
+  复制: Python\code-explorer\public\project-trees\workbody.json -> Python\public\project-trees\workbody.json
+  复制: Python\code-explorer\public\project-trees\动物消消乐.json -> Python\public\project-trees\动物消消乐.json
+  复制: Python\code-explorer\public\project-trees\口算战争.json -> Python\public\project-trees\口算战争.json
+  复制: Python\code-explorer\public\project-trees\坦克大战ai版.json -> Python\public\project-trees\坦克大战ai版.json
+  复制: Python\code-explorer\public\project-trees\奇奇怪怪的AI功能.json -> Python\public\project-trees\奇奇怪怪的AI功能.json
+  复制: Python\code-explorer\public\project-trees\学习资料.json -> Python\public\project-trees\学习资料.json
+  复制: Python\code-explorer\public\project-trees\快捷键操作.json -> Python\public\project-trees\快捷键操作.json
+  复制: Python\code-explorer\public\project-trees\每日励志语句.json -> Python\public\project-trees\每日励志语句.json
+  复制: Python\code-explorer\public\project-trees\趣味小游戏.json -> Python\public\project-trees\趣味小游戏.json
+  复制: Python\code-explorer\public\project-trees\逗神文化管理.json -> Python\public\project-trees\逗神文化管理.json
+
+步骤 3: 复制 web-games 目录...
+  复制: Python\web-games\chinese-chess\index.html -> Python\public\web-games\chinese-chess\index.html
+  复制: Python\web-games\chinese-chess\README.md -> Python\public\web-games\chinese-chess\README.md
+  复制: Python\web-games\idiom-chain\index.html -> Python\public\web-games\idiom-chain\index.html
+  复制: Python\web-games\idiom-chain\README.md -> Python\public\web-games\idiom-chain\README.md
+  复制: Python\web-games\images\chinese-chess-cover.jpeg -> Python\public\web-games\images\chinese-chess-cover.jpeg
+  复制: Python\web-games\images\idiom-chain-cover.jpeg -> Python\public\web-games\images\idiom-chain-cover.jpeg
+  复制: Python\web-games\images\math-war-cover.jpeg -> Python\public\web-games\images\math-war-cover.jpeg
+  复制: Python\web-games\images\my-world-cover.jpeg -> Python\public\web-games\images\my-world-cover.jpeg
+  复制: Python\web-games\images\plane-war-cover.jpeg -> Python\public\web-games\images\plane-war-cover.jpeg
+  复制: Python\web-games\images\pvz-cover.jpeg -> Python\public\web-games\images\pvz-cover.jpeg
+  复制: Python\web-games\index.html -> Python\public\web-games\index.html
+  复制: Python\web-games\math-war\index.html -> Python\public\web-games\math-war\index.html
+  复制: Python\web-games\math-war\README.md -> Python\public\web-games\math-war\README.md
+  复制: Python\web-games\my-world\index.html -> Python\public\web-games\my-world\index.html
+  复制: Python\web-games\my-world\README.md -> Python\public\web-games\my-world\README.md
+  复制: Python\web-games\plane-war\index.html -> Python\public\web-games\plane-war\index.html
+  复制: Python\web-games\plane-war\README.md -> Python\public\web-games\plane-war\README.md
+  复制: Python\web-games\pvz_tmp\background.js -> Python\public\web-games\pvz_tmp\background.js
+  复制: Python\web-games\pvz_tmp\game\asp\NOTE.md -> Python\public\web-games\pvz_tmp\game\asp\NOTE.md
+  复制: Python\web-games\pvz_tmp\game\asp\SaveUserPosition.asp -> Python\public\web-games\pvz_tmp\game\asp\SaveUserPosition.asp
+  复制: Python\web-games\pvz_tmp\game\asp\UserSave.asp -> Python\public\web-games\pvz_tmp\game\asp\UserSave.asp
+  复制: Python\web-games\pvz_tmp\game\audio\ZombiesOnYourLawn.mp3‎ -> Python\public\web-games\pvz_tmp\game\audio\ZombiesOnYourLawn.mp3‎
+  复制: Python\web-games\pvz_tmp\game\cl.html -> Python\public\web-games\pvz_tmp\game\cl.html
+  复制: Python\web-games\pvz_tmp\game\componenttester.html -> Python\public\web-games\pvz_tmp\game\componenttester.html
+  复制: Python\web-games\pvz_tmp\game\Custom.css -> Python\public\web-games\pvz_tmp\game\Custom.css
+  复制: Python\web-games\pvz_tmp\game\iframe.html -> Python\public\web-games\pvz_tmp\game\iframe.html
+  复制: Python\web-games\pvz_tmp\game\images\interface\Cursor.cur -> Python\public\web-games\pvz_tmp\game\images\interface\Cursor.cur
+  复制: Python\web-games\pvz_tmp\game\images\interface\desktop.ini -> Python\public\web-games\pvz_tmp\game\images\interface\desktop.ini
+  复制: Python\web-games\pvz_tmp\game\images\interface\FinalWave.png -> Python\public\web-games\pvz_tmp\game\images\interface\FinalWave.png
+  复制: Python\web-games\pvz_tmp\game\images\interface\FinalWave.psd -> Python\public\web-games\pvz_tmp\game\images\interface\FinalWave.psd
+  复制: Python\web-games\pvz_tmp\game\images\interface\Help.png -> Python\public\web-games\pvz_tmp\game\images\interface\Help.png
+  复制: Python\web-games\pvz_tmp\game\images\interface\Help.psd -> Python\public\web-games\pvz_tmp\game\images\interface\Help.psd
+  复制: Python\web-games\pvz_tmp\game\images\interface\Logo.png -> Python\public\web-games\pvz_tmp\game\images\interface\Logo.png
+  复制: Python\web-games\pvz_tmp\game\images\interface\Logo.psd -> Python\public\web-games\pvz_tmp\game\images\interface\Logo.psd
+  复制: Python\web-games\pvz_tmp\game\images\interface\Pointer.cur -> Python\public\web-games\pvz_tmp\game\images\interface\Pointer.cur
+  复制: Python\web-games\pvz_tmp\game\images\interface\Surface.png -> Python\public\web-games\pvz_tmp\game\images\interface\Surface.png
+  复制: Python\web-games\pvz_tmp\game\images\interface\Surface.psd -> Python\public\web-games\pvz_tmp\game\images\interface\Surface.psd
+  复制: Python\web-games\pvz_tmp\game\images\interface\TA.png -> Python\public\web-games\pvz_tmp\game\images\interface\TA.png
+  复制: Python\web-games\pvz_tmp\game\images\interface\TA.psd -> Python\public\web-games\pvz_tmp\game\images\interface\TA.psd
+  复制: Python\web-games\pvz_tmp\game\images\interface\TAWIN.png -> Python\public\web-games\pvz_tmp\game\images\interface\TAWIN.png
+  复制: Python\web-games\pvz_tmp\game\images\interface\TAWIN.psd -> Python\public\web-games\pvz_tmp\game\images\interface\TAWIN.psd
+  复制: Python\web-games\pvz_tmp\game\images\interface\ZombieNoteLG.png -> Python\public\web-games\pvz_tmp\game\images\interface\ZombieNoteLG.png
+  复制: Python\web-games\pvz_tmp\game\images\interface\ZombieNoteLG.psd -> Python\public\web-games\pvz_tmp\game\images\interface\ZombieNoteLG.psd
+  复制: Python\web-games\pvz_tmp\game\images\interface\ΘóäσèáΦ╜╜.png -> Python\public\web-games\pvz_tmp\game\images\interface\ΘóäσèáΦ╜╜.png
+  复制: Python\web-games\pvz_tmp\game\images\interface\ΘóäσèáΦ╜╜.psd -> Python\public\web-games\pvz_tmp\game\images\interface\ΘóäσèáΦ╜╜.psd
+  复制: Python\web-games\pvz_tmp\game\images\Zombies\CX\v.html -> Python\public\web-games\pvz_tmp\game\images\Zombies\CX\v.html
+  复制: Python\web-games\pvz_tmp\game\index.html -> Python\public\web-games\pvz_tmp\game\index.html
+  复制: Python\web-games\pvz_tmp\game\js\Cfunction.js -> Python\public\web-games\pvz_tmp\game\js\Cfunction.js
+  复制: Python\web-games\pvz_tmp\game\js\Cheatcodes.js -> Python\public\web-games\pvz_tmp\game\js\Cheatcodes.js
+  复制: Python\web-games\pvz_tmp\game\js\CPlants.js -> Python\public\web-games\pvz_tmp\game\js\CPlants.js
+  复制: Python\web-games\pvz_tmp\game\js\Custom.js -> Python\public\web-games\pvz_tmp\game\js\Custom.js
+  复制: Python\web-games\pvz_tmp\game\js\CZombie.js -> Python\public\web-games\pvz_tmp\game\js\CZombie.js
+  复制: Python\web-games\pvz_tmp\game\js\Debug.js -> Python\public\web-games\pvz_tmp\game\js\Debug.js
+  复制: Python\web-games\pvz_tmp\game\js\IZombie.js -> Python\public\web-games\pvz_tmp\game\js\IZombie.js
+  复制: Python\web-games\pvz_tmp\game\js\Menus.js -> Python\public\web-games\pvz_tmp\game\js\Menus.js
+  复制: Python\web-games\pvz_tmp\game\js\msgpack.min.js -> Python\public\web-games\pvz_tmp\game\js\msgpack.min.js
+  复制: Python\web-games\pvz_tmp\game\js\pako.js -> Python\public\web-games\pvz_tmp\game\js\pako.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oBalloon.js -> Python\public\web-games\pvz_tmp\game\js\plants\oBalloon.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oBigChomper.js -> Python\public\web-games\pvz_tmp\game\js\plants\oBigChomper.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oBlover.js -> Python\public\web-games\pvz_tmp\game\js\plants\oBlover.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oBoomNutBowling.js -> Python\public\web-games\pvz_tmp\game\js\plants\oBoomNutBowling.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oBrains.js -> Python\public\web-games\pvz_tmp\game\js\plants\oBrains.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oCactus.js -> Python\public\web-games\pvz_tmp\game\js\plants\oCactus.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oCattail.js -> Python\public\web-games\pvz_tmp\game\js\plants\oCattail.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oCFlowerPot.js -> Python\public\web-games\pvz_tmp\game\js\plants\oCFlowerPot.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oCherryBomb.js -> Python\public\web-games\pvz_tmp\game\js\plants\oCherryBomb.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oChomper.js -> Python\public\web-games\pvz_tmp\game\js\plants\oChomper.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oCleaner.js -> Python\public\web-games\pvz_tmp\game\js\plants\oCleaner.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oCleaner1.js -> Python\public\web-games\pvz_tmp\game\js\plants\oCleaner1.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oCoffeeBean.js -> Python\public\web-games\pvz_tmp\game\js\plants\oCoffeeBean.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oDoomShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oDoomShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oFlamesMushroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oFlamesMushroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oFlowerPot.js -> Python\public\web-games\pvz_tmp\game\js\plants\oFlowerPot.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oFlowerVase.js -> Python\public\web-games\pvz_tmp\game\js\plants\oFlowerVase.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oFumeShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oFumeShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oGarlic.js -> Python\public\web-games\pvz_tmp\game\js\plants\oGarlic.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oGatlingPea.js -> Python\public\web-games\pvz_tmp\game\js\plants\oGatlingPea.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oGloomShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oGloomShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oGoldenPrize.js -> Python\public\web-games\pvz_tmp\game\js\plants\oGoldenPrize.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oGraveBuster.js -> Python\public\web-games\pvz_tmp\game\js\plants\oGraveBuster.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oGun.js -> Python\public\web-games\pvz_tmp\game\js\plants\oGun.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oHugeNutBowling.js -> Python\public\web-games\pvz_tmp\game\js\plants\oHugeNutBowling.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oHypnoShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oHypnoShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oIceFumeShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oIceFumeShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oIceShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oIceShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oILilyPad.js -> Python\public\web-games\pvz_tmp\game\js\plants\oILilyPad.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oIPotatoMine.js -> Python\public\web-games\pvz_tmp\game\js\plants\oIPotatoMine.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oJalapeno.js -> Python\public\web-games\pvz_tmp\game\js\plants\oJalapeno.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oLaserBean.js -> Python\public\web-games\pvz_tmp\game\js\plants\oLaserBean.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oLawnCleaner.js -> Python\public\web-games\pvz_tmp\game\js\plants\oLawnCleaner.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oLilyPad.js -> Python\public\web-games\pvz_tmp\game\js\plants\oLilyPad.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oLilyPad1.js -> Python\public\web-games\pvz_tmp\game\js\plants\oLilyPad1.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oLing.js -> Python\public\web-games\pvz_tmp\game\js\plants\oLing.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oLotusRoot.js -> Python\public\web-games\pvz_tmp\game\js\plants\oLotusRoot.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oMagneticmuShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oMagneticmuShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oMagnetShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oMagnetShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oNutBowling.js -> Python\public\web-games\pvz_tmp\game\js\plants\oNutBowling.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oOG.js -> Python\public\web-games\pvz_tmp\game\js\plants\oOG.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oOxygen.js -> Python\public\web-games\pvz_tmp\game\js\plants\oOxygen.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oPeashooter.js -> Python\public\web-games\pvz_tmp\game\js\plants\oPeashooter.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oPlantern.js -> Python\public\web-games\pvz_tmp\game\js\plants\oPlantern.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oPoolCleaner.js -> Python\public\web-games\pvz_tmp\game\js\plants\oPoolCleaner.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oPotatoMine.js -> Python\public\web-games\pvz_tmp\game\js\plants\oPotatoMine.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oPuffShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oPuffShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oPumpkinHead.js -> Python\public\web-games\pvz_tmp\game\js\plants\oPumpkinHead.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oRepeater.js -> Python\public\web-games\pvz_tmp\game\js\plants\oRepeater.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oRepeater2.js -> Python\public\web-games\pvz_tmp\game\js\plants\oRepeater2.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oScaredyShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oScaredyShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeaAnemone.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeaAnemone.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeaShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeaShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedBlover.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedBlover.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedCactus.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedCactus.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedCherryBomb.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedCherryBomb.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedChomper.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedChomper.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedDoomShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedDoomShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedFumeShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedFumeShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedGarlic.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedGarlic.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedGloomShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedGloomShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedHypnoShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedHypnoShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedIceShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedIceShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedJalapeno.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedJalapeno.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedLilyPad.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedLilyPad.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedPeashooter.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedPeashooter.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedPlantern.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedPlantern.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedPotatoMine.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedPotatoMine.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedPuffShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedPuffShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedPumpkinHead.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedPumpkinHead.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedRepeater.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedRepeater.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedRepeater2.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedRepeater2.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedScaredyShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedScaredyShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedSeaShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedSeaShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedSnowPea.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedSnowPea.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedSpikeweed.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedSpikeweed.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedSquash.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedSquash.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedStarfruit.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedStarfruit.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedTallNut.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedTallNut.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedTangleKelp.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedTangleKelp.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedThreepeater.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedThreepeater.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedTorchwood.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedTorchwood.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSeedWallNut.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSeedWallNut.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oShovel.js -> Python\public\web-games\pvz_tmp\game\js\plants\oShovel.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSnowPea.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSnowPea.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSnowRepeater.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSnowRepeater.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSpikerock.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSpikerock.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSpikeweed.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSpikeweed.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSplitPea.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSplitPea.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSquash.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSquash.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\ostar.js -> Python\public\web-games\pvz_tmp\game\js\plants\ostar.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\ostar1.js -> Python\public\web-games\pvz_tmp\game\js\plants\ostar1.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oStarfruit.js -> Python\public\web-games\pvz_tmp\game\js\plants\oStarfruit.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSunFlower.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSunFlower.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oSunShroom.js -> Python\public\web-games\pvz_tmp\game\js\plants\oSunShroom.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oTallNut.js -> Python\public\web-games\pvz_tmp\game\js\plants\oTallNut.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oTangleKlep.js -> Python\public\web-games\pvz_tmp\game\js\plants\oTangleKlep.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oTenManNut.js -> Python\public\web-games\pvz_tmp\game\js\plants\oTenManNut.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oThreepeater.js -> Python\public\web-games\pvz_tmp\game\js\plants\oThreepeater.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oTorchwood.js -> Python\public\web-games\pvz_tmp\game\js\plants\oTorchwood.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oTTS.js -> Python\public\web-games\pvz_tmp\game\js\plants\oTTS.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oTwinSunflower.js -> Python\public\web-games\pvz_tmp\game\js\plants\oTwinSunflower.js
+  复制: Python\web-games\pvz_tmp\game\js\plants\oWallNut.js -> Python\public\web-games\pvz_tmp\game\js\plants\oWallNut.js
+  复制: Python\web-games\pvz_tmp\game\js\StorageUtil.js -> Python\public\web-games\pvz_tmp\game\js\StorageUtil.js
+  复制: Python\web-games\pvz_tmp\game\js\tweakpane.min.js -> Python\public\web-games\pvz_tmp\game\js\tweakpane.min.js
+  复制: Python\web-games\pvz_tmp\game\js\WebComponents.js -> Python\public\web-games\pvz_tmp\game\js\WebComponents.js
+  复制: Python\web-games\pvz_tmp\game\js\Welcome.js -> Python\public\web-games\pvz_tmp\game\js\Welcome.js
+  复制: Python\web-games\pvz_tmp\game\level\0.js -> Python\public\web-games\pvz_tmp\game\level\0.js
+  复制: Python\web-games\pvz_tmp\game\level\1.js -> Python\public\web-games\pvz_tmp\game\level\1.js
+  复制: Python\web-games\pvz_tmp\game\level\10.js -> Python\public\web-games\pvz_tmp\game\level\10.js
+  复制: Python\web-games\pvz_tmp\game\level\100.js -> Python\public\web-games\pvz_tmp\game\level\100.js
+  复制: Python\web-games\pvz_tmp\game\level\101.js -> Python\public\web-games\pvz_tmp\game\level\101.js
+  复制: Python\web-games\pvz_tmp\game\level\102.js -> Python\public\web-games\pvz_tmp\game\level\102.js
+  复制: Python\web-games\pvz_tmp\game\level\103.js -> Python\public\web-games\pvz_tmp\game\level\103.js
+  复制: Python\web-games\pvz_tmp\game\level\104.js -> Python\public\web-games\pvz_tmp\game\level\104.js
+  复制: Python\web-games\pvz_tmp\game\level\105.js -> Python\public\web-games\pvz_tmp\game\level\105.js
+  复制: Python\web-games\pvz_tmp\game\level\106.js -> Python\public\web-games\pvz_tmp\game\level\106.js
+  复制: Python\web-games\pvz_tmp\game\level\107.js -> Python\public\web-games\pvz_tmp\game\level\107.js
+  复制: Python\web-games\pvz_tmp\game\level\108.js -> Python\public\web-games\pvz_tmp\game\level\108.js
+  复制: Python\web-games\pvz_tmp\game\level\109.js -> Python\public\web-games\pvz_tmp\game\level\109.js
+  复制: Python\web-games\pvz_tmp\game\level\11.js -> Python\public\web-games\pvz_tmp\game\level\11.js
+  复制: Python\web-games\pvz_tmp\game\level\110.js -> Python\public\web-games\pvz_tmp\game\level\110.js
+  复制: Python\web-games\pvz_tmp\game\level\111.js -> Python\public\web-games\pvz_tmp\game\level\111.js
+  复制: Python\web-games\pvz_tmp\game\level\112.js -> Python\public\web-games\pvz_tmp\game\level\112.js
+  复制: Python\web-games\pvz_tmp\game\level\12.js -> Python\public\web-games\pvz_tmp\game\level\12.js
+  复制: Python\web-games\pvz_tmp\game\level\13.js -> Python\public\web-games\pvz_tmp\game\level\13.js
+  复制: Python\web-games\pvz_tmp\game\level\14.js -> Python\public\web-games\pvz_tmp\game\level\14.js
+  复制: Python\web-games\pvz_tmp\game\level\15.js -> Python\public\web-games\pvz_tmp\game\level\15.js
+  复制: Python\web-games\pvz_tmp\game\level\150.js -> Python\public\web-games\pvz_tmp\game\level\150.js
+  复制: Python\web-games\pvz_tmp\game\level\151.js -> Python\public\web-games\pvz_tmp\game\level\151.js
+  复制: Python\web-games\pvz_tmp\game\level\152.js -> Python\public\web-games\pvz_tmp\game\level\152.js
+  复制: Python\web-games\pvz_tmp\game\level\153.js -> Python\public\web-games\pvz_tmp\game\level\153.js
+  复制: Python\web-games\pvz_tmp\game\level\154.js -> Python\public\web-games\pvz_tmp\game\level\154.js
+  复制: Python\web-games\pvz_tmp\game\level\155.js -> Python\public\web-games\pvz_tmp\game\level\155.js
+  复制: Python\web-games\pvz_tmp\game\level\156.js -> Python\public\web-games\pvz_tmp\game\level\156.js
+  复制: Python\web-games\pvz_tmp\game\level\157.js -> Python\public\web-games\pvz_tmp\game\level\157.js
+  复制: Python\web-games\pvz_tmp\game\level\158.js -> Python\public\web-games\pvz_tmp\game\level\158.js
+  复制: Python\web-games\pvz_tmp\game\level\159.js -> Python\public\web-games\pvz_tmp\game\level\159.js
+  复制: Python\web-games\pvz_tmp\game\level\16.js -> Python\public\web-games\pvz_tmp\game\level\16.js
+  复制: Python\web-games\pvz_tmp\game\level\160.js -> Python\public\web-games\pvz_tmp\game\level\160.js
+  复制: Python\web-games\pvz_tmp\game\level\161.js -> Python\public\web-games\pvz_tmp\game\level\161.js
+  复制: Python\web-games\pvz_tmp\game\level\162.js -> Python\public\web-games\pvz_tmp\game\level\162.js
+  复制: Python\web-games\pvz_tmp\game\level\163.js -> Python\public\web-games\pvz_tmp\game\level\163.js
+  复制: Python\web-games\pvz_tmp\game\level\164.js -> Python\public\web-games\pvz_tmp\game\level\164.js
+  复制: Python\web-games\pvz_tmp\game\level\165.js -> Python\public\web-games\pvz_tmp\game\level\165.js
+  复制: Python\web-games\pvz_tmp\game\level\166.js -> Python\public\web-games\pvz_tmp\game\level\166.js
+  复制: Python\web-games\pvz_tmp\game\level\167.js -> Python\public\web-games\pvz_tmp\game\level\167.js
+  复制: Python\web-games\pvz_tmp\game\level\168.js -> Python\public\web-games\pvz_tmp\game\level\168.js
+  复制: Python\web-games\pvz_tmp\game\level\169.js -> Python\public\web-games\pvz_tmp\game\level\169.js
+  复制: Python\web-games\pvz_tmp\game\level\17.js -> Python\public\web-games\pvz_tmp\game\level\17.js
+  复制: Python\web-games\pvz_tmp\game\level\170.js -> Python\public\web-games\pvz_tmp\game\level\170.js
+  复制: Python\web-games\pvz_tmp\game\level\171.js -> Python\public\web-games\pvz_tmp\game\level\171.js
+  复制: Python\web-games\pvz_tmp\game\level\172.js -> Python\public\web-games\pvz_tmp\game\level\172.js
+  复制: Python\web-games\pvz_tmp\game\level\173.js -> Python\public\web-games\pvz_tmp\game\level\173.js
+  复制: Python\web-games\pvz_tmp\game\level\174.js -> Python\public\web-games\pvz_tmp\game\level\174.js
+  复制: Python\web-games\pvz_tmp\game\level\175.js -> Python\public\web-games\pvz_tmp\game\level\175.js
+  复制: Python\web-games\pvz_tmp\game\level\176.js -> Python\public\web-games\pvz_tmp\game\level\176.js
+  复制: Python\web-games\pvz_tmp\game\level\177.js -> Python\public\web-games\pvz_tmp\game\level\177.js
+  复制: Python\web-games\pvz_tmp\game\level\178.js -> Python\public\web-games\pvz_tmp\game\level\178.js
+  复制: Python\web-games\pvz_tmp\game\level\179.js -> Python\public\web-games\pvz_tmp\game\level\179.js
+  复制: Python\web-games\pvz_tmp\game\level\18.js -> Python\public\web-games\pvz_tmp\game\level\18.js
+  复制: Python\web-games\pvz_tmp\game\level\180.js -> Python\public\web-games\pvz_tmp\game\level\180.js
+  复制: Python\web-games\pvz_tmp\game\level\181.js -> Python\public\web-games\pvz_tmp\game\level\181.js
+  复制: Python\web-games\pvz_tmp\game\level\182.js -> Python\public\web-games\pvz_tmp\game\level\182.js
+  复制: Python\web-games\pvz_tmp\game\level\183.js -> Python\public\web-games\pvz_tmp\game\level\183.js
+  复制: Python\web-games\pvz_tmp\game\level\184.js -> Python\public\web-games\pvz_tmp\game\level\184.js
+  复制: Python\web-games\pvz_tmp\game\level\185.js -> Python\public\web-games\pvz_tmp\game\level\185.js
+  复制: Python\web-games\pvz_tmp\game\level\186.js -> Python\public\web-games\pvz_tmp\game\level\186.js
+  复制: Python\web-games\pvz_tmp\game\level\187.js -> Python\public\web-games\pvz_tmp\game\level\187.js
+  复制: Python\web-games\pvz_tmp\game\level\188.js -> Python\public\web-games\pvz_tmp\game\level\188.js
+  复制: Python\web-games\pvz_tmp\game\level\189.js -> Python\public\web-games\pvz_tmp\game\level\189.js
+  复制: Python\web-games\pvz_tmp\game\level\19.js -> Python\public\web-games\pvz_tmp\game\level\19.js
+  复制: Python\web-games\pvz_tmp\game\level\190.js -> Python\public\web-games\pvz_tmp\game\level\190.js
+  复制: Python\web-games\pvz_tmp\game\level\191.js -> Python\public\web-games\pvz_tmp\game\level\191.js
+  复制: Python\web-games\pvz_tmp\game\level\192.js -> Python\public\web-games\pvz_tmp\game\level\192.js
+  复制: Python\web-games\pvz_tmp\game\level\193.js -> Python\public\web-games\pvz_tmp\game\level\193.js
+  复制: Python\web-games\pvz_tmp\game\level\194.js -> Python\public\web-games\pvz_tmp\game\level\194.js
+  复制: Python\web-games\pvz_tmp\game\level\195.js -> Python\public\web-games\pvz_tmp\game\level\195.js
+  复制: Python\web-games\pvz_tmp\game\level\196.js -> Python\public\web-games\pvz_tmp\game\level\196.js
+  复制: Python\web-games\pvz_tmp\game\level\197.js -> Python\public\web-games\pvz_tmp\game\level\197.js
+  复制: Python\web-games\pvz_tmp\game\level\198.js -> Python\public\web-games\pvz_tmp\game\level\198.js
+  复制: Python\web-games\pvz_tmp\game\level\199.js -> Python\public\web-games\pvz_tmp\game\level\199.js
+  复制: Python\web-games\pvz_tmp\game\level\2.js -> Python\public\web-games\pvz_tmp\game\level\2.js
+  复制: Python\web-games\pvz_tmp\game\level\20.js -> Python\public\web-games\pvz_tmp\game\level\20.js
+  复制: Python\web-games\pvz_tmp\game\level\200.js -> Python\public\web-games\pvz_tmp\game\level\200.js
+  复制: Python\web-games\pvz_tmp\game\level\201.js -> Python\public\web-games\pvz_tmp\game\level\201.js
+  复制: Python\web-games\pvz_tmp\game\level\202.js -> Python\public\web-games\pvz_tmp\game\level\202.js
+  复制: Python\web-games\pvz_tmp\game\level\203.js -> Python\public\web-games\pvz_tmp\game\level\203.js
+  复制: Python\web-games\pvz_tmp\game\level\204.js -> Python\public\web-games\pvz_tmp\game\level\204.js
+  复制: Python\web-games\pvz_tmp\game\level\205.js -> Python\public\web-games\pvz_tmp\game\level\205.js
+  复制: Python\web-games\pvz_tmp\game\level\206.js -> Python\public\web-games\pvz_tmp\game\level\206.js
+  复制: Python\web-games\pvz_tmp\game\level\207.js -> Python\public\web-games\pvz_tmp\game\level\207.js
+  复制: Python\web-games\pvz_tmp\game\level\208.js -> Python\public\web-games\pvz_tmp\game\level\208.js
+  复制: Python\web-games\pvz_tmp\game\level\209.js -> Python\public\web-games\pvz_tmp\game\level\209.js
+  复制: Python\web-games\pvz_tmp\game\level\21.js -> Python\public\web-games\pvz_tmp\game\level\21.js
+  复制: Python\web-games\pvz_tmp\game\level\210.js -> Python\public\web-games\pvz_tmp\game\level\210.js
+  复制: Python\web-games\pvz_tmp\game\level\211.js -> Python\public\web-games\pvz_tmp\game\level\211.js
+  复制: Python\web-games\pvz_tmp\game\level\212.js -> Python\public\web-games\pvz_tmp\game\level\212.js
+  复制: Python\web-games\pvz_tmp\game\level\213.js -> Python\public\web-games\pvz_tmp\game\level\213.js
+  复制: Python\web-games\pvz_tmp\game\level\214.js -> Python\public\web-games\pvz_tmp\game\level\214.js
+  复制: Python\web-games\pvz_tmp\game\level\215.js -> Python\public\web-games\pvz_tmp\game\level\215.js
+  复制: Python\web-games\pvz_tmp\game\level\216.js -> Python\public\web-games\pvz_tmp\game\level\216.js
+  复制: Python\web-games\pvz_tmp\game\level\217.js -> Python\public\web-games\pvz_tmp\game\level\217.js
+  复制: Python\web-games\pvz_tmp\game\level\218.js -> Python\public\web-games\pvz_tmp\game\level\218.js
+  复制: Python\web-games\pvz_tmp\game\level\219.js -> Python\public\web-games\pvz_tmp\game\level\219.js
+  复制: Python\web-games\pvz_tmp\game\level\22.js -> Python\public\web-games\pvz_tmp\game\level\22.js
+  复制: Python\web-games\pvz_tmp\game\level\220.js -> Python\public\web-games\pvz_tmp\game\level\220.js
+  复制: Python\web-games\pvz_tmp\game\level\221.js -> Python\public\web-games\pvz_tmp\game\level\221.js
+  复制: Python\web-games\pvz_tmp\game\level\222.js -> Python\public\web-games\pvz_tmp\game\level\222.js
+  复制: Python\web-games\pvz_tmp\game\level\223.js -> Python\public\web-games\pvz_tmp\game\level\223.js
+  复制: Python\web-games\pvz_tmp\game\level\224.js -> Python\public\web-games\pvz_tmp\game\level\224.js
+  复制: Python\web-games\pvz_tmp\game\level\225.js -> Python\public\web-games\pvz_tmp\game\level\225.js
+  复制: Python\web-games\pvz_tmp\game\level\226.js -> Python\public\web-games\pvz_tmp\game\level\226.js
+  复制: Python\web-games\pvz_tmp\game\level\227.js -> Python\public\web-games\pvz_tmp\game\level\227.js
+  复制: Python\web-games\pvz_tmp\game\level\228.js -> Python\public\web-games\pvz_tmp\game\level\228.js
+  复制: Python\web-games\pvz_tmp\game\level\229.js -> Python\public\web-games\pvz_tmp\game\level\229.js
+  复制: Python\web-games\pvz_tmp\game\level\23.js -> Python\public\web-games\pvz_tmp\game\level\23.js
+  复制: Python\web-games\pvz_tmp\game\level\230.js -> Python\public\web-games\pvz_tmp\game\level\230.js
+  复制: Python\web-games\pvz_tmp\game\level\231.js -> Python\public\web-games\pvz_tmp\game\level\231.js
+  复制: Python\web-games\pvz_tmp\game\level\232.js -> Python\public\web-games\pvz_tmp\game\level\232.js
+  复制: Python\web-games\pvz_tmp\game\level\233.js -> Python\public\web-games\pvz_tmp\game\level\233.js
+  复制: Python\web-games\pvz_tmp\game\level\234.js -> Python\public\web-games\pvz_tmp\game\level\234.js
+  复制: Python\web-games\pvz_tmp\game\level\235.js -> Python\public\web-games\pvz_tmp\game\level\235.js
+  复制: Python\web-games\pvz_tmp\game\level\236.js -> Python\public\web-games\pvz_tmp\game\level\236.js
+  复制: Python\web-games\pvz_tmp\game\level\237.js -> Python\public\web-games\pvz_tmp\game\level\237.js
+  复制: Python\web-games\pvz_tmp\game\level\238.js -> Python\public\web-games\pvz_tmp\game\level\238.js
+  复制: Python\web-games\pvz_tmp\game\level\239.js -> Python\public\web-games\pvz_tmp\game\level\239.js
+  复制: Python\web-games\pvz_tmp\game\level\24.js -> Python\public\web-games\pvz_tmp\game\level\24.js
+  复制: Python\web-games\pvz_tmp\game\level\240.js -> Python\public\web-games\pvz_tmp\game\level\240.js
+  复制: Python\web-games\pvz_tmp\game\level\241.js -> Python\public\web-games\pvz_tmp\game\level\241.js
+  复制: Python\web-games\pvz_tmp\game\level\242.js -> Python\public\web-games\pvz_tmp\game\level\242.js
+  复制: Python\web-games\pvz_tmp\game\level\243.js -> Python\public\web-games\pvz_tmp\game\level\243.js
+  复制: Python\web-games\pvz_tmp\game\level\244.js -> Python\public\web-games\pvz_tmp\game\level\244.js
+  复制: Python\web-games\pvz_tmp\game\level\245.js -> Python\public\web-games\pvz_tmp\game\level\245.js
+  复制: Python\web-games\pvz_tmp\game\level\246.js -> Python\public\web-games\pvz_tmp\game\level\246.js
+  复制: Python\web-games\pvz_tmp\game\level\247.js -> Python\public\web-games\pvz_tmp\game\level\247.js
+  复制: Python\web-games\pvz_tmp\game\level\248.js -> Python\public\web-games\pvz_tmp\game\level\248.js
+  复制: Python\web-games\pvz_tmp\game\level\249.js -> Python\public\web-games\pvz_tmp\game\level\249.js
+  复制: Python\web-games\pvz_tmp\game\level\25.js -> Python\public\web-games\pvz_tmp\game\level\25.js
+  复制: Python\web-games\pvz_tmp\game\level\250.js -> Python\public\web-games\pvz_tmp\game\level\250.js
+  复制: Python\web-games\pvz_tmp\game\level\251.js -> Python\public\web-games\pvz_tmp\game\level\251.js
+  复制: Python\web-games\pvz_tmp\game\level\252.js -> Python\public\web-games\pvz_tmp\game\level\252.js
+  复制: Python\web-games\pvz_tmp\game\level\26.js -> Python\public\web-games\pvz_tmp\game\level\26.js
+  复制: Python\web-games\pvz_tmp\game\level\27.js -> Python\public\web-games\pvz_tmp\game\level\27.js
+  复制: Python\web-games\pvz_tmp\game\level\28.js -> Python\public\web-games\pvz_tmp\game\level\28.js
+  复制: Python\web-games\pvz_tmp\game\level\29.js -> Python\public\web-games\pvz_tmp\game\level\29.js
+  复制: Python\web-games\pvz_tmp\game\level\3.js -> Python\public\web-games\pvz_tmp\game\level\3.js
+  复制: Python\web-games\pvz_tmp\game\level\30.js -> Python\public\web-games\pvz_tmp\game\level\30.js
+  复制: Python\web-games\pvz_tmp\game\level\31.js -> Python\public\web-games\pvz_tmp\game\level\31.js
+  复制: Python\web-games\pvz_tmp\game\level\32.js -> Python\public\web-games\pvz_tmp\game\level\32.js
+  复制: Python\web-games\pvz_tmp\game\level\33.js -> Python\public\web-games\pvz_tmp\game\level\33.js
+  复制: Python\web-games\pvz_tmp\game\level\34.js -> Python\public\web-games\pvz_tmp\game\level\34.js
+  复制: Python\web-games\pvz_tmp\game\level\35.js -> Python\public\web-games\pvz_tmp\game\level\35.js
+  复制: Python\web-games\pvz_tmp\game\level\36.js -> Python\public\web-games\pvz_tmp\game\level\36.js
+  复制: Python\web-games\pvz_tmp\game\level\37.js -> Python\public\web-games\pvz_tmp\game\level\37.js
+  复制: Python\web-games\pvz_tmp\game\level\38.js -> Python\public\web-games\pvz_tmp\game\level\38.js
+  复制: Python\web-games\pvz_tmp\game\level\39.js -> Python\public\web-games\pvz_tmp\game\level\39.js
+  复制: Python\web-games\pvz_tmp\game\level\4.js -> Python\public\web-games\pvz_tmp\game\level\4.js
+  复制: Python\web-games\pvz_tmp\game\level\40.js -> Python\public\web-games\pvz_tmp\game\level\40.js
+  复制: Python\web-games\pvz_tmp\game\level\41.js -> Python\public\web-games\pvz_tmp\game\level\41.js
+  复制: Python\web-games\pvz_tmp\game\level\42.js -> Python\public\web-games\pvz_tmp\game\level\42.js
+  复制: Python\web-games\pvz_tmp\game\level\43.js -> Python\public\web-games\pvz_tmp\game\level\43.js
+  复制: Python\web-games\pvz_tmp\game\level\44.js -> Python\public\web-games\pvz_tmp\game\level\44.js
+  复制: Python\web-games\pvz_tmp\game\level\45.js -> Python\public\web-games\pvz_tmp\game\level\45.js
+  复制: Python\web-games\pvz_tmp\game\level\46.js -> Python\public\web-games\pvz_tmp\game\level\46.js
+  复制: Python\web-games\pvz_tmp\game\level\47.js -> Python\public\web-games\pvz_tmp\game\level\47.js
+  复制: Python\web-games\pvz_tmp\game\level\48.js -> Python\public\web-games\pvz_tmp\game\level\48.js
+  复制: Python\web-games\pvz_tmp\game\level\49.js -> Python\public\web-games\pvz_tmp\game\level\49.js
+  复制: Python\web-games\pvz_tmp\game\level\5.js -> Python\public\web-games\pvz_tmp\game\level\5.js
+  复制: Python\web-games\pvz_tmp\game\level\50.js -> Python\public\web-games\pvz_tmp\game\level\50.js
+  复制: Python\web-games\pvz_tmp\game\level\6.js -> Python\public\web-games\pvz_tmp\game\level\6.js
+  复制: Python\web-games\pvz_tmp\game\level\7.js -> Python\public\web-games\pvz_tmp\game\level\7.js
+  复制: Python\web-games\pvz_tmp\game\level\8.js -> Python\public\web-games\pvz_tmp\game\level\8.js
+  复制: Python\web-games\pvz_tmp\game\level\9.js -> Python\public\web-games\pvz_tmp\game\level\9.js
+  复制: Python\web-games\pvz_tmp\game\level\achievements.js -> Python\public\web-games\pvz_tmp\game\level\achievements.js
+  复制: Python\web-games\pvz_tmp\game\level\AirRaid.js -> Python\public\web-games\pvz_tmp\game\level\AirRaid.js
+  复制: Python\web-games\pvz_tmp\game\level\BoxedSurprise.js -> Python\public\web-games\pvz_tmp\game\level\BoxedSurprise.js
+  复制: Python\web-games\pvz_tmp\game\level\btlzombie.js -> Python\public\web-games\pvz_tmp\game\level\btlzombie.js
+  复制: Python\web-games\pvz_tmp\game\level\CardRain.js -> Python\public\web-games\pvz_tmp\game\level\CardRain.js
+  复制: Python\web-games\pvz_tmp\game\level\changelog.js -> Python\public\web-games\pvz_tmp\game\level\changelog.js
+  复制: Python\web-games\pvz_tmp\game\level\debug.js -> Python\public\web-games\pvz_tmp\game\level\debug.js
+  复制: Python\web-games\pvz_tmp\game\level\debug_back_day.js -> Python\public\web-games\pvz_tmp\game\level\debug_back_day.js
+  复制: Python\web-games\pvz_tmp\game\level\debug_back_night.js -> Python\public\web-games\pvz_tmp\game\level\debug_back_night.js
+  复制: Python\web-games\pvz_tmp\game\level\debug_front_day.js -> Python\public\web-games\pvz_tmp\game\level\debug_front_day.js
+  复制: Python\web-games\pvz_tmp\game\level\debug_front_night.js -> Python\public\web-games\pvz_tmp\game\level\debug_front_night.js
+  复制: Python\web-games\pvz_tmp\game\level\debug_izombie.js -> Python\public\web-games\pvz_tmp\game\level\debug_izombie.js
+  复制: Python\web-games\pvz_tmp\game\level\FB.js -> Python\public\web-games\pvz_tmp\game\level\FB.js
+  复制: Python\web-games\pvz_tmp\game\level\FlowerDefense.js -> Python\public\web-games\pvz_tmp\game\level\FlowerDefense.js
+  复制: Python\web-games\pvz_tmp\game\level\HypnoHysteria.js -> Python\public\web-games\pvz_tmp\game\level\HypnoHysteria.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie1.js -> Python\public\web-games\pvz_tmp\game\level\izombie1.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie10.js -> Python\public\web-games\pvz_tmp\game\level\izombie10.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie2.js -> Python\public\web-games\pvz_tmp\game\level\izombie2.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie3.js -> Python\public\web-games\pvz_tmp\game\level\izombie3.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie4.js -> Python\public\web-games\pvz_tmp\game\level\izombie4.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie5.js -> Python\public\web-games\pvz_tmp\game\level\izombie5.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie6.js -> Python\public\web-games\pvz_tmp\game\level\izombie6.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie7.js -> Python\public\web-games\pvz_tmp\game\level\izombie7.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie8.js -> Python\public\web-games\pvz_tmp\game\level\izombie8.js
+  复制: Python\web-games\pvz_tmp\game\level\izombie9.js -> Python\public\web-games\pvz_tmp\game\level\izombie9.js
+  复制: Python\web-games\pvz_tmp\game\level\izombiecustomlevelnormal.js -> Python\public\web-games\pvz_tmp\game\level\izombiecustomlevelnormal.js
+  复制: Python\web-games\pvz_tmp\game\level\izombiecustomlevelwater.js -> Python\public\web-games\pvz_tmp\game\level\izombiecustomlevelwater.js
+  复制: Python\web-games\pvz_tmp\game\level\izombiecustommenu.js -> Python\public\web-games\pvz_tmp\game\level\izombiecustommenu.js
+  复制: Python\web-games\pvz_tmp\game\level\izombieleveleditor.js -> Python\public\web-games\pvz_tmp\game\level\izombieleveleditor.js
+  复制: Python\web-games\pvz_tmp\game\level\izombiemenu.js -> Python\public\web-games\pvz_tmp\game\level\izombiemenu.js
+  复制: Python\web-games\pvz_tmp\game\level\izombieverifynormal.js -> Python\public\web-games\pvz_tmp\game\level\izombieverifynormal.js
+  复制: Python\web-games\pvz_tmp\game\level\izombieverifywater.js -> Python\public\web-games\pvz_tmp\game\level\izombieverifywater.js
+  复制: Python\web-games\pvz_tmp\game\level\kaotianchifan.js -> Python\public\web-games\pvz_tmp\game\level\kaotianchifan.js
+  复制: Python\web-games\pvz_tmp\game\level\RoofTest.js -> Python\public\web-games\pvz_tmp\game\level\RoofTest.js
+  复制: Python\web-games\pvz_tmp\game\level\Stargazing.js -> Python\public\web-games\pvz_tmp\game\level\Stargazing.js
+  复制: Python\web-games\pvz_tmp\game\level\SunPower.js -> Python\public\web-games\pvz_tmp\game\level\SunPower.js
+  复制: Python\web-games\pvz_tmp\game\level\TripleThreatDefense.js -> Python\public\web-games\pvz_tmp\game\level\TripleThreatDefense.js
+  复制: Python\web-games\pvz_tmp\game\level\unsodded.js -> Python\public\web-games\pvz_tmp\game\level\unsodded.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker1.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker1.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker2.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker2.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker3.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker3.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker4.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker4.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker5.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker5.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker6.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker6.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker7.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker7.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker8.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker8.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreaker9.js -> Python\public\web-games\pvz_tmp\game\level\vasebreaker9.js
+  复制: Python\web-games\pvz_tmp\game\level\VaseBreakerCommon.js -> Python\public\web-games\pvz_tmp\game\level\VaseBreakerCommon.js
+  复制: Python\web-games\pvz_tmp\game\level\vasebreakermenu.js -> Python\public\web-games\pvz_tmp\game\level\vasebreakermenu.js
+  复制: Python\web-games\pvz_tmp\game\level\WallNutBowling.js -> Python\public\web-games\pvz_tmp\game\level\WallNutBowling.js
+  复制: Python\web-games\pvz_tmp\game\level\WallNutBowling1.js -> Python\public\web-games\pvz_tmp\game\level\WallNutBowling1.js
+  复制: Python\web-games\pvz_tmp\game\level\WJY.js -> Python\public\web-games\pvz_tmp\game\level\WJY.js
+  复制: Python\web-games\pvz_tmp\game\level\yicixingxiaofei.js -> Python\public\web-games\pvz_tmp\game\level\yicixingxiaofei.js
+  复制: Python\web-games\pvz_tmp\game\level\ZombieGames.js -> Python\public\web-games\pvz_tmp\game\level\ZombieGames.js
+  复制: Python\web-games\pvz_tmp\game\menu\html\credits.html -> Python\public\web-games\pvz_tmp\game\menu\html\credits.html
+  复制: Python\web-games\pvz_tmp\game\menu\html\izombieonline.html -> Python\public\web-games\pvz_tmp\game\menu\html\izombieonline.html
+  复制: Python\web-games\pvz_tmp\game\menu\html\note.html -> Python\public\web-games\pvz_tmp\game\menu\html\note.html
+  复制: Python\web-games\pvz_tmp\game\menu\html\no_menu.html -> Python\public\web-games\pvz_tmp\game\menu\html\no_menu.html
+  复制: Python\web-games\pvz_tmp\game\menu\js\credits.js -> Python\public\web-games\pvz_tmp\game\menu\js\credits.js
+  复制: Python\web-games\pvz_tmp\game\menu\js\izombieonline.js -> Python\public\web-games\pvz_tmp\game\menu\js\izombieonline.js
+  复制: Python\web-games\pvz_tmp\game\menu\js\note.js -> Python\public\web-games\pvz_tmp\game\menu\js\note.js
+  复制: Python\web-games\pvz_tmp\game\tester.html -> Python\public\web-games\pvz_tmp\game\tester.html
+  复制: Python\web-games\pvz_tmp\game\UI.css -> Python\public\web-games\pvz_tmp\game\UI.css
+  复制: Python\web-games\pvz_tmp\game\undefined -> Python\public\web-games\pvz_tmp\game\undefined
+  复制: Python\web-games\pvz_tmp\index.html -> Python\public\web-games\pvz_tmp\index.html
+  复制: Python\web-games\pvz_tmp\LICENSE.md -> Python\public\web-games\pvz_tmp\LICENSE.md
+  复制: Python\web-games\pvz_tmp\manifest.json -> Python\public\web-games\pvz_tmp\manifest.json
+  复制: Python\web-games\pvz_tmp\package-lock.json -> Python\public\web-games\pvz_tmp\package-lock.json
+  复制: Python\web-games\pvz_tmp\package.json -> Python\public\web-games\pvz_tmp\package.json
+  复制: Python\web-games\pvz_tmp\README.md -> Python\public\web-games\pvz_tmp\README.md
+  复制: Python\web-games\pvz_tmp\robots.txt -> Python\public\web-games\pvz_tmp\robots.txt
+  复制: Python\web-games\pvz_tmp\scripts\build.sh -> Python\public\web-games\pvz_tmp\scripts\build.sh
+  复制: Python\web-games\README.md -> Python\public\web-games\README.md
+  复制: Python\web-games\shared\game.js -> Python\public\web-games\shared\game.js
+  复制: Python\web-games\shared\style.css -> Python\public\web-games\shared\style.css
+
+步骤 4: 复制 fathers-day 目录...
+  复制: Python\fathers-day\index.html -> Python\public\fathers-day\index.html
+  复制: Python\fathers-day\README.md -> Python\public\fathers-day\README.md
+
+步骤 5: 清理大文件（超过 5MB 的文件，Worker 不支持）...
+  删除: Python\public\web-games\pvz_tmp\game\images\interface\Logo.psd (6.0 MB)
+  删除: Python\public\web-games\pvz_tmp\game\images\interface\TAWIN.psd (5.2 MB)
+
+==================================================
+  构建完成！
+  输出目录: E:\coding-zhou\Python\public
+==================================================

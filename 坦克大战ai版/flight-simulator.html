@@ -1,0 +1,2964 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>飞行模拟器 · Three.js</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #bcd6e8; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; color: #fff; }
+  canvas { display: block; }
+
+  #hud {
+    position: absolute; top: 18px; left: 18px;
+    background: rgba(15, 25, 40, 0.55);
+    border: 1px solid rgba(180, 220, 255, 0.25);
+    border-radius: 10px;
+    padding: 14px 18px;
+    backdrop-filter: blur(6px);
+    font-size: 14px; line-height: 1.7;
+    min-width: 200px;
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  }
+  #hud .row { display: flex; justify-content: space-between; gap: 20px; }
+  #hud .label { color: #9fc8ec; }
+  #hud .value { font-weight: bold; font-variant-numeric: tabular-nums; }
+  #hud .mode { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(180,220,255,0.18); color: #ffd479; }
+
+  #help {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: rgba(15, 25, 40, 0.55);
+    border: 1px solid rgba(180, 220, 255, 0.25);
+    border-radius: 10px;
+    padding: 10px 16px;
+    backdrop-filter: blur(6px);
+    font-size: 13px;
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    white-space: nowrap;
+  }
+  #help kbd {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin: 0 2px;
+    font-family: inherit;
+    font-size: 12px;
+  }
+
+  #crash {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(180, 30, 30, 0.75);
+    border: 1px solid rgba(255,150,150,0.5);
+    border-radius: 10px;
+    padding: 16px 28px;
+    font-size: 18px; font-weight: bold;
+    display: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  }
+  #paused {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(15, 25, 40, 0.78);
+    border: 1px solid rgba(180, 220, 255, 0.4);
+    border-radius: 12px;
+    padding: 24px 48px;
+    font-size: 22px; font-weight: bold;
+    display: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    pointer-events: none;
+  }
+
+  /* ===== 选飞机界面 ===== */
+  #hangar {
+    position: absolute; inset: 0;
+    background: rgba(10, 18, 32, 0.88);
+    backdrop-filter: blur(10px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 100;
+    transition: opacity 0.35s ease;
+  }
+  #hangar.hidden { opacity: 0; pointer-events: none; }
+  #hangar h1 {
+    margin: 0 0 6px; font-size: 26px; letter-spacing: 4px;
+    color: #eaf4ff; text-shadow: 0 2px 12px rgba(80,160,255,0.5);
+  }
+  #hangar .sub { color: #8fb2d9; font-size: 13px; margin-bottom: 26px; }
+  #hangar .cards { display: flex; gap: 22px; }
+  .acard {
+    width: 230px; padding: 18px 16px 16px;
+    background: rgba(22, 36, 56, 0.85);
+    border: 1px solid rgba(120, 170, 230, 0.28);
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .acard:hover { transform: translateY(-6px); border-color: rgba(140,200,255,0.75); box-shadow: 0 10px 32px rgba(50,120,220,0.35); }
+  .acard.sel { border-color: #ffd479; box-shadow: 0 0 0 2px rgba(255,212,121,0.4), 0 10px 32px rgba(50,120,220,0.35); }
+  .acard canvas { width: 190px; height: 120px; border-radius: 8px; background: rgba(8,14,26,0.6); }
+  .acard .name { font-size: 18px; font-weight: bold; margin: 10px 0 2px; }
+  .acard .desc { font-size: 12px; color: #9db8d6; margin-bottom: 12px; line-height: 1.5; }
+  .acard .stat { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #c8dcf2; margin: 5px 0; }
+  .acard .stat .bar { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.12); overflow: hidden; }
+  .acard .stat .bar i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #4d9fff, #8fd8f0); }
+  .acard .stat .val { width: 64px; text-align: right; color: #8fb2d9; }
+  #hangar .go {
+    margin-top: 28px;
+    background: linear-gradient(135deg, #2d7dd2, #1b5aa8);
+    border: 1px solid rgba(160,210,255,0.5);
+    color: #fff; font-size: 17px; font-weight: bold; letter-spacing: 6px;
+    padding: 12px 52px; border-radius: 10px; cursor: pointer;
+    transition: filter 0.15s ease, transform 0.15s ease;
+  }
+  #hangar .go:hover { filter: brightness(1.2); transform: scale(1.04); }
+  #hangar .tip { margin-top: 14px; font-size: 12px; color: #6d8db0; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <div class="row"><span class="label">空速</span><span class="value"><span id="spd">0</span> km/h</span></div>
+  <div class="row"><span class="label">高度</span><span class="value"><span id="alt">0</span> m</span></div>
+  <div class="row"><span class="label">油门</span><span class="value"><span id="thr">0</span> %</span></div>
+  <div class="mode">视角：<span id="vmode">第三人称</span> · 按 <kbd>V</kbd> 切换</div>
+  <div id="msl-status" style="display:none;color:#ff6;border-color:#ff6;">导弹：<span id="msl">就绪</span></div>
+  <div id="gear-status" style="display:none;color:#4f8;border-color:#4f8;">起落架：收起</div>
+  <div id="ils" style="display:none;margin-top:6px;padding:6px 10px;border:1px solid #4f8;border-radius:4px;background:rgba(0,40,0,0.7);">
+    <div style="color:#4f8;font-weight:bold;font-size:12px;">📡 进近引导 · <span id="ils-name"></span></div>
+    <div style="margin-top:4px;font-size:13px;">
+      距离 <span id="ils-dist" style="color:#fff;font-weight:bold;">--</span> km ·
+      航向 <span id="ils-hdg" style="color:#fff;font-weight:bold;">--</span>° ·
+      高差 <span id="ils-alt" style="color:#fff;font-weight:bold;">--</span> m
+    </div>
+    <div id="ils-hint" style="margin-top:3px;font-size:12px;color:#ff8;">--</div>
+  </div>
+</div>
+
+<div id="apt-arrow" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60px);font-size:28px;color:#4f8;text-shadow:0 0 6px #000;display:none;z-index:8;pointer-events:none;">➤</div>
+
+<div id="help">
+  <kbd>W</kbd>推油门 <kbd>S</kbd>松油门 <kbd>Space</kbd>暂停 &nbsp;|&nbsp;
+  <kbd>A</kbd>/<kbd>D</kbd> 右/左倾斜 <kbd>←</kbd>/<kbd>→</kbd> 右/左偏航 <kbd>↑</kbd>/<kbd>↓</kbd> 低/抬头 &nbsp;|&nbsp;
+  <kbd>V</kbd> 切换视角 <kbd>M</kbd> 换飞机 <kbd>Q</kbd> 起落架 <kbd>Shift</kbd> 加力(战机) <kbd>R</kbd> 发射导弹(战机) 滚轮 调视角距离
+</div>
+
+<div id="hangar">
+  <h1>飞 行 模 拟 器</h1>
+  <div class="sub">选择你的座驾</div>
+  <div class="cards">
+    <div class="acard" data-ac="trainer">
+      <canvas id="prev-trainer"></canvas>
+      <div class="name">初级教练机</div>
+      <div class="desc">红色螺旋桨经典款，机动均衡，易于上手</div>
+      <div class="stat"><span>极速</span><span class="bar"><i style="width:55%"></i></span><span class="val">2160 km/h</span></div>
+      <div class="stat"><span>机动</span><span class="bar"><i style="width:60%"></i></span><span class="val">良好</span></div>
+      <div class="stat"><span>推力</span><span class="bar"><i style="width:50%"></i></span><span class="val">85</span></div>
+    </div>
+    <div class="acard" data-ac="fighter">
+      <canvas id="prev-fighter"></canvas>
+      <div class="name">喷气战斗机</div>
+      <div class="desc">灰空优涂装，三角翼双垂尾，按住 Shift 加力冲刺</div>
+      <div class="stat"><span>极速</span><span class="bar"><i style="width:100%"></i></span><span class="val">3960 km/h</span></div>
+      <div class="stat"><span>机动</span><span class="bar"><i style="width:95%"></i></span><span class="val">极强</span></div>
+      <div class="stat"><span>推力</span><span class="bar"><i style="width:88%"></i></span><span class="val">150</span></div>
+    </div>
+    <div class="acard" data-ac="airliner">
+      <canvas id="prev-airliner"></canvas>
+      <div class="name">干线客机</div>
+      <div class="desc">白色宽体双发，惯性大滑行稳，适合巡航观光</div>
+      <div class="stat"><span>极速</span><span class="bar"><i style="width:38%"></i></span><span class="val">1440 km/h</span></div>
+      <div class="stat"><span>机动</span><span class="bar"><i style="width:22%"></i></span><span class="val">迟缓</span></div>
+      <div class="stat"><span>推力</span><span class="bar"><i style="width:30%"></i></span><span class="val">45</span></div>
+    </div>
+  </div>
+  <button class="go" id="flyBtn">起 飞</button>
+  <div class="tip">飞行中按 M 键随时返回机库换飞机</div>
+</div>
+
+<div id="crash">⚠ 坠毁 · 已自动重置至安全高度</div>
+<div id="paused">⏸ 已暂停 · 再按 Space 继续</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// ============================================================
+// 渲染器 + 场景 + 相机
+// ============================================================
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.autoClear = true;
+document.body.appendChild(renderer.domElement);
+
+// —— PMREM 环境贴图：为所有 PBR 材质提供真实环境反射 ——
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0xdfe9f4, 0.000055);  // 与天空地平线色统一，远处渐隐无接缝
+
+const pmremGen = new THREE.PMREMGenerator(renderer);
+const envTexture = pmremGen.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environment = envTexture; // 所有 MeshStandardMaterial 自动获得环境反射
+
+const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.5, 120000);
+camera.position.set(0, 3000, -25);
+camera.lookAt(0, 2800, 50);
+
+// ============================================================
+// 天空：渐变穹顶
+// ============================================================
+const skyGeo = new THREE.SphereGeometry(50000, 32, 16);
+const skyMat = new THREE.ShaderMaterial({
+  side: THREE.BackSide,
+  depthWrite: false,
+  fog: false,
+  uniforms: {
+    topColor:    { value: new THREE.Color(0x2f6fb0) },  // 天顶
+    middleColor: { value: new THREE.Color(0x9ec6e8) },  // 中段
+    bottomColor: { value: new THREE.Color(0xdfe9f4) },  // 地平线（与雾色统一，避免接缝）
+    offset:      { value: 80 },
+    exponent:    { value: 0.7 },
+    sunDir:      { value: new THREE.Vector3(0.6, 0.5, 0.4).normalize() },
+    sunColor:    { value: new THREE.Color(0xfff0c0) },
+  },
+  vertexShader: `
+    varying vec3 vDir;
+    void main() {
+      // 用球体局部坐标作为方向：天空球跟随飞机后渐变仍以球心（=飞机）为中心
+      vDir = position;
+      vec4 w = modelMatrix * vec4(position, 1.0);
+      gl_Position = projectionMatrix * viewMatrix * w;
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 topColor;
+    uniform vec3 middleColor;
+    uniform vec3 bottomColor;
+    uniform float offset;
+    uniform float exponent;
+    uniform vec3 sunDir;
+    uniform vec3 sunColor;
+    varying vec3 vDir;
+    void main() {
+      vec3 dir = normalize(vDir + vec3(0.0, offset, 0.0));
+      float h = dir.y;
+      // 地平线带：h→0+ 逼近 bottomColor（与雾色一致），随高度渐入 middle——
+      // 修复旧版"地平线上方直接是 middleColor"导致的雾色/天空硬接缝
+      float hz = 1.0 - exp(-max(h, 0.0) * 10.0);
+      vec3 col = mix(bottomColor, middleColor, hz);
+      float t = clamp(pow(max(h, 0.0), exponent), 0.0, 1.0);
+      col = mix(col, topColor, t);
+      // 大气散射：太阳方向附近的天空更亮
+      float sunDot = max(dot(dir, sunDir), 0.0);
+      float glow = pow(sunDot, 8.0) * 0.6 + pow(sunDot, 2.0) * 0.15;
+      col = mix(col, sunColor, glow);
+      // 地平线附近微暖（日出/日落感）
+      float horizonGlow = pow(1.0 - abs(h), 4.0) * 0.2;
+      col += sunColor * horizonGlow * smoothstep(0.0, 0.3, sunDot);
+      gl_FragColor = vec4(col, 1.0);
+      #include <colorspace_fragment>
+      // 去色带抖动（输出空间）：消除渐变色带分层
+      float dither = (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;
+      gl_FragColor.rgb += dither;
+    }
+  `,
+});
+const skyMesh = new THREE.Mesh(skyGeo, skyMat);
+scene.add(skyMesh);
+
+// ============================================================
+// 光照：强太阳光 + 天空半球光 + 环境填充（正午明亮感）
+// ============================================================
+// 主太阳：暖金色强光，带高分辨率阴影
+const sun = new THREE.DirectionalLight(0xfff6e0, 2.5);
+sun.position.set(600, 6000, 400);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); // 降一级平衡 PMREM 开销
+sun.shadow.camera.left = -2500;
+sun.shadow.camera.right = 2500;
+sun.shadow.camera.top = 2500;
+sun.shadow.camera.bottom = -2500;
+sun.shadow.camera.near = 100;
+sun.shadow.camera.far = 10000;
+sun.shadow.bias = -0.0002;
+sun.shadow.normalBias = 0.25;
+sun.shadow.radius = 3; // PCF 采样半径更大→边缘更柔
+scene.add(sun);
+
+// 半球光：天空蓝 + 地面暖色，更强的环境光让阴影区不漆黑
+const hemi = new THREE.HemisphereLight(0xcfe8ff, 0x7a5a3a, 0.9);
+scene.add(hemi);
+
+// 极微弱的环境填充光——让深峡谷也有一点亮，不至于全黑
+const ambient = new THREE.AmbientLight(0xffffff, 0.06);
+scene.add(ambient);
+
+// 太阳视觉：canvas 径向渐变纹理（实心日盘 + 柔和光晕），贴在天穹内侧
+const sunDirBase = new THREE.Vector3(800, 3500, 600).normalize();
+const sunDiscTex = (() => {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 256;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0.0, 'rgba(255,252,235,1.0)');   // 日盘中心
+  g.addColorStop(0.18, 'rgba(255,248,215,1.0)');  // 日盘实体
+  g.addColorStop(0.24, 'rgba(255,240,190,0.85)'); // 盘缘开始衰减
+  g.addColorStop(0.40, 'rgba(255,225,150,0.30)');
+  g.addColorStop(0.70, 'rgba(255,210,120,0.08)');
+  g.addColorStop(1.0, 'rgba(255,200,100,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 256, 256);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;  // canvas 是 sRGB 数据，标记后经内建管线正确解码
+  return tex;
+})();
+const sunSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+  map: sunDiscTex, color: 0xffffff, transparent: true,
+  blending: THREE.AdditiveBlending, fog: false, depthWrite: false,
+}));
+sunSprite.scale.set(5200, 5200, 1);   // 天球半径 50000 处 → 视角约 6°（日盘约 1.8°+光晕）
+sunSprite.position.copy(sunDirBase).multiplyScalar(46000); // 球心向太阳方向 46000（贴在天穹内侧）
+sunSprite.renderOrder = -1;           // 天空后、其他透明物体前；深度测试让山体可遮挡太阳
+scene.add(sunSprite);
+
+// 太阳外围大气光晕：更大更淡的一层
+const sunHalo = new THREE.Sprite(new THREE.SpriteMaterial({
+  map: sunDiscTex, color: 0xfff0c0, transparent: true,
+  opacity: 0.35, blending: THREE.AdditiveBlending, fog: false, depthWrite: false,
+}));
+sunHalo.scale.set(16000, 16000, 1);
+sunHalo.renderOrder = -1;
+scene.add(sunHalo);
+
+// ============================================================
+// 噪声系统：Perlin 2D 梯度噪声（柏林风格） + FBM
+// ============================================================
+const NOISE_SEED = 1337;
+
+// 256 个梯度向量：8 个方向（简化版 Perlin）
+const GRAD_VECTORS = [
+  [ 1, 1], [-1, 1], [ 1,-1], [-1,-1],
+  [ 1, 0], [-1, 0], [ 0, 1], [ 0,-1],
+];
+
+// 确定性哈希：整数 (x, z) → 0..255
+function pHash(x, z) {
+  let i = ((x * 374761393 + z * 668265263 + NOISE_SEED * 2147483647) | 0);
+  i = (i ^ (i >>> 13)) >>> 0;
+  i = Math.imul(i, 1274126177) >>> 0;
+  i = (i ^ (i >>> 16)) >>> 0;
+  return i & 0xff;
+}
+function fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+function _nl(a, b, t) { return a + (b - a) * t; }
+function gradDot(gx, gz, x, z) {
+  const g = GRAD_VECTORS[pHash(gx, gz) & 7];
+  return g[0] * x + g[1] * z;
+}
+// 经典 Perlin 风格 2D 噪声（返回 -1..1）
+function perlin2D(x, z) {
+  const xi = Math.floor(x), zi = Math.floor(z);
+  const xf = x - xi,      zf = z - zi;
+  const u = fade(xf),      v = fade(zf);
+  const a = gradDot(xi,   zi,   xf,       zf      );
+  const b = gradDot(xi+1, zi,   xf - 1,   zf      );
+  const c = gradDot(xi,   zi+1, xf,       zf - 1  );
+  const d = gradDot(xi+1, zi+1, xf - 1,   zf - 1  );
+  return _nl(_nl(a, b, u), _nl(c, d, u), v);
+}
+// 柏林风格 FBM：Perlin 基础噪声 + 多倍频叠加
+function fbm(x, z, octaves=5, lacunarity=2.0, gain=0.5) {
+  let amp = 1, freq = 1, sum = 0, norm = 0;
+  for (let i = 0; i < octaves; i++) {
+    sum += perlin2D(x * freq, z * freq) * amp;
+    norm += amp;
+    amp  *= gain;
+    freq *= lacunarity;
+  }
+  return sum / norm;  // -1..1
+}
+// 域扭曲：在柏林 FBM 基础上做位移让地形不"规则"
+function warpedFbm(x, z, scale, octaves=5, warpScale=0.8) {
+  const wx = fbm(x * scale * 0.5 + 31.3, z * scale * 0.5 - 17.2, 3) * warpScale;
+  const wz = fbm(x * scale * 0.5 - 5.7, z * scale * 0.5 + 29.8, 3) * warpScale;
+  return fbm(x * scale + wx, z * scale + wz, octaves);
+}
+// Ridged 噪声：基于 Perlin 的 |1-|noise|| 变换，产生锐利山脊（仍是柏林噪声）
+function ridgedFbm(x, z, scale, octaves=5, lacunarity=2.0, gain=0.5) {
+  let amp = 1, freq = 1, sum = 0, norm = 0;
+  for (let i = 0; i < octaves; i++) {
+    const v = 1 - Math.abs(perlin2D(x * scale * freq, z * scale * freq));
+    sum += v * v * amp;  // 平方让山脊更锐利
+    norm += amp;
+    amp  *= gain;
+    freq *= lacunarity;
+  }
+  return (sum / norm) * 2 - 1;  // 归一到 -1..1
+}
+
+// ============================================================
+// 地形高度生成：六大地貌连续混合（纯 Perlin FBM）
+// ============================================================
+// 平滑阶跃（自带钳位，无外部依赖）
+function sstep(a, b, x) {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}
+
+// 返回 { height, biome, w: [wHima, wLoess, wDesert, wKarst, wForest, wPlain] }
+// w 为各地貌窗口权重（相邻地貌连续过渡 → 高度处处连续，无陡崖接缝）
+function terrainHeightAndBiome(x, z) {
+  // 大尺度分区噪声（波长 ~14km：地貌区域宏大，飞行时有穿越不同地区之感）
+  const n = fbm(x * 0.00007, z * 0.00007, 3, 2.0, 0.5);
+
+  // —— 共享山浪基底（七层柏林叠加；只在山区型地貌取得高权重）——
+  const base =
+      warpedFbm(x, z, 0.00035, 6, 0.9) * 2800
+    + warpedFbm(x, z, 0.00105, 5, 0.8) * 900
+    + ridgedFbm(x, z, 0.0006, 4, 2.1, 0.5) * 800
+    + fbm(x*0.0030, z*0.0030, 4, 2.1, 0.5) * 320
+    + ridgedFbm(x, z, 0.0018, 3, 2.0, 0.5) * 250
+    + fbm(x*0.0080, z*0.0080, 3, 2.2, 0.45) * 120
+    + fbm(x*0.0200, z*0.0200, 2, 2.0, 0.5) * 40;
+
+  // —— 平滑窗口权重（按分区噪声 n 划分六个地貌带）——
+  const wHima   = sstep( 0.40,  0.56, n);                                // 青藏雪山
+  const wLoess  = sstep( 0.08,  0.22, n) * (1 - sstep( 0.38,  0.52, n)); // 黄土高原
+  const wDesert = sstep(-0.12,  0.00, n) * (1 - sstep( 0.14,  0.26, n)); // 西北沙漠
+  const wKarst  = sstep(-0.34, -0.22, n) * (1 - sstep(-0.08,  0.06, n)); // 喀斯特
+  const wForest = sstep(-0.60, -0.48, n) * (1 - sstep(-0.30, -0.18, n)); // 东北森林
+  const wPlain  = 1 - sstep(-0.56, -0.44, n);                            // 东部平原
+
+  let h = 0;
+  let biomeId = BIOME_PLAIN, wBest = wPlain;
+
+  if (wHima > 0.002) {
+    // 青藏雪山：完整山浪基底 + 高原面抬升 + 雪峰起伏（核心区峰值 ~4500-5600m）
+    const p = sstep(0.40, 0.85, n); // 区域核心度（边缘→腹地渐进抬升）
+    h += wHima * (base * (0.55 + 0.45 * p) + 3400 * p
+         + warpedFbm(x + 1000, z + 1000, 0.0006, 4, 0.8) * 900);
+    if (wHima > wBest) { biomeId = BIOME_HIMALAYA; wBest = wHima; }
+  }
+  if (wLoess > 0.002) {
+    // 黄土高原：完整山浪基底(0.55)叠加台地 + 深沟壑（高度 ~500-2500m，黄土千沟万壑）
+    const t0 = base * 0.55 + 900;
+    const q = Math.round(t0 / 180) * 180;
+    const terr = t0 + (q - t0) * 0.72;
+    const gully = fbm(x*0.0085, z*0.0085, 3, 2.0, 0.55);
+    h += wLoess * (terr - Math.max(0, -gully) * 680);
+    if (wLoess > wBest) { biomeId = BIOME_LOESS; wBest = wLoess; }
+  }
+  if (wDesert > 0.002) {
+    // 西北沙漠：沙海山浪(0.22) + 高沙丘链 + 大尺度沙海起伏（高度 ~200-1400m，沙山连绵）
+    const bendX = fbm(x*0.0004, z*0.0004, 2) * 1400;
+    const bendZ = fbm(x*0.0004 + 11.7, z*0.0004 + 11.7, 2) * 1400;
+    const ridge = 1 - Math.abs(perlin2D((x + bendX)*0.00030, (z + bendZ)*0.0024));
+    const dune = ridge * ridge;
+    h += wDesert * (base*0.22 + 120
+         + dune * 180 * (0.55 + fbm(x*0.005, z*0.005, 2)*0.45)
+         + fbm(x*0.0007, z*0.0007, 2) * 350);
+    if (wDesert > wBest) { biomeId = BIOME_DESERT; wBest = wDesert; }
+  }
+  if (wKarst > 0.002) {
+    // 喀斯特：山浪基底(0.30) + 高耸锥状石峰（高度 ~300-2200m，峰林拔地而起）
+    const peak = fbm(x*0.0022, z*0.0022, 5, 2.1, 0.48);
+    const tower = Math.pow(Math.max(0, peak), 1.6) * 1500;
+    h += wKarst * (base*0.30 + 120 + tower);
+    if (wKarst > wBest) { biomeId = BIOME_KARST; wBest = wKarst; }
+  }
+  if (wForest > 0.002) {
+    // 东北森林：完整山浪基底(0.55) + 大兴安岭式山脉（高度 ~500-2800m，林海群山）
+    h += wForest * (base*0.55 + 250 + fbm(x*0.0035, z*0.0035, 4, 1.95, 0.58) * 600);
+    if (wForest > wBest) { biomeId = BIOME_FOREST; wBest = wForest; }
+  }
+  if (wPlain > 0.002) {
+    // 东部平原：保持平坦(0.08) + 微缓丘 + 河流谷地（高度 ~100-400m，机场级平地特征）
+    h += wPlain * (base*0.08 + 160 + fbm(x*0.0032, z*0.0032, 3, 2.0, 0.55) * 100);
+  }
+
+  // —— 河流峡谷（全地貌叠加）——
+  h += carveRivers(x, z);
+
+  return { height: h, biome: biomeId, w: [wHima, wLoess, wDesert, wKarst, wForest, wPlain] };
+}
+
+// 兼容旧调用：只返回高度
+function terrainHeight(x, z) { return terrainHeightAndBiome(x, z).height; }
+
+// Biome ID 常量
+const BIOME_HIMALAYA = 0;  // 青藏高原/雪山
+const BIOME_LOESS    = 1;  // 黄土高原/内蒙古
+const BIOME_DESERT   = 2;  // 西北沙漠
+const BIOME_KARST    = 3;  // 喀斯特/云贵高原
+const BIOME_FOREST   = 4;  // 东北森林
+const BIOME_PLAIN    = 5;  // 东部/南方平原
+
+// 河流/峡谷雕刻：多条河流蜿蜒穿越地形，深河槽形成峡谷
+function carveRivers(x, z) {
+  let deltaH = 0;
+  // 6 条大河 + 2 条大峡谷
+  const rivers = [
+    // 河流参数：频率（蜿蜒度）、振幅、宽度、深度、起始角度、是否深峡谷
+    { f: 0.0006, amp: 2500, w: 400, d: 400, ang: 0.3,  canyon: false },
+    { f: 0.0009, amp: 1800, w: 350, d: 500, ang: -0.7, canyon: true  },
+    { f: 0.0005, amp: 3000, w: 500, d: 350, ang: 0.0,  canyon: false },
+    { f: 0.0012, amp: 1200, w: 280, d: 450, ang: 1.2,  canyon: true  },
+    { f: 0.0007, amp: 2200, w: 380, d: 300, ang: -1.5, canyon: false },
+    { f: 0.0010, amp: 1500, w: 300, d: 380, ang: 0.8,  canyon: false },
+    { f: 0.0004, amp: 3500, w: 600, d: 250, ang: 0.5,  canyon: false },
+    { f: 0.0008, amp: 2000, w: 420, d: 550, ang: -0.3, canyon: true  },
+  ];
+  for (const r of rivers) {
+    // 河流中心线：z 方向为主方向，纯柏林噪声蜿蜒（低频主蜿蜒 + 高频扰动，无正弦）
+    // fbm 输出约 ±0.7，×1.3 补偿至接近原正弦 ±1 的摆幅
+    const meander = fbm(z * r.f * 2.2 + r.ang * 53.7, r.ang * 17.3, 3) * r.amp * 1.3;
+    const noiseMeander = fbm(z * r.f * 3 + r.ang, r.ang*10, 3) * r.amp * 0.4;
+    const riverCenterX = meander + noiseMeander;
+    const dist = Math.abs(x - riverCenterX);
+    if (dist < r.w) {
+      const falloff = Math.pow(1 - dist / r.w, r.canyon ? 2.5 : 1.8);
+      deltaH -= falloff * r.d;
+      // 峡谷额外加深：中心窄沟
+      if (r.canyon && dist < r.w * 0.3) {
+        const deepFalloff = Math.pow(1 - dist / (r.w * 0.3), 3);
+        deltaH -= deepFalloff * 250;
+      }
+    }
+    // 河流沿方向也有"支流"——小噪声雕刻
+    const branchNoise = fbm(x*0.005 + r.ang, z*0.003, 3);
+    if (branchNoise > 0.55 && Math.abs(x - riverCenterX) < r.w * 3) {
+      deltaH -= (branchNoise - 0.55) * 1500;
+    }
+  }
+  return deltaH;
+}
+
+// ============================================================
+// 无限地形：chunk-based 系统
+// ============================================================
+const CHUNK_SIZE = 4000;          // 每个 chunk 的边长
+const CHUNK_SEG = 96;             // 每个 chunk 的分段数（~42m/格，平衡平滑度与性能）
+const RENDER_RADIUS = 4;          // 围绕玩家生成半径（9×9=81 chunks，覆盖 36km，陆地"无限"感）
+const SEA_LEVEL = 0;              // 海平面
+const WATER_CULL = -3500;         // 低于此高度的 vertex 强制水位（避免水下 mesh）
+
+const terrainMat = new THREE.MeshStandardMaterial({
+  vertexColors: true, roughness: 0.95, metalness: 0.0, flatShading: false,
+  envMapIntensity: 0.2,
+});
+
+// 颜色模板
+const cWater = new THREE.Color(0x1a3a5a);
+const cSeabed= new THREE.Color(0x2a3540);  // 海底深泥沙色（水下地形用，避免与水面同色叠色）
+const cSand  = new THREE.Color(0xb9a777);
+const cGrass = new THREE.Color(0x3f6b32);
+const cForest= new THREE.Color(0x2a5226);
+const cRock  = new THREE.Color(0x6e6256);
+const cSnow  = new THREE.Color(0xf2f5f8);
+
+// 各地貌低/中海拔基色（高海拔统一过渡到岩→雪，垂直分带保留）
+const BIOME_LOW = {
+  [BIOME_HIMALAYA]: new THREE.Color(0x3f6b32),  // 雪山深谷草甸绿
+  [BIOME_LOESS]:    new THREE.Color(0xc4a06a),  // 黄土亮褐
+  [BIOME_DESERT]:   new THREE.Color(0xd9bd85),  // 沙丘亮沙
+  [BIOME_KARST]:    new THREE.Color(0x4d8038),  // 峰林间农田亮绿
+  [BIOME_FOREST]:   new THREE.Color(0x26512a),  // 针阔混交墨绿
+  [BIOME_PLAIN]:    new THREE.Color(0x5d9440),  // 平原亮绿
+};
+const BIOME_MID = {
+  [BIOME_HIMALAYA]: new THREE.Color(0x2a5226),
+  [BIOME_LOESS]:    new THREE.Color(0x8f6f45),  // 沟壑深黄土褐
+  [BIOME_DESERT]:   new THREE.Color(0xc0a066),  // 沙谷暗沙
+  [BIOME_KARST]:    new THREE.Color(0x2d5a28),  // 石峰密林深绿
+  [BIOME_FOREST]:   new THREE.Color(0x1c441f),  // 深林暗绿
+  [BIOME_PLAIN]:    new THREE.Color(0x7fb04a),  // 农田黄绿
+};
+// 平原/喀斯特农田色块（低频噪声混入的黄绿"田块"）
+const cFarmland = new THREE.Color(0xa8b556);
+
+function colorForBiome(biome, h, x, z) {
+  const n = fbm(x*0.05, z*0.05, 2, 2.0, 0.5) * 0.3 + 0.5;  // 细碎色斑
+  const low = BIOME_LOW[biome], mid = BIOME_MID[biome];
+  let c;
+  if (h < SEA_LEVEL) {
+    c = cSeabed.clone();
+  } else if (h < 60) {
+    // 岸线沙滩；沙漠/黄土直接用本色（它们的低地本来就是沙/土）
+    if (biome === BIOME_DESERT || biome === BIOME_LOESS) {
+      c = low.clone().lerp(mid, n);
+    } else {
+      c = cSand.clone().lerp(low, Math.min(1, h / 60) * 0.8 + n * 0.2);
+    }
+  } else if (h < 800) {
+    c = low.clone().lerp(mid, n);
+    // 平原/喀斯特：低频噪声混出"田块"肌理
+    if (biome === BIOME_PLAIN || biome === BIOME_KARST) {
+      const field = fbm(x*0.0025, z*0.0025, 2, 2.0, 0.5);
+      c.lerp(cFarmland, Math.max(0, field - 0.25) * 1.3);
+    }
+  } else if (h < 1800) {
+    c = mid.clone().lerp(cRock, (h - 800) / 1000);
+  } else if (h < 3200) {
+    c = cRock.clone().lerp(cSnow, (h - 1800) / 1400);
+  } else {
+    c = cSnow.clone();
+  }
+  return c;
+}
+
+// 按地貌权重混合颜色（过渡区无色缝）
+const _biomeOrder = [BIOME_HIMALAYA, BIOME_LOESS, BIOME_DESERT, BIOME_KARST, BIOME_FOREST, BIOME_PLAIN];
+// 导弹弹坑表（提前声明，供 buildChunk 在 updateChunks(0,0) 首次调用时使用）
+const craters = [];
+function colorForHeight(h, x, z, weights) {
+  if (!weights) return colorForBiome(BIOME_PLAIN, h, x, z);
+  let r = 0, g = 0, b = 0, ws = 0;
+  for (let i = 0; i < 6; i++) {
+    const w = weights[i];
+    if (w < 0.004) continue;
+    const c = colorForBiome(_biomeOrder[i], h, x, z);
+    r += c.r * w; g += c.g * w; b += c.b * w; ws += w;
+  }
+  if (ws < 0.004) return colorForBiome(BIOME_PLAIN, h, x, z);
+  return new THREE.Color(r / ws, g / ws, b / ws);
+}
+
+// 机场位置（提前声明，供 buildChunk 压平机场周围地形）
+const AIRPORT_FLAT_RADIUS = 4500;  // 机场平坦区半径 m（确保有足够降落空间）
+const AIRPORT_POSITIONS = [
+  { x: 3000, z: 3000, name: '东方国际空港', heading: 0 },
+  { x: -4000, z: -3000, name: '西域国际空港', heading: Math.PI },
+];
+// 预计算机场地面高度（避免每次 buildChunk 重复计算）
+const AIRPORT_GROUND_Y = AIRPORT_POSITIONS.map(ap => terrainHeight(ap.x, ap.z));
+
+// 有效地形高度 = 噪声高度 + 机场平坦区压平（供碰撞检测使用）
+// buildChunk 中视觉压平了机场地形，碰撞检测必须用同样的逻辑，否则飞机在机场上空会误判坠毁
+function effectiveTerrainHeight(x, z) {
+  let h = terrainHeight(x, z);
+  for (let ai = 0; ai < AIRPORT_POSITIONS.length; ai++) {
+    const ap = AIRPORT_POSITIONS[ai];
+    const ddx = x - ap.x, ddz = z - ap.z;
+    const dist = Math.sqrt(ddx * ddx + ddz * ddz);
+    if (dist < AIRPORT_FLAT_RADIUS) {
+      const apY = AIRPORT_GROUND_Y[ai];
+      const n = dist / AIRPORT_FLAT_RADIUS;
+      if (n < 0.7) {
+        return apY;
+      } else {
+        const k = (n - 0.7) / 0.3;
+        const smooth = k * k * (3 - 2 * k);
+        return apY + (h - apY) * smooth;
+      }
+    }
+  }
+  return h;
+}
+
+// chunk 缓存：key = "cx,cz"
+const chunks = new Map();
+const decorChunks = new Map(); // 城乡村落/植被装饰：key = "cx,cz" → THREE.Group
+
+function chunkKey(cx, cz) { return cx + ',' + cz; }
+
+function buildChunk(cx, cz) {
+  const geom = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, CHUNK_SEG, CHUNK_SEG);
+  geom.rotateX(-Math.PI / 2);
+
+  const pos = geom.attributes.position;
+  const colors = new Float32Array(pos.count * 3);
+  const half = CHUNK_SIZE * 0.5;
+  const dx = cx * CHUNK_SIZE;
+  const dz = cz * CHUNK_SIZE;
+
+  for (let i = 0; i < pos.count; i++) {
+    const lx = pos.getX(i);      // -half .. half  （不要修改 lx/lz！）
+    const lz = pos.getZ(i);
+    const wx = dx + lx;
+    const wz = dz + lz;
+    const info = terrainHeightAndBiome(wx, wz);  // 高度 + 地貌权重一次取全
+    let h = info.height;
+    if (h < SEA_LEVEL) h = SEA_LEVEL - 50.0;  // 水下地形深钳到 -50m，交界悬崖完全在水下
+
+    let inAirport = false;
+    // —— 机场平坦区：把机场周围大范围地形压平到机场地面高度 ——
+    for (let ai = 0; ai < AIRPORT_POSITIONS.length; ai++) {
+      const ap = AIRPORT_POSITIONS[ai];
+      const ddx = wx - ap.x, ddz = wz - ap.z;
+      const dist = Math.sqrt(ddx * ddx + ddz * ddz);
+      if (dist < AIRPORT_FLAT_RADIUS) {
+        const apY = AIRPORT_GROUND_Y[ai];
+        const n = dist / AIRPORT_FLAT_RADIUS;  // 0..1
+        if (n < 0.7) {
+          h = apY;
+        } else {
+          const k = (n - 0.7) / 0.3;
+          const smooth = k * k * (3 - 2 * k);  // smoothstep
+          h = apY + (h - apY) * smooth;
+        }
+        // 机场区域颜色：草地绿为主，中心偏混凝土灰
+        const flatness = 1 - n;
+        const grassColor = new THREE.Color(0x6b9b4a);
+        const concreteColor = new THREE.Color(0x8a8a82);
+        const apColor = grassColor.clone().lerp(concreteColor, flatness * 0.4);
+        colors[i*3] = apColor.r; colors[i*3+1] = apColor.g; colors[i*3+2] = apColor.b;
+        inAirport = true;
+        break;
+      }
+    }
+
+    pos.setY(i, h);
+    if (!inAirport) {
+      const c = colorForHeight(h, wx, wz, info.w);
+      colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+    }
+  }
+
+  // —— 永久弹坑/隧道变形 + 烧灼色（在法线计算前应用）——
+  if (craters.length > 0) {
+    const chunkMinX = dx - half, chunkMaxX = dx + half;
+    const chunkMinZ = dz - half, chunkMaxZ = dz + half;
+    for (const cr of craters) {
+      if (cr.x + cr.radius < chunkMinX || cr.x - cr.radius > chunkMaxX ||
+          cr.z + cr.radius < chunkMinZ || cr.z - cr.radius > chunkMaxZ) continue;
+      for (let i = 0; i < pos.count; i++) {
+        const wx = dx + pos.getX(i);
+        const wz = dz + pos.getZ(i);
+        const ddx = wx - cr.x, ddz = wz - cr.z;
+        const dist = Math.sqrt(ddx*ddx + ddz*ddz);
+        if (dist < cr.radius) {
+          if (cr.type === 'tunnel') {
+            // 隧道：半径内全部削平到 tunnelFloor（穿透整座山体）
+            // 限制隧道地板不低于海平面以下，避免与水面穿模
+            const tunnelFloor = Math.max(cr.y - TUNNEL_DEPTH, SEA_LEVEL - 10);
+            const currentY = pos.getY(i);
+            if (currentY > tunnelFloor) {
+              const n = dist / cr.radius;  // 0..1，中心=0，边缘=1
+              // 核心区(0~0.7)完全削平；过渡区(0.7~1.0)用平滑曲线抬升到原始高度
+              let targetY;
+              if (n < 0.7) {
+                targetY = tunnelFloor;
+              } else {
+                const k = (n - 0.7) / 0.3;  // 0..1
+                const smooth = k * k * (3 - 2 * k);  // smoothstep
+                targetY = tunnelFloor + (currentY - tunnelFloor) * smooth;
+              }
+              pos.setY(i, targetY);
+              // 烧灼：中心最黑，边缘渐变
+              const t = 1 - n;
+              const sc = 0.08 + t * 0.12;
+              colors[i*3] *= sc; colors[i*3+1] *= sc * 0.6; colors[i*3+2] *= sc * 0.4;
+            }
+          } else {
+            // 普通弹坑：碗形凹陷
+            const t = 1 - dist / cr.radius;
+            const depression = cr.depth * t * t;
+            pos.setY(i, pos.getY(i) - depression);
+            const sc = 0.25 + t * 0.2;
+            colors[i*3] *= sc; colors[i*3+1] *= sc * 0.7; colors[i*3+2] *= sc * 0.5;
+          }
+        }
+      }
+    }
+  }
+
+  geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geom.computeVertexNormals();  // 法线正常工作，l×不变 → 相邻chunk边缘完全匹配
+
+  const mesh = new THREE.Mesh(geom, terrainMat);
+  mesh.receiveShadow = true;
+  mesh.position.set(dx, 0, dz);  // 只移动 mesh，不移动内部顶点
+  scene.add(mesh);
+  return mesh;
+}
+
+function updateChunks(px, pz) {
+  const pcx = Math.round(px / CHUNK_SIZE);
+  const pcz = Math.round(pz / CHUNK_SIZE);
+
+  // 标记当前需要的 chunk
+  const needed = new Set();
+  for (let dx = -RENDER_RADIUS; dx <= RENDER_RADIUS; dx++) {
+    for (let dz = -RENDER_RADIUS; dz <= RENDER_RADIUS; dz++) {
+      const cx = pcx + dx, cz = pcz + dz;
+      const key = chunkKey(cx, cz);
+      needed.add(key);
+      if (!chunks.has(key)) {
+        const mesh = buildChunk(cx, cz);
+        chunks.set(key, mesh);
+      }
+    }
+  }
+  // 回收远处 chunk
+  for (const [key, mesh] of chunks) {
+    if (!needed.has(key)) {
+      scene.remove(mesh);
+      mesh.geometry.dispose();
+      chunks.delete(key);
+    }
+  }
+}
+
+// 初始生成一批 chunk
+updateChunks(0, 0);
+
+// ============================================================
+// 程序化装饰：中国主要城市（硬编码世界坐标）+ 噪声驱动乡村 + 程序化植被
+// ============================================================
+// 中国主要城市（示意坐标，已包含规模等级 1~3）
+// 注意：这是程序化世界坐标，不是真实经纬度，但分布上模仿中国大格局
+const MAJOR_CITIES = [
+  // 华北
+  { name: '北京',   x: 300,  z: -2000, level: 3 },
+  { name: '天津',   x: 500,  z: -1900, level: 2 },
+  { name: '石家庄', x: 100,  z: -1800, level: 2 },
+  { name: '太原',   x: -200, z: -1600, level: 2 },
+  { name: '呼和浩特', x: -500, z: -2200, level: 2 },
+  { name: '济南',   x: 800,  z: -1500, level: 2 },
+  { name: '青岛',   x: 1300, z: -1500, level: 2 },
+  // 东北
+  { name: '沈阳',   x: 1400, z: -2700, level: 2 },
+  { name: '大连',   x: 1400, z: -2500, level: 2 },
+  { name: '长春',   x: 1500, z: -3200, level: 2 },
+  { name: '哈尔滨', x: 1600, z: -3700, level: 2 },
+  // 西北
+  { name: '西安',   x: -400, z: -1000, level: 3 },
+  { name: '兰州',   x: -800, z: -800,  level: 2 },
+  { name: '乌鲁木齐', x: -2800, z: -600, level: 2 },
+  { name: '银川',   x: -700, z: -1200, level: 2 },
+  // 西南
+  { name: '成都',   x: -1000, z: -200,  level: 3 },
+  { name: '重庆',   x: -700, z: 100,   level: 3 },
+  { name: '昆明',   x: -600, z: 1100,  level: 2 },
+  { name: '贵阳',   x: -400, z: 700,   level: 2 },
+  { name: '拉萨',   x: -1800, z: 100,   level: 2 },
+  // 华中
+  { name: '武汉',   x: 200,  z: -500,  level: 3 },
+  { name: '长沙',   x: 300,  z: 200,   level: 2 },
+  { name: '郑州',   x: 300,  z: -1300, level: 2 },
+  { name: '合肥',   x: 600,  z: -800,  level: 2 },
+  { name: '南昌',   x: 700,  z: 0,     level: 2 },
+  // 华东（长三角）
+  { name: '上海',   x: 1400, z: -700,  level: 3 },
+  { name: '南京',   x: 1000, z: -900,  level: 3 },
+  { name: '杭州',   x: 1100, z: -400,  level: 3 },
+  { name: '苏州',   x: 1200, z: -800,  level: 2 },
+  { name: '宁波',   x: 1200, z: -200,  level: 2 },
+  { name: '福州',   x: 800,  z: 400,   level: 2 },
+  { name: '厦门',   x: 700,  z: 900,   level: 2 },
+  // 华南（珠三角）
+  { name: '广州',   x: 400,  z: 1400,  level: 3 },
+  { name: '深圳',   x: 500,  z: 1500,  level: 3 },
+  { name: '佛山',   x: 300,  z: 1400,  level: 2 },
+  { name: '珠海',   x: 400,  z: 1700,  level: 2 },
+  { name: '南宁',   x: 0,    z: 1500,  level: 2 },
+  { name: '海口',   x: -200, z: 2300,  level: 2 },
+];
+
+// 根据坐标判断是否在某个大城市半径内
+function cityInfoAt(wx, wz) {
+  for (const c of MAJOR_CITIES) {
+    const dx = wx - c.x, dz = wz - c.z;
+    const r = c.level === 3 ? 800 : c.level === 2 ? 500 : 300;
+    if (dx*dx + dz*dz < r*r) return c;
+  }
+  return null;
+}
+
+// —— 共享几何体（InstancedMesh 用） ——
+const _boxGeo = new THREE.BoxGeometry(1, 1, 1);
+const _cylGeo = new THREE.CylinderGeometry(0.5, 0.5, 1, 6);
+const _coneGeo = new THREE.ConeGeometry(1, 2.5, 7);
+const _coneGeo2 = new THREE.ConeGeometry(1.2, 3.5, 7);
+const _planeGeo = new THREE.PlaneGeometry(1, 1);
+_boxGeo.translate(0, 0.5, 0);
+_cylGeo.translate(0, 0.5, 0);
+_coneGeo.translate(0, 1.25, 0);
+_coneGeo2.translate(0, 1.75, 0);
+
+// 材质
+const _matConcrete = new THREE.MeshStandardMaterial({ color: 0xb8b0a4, roughness: 0.85, metalness: 0.05, envMapIntensity: 0.5 });
+const _matRoofRed   = new THREE.MeshStandardMaterial({ color: 0xb04a3a, roughness: 0.75, envMapIntensity: 0.4 });
+const _matRoofGray  = new THREE.MeshStandardMaterial({ color: 0x605a55, roughness: 0.75, envMapIntensity: 0.4 });
+const _matGlass     = new THREE.MeshStandardMaterial({ color: 0x8fb8d8, roughness: 0.15, metalness: 0.5, envMapIntensity: 1.5, transparent: true, opacity: 0.85 });
+const _matTreeTrunk = new THREE.MeshStandardMaterial({ color: 0x5a3a1f, roughness: 1.0 });
+const _matTreeLeaf  = new THREE.MeshStandardMaterial({ color: 0x3c7a3a, roughness: 0.9 });
+const _matTreeLeaf2 = new THREE.MeshStandardMaterial({ color: 0x2d6632, roughness: 0.9 });
+const _matPineNeedle = new THREE.MeshStandardMaterial({ color: 0x2f5a3a, roughness: 0.9 });
+const _matBush      = new THREE.MeshStandardMaterial({ color: 0x4d8a3a, roughness: 1.0 });
+const _matSand      = new THREE.MeshStandardMaterial({ color: 0xd8c69a, roughness: 1.0 });
+const _matHighRise  = new THREE.MeshStandardMaterial({ color: 0x9aa3ab, roughness: 0.3, metalness: 0.5, envMapIntensity: 1.2 });
+const _matSuperTall = new THREE.MeshStandardMaterial({ color: 0xb0bcd0, roughness: 0.2, metalness: 0.6, envMapIntensity: 1.5 });
+
+// —— 预生成随机表（避免每帧 Math.random 带来的一致性问题） ——
+function _chunkRandTable(cx, cz, count) {
+  const table = new Float32Array(count);
+  let h = (cx * 374761393 + cz * 668265263) | 0;
+  for (let i = 0; i < count; i++) {
+    h = (h * 1664525 + 1013904223) | 0;
+    table[i] = ((h >>> 0) / 0xffffffff);
+  }
+  return table;
+}
+
+function buildChunkDecor(cx, cz) {
+  const group = new THREE.Group();
+  const half = CHUNK_SIZE * 0.5;
+  const chunkMinX = cx * CHUNK_SIZE;
+  const chunkMinZ = cz * CHUNK_SIZE;
+
+  // --- 收集本 chunk 的装饰点 ---
+  const trees = [];      // { x, z, kind, scale }
+  const buildings = [];  // { x, z, w, d, h, tier }  tier='cbd'|'inner'|'mid'|'outer'|'house'
+  const streets = [];    // { x, z, w, d, dir }  dir='h' 水平 / 'v' 垂直
+  const parks = [];      // { x, z, w, d }
+  const lakes = [];      // { x, z, w, d }
+  const villages = [];   // { x, z } （小村庄中心）
+
+  // —— 城市：平坦地形上直接撒高密度建筑群，无网格，无路网，无公园 ——
+  for (const city of MAJOR_CITIES) {
+    const CITY_RADIUS = city.level === 3 ? 1800 : 1000;
+    const ccx = Math.round(city.x / CHUNK_SIZE);
+    const ccz = Math.round(city.z / CHUNK_SIZE);
+    if (Math.abs(ccx - cx) > 1 || Math.abs(ccz - cz) > 1) continue;
+
+    // 撒点数：根据级别
+    const scatterCount = city.level === 3 ? 260 : 140;
+    const cityRand = _chunkRandTable(cx*31 + Math.round(city.x/100), cz*31 + Math.round(city.z/100), scatterCount * 18 + 100);
+    let cri = 0;
+
+    for (let i = 0; i < scatterCount; i++) {
+      // 极坐标随机撒点
+      const ang = cityRand[cri++] * Math.PI * 2;
+      const rr  = Math.sqrt(cityRand[cri++]) * CITY_RADIUS;
+      const px = city.x + Math.cos(ang) * rr;
+      const pz = city.z + Math.sin(ang) * rr;
+      if (px < chunkMinX - 80 || px > chunkMinX + CHUNK_SIZE + 80) continue;
+      if (pz < chunkMinZ - 80 || pz > chunkMinZ + CHUNK_SIZE + 80) continue;
+
+      // 地形过滤
+      const { height: gh, biome: gbiome } = terrainHeightAndBiome(px, pz);
+      if (gh < SEA_LEVEL + 5) continue;
+      if (gh > 600) continue;
+      if (gbiome === BIOME_HIMALAYA || gbiome === BIOME_DESERT) continue;
+      if (gbiome === BIOME_KARST && gh > 200) continue;
+      // 地面必须足够平坦（估算坡度）：近邻点高差不超过 8m
+      const slopeCheck = 40;
+      const slopeTol = 8;
+      const h1 = terrainHeight(px + slopeCheck, pz);
+      const h2 = terrainHeight(px - slopeCheck, pz);
+      const h3 = terrainHeight(px, pz + slopeCheck);
+      const h4 = terrainHeight(px, pz - slopeCheck);
+      const maxSlopeH = Math.max(Math.abs(h1-gh), Math.abs(h2-gh), Math.abs(h3-gh), Math.abs(h4-gh));
+      if (maxSlopeH > slopeTol) continue;
+
+      const dist = rr;
+      // 高度/宽度按距中心距离递减
+      let tier, hMin, hMax, wMin, wMax;
+      if (dist < 220) {
+        tier = 'cbd';
+        if (cityRand[cri++] < 0.22) {
+          // 超高层地标
+          hMin = 280; hMax = 460; wMin = 18; wMax = 34;
+        } else {
+          hMin = 140; hMax = 380; wMin = 12; wMax = 26;
+        }
+      } else if (dist < 550) {
+        tier = 'inner';
+        hMin = 45; hMax = 180; wMin = 10; wMax = 24;
+      } else if (dist < 1300) {
+        tier = 'mid';
+        hMin = 18; hMax = 70; wMin = 8; wMax = 22;
+      } else {
+        tier = 'outer';
+        hMin = 6; hMax = 24; wMin = 6; wMax = 18;
+      }
+
+      const bw = wMin + cityRand[cri++] * (wMax - wMin);
+      const bd = wMin + cityRand[cri++] * (wMax - wMin);
+      const bh = hMin + cityRand[cri++] * (hMax - hMin);
+      buildings.push({ x: px, z: pz, w: bw, d: bd, h: bh, tier });
+    }
+  }
+
+  // 乡村：噪声驱动小村落
+  const villageNoise = fbm(cx*0.7 + 11, cz*0.7 + 13, 3, 2.0, 0.5);
+  if (villageNoise > 0.1) {
+    const count = Math.floor(villageNoise * 15) + 3;
+    const rand = _chunkRandTable(cx*7+2, cz*7+5, count*4);
+    let ri = 0;
+    for (let i = 0; i < count; i++) {
+      const lx = (rand[ri++]-0.5) * CHUNK_SIZE * 0.7;
+      const lz = (rand[ri++]-0.5) * CHUNK_SIZE * 0.7;
+      const wx = chunkMinX + half + lx;
+      const wz = chunkMinZ + half + lz;
+      const { height, biome } = terrainHeightAndBiome(wx, wz);
+      // 只在平原/黄土/森林边缘生成村落，且高度不高
+      if (biome === BIOME_HIMALAYA || biome === BIOME_DESERT) continue;
+      if (biome === BIOME_KARST && height > 200) continue;
+      if (height > 600 || height < SEA_LEVEL + 2) continue;
+      villages.push({ x: wx, z: wz });
+      // 每个小村庄 3~8 户
+      const nHouse = 3 + Math.floor(rand[ri++]*5);
+      for (let j = 0; j < nHouse; j++) {
+        const hx = wx + (rand[ri++]-0.5) * 80;
+        const hz = wz + (rand[ri++]-0.5) * 80;
+        const { height: hh } = terrainHeightAndBiome(hx, hz);
+        if (hh > 600 || hh < SEA_LEVEL + 2) continue;
+        const w = 5 + rand[ri++]*6;
+        const d = 5 + rand[ri++]*6;
+        const h = 4 + rand[ri++]*6;
+        buildings.push({ x: hx, z: hz, w, d, h, tier: 'house' });
+      }
+    }
+  }
+
+  // 植被：按 biome 密度分布
+  const randV = _chunkRandTable(cx*13+9, cz*13+17, 4000);
+  let vi = 0;
+  const treesTarget = 600; // 每 chunk 目标树数（按 biome 密度实际保留）
+  for (let i = 0; i < treesTarget; i++) {
+    const lx = (randV[vi++]-0.5) * CHUNK_SIZE;
+    const lz = (randV[vi++]-0.5) * CHUNK_SIZE;
+    const wx = chunkMinX + half + lx;
+    const wz = chunkMinZ + half + lz;
+    const { height, biome } = terrainHeightAndBiome(wx, wz);
+    if (height < SEA_LEVEL + 1) continue;  // 水面不种树
+
+    // 密度因子（每种 biome 决定树的密度）
+    let density = 0;
+    let kind = 'leafy';
+    switch (biome) {
+      case BIOME_HIMALAYA: density = height < 4500 ? 0.06 : 0; kind = 'pine'; break;
+      case BIOME_LOESS:    density = 0.18; kind = 'leafy'; break;
+      case BIOME_DESERT:   density = 0.03; kind = 'leafy'; break;
+      case BIOME_KARST:    density = 0.40; kind = 'leafy'; break;
+      case BIOME_FOREST:   density = 0.75; break;
+      case BIOME_PLAIN:    density = 0.15; kind = 'leafy'; break;
+    }
+    if (biome === BIOME_FOREST) kind = randV[vi++] < 0.4 ? 'pine' : 'leafy';
+    if (randV[vi++] > density) continue;
+
+    // 避免在建筑上种树
+    let tooClose = false;
+    for (const b of buildings) {
+      const dx = b.x - wx, dz = b.z - wz;
+      if (dx*dx + dz*dz < 40*40) { tooClose = true; break; }
+    }
+    if (tooClose) continue;
+    if (height < -20) continue;
+
+    const scale = 0.8 + randV[vi++] * 1.2;
+    trees.push({ x: wx, z: wz, kind, scale });
+  }
+
+  // --- 渲染层（从下到上：建筑 → 树木） ---
+
+  // 1. 建筑：分 tier 渲染
+  //    super tall (200m+) → _matSuperTall 玻璃幕墙
+  //    high rise (60~200m) → _matHighRise 金属
+  //    mid / outer / house → _matConcrete + 红/灰屋顶
+  const MAX_B = Math.max(1, buildings.length);
+  if (buildings.length > 0) {
+    const boxInstSuper = new THREE.InstancedMesh(_boxGeo, _matSuperTall, MAX_B);
+    const boxInstHigh  = new THREE.InstancedMesh(_boxGeo, _matHighRise, MAX_B);
+    const boxInstLow   = new THREE.InstancedMesh(_boxGeo, _matConcrete, MAX_B);
+    const roofInstRed  = new THREE.InstancedMesh(_boxGeo, _matRoofRed, MAX_B);
+    const roofInstGray = new THREE.InstancedMesh(_boxGeo, _matRoofGray, MAX_B);
+    const roofInstGlass= new THREE.InstancedMesh(_boxGeo, _matGlass, MAX_B);
+    let nSuper=0, nHigh=0, nLow=0, nR=0, nG=0, nGl=0;
+
+    const dummy = new THREE.Object3D();
+    for (const b of buildings) {
+      const { height: gh } = terrainHeightAndBiome(b.x, b.z);
+      if (gh < -50) continue;
+
+      dummy.position.set(b.x, gh + b.h/2, b.z);
+      dummy.scale.set(b.w, b.h, b.d);
+      dummy.updateMatrix();
+
+      // 超高层地标
+      if (b.h >= 200) {
+        boxInstSuper.setMatrixAt(nSuper++, dummy.matrix);
+        // 顶部天线/尖塔
+        dummy.position.set(b.x, gh + b.h + 10, b.z);
+        dummy.scale.set(2, 20, 2);
+        dummy.updateMatrix();
+        roofInstGlass.setMatrixAt(nGl++, dummy.matrix);
+      }
+      // 中高层
+      else if (b.h >= 60) {
+        boxInstHigh.setMatrixAt(nHigh++, dummy.matrix);
+        const roofH = b.h * 0.04;
+        dummy.position.set(b.x, gh + b.h + roofH/2, b.z);
+        dummy.scale.set(b.w*1.01, roofH, b.d*1.01);
+        dummy.updateMatrix();
+        roofInstGlass.setMatrixAt(nGl++, dummy.matrix);
+      }
+      // 低层 + 乡村房屋
+      else {
+        boxInstLow.setMatrixAt(nLow++, dummy.matrix);
+        const roofH = b.tier === 'house' ? 1.5 : Math.min(3, b.h * 0.08);
+        dummy.position.set(b.x, gh + b.h + roofH/2, b.z);
+        dummy.scale.set(b.w*1.02, roofH, b.d*1.02);
+        dummy.updateMatrix();
+        if (Math.random() < 0.5) roofInstRed.setMatrixAt(nR++, dummy.matrix);
+        else roofInstGray.setMatrixAt(nG++, dummy.matrix);
+      }
+    }
+
+    const finalize = (inst, n) => {
+      inst.count = n; inst.instanceMatrix.needsUpdate = true;
+      if (n > 0) { inst.castShadow = true; inst.receiveShadow = true; group.add(inst); }
+    };
+    finalize(boxInstSuper, nSuper);
+    finalize(boxInstHigh, nHigh);
+    finalize(boxInstLow, nLow);
+    finalize(roofInstRed, nR);
+    finalize(roofInstGray, nG);
+    finalize(roofInstGlass, nGl);
+  }
+
+  // 4. 树：instanced 树干 + 针叶/阔叶叶（不变）
+  const MAX_TREE = Math.max(1, trees.length);
+  if (trees.length > 0) {
+    const trunkInst = new THREE.InstancedMesh(_cylGeo, _matTreeTrunk, MAX_TREE);
+    const leafInstA = new THREE.InstancedMesh(_coneGeo, _matTreeLeaf, MAX_TREE);
+    const leafInstB = new THREE.InstancedMesh(_coneGeo2, _matTreeLeaf2, MAX_TREE);
+    const pineInst = new THREE.InstancedMesh(_coneGeo2, _matPineNeedle, MAX_TREE);
+    const dummy = new THREE.Object3D();
+    let iA = 0, iB = 0, iP = 0;
+    let iTrunk = 0;
+    for (const t of trees) {
+      const { height: gh } = terrainHeightAndBiome(t.x, t.z);
+      if (gh < -20) continue;
+      const trunkH = 2 * t.scale;
+      dummy.position.set(t.x, gh + trunkH/2, t.z);
+      dummy.scale.set(0.25, trunkH, 0.25);
+      dummy.rotation.y = Math.random() * Math.PI;
+      dummy.updateMatrix();
+      trunkInst.setMatrixAt(iTrunk++, dummy.matrix);
+
+      const leafScale = t.scale;
+      dummy.position.set(t.x, gh + trunkH + 1.5*leafScale, t.z);
+      dummy.scale.setScalar(leafScale);
+      dummy.rotation.y = Math.random() * Math.PI;
+      dummy.updateMatrix();
+      if (t.kind === 'pine') {
+        pineInst.setMatrixAt(iP++, dummy.matrix);
+      } else {
+        // 随机选一种叶色
+        if (Math.random() < 0.5) leafInstA.setMatrixAt(iA++, dummy.matrix);
+        else leafInstB.setMatrixAt(iB++, dummy.matrix);
+      }
+    }
+    trunkInst.count = iTrunk;
+    trunkInst.instanceMatrix.needsUpdate = true;
+    trunkInst.castShadow = true; trunkInst.receiveShadow = true;
+    group.add(trunkInst);
+
+    leafInstA.count = iA; leafInstA.instanceMatrix.needsUpdate = true;
+    leafInstA.castShadow = true;
+    if (iA > 0) group.add(leafInstA);
+
+    leafInstB.count = iB; leafInstB.instanceMatrix.needsUpdate = true;
+    leafInstB.castShadow = true;
+    if (iB > 0) group.add(leafInstB);
+
+    pineInst.count = iP; pineInst.instanceMatrix.needsUpdate = true;
+    pineInst.castShadow = true;
+    if (iP > 0) group.add(pineInst);
+  }
+
+  return group;
+}
+
+function updateDecorChunks(px, pz) {
+  const pcx = Math.round(px / CHUNK_SIZE);
+  const pcz = Math.round(pz / CHUNK_SIZE);
+
+  const needed = new Set();
+  // 装饰范围比地形略小一半（远处不渲染）
+  const DECOR_RADIUS = Math.max(1, Math.floor(RENDER_RADIUS * 0.7));
+  for (let dx = -DECOR_RADIUS; dx <= DECOR_RADIUS; dx++) {
+    for (let dz = -DECOR_RADIUS; dz <= DECOR_RADIUS; dz++) {
+      const cx = pcx + dx, cz = pcz + dz;
+      const key = chunkKey(cx, cz);
+      needed.add(key);
+      if (!decorChunks.has(key)) {
+        const grp = buildChunkDecor(cx, cz);
+        decorChunks.set(key, grp);
+        scene.add(grp);
+      }
+    }
+  }
+  // 回收远处装饰
+  for (const [key, grp] of decorChunks) {
+    if (!needed.has(key)) {
+      scene.remove(grp);
+      grp.traverse(obj => {
+        if (obj.geometry) obj.geometry.dispose();
+      });
+      decorChunks.delete(key);
+    }
+  }
+}
+
+// ============================================================
+// 两座大型国际机场（固定位置，平坦地形）
+// ============================================================
+const airports = [];
+
+function createAirport(def, groundY) {
+  const grp = new THREE.Group();
+  grp.name = def.name;
+  grp.position.set(def.x, groundY, def.z);
+  grp.rotation.y = def.heading;
+
+  // 材质
+  const matRunway = new THREE.MeshStandardMaterial({ color: 0x2a2a2e, roughness: 0.9 });
+  const matTaxiway = new THREE.MeshStandardMaterial({ color: 0x3a3a40, roughness: 0.9 });
+  const matApron = new THREE.MeshStandardMaterial({ color: 0x404048, roughness: 0.9 });
+  const matTerminal = new THREE.MeshStandardMaterial({ color: 0xccd4dd, roughness: 0.4, metalness: 0.5 });
+  const matTower = new THREE.MeshStandardMaterial({ color: 0x8899aa, roughness: 0.3, metalness: 0.6 });
+  const matRoof = new THREE.MeshStandardMaterial({ color: 0x334455, roughness: 0.5, metalness: 0.4 });
+  const matGlass = new THREE.MeshStandardMaterial({ color: 0x88bbee, roughness: 0.1, metalness: 0.6, transparent: true, opacity: 0.6 });
+  const matWhite = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const matYellow = new THREE.MeshBasicMaterial({ color: 0xffdd00 });
+  const matRoad = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.9 });
+
+  const RWY_Z = [-200, 200];     // 跑道 z 坐标
+  const RWY_LEN = 3000, RWY_W = 60;
+  const TAXI_Z = [-400, 400];    // 滑行道 z 坐标
+  const TAXI_W = 25;
+  const APRON_Z = 650;           // 停机坪 z 坐标
+  const APRON_W = 400, APRON_L = 1600;
+
+  // —— 两条平行主跑道 ——
+  for (const rz of RWY_Z) {
+    // 跑道面板
+    const rwy = new THREE.Mesh(new THREE.PlaneGeometry(RWY_LEN, RWY_W), matRunway);
+    rwy.rotation.x = -Math.PI / 2;
+    rwy.position.set(0, 0.3, rz);
+    rwy.receiveShadow = true;
+    grp.add(rwy);
+
+    // 跑道两侧边线（白色实线）
+    for (const side of [-1, 1]) {
+      const edge = new THREE.Mesh(new THREE.PlaneGeometry(RWY_LEN, 1.5), matWhite);
+      edge.rotation.x = -Math.PI / 2;
+      edge.position.set(0, 0.45, rz + side * (RWY_W / 2 - 1));
+      grp.add(edge);
+    }
+
+    // 跑道中线虚线（30m 线 + 40m 间距，沿 X 轴方向）
+    for (let m = -1400; m <= 1400; m += 70) {
+      const dash = new THREE.Mesh(new THREE.PlaneGeometry(30, 3), matWhite);
+      dash.rotation.x = -Math.PI / 2;
+      dash.position.set(m, 0.45, rz);
+      grp.add(dash);
+    }
+
+    // 跑道入口斑马线（两端各有 6 条横线）
+    for (const end of [-1, 1]) {
+      for (let b = 0; b < 6; b++) {
+        const bar = new THREE.Mesh(new THREE.PlaneGeometry(50, 6), matWhite);
+        bar.rotation.x = -Math.PI / 2;
+        bar.position.set(end * (1400 - b * 12), 0.45, rz);
+        grp.add(bar);
+      }
+      // 跑道号码（大白字，用方块代替）
+      const num = new THREE.Mesh(new THREE.PlaneGeometry(25, 25), matWhite);
+      num.rotation.x = -Math.PI / 2;
+      num.position.set(end * 1330, 0.45, rz);
+      grp.add(num);
+    }
+  }
+
+  // —— 滑行道（平行于跑道）——
+  for (const tz of TAXI_Z) {
+    const taxi = new THREE.Mesh(new THREE.PlaneGeometry(RWY_LEN, TAXI_W), matTaxiway);
+    taxi.rotation.x = -Math.PI / 2;
+    taxi.position.set(0, 0.3, tz);
+    taxi.receiveShadow = true;
+    grp.add(taxi);
+    // 滑行道中线（黄色虚线）
+    for (let m = -1400; m <= 1400; m += 60) {
+      const dash = new THREE.Mesh(new THREE.PlaneGeometry(25, 1.5), matYellow);
+      dash.rotation.x = -Math.PI / 2;
+      dash.position.set(m, 0.45, tz);
+      grp.add(dash);
+    }
+  }
+
+  // —— 连接道（跑道 ↔ 滑行道）——
+  // 跑道外缘 z=±230，滑行道内缘 z=±385 → 连接道覆盖 z 从 230 到 385（长 155m）
+  for (const [rz, tz] of [[-200, -400], [200, 400]]) {
+    const linkZ = (rz + tz) / 2;           // 连接道中心 z
+    const linkLen = Math.abs(tz - rz) - TAXI_W / 2 - RWY_W / 2 + 20;  // 净连接长度
+    for (let m = -1200; m <= 1200; m += 350) {
+      const link = new THREE.Mesh(new THREE.PlaneGeometry(TAXI_W, linkLen + 20), matTaxiway);
+      link.rotation.x = -Math.PI / 2;
+      link.position.set(m, 0.3, linkZ);
+      link.receiveShadow = true;
+      grp.add(link);
+    }
+  }
+
+  // —— 滑行道到停机坪的连接道 ——
+  // 滑行道A（z=400）到停机坪（z=650）：连接道覆盖 z 从 412 到 630
+  {
+    const linkZ = (400 + APRON_Z) / 2;
+    const linkLen = APRON_Z - 400 - TAXI_W / 2 + 20;
+    for (let m = -600; m <= 600; m += 300) {
+      const link = new THREE.Mesh(new THREE.PlaneGeometry(TAXI_W, linkLen), matTaxiway);
+      link.rotation.x = -Math.PI / 2;
+      link.position.set(m, 0.3, linkZ);
+      link.receiveShadow = true;
+      grp.add(link);
+    }
+  }
+
+  // —— 停机坪 ——
+  const apron = new THREE.Mesh(new THREE.PlaneGeometry(APRON_L, APRON_W), matApron);
+  apron.rotation.x = -Math.PI / 2;
+  apron.position.set(0, 0.3, APRON_Z);
+  apron.receiveShadow = true;
+  grp.add(apron);
+
+  // 停机位标识线（T 形：一条横线 + 一条纵线）
+  for (let n = 0; n < 10; n++) {
+    const px = -700 + n * 155;
+    // 横线（沿 X 方向）
+    const hLine = new THREE.Mesh(new THREE.PlaneGeometry(30, 2), matWhite);
+    hLine.rotation.x = -Math.PI / 2;
+    hLine.position.set(px, 0.4, APRON_Z - 120);
+    grp.add(hLine);
+    // 纵线（沿 Z 方向，指向停机位）
+    const vLine = new THREE.Mesh(new THREE.PlaneGeometry(2, 100), matWhite);
+    vLine.rotation.x = -Math.PI / 2;
+    vLine.position.set(px, 0.4, APRON_Z - 70);
+    grp.add(vLine);
+  }
+
+  // —— 航站楼 ——
+  const terminal = new THREE.Group();
+  const TERM_Z = APRON_Z + 150;   // 航站楼在停机坪后方
+  const TERM_L = 1200, TERM_H = 40, TERM_W = 120;
+  // 主楼
+  const main = new THREE.Mesh(new THREE.BoxGeometry(TERM_L, TERM_H, TERM_W), matTerminal);
+  main.position.set(0, TERM_H / 2, TERM_Z);
+  main.castShadow = true; main.receiveShadow = true;
+  terminal.add(main);
+  // 玻璃幕墙（前后两侧）
+  for (const s of [-1, 1]) {
+    const glass = new THREE.Mesh(new THREE.BoxGeometry(TERM_L, TERM_H - 8, 2), matGlass);
+    glass.position.set(0, TERM_H / 2, TERM_Z + s * (TERM_W / 2 + 0.5));
+    terminal.add(glass);
+  }
+  // 屋顶
+  const roof = new THREE.Mesh(new THREE.BoxGeometry(TERM_L + 50, 5, TERM_W + 10), matRoof);
+  roof.position.set(0, TERM_H + 3, TERM_Z);
+  terminal.add(roof);
+  // 指廊（从航站楼向停机坪方向延伸，连接停机位）
+  for (let s = -1; s <= 1; s += 2) {
+    const pier = new THREE.Mesh(new THREE.BoxGeometry(200, 18, 22), matTerminal);
+    pier.position.set(s * 350, 9, TERM_Z - 80);
+    pier.castShadow = true;
+    terminal.add(pier);
+  }
+  grp.add(terminal);
+
+  // —— 塔台 ——
+  const tower = new THREE.Group();
+  const TW_X = 850, TW_Z = 50;
+  const towerBase = new THREE.Mesh(new THREE.CylinderGeometry(10, 14, 55, 16), matTower);
+  towerBase.position.set(TW_X, 27.5, TW_Z);
+  towerBase.castShadow = true;
+  tower.add(towerBase);
+  const towerTop = new THREE.Mesh(new THREE.CylinderGeometry(16, 12, 10, 16), matGlass);
+  towerTop.position.set(TW_X, 60, TW_Z);
+  tower.add(towerTop);
+  const towerRoof = new THREE.Mesh(new THREE.ConeGeometry(18, 8, 16), matRoof);
+  towerRoof.position.set(TW_X, 69, TW_Z);
+  tower.add(towerRoof);
+  grp.add(tower);
+
+  // —— 入口道路（连接航站楼到机场边缘）——
+  const road = new THREE.Mesh(new THREE.PlaneGeometry(1200, 40), matRoad);
+  road.rotation.x = -Math.PI / 2;
+  road.position.set(0, 0.3, TERM_Z + 100);
+  road.receiveShadow = true;
+  grp.add(road);
+
+  return grp;
+}
+
+// 着陆检测：飞机是否在某机场跑道上方且高度低
+let lastLandingAirport = null;
+let landingMessageTimer = 0;
+const landingEl = document.createElement('div');
+landingEl.style.cssText = 'position:absolute;top:20%;left:50%;transform:translateX(-50%);background:rgba(0,120,0,0.85);color:#fff;padding:12px 30px;border-radius:8px;font-size:18px;font-weight:bold;display:none;z-index:10;';
+document.body.appendChild(landingEl);
+
+function checkLanding(planePos, speed) {
+  for (const ap of airports) {
+    const dx = planePos.x - ap.position.x;
+    const dz = planePos.z - ap.position.z;
+    // 转换到机场局部坐标（考虑跑道朝向）
+    const heading = ap.rotation.y;
+    const cosH = Math.cos(heading), sinH = Math.sin(heading);
+    // 旋转：x' = dx*cos + dz*sin, z' = -dx*sin + dz*cos
+    const localX = dx * cosH + dz * sinH;   // 跑道长度方向
+    const localZ = -dx * sinH + dz * cosH;  // 跑道宽度方向
+    // 跑道范围：长度 ±1500m，宽度 ±80m
+    if (Math.abs(localX) < 1500 && Math.abs(localZ) < 80) {
+      const altAbove = planePos.y - ap.position.y;
+      if (altAbove < 50 && altAbove > -5 && speed < 300) {
+        // 着陆成功！
+        if (lastLandingAirport !== ap) {
+          lastLandingAirport = ap;
+          landingEl.textContent = '✈ 已成功降落于 ' + ap.name;
+          landingEl.style.display = 'block';
+          landingMessageTimer = 3.0;
+        }
+        return;
+      }
+    }
+  }
+  lastLandingAirport = null;
+}
+
+// 初始化机场（在场景加载后调用）
+function initAirports() {
+  for (let i = 0; i < AIRPORT_POSITIONS.length; i++) {
+    const ap = createAirport(AIRPORT_POSITIONS[i], AIRPORT_GROUND_Y[i]);
+    scene.add(ap);
+    airports.push(ap);
+  }
+}
+const waterGeo = new THREE.PlaneGeometry(80000, 80000, 1, 1);
+waterGeo.rotateX(-Math.PI / 2);
+const waterMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime: { value: 0 },
+    uSunDir: { value: new THREE.Vector3(0.6, 0.5, 0.4).normalize() },
+    uDeepColor:  { value: new THREE.Color(0x0f3a5e) },
+    uShallowColor:{ value: new THREE.Color(0x2a7ab0) },
+    uPeakColor:  { value: new THREE.Color(0x8fd8f0) },
+    // 手动雾（材质 fog:false 防 r160 崩溃）：色值用 sRGB 原值——雾在色彩编码之后混合，与内建材质一致
+    uFogColor:   { value: new THREE.Color(0xdf/255, 0xe9/255, 0xf4/255) },
+    uFogDensity: { value: 0.000055 },
+  },
+  transparent: true,
+  side: THREE.DoubleSide,
+  depthWrite: false,
+  fog: false,   // 自定义 shader 未含 fog 代码块；r160 中 fog:true 会触发 refreshFogUniforms 读取缺失的 fogColor 而崩溃
+  vertexShader: `
+    varying vec3 vWorldPos;
+    varying vec3 vNormalW;
+    varying float vFogDepth;
+    uniform float uTime;
+
+    // 2D hash + value noise
+    float hash21(vec2 p) {
+      p = fract(p * vec2(234.34, 435.345));
+      p += dot(p, p + 34.23);
+      return fract(p.x * p.y);
+    }
+    float vnoise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      float a = hash21(i);
+      float b = hash21(i + vec2(1.0, 0.0));
+      float c = hash21(i + vec2(0.0, 1.0));
+      float d = hash21(i + vec2(1.0, 1.0));
+      return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+    }
+    float fbm(vec2 p) {
+      float v = 0.0, a = 0.5;
+      for (int i = 0; i < 5; i++) {
+        v += a * vnoise(p);
+        p *= 2.03;
+        a *= 0.5;
+      }
+      return v;
+    }
+
+    void main() {
+      // 用世界坐标采样波纹：水面跟随飞机平移时，波纹锚定在世界空间不"跟着走"
+      vec3 wp = (modelMatrix * vec4(position, 1.0)).xyz;
+      vec2 wsp = wp.xz;
+      float t = uTime;
+      // 多层 FBM 波叠加，大尺度长波 + 小尺度短波
+      float w1 = fbm(wsp * 0.002 + vec2(t*0.08, t*0.05)) * 6.0;
+      float w2 = fbm(wsp * 0.008 + vec2(-t*0.12, t*0.09)) * 2.5;
+      float w3 = fbm(wsp * 0.025 + vec2(t*0.15, -t*0.18)) * 0.8;
+      vec3 pos = position;
+      pos.y += w1 + w2 + w3;
+
+      // 近似法线：在世界空间中用有限差分
+      float eps = 0.5;
+      float hL = fbm((wsp + vec2(-eps, 0.0)) * 0.002 + vec2(t*0.08, t*0.05)) * 6.0
+               + fbm((wsp + vec2(-eps, 0.0)) * 0.008 + vec2(-t*0.12, t*0.09)) * 2.5
+               + fbm((wsp + vec2(-eps, 0.0)) * 0.025 + vec2(t*0.15, -t*0.18)) * 0.8;
+      float hR = fbm((wsp + vec2( eps, 0.0)) * 0.002 + vec2(t*0.08, t*0.05)) * 6.0
+               + fbm((wsp + vec2( eps, 0.0)) * 0.008 + vec2(-t*0.12, t*0.09)) * 2.5
+               + fbm((wsp + vec2( eps, 0.0)) * 0.025 + vec2(t*0.15, -t*0.18)) * 0.8;
+      float hD = fbm((wsp + vec2(0.0, -eps)) * 0.002 + vec2(t*0.08, t*0.05)) * 6.0
+               + fbm((wsp + vec2(0.0, -eps)) * 0.008 + vec2(-t*0.12, t*0.09)) * 2.5
+               + fbm((wsp + vec2(0.0, -eps)) * 0.025 + vec2(t*0.15, -t*0.18)) * 0.8;
+      float hU = fbm((wsp + vec2(0.0,  eps)) * 0.002 + vec2(t*0.08, t*0.05)) * 6.0
+               + fbm((wsp + vec2(0.0,  eps)) * 0.008 + vec2(-t*0.12, t*0.09)) * 2.5
+               + fbm((wsp + vec2(0.0,  eps)) * 0.025 + vec2(t*0.15, -t*0.18)) * 0.8;
+      vec3 n = normalize(vec3(hL - hR, 2.0*eps, hD - hU));
+
+      vec4 wm = modelMatrix * vec4(pos, 1.0);
+      vWorldPos = wm.xyz;
+      vNormalW = normalize((modelMatrix * vec4(n, 0.0)).xyz);
+      vFogDepth = -( viewMatrix * wm ).z;  // 视深（与内建雾 vFogDepth 定义一致）
+      gl_Position = projectionMatrix * viewMatrix * wm;
+    }
+  `,
+  fragmentShader: `
+    precision highp float;
+    varying vec3 vWorldPos;
+    varying vec3 vNormalW;
+    varying float vFogDepth;
+    uniform vec3 uSunDir;
+    uniform vec3 uDeepColor;
+    uniform vec3 uShallowColor;
+    uniform vec3 uPeakColor;
+    uniform vec3 uFogColor;
+    uniform float uFogDensity;
+
+    void main() {
+      vec3 N = normalize(vNormalW);
+      vec3 V = normalize(cameraPosition - vWorldPos);
+      vec3 L = normalize(uSunDir);
+
+      // 波浪高度决定颜色（用 y 偏移程度当近似 wave height）
+      float waveH = (vWorldPos.y - (-1.5)) / 6.0;
+      waveH = clamp(waveH, 0.0, 1.0);
+
+      // 深水/浅水渐变
+      vec3 col = mix(uDeepColor, uShallowColor, waveH * 0.7);
+
+      // 菲涅尔效果：边缘更亮
+      float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0);
+      col = mix(col, uPeakColor, fresnel * 0.35);
+
+      // 高光
+      vec3 H = normalize(L + V);
+      float spec = pow(max(dot(N, H), 0.0), 120.0);
+      col += vec3(1.0) * spec * 0.6;
+
+      // 漫反射基色
+      float diff = max(dot(N, L), 0.0);
+      col += vec3(1.0, 0.95, 0.85) * diff * 0.08;
+
+      gl_FragColor = vec4(col, 0.88);
+      // 色调映射 + sRGB 编码：与地形内建材质管线一致（否则水面显示偏暗、与场景脱节）
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+      // 手动 FogExp2（与场景雾公式一致）：远水融入地平线雾色，消除水面尽头硬边
+      float fogFactor = 1.0 - exp(-uFogDensity * uFogDensity * vFogDepth * vFogDepth);
+      gl_FragColor.rgb = mix(gl_FragColor.rgb, uFogColor, fogFactor);
+    }
+  `,
+});
+const water = new THREE.Mesh(waterGeo, waterMat);
+water.position.y = SEA_LEVEL - 1.5;
+water.renderOrder = 999;  // 最后渲染
+scene.add(water);
+
+// ============================================================
+// 飞机：低多边形组装
+// ============================================================
+function createTrainer() {
+  const g = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xd64535, roughness: 0.35, metalness: 0.45, envMapIntensity: 1.0 });
+  const accentMat = new THREE.MeshStandardMaterial({ color: 0xf5f5f5, roughness: 0.4, metalness: 0.3, envMapIntensity: 1.0 });
+  const darkMat = new THREE.MeshStandardMaterial({ color: 0x1f2933, roughness: 0.25, metalness: 0.6, envMapIntensity: 1.2 });
+
+  // 机身（圆柱沿 +Z）
+  const bodyGeo = new THREE.CylinderGeometry(0.55, 0.32, 7.5, 12);
+  bodyGeo.rotateX(Math.PI / 2);
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.castShadow = true;
+  g.add(body);
+
+  // 机头锥
+  const noseGeo = new THREE.ConeGeometry(0.55, 1.6, 12);
+  noseGeo.rotateX(Math.PI / 2);
+  const nose = new THREE.Mesh(noseGeo, bodyMat);
+  nose.position.z = 4.55;
+  nose.castShadow = true;
+  g.add(nose);
+
+  // 驾驶舱
+  const cockpitGeo = new THREE.SphereGeometry(0.5, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2);
+  const cockpit = new THREE.Mesh(cockpitGeo, darkMat);
+  cockpit.position.set(0, 0.45, 1.2);
+  cockpit.scale.set(1, 0.9, 1.6);
+  cockpit.castShadow = true;
+  g.add(cockpit);
+
+  // 主翼
+  const wingGeo = new THREE.BoxGeometry(7.5, 0.15, 1.2);
+  const wing = new THREE.Mesh(wingGeo, bodyMat);
+  wing.position.set(0, 0.05, 0.2);
+  wing.castShadow = true;
+  g.add(wing);
+
+  // 翼端白条
+  const tipGeoL = new THREE.BoxGeometry(0.4, 0.16, 1.2);
+  const tipL = new THREE.Mesh(tipGeoL, accentMat);
+  tipL.position.set(-3.55, 0.05, 0.2);
+  tipL.castShadow = true;
+  g.add(tipL);
+  const tipR = tipL.clone(); tipR.position.x = 3.55; g.add(tipR);
+
+  // 水平尾翼
+  const htailGeo = new THREE.BoxGeometry(2.6, 0.12, 0.55);
+  const htail = new THREE.Mesh(htailGeo, bodyMat);
+  htail.position.set(0, 0, -3.4);
+  htail.castShadow = true;
+  g.add(htail);
+
+  // 垂直尾翼
+  const vtailGeo = new THREE.BoxGeometry(0.12, 1.0, 0.9);
+  const vtail = new THREE.Mesh(vtailGeo, bodyMat);
+  vtail.position.set(0, 0.5, -3.4);
+  vtail.castShadow = true;
+  g.add(vtail);
+
+  // 螺旋桨毂
+  const hubGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.3, 8);
+  hubGeo.rotateX(Math.PI / 2);
+  const hub = new THREE.Mesh(hubGeo, darkMat);
+  hub.position.z = 5.25;
+  g.add(hub);
+
+  // 螺旋桨叶片（旋转）
+  const bladeGeo = new THREE.BoxGeometry(2.2, 0.08, 0.25);
+  const bladeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.7 });
+  const prop = new THREE.Mesh(bladeGeo, bladeMat);
+  prop.position.z = 5.4;
+  g.add(prop);
+  g.userData.prop = prop;
+  g.userData.gear = buildLandingGear(g, 'trainer');
+
+  return g;
+}
+
+// —— 战斗机：尖雷达罩 / 气泡座舱 / 三角翼 / 双垂尾 / 加力尾焰 ——
+function createFighter() {
+  const g = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0x7d8a96, roughness: 0.4, metalness: 0.55, envMapIntensity: 1.0 }); // 空优灰
+  const wingMat = new THREE.MeshStandardMaterial({ color: 0x6b7885, roughness: 0.42, metalness: 0.55, envMapIntensity: 1.0 });
+  const darkMat = new THREE.MeshStandardMaterial({ color: 0x1a222c, roughness: 0.2, metalness: 0.65, envMapIntensity: 1.3 });
+  const goldMat = new THREE.MeshStandardMaterial({ color: 0x8a7440, roughness: 0.15, metalness: 0.9, envMapIntensity: 1.6 }); // 镀金座舱盖
+
+  // 机身（中央粗、尾部收细）
+  const bodyGeo = new THREE.CylinderGeometry(0.62, 0.5, 8.0, 12);
+  bodyGeo.rotateX(Math.PI / 2);
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.castShadow = true;
+  g.add(body);
+
+  // 尖锐雷达罩（细长锥）
+  const noseGeo = new THREE.ConeGeometry(0.34, 2.6, 10);
+  noseGeo.rotateX(Math.PI / 2);
+  const nose = new THREE.Mesh(noseGeo, darkMat);
+  nose.position.z = 5.3;
+  nose.castShadow = true;
+  g.add(nose);
+
+  // 气泡座舱（金色镀膜玻璃）
+  const cockpitGeo = new THREE.SphereGeometry(0.52, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2);
+  const cockpit = new THREE.Mesh(cockpitGeo, goldMat);
+  cockpit.position.set(0, 0.42, 1.6);
+  cockpit.scale.set(0.85, 0.85, 2.1);
+  cockpit.castShadow = true;
+  g.add(cockpit);
+
+  // 三角主翼（左右各一块，带后掠角）：用 Box 旋转近似
+  const wingGeo = new THREE.BoxGeometry(4.6, 0.13, 2.4);
+  const wingL = new THREE.Mesh(wingGeo, wingMat);
+  wingL.position.set(-2.5, -0.05, 0.1);
+  wingL.rotation.y = -0.42;  // 后掠
+  wingL.rotation.z = -0.06;  // 微上反角
+  wingL.castShadow = true;
+  g.add(wingL);
+  const wingR = wingL.clone();
+  wingR.position.x = 2.5;
+  wingR.rotation.y = 0.42;
+  wingR.rotation.z = 0.06;
+  g.add(wingR);
+
+  // 前翼（鸭翼）
+  const canardGeo = new THREE.BoxGeometry(1.9, 0.09, 0.75);
+  const canL = new THREE.Mesh(canardGeo, wingMat);
+  canL.position.set(-1.15, 0.15, 2.4);
+  canL.rotation.y = -0.35;
+  canL.castShadow = true;
+  g.add(canL);
+  const canR = canL.clone();
+  canR.position.x = 1.15;
+  canR.rotation.y = 0.35;
+  g.add(canR);
+
+  // 水平尾翼
+  const htailGeo = new THREE.BoxGeometry(2.9, 0.1, 0.9);
+  const htailL = new THREE.Mesh(htailGeo, wingMat);
+  htailL.position.set(-1.5, 0.05, -3.5);
+  htailL.rotation.y = -0.5;
+  htailL.castShadow = true;
+  g.add(htailL);
+  const htailR = htailL.clone();
+  htailR.position.x = 1.5;
+  htailR.rotation.y = 0.5;
+  g.add(htailR);
+
+  // 双垂直尾翼（外倾）
+  const vtailGeo = new THREE.BoxGeometry(0.1, 1.35, 1.1);
+  const vtailL = new THREE.Mesh(vtailGeo, wingMat);
+  vtailL.position.set(-0.55, 0.85, -3.3);
+  vtailL.rotation.z = 0.22;  // 外倾
+  vtailL.castShadow = true;
+  g.add(vtailL);
+  const vtailR = vtailL.clone();
+  vtailR.position.x = 0.55;
+  vtailR.rotation.z = -0.22;
+  g.add(vtailR);
+
+  // 方形尾喷口
+  const nozzleGeo = new THREE.BoxGeometry(0.75, 0.75, 0.7);
+  const nozzle = new THREE.Mesh(nozzleGeo, darkMat);
+  nozzle.position.z = -4.3;
+  g.add(nozzle);
+
+  // 尾焰（锥体，加色混合；油门驱动长度与颜色）
+  const flameGeo = new THREE.ConeGeometry(0.45, 3.2, 10);
+  flameGeo.rotateX(-Math.PI / 2); // 尖朝 -Z
+  const flameMat = new THREE.MeshBasicMaterial({
+    color: 0xff8c3a, transparent: true, opacity: 0.0,
+    blending: THREE.AdditiveBlending, depthWrite: false, fog: false,
+  });
+  const flame = new THREE.Mesh(flameGeo, flameMat);
+  flame.position.z = -5.9;
+  g.add(flame);
+  // 内焰（更亮的芯）
+  const flameCoreGeo = new THREE.ConeGeometry(0.26, 2.0, 8);
+  flameCoreGeo.rotateX(-Math.PI / 2);
+  const flameCoreMat = new THREE.MeshBasicMaterial({
+    color: 0xfff3c0, transparent: true, opacity: 0.0,
+    blending: THREE.AdditiveBlending, depthWrite: false, fog: false,
+  });
+  const flameCore = new THREE.Mesh(flameCoreGeo, flameCoreMat);
+  flameCore.position.z = -5.2;
+  g.add(flameCore);
+
+  g.userData.flame = flame;
+  g.userData.flameCore = flameCore;
+  g.userData.gear = buildLandingGear(g, 'fighter');
+  return g;
+}
+
+// —— 起落架：机头轮 + 左右主轮（可动画收起/放下）——
+function buildLandingGear(parent, type) {
+  const gearGroup = new THREE.Group();
+  const strutMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.6, metalness: 0.7 });
+  const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.1 });
+
+  // 尺寸按机型调整
+  const wheelR = type === 'airliner' ? 0.55 : type === 'fighter' ? 0.32 : 0.3;
+  const wheelW = type === 'airliner' ? 0.3 : 0.22;
+  const strutY = type === 'airliner' ? 1.6 : 1.0;
+
+  // 机头起落架
+  const nose = new THREE.Group();
+  const noseStrut = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, strutY, 8), strutMat);
+  noseStrut.position.y = -strutY / 2;
+  nose.add(noseStrut);
+  const noseWheel = new THREE.Mesh(
+    new THREE.CylinderGeometry(wheelR, wheelR, wheelW, 14),
+    wheelMat
+  );
+  noseWheel.rotation.z = Math.PI / 2;
+  noseWheel.position.y = -strutY;
+  nose.add(noseWheel);
+  nose.position.set(0, -0.1, type === 'airliner' ? 5.5 : 3.0);
+  gearGroup.add(nose);
+
+  // 左主起落架
+  const left = new THREE.Group();
+  const leftStrut = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, strutY, 8), strutMat);
+  leftStrut.position.y = -strutY / 2;
+  left.add(leftStrut);
+  const leftWheel = new THREE.Mesh(
+    new THREE.CylinderGeometry(wheelR * 1.2, wheelR * 1.2, wheelW * 1.3, 14),
+    wheelMat
+  );
+  leftWheel.rotation.z = Math.PI / 2;
+  leftWheel.position.y = -strutY;
+  left.add(leftWheel);
+  const lx = type === 'airliner' ? 3.2 : type === 'fighter' ? 1.6 : 1.4;
+  left.position.set(-lx, -0.1, type === 'airliner' ? -2.5 : -1.2);
+  gearGroup.add(left);
+
+  // 右主起落架
+  const right = left.clone();
+  right.position.x = lx;
+  gearGroup.add(right);
+
+  parent.add(gearGroup);
+  return gearGroup;
+}
+
+// —— 客机：白色长机身 / 后掠翼 / 翼挂双发 / 舷窗条 ——
+function createAirliner() {
+  const g = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xf2f5f8, roughness: 0.3, metalness: 0.35, envMapIntensity: 1.1 }); // 亮白
+  const wingMat = new THREE.MeshStandardMaterial({ color: 0xb9c3cc, roughness: 0.35, metalness: 0.5, envMapIntensity: 1.0 });  // 银灰翼
+  const darkMat = new THREE.MeshStandardMaterial({ color: 0x141c26, roughness: 0.2, metalness: 0.6, envMapIntensity: 1.3 });
+  const tailMat = new THREE.MeshStandardMaterial({ color: 0x2b6cb0, roughness: 0.35, metalness: 0.45, envMapIntensity: 1.0 }); // 品牌蓝垂尾
+  const engMat = new THREE.MeshStandardMaterial({ color: 0xd8dde2, roughness: 0.28, metalness: 0.6, envMapIntensity: 1.2 });
+
+  // 长机身
+  const bodyGeo = new THREE.CylinderGeometry(0.72, 0.5, 11.0, 14);
+  bodyGeo.rotateX(Math.PI / 2);
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.castShadow = true;
+  g.add(body);
+
+  // 机头（钝锥）
+  const noseGeo = new THREE.ConeGeometry(0.72, 1.8, 14);
+  noseGeo.rotateX(Math.PI / 2);
+  const nose = new THREE.Mesh(noseGeo, bodyMat);
+  nose.position.z = 6.4;
+  nose.castShadow = true;
+  g.add(nose);
+
+  // 驾驶舱风挡（深色带弧度）
+  const cockpitGeo = new THREE.BoxGeometry(0.95, 0.32, 0.85);
+  const cockpit = new THREE.Mesh(cockpitGeo, darkMat);
+  cockpit.position.set(0, 0.5, 5.5);
+  cockpit.rotation.x = -0.35;
+  g.add(cockpit);
+
+  // 舷窗条带（深蓝细长条，左右）
+  const winGeo = new THREE.BoxGeometry(0.06, 0.16, 8.0);
+  const winL = new THREE.Mesh(winGeo, darkMat);
+  winL.position.set(-0.72, 0.18, 0.8);
+  g.add(winL);
+  const winR = new THREE.Mesh(winGeo, darkMat);
+  winR.position.set(0.72, 0.18, 0.8);
+  g.add(winR);
+
+  // 后掠主翼（下单翼，左右各一）
+  const wingGeo = new THREE.BoxGeometry(5.6, 0.2, 1.9);
+  const wingL = new THREE.Mesh(wingGeo, wingMat);
+  wingL.position.set(-3.0, -0.42, 0.4);
+  wingL.rotation.y = -0.55;  // 大后掠
+  wingL.rotation.z = 0.08;   // 上反角
+  wingL.castShadow = true;
+  g.add(wingL);
+  const wingR = wingL.clone();
+  wingR.position.x = 3.0;
+  wingR.rotation.y = 0.55;
+  wingR.rotation.z = -0.08;
+  g.add(wingR);
+
+  // 翼挂发动机 ×2（短圆柱 + 深色进气口）
+  const engGeo = new THREE.CylinderGeometry(0.32, 0.28, 1.4, 10);
+  engGeo.rotateX(Math.PI / 2);
+  for (const sx of [-1, 1]) {
+    for (const ox of [1.9, 3.9]) {
+      const eng = new THREE.Mesh(engGeo, engMat);
+      eng.position.set(sx * ox, -0.82, 0.75);
+      eng.castShadow = true;
+      g.add(eng);
+      // 进气口深色环
+      const intakeGeo = new THREE.CylinderGeometry(0.34, 0.34, 0.12, 10);
+      intakeGeo.rotateX(Math.PI / 2);
+      const intake = new THREE.Mesh(intakeGeo, darkMat);
+      intake.position.set(sx * ox, -0.82, 1.5);
+      g.add(intake);
+    }
+  }
+
+  // 高垂直尾翼（品牌色）
+  const vtailGeo = new THREE.BoxGeometry(0.14, 1.9, 1.7);
+  const vtail = new THREE.Mesh(vtailGeo, tailMat);
+  vtail.position.set(0, 1.25, -4.6);
+  vtail.rotation.x = 0.28;  // 后掠
+  vtail.castShadow = true;
+  g.add(vtail);
+
+  // 水平尾翼（低置）
+  const htailGeo = new THREE.BoxGeometry(3.6, 0.12, 0.85);
+  const htailL = new THREE.Mesh(htailGeo, wingMat);
+  htailL.position.set(-1.8, 0.35, -4.7);
+  htailL.rotation.y = -0.5;
+  htailL.castShadow = true;
+  g.add(htailL);
+  const htailR = htailL.clone();
+  htailR.position.x = 1.8;
+  htailR.rotation.y = 0.5;
+  g.add(htailR);
+
+  // 机尾防撞灯（红）
+  const beaconGeo = new THREE.SphereGeometry(0.1, 8, 6);
+  const beaconMat = new THREE.MeshBasicMaterial({ color: 0xff2222, fog: false });
+  const beacon = new THREE.Mesh(beaconGeo, beaconMat);
+  beacon.position.set(0, 2.2, -5.3);
+  g.add(beacon);
+  g.userData.beacon = beacon;
+  g.userData.gear = buildLandingGear(g, 'airliner');
+
+  return g;
+}
+
+// ============================================================
+// 机型注册表：三种飞机的建模 + 差异化物理参数
+// ============================================================
+const AIRCRAFT_TYPES = {
+  trainer: {
+    name: '初级教练机', create: createTrainer,
+    maxSpeed: 600,  thrust: 85,  stallSpeed: 20,
+    rollRate: 2.2,  yawRate: 1.4, pitchRate: 1.3,
+    dragCoeff: 0.00018, gravityFactor: 0.9, throttleRate: 110,
+    scale: 1.2, afterburner: false,
+  },
+  fighter: {
+    name: '喷气战斗机', create: createFighter,
+    maxSpeed: 1100, thrust: 150, stallSpeed: 25,
+    rollRate: 3.5,  yawRate: 1.8, pitchRate: 2.2,
+    dragCoeff: 0.00014, gravityFactor: 0.9, throttleRate: 130,
+    scale: 1.2, afterburner: true,
+  },
+  airliner: {
+    name: '干线客机', create: createAirliner,
+    maxSpeed: 400,  thrust: 45,  stallSpeed: 30,
+    rollRate: 1.1,  yawRate: 0.6, pitchRate: 0.65,
+    dragCoeff: 0.00030, gravityFactor: 1.0, throttleRate: 60,
+    scale: 1.5, afterburner: false,
+  },
+};
+
+let currentAC = 'trainer';
+// 当前机型参数（动态读取，换机时更新）
+let AC = AIRCRAFT_TYPES[currentAC];
+
+// 起落架状态
+let gearDown = false;          // 起落架是否放下
+let gearAnim = 0;              // 0=收起, 1=放下, 动画过渡值
+
+let plane = AC.create();
+// 起始于高空（避开所有地形），让玩家自己看地形
+plane.position.set(0, 8000, 0);
+plane.scale.setScalar(AC.scale);
+scene.add(plane);
+
+// —— 换机：释放旧模型、应用新物理参数、重置速度 ——
+let afterburnerOn = false; // 加力状态（仅战斗机）
+function switchAircraft(typeKey) {
+  if (!AIRCRAFT_TYPES[typeKey] || typeKey === currentAC) return false;
+  currentAC = typeKey;
+  AC = AIRCRAFT_TYPES[typeKey];
+
+  // 移除旧模型
+  scene.remove(plane);
+
+  // 创建新模型，保留旧位置/朝向
+  const newPlane = AC.create();
+  newPlane.position.copy(plane.position);
+  newPlane.quaternion.copy(plane.quaternion);
+  newPlane.scale.setScalar(AC.scale);
+  scene.add(newPlane);
+  plane = newPlane;
+
+  speed = 0;
+  throttle = 0;
+  afterburnerOn = false;
+  return true;
+}
+
+// ============================================================
+// 输入：键盘状态 + V 切换视角
+// ============================================================
+const keys = Object.create(null);
+let viewMode = 'third'; // 'third' | 'first'
+
+// 暂停状态
+let isPaused = false;
+const pauseEl = document.getElementById('paused');
+// 机库状态（提前声明避免 TDZ）
+let hangarOpen = false;
+let hangarSel = 'trainer';
+let gameStarted = false;
+
+window.addEventListener('keydown', (e) => {
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code)) e.preventDefault();
+  if (e.code === 'KeyV' && !e.repeat) {
+    viewMode = viewMode === 'third' ? 'first' : 'third';
+    document.getElementById('vmode').textContent = viewMode === 'third' ? '第三人称' : '第一人称';
+  }
+  if (e.code === 'KeyM' && !e.repeat) {
+    openHangar();  // 打开机库换机
+  }
+  if (e.code === 'Space' && !e.repeat && !hangarOpen) {
+    isPaused = !isPaused;
+    pauseEl.style.display = isPaused ? 'block' : 'none';
+  }
+  if (e.code === 'KeyR' && !e.repeat && !hangarOpen && !isPaused) {
+    fireMissile();
+  }
+  if (e.code === 'KeyQ' && !e.repeat && !hangarOpen) {
+    gearDown = !gearDown;
+    const ge = document.getElementById('gear-status');
+    if (ge) {
+      ge.style.display = 'block';
+      ge.textContent = gearDown ? '起落架：放下 (Q收回)' : '起落架：收起中…';
+    }
+  }
+  keys[e.code] = true;
+});
+window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+// ============================================================
+// 飞行状态（机型相关参数从 AC 动态读取）
+// ============================================================
+let throttle = 0;       // 0..100
+let speed = 0;          // 当前空速（单位/秒）
+const MAX_BANK = Math.PI / 3; // 60°
+const G = 9.8;              // 重力加速度
+
+// ============================================================
+// 工具
+// ============================================================
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+
+// 用于 yaw-only 的 quaternion（剥离 roll/pitch）
+function yawOnlyQuat(q) {
+  const e = new THREE.Euler().setFromQuaternion(q, 'YXZ');
+  return new THREE.Quaternion().setFromEuler(new THREE.Euler(0, e.y, 0, 'YXZ'));
+}
+// 用于 no-roll 的 quaternion（保留 yaw/pitch，仅剥离 roll）
+function noRollQuat(q) {
+  const e = new THREE.Euler().setFromQuaternion(q, 'YXZ');
+  return new THREE.Quaternion().setFromEuler(new THREE.Euler(e.x, e.y, 0, 'YXZ'));
+}
+
+// 坠毁提示
+const crashEl = document.getElementById('crash');
+let crashTimer = 0;
+function showCrash() {
+  crashEl.style.display = 'block';
+  crashTimer = 2.0;
+}
+
+// ============================================================
+// 速度线粒子：高速时出现掠过的白色流线（速度感反馈）
+// ============================================================
+const SL_COUNT = 90;
+const slPositions = new Float32Array(SL_COUNT * 6);  // 每条线 2 个顶点
+const speedLineGeo = new THREE.BufferGeometry();
+speedLineGeo.setAttribute('position', new THREE.BufferAttribute(slPositions, 3));
+const speedLineMat = new THREE.LineBasicMaterial({
+  color: 0xffffff, transparent: true, opacity: 0,
+  depthWrite: false, fog: false,
+});
+const speedLines = new THREE.LineSegments(speedLineGeo, speedLineMat);
+speedLines.frustumCulled = false;
+scene.add(speedLines);
+// 每条线的相对偏移（飞机周围长方体区域内随机分布）
+const slOffsets = [];
+for (let i = 0; i < SL_COUNT; i++) {
+  slOffsets.push({
+    x: (Math.random() - 0.5) * 130,
+    y: (Math.random() - 0.5) * 90 + 12,
+    z: Math.random() * 500 - 180,
+  });
+}
+
+// 相机滚轮调距
+let camDist = 22;   // 第三人称基础距离
+window.addEventListener('wheel', (e) => {
+  camDist = clamp(camDist + Math.sign(e.deltaY) * 2.5, 10, 70);
+}, { passive: true });
+
+// ============================================================
+// 主循环
+// ============================================================
+// ============================================================
+// 导弹系统（仅战斗机可用：R 键发射，制导追踪前方最高地形）
+// ============================================================
+const MISSILE_COOLDOWN = 0.35;     // 发射冷却（秒）
+const MISSILE_SPEED = 900;         // 导弹飞行速度 m/s
+const MISSILE_LIFE = 6.0;          // 最长飞行时间（秒），超时自毁
+const CRATER_RADIUS = 130;         // 弹坑半径 m
+const CRATER_DEPTH = 70;           // 弹坑深度 m
+const MAX_CRATERS = 200;            // 弹坑表上限（防内存增长）
+
+// —— 隧道参数 ——
+const TUNNEL_RADIUS = 800;          // 隧道半径 m（直径 1.6km，覆盖整座山体）
+const TUNNEL_DEPTH = 2000;          // 隧道向下穿透深度 m（深入地下，削平一切山峰）
+
+let missileCooldown = 0;
+const missiles = [];          // 活跃导弹列表
+// craters 已在地形系统顶部声明（供 buildChunk 使用）
+const explosions = [];        // 活跃爆炸特效
+const smokeParticles = [];   // 尾烟粒子池
+let shakeTime = 0, shakeMag = 0;
+const mslStatusEl = document.getElementById('msl-status');
+const mslEl = document.getElementById('msl');
+
+// —— 导弹模型：细长圆柱 + 锥头 + 十字翼 ——
+function createMissileMesh() {
+  const g = new THREE.Group();
+  // 弹体
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.18, 0.18, 2.4, 8),
+    new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.6, roughness: 0.4 })
+  );
+  body.rotation.x = Math.PI / 2;  // 圆柱默认沿 Y，转到沿 Z（机头方向）
+  g.add(body);
+  // 弹头锥
+  const nose = new THREE.Mesh(
+    new THREE.ConeGeometry(0.18, 0.6, 8),
+    new THREE.MeshStandardMaterial({ color: 0x884422, metalness: 0.5, roughness: 0.3 })
+  );
+  nose.rotation.x = -Math.PI / 2;  // 锥尖朝 +Z
+  nose.position.z = 1.5;
+  g.add(nose);
+  // 尾翼十字
+  const finMat = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.4, roughness: 0.5 });
+  for (let i = 0; i < 4; i++) {
+    const fin = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.5, 0.4), finMat);
+    fin.position.z = -1.0;
+    fin.rotation.z = i * Math.PI / 2;
+    g.add(fin);
+  }
+  return g;
+}
+
+// —— 发射导弹 ——
+function fireMissile() {
+  if (currentAC !== 'fighter') return;       // 仅战斗机
+  if (missileCooldown > 0) return;            // 冷却中
+  missileCooldown = MISSILE_COOLDOWN;
+
+  const m = createMissileMesh();
+  // 从左翼尖发射
+  const right = rightBase.clone().applyQuaternion(plane.quaternion);
+  const forward = forwardBase.clone().applyQuaternion(plane.quaternion);
+  const launchOffset = right.clone().multiplyScalar(-3.5).add(forward.clone().multiplyScalar(2));
+  m.position.copy(plane.position).add(launchOffset);
+  m.quaternion.copy(plane.quaternion);
+  m.userData = {
+    dir: forward.clone(),
+    velocity: forward.clone().multiplyScalar(MISSILE_SPEED * 0.4),  // 初始速度=飞机速度的惯性+发射初速
+    life: MISSILE_LIFE,
+  };
+  scene.add(m);
+  missiles.push(m);
+}
+
+// —— 导弹：沿发射时朝向直线飞行 + 连续碰撞检测 ——
+function updateMissile(m, dt) {
+  m.userData.life -= dt;
+  if (m.userData.life <= 0) {
+    // 超时自毁
+    createExplosion(m.position.clone(), 0.5);
+    return false;
+  }
+
+  const dir = m.userData.dir;  // 发射时锁定方向，不追踪不偏转
+
+  // 加速到巡航速度
+  const curSpeed = m.userData.velocity.length();
+  if (curSpeed < MISSILE_SPEED) {
+    m.userData.velocity.addScaledVector(dir, 600 * dt);
+  } else {
+    m.userData.velocity.copy(dir).multiplyScalar(MISSILE_SPEED);
+  }
+
+  // 记录位移前位置（用于连续碰撞检测）
+  const prevPos = m.position.clone();
+
+  // 位移
+  m.position.addScaledVector(m.userData.velocity, dt);
+  // 朝向跟随速度方向
+  m.lookAt(m.position.clone().add(m.userData.velocity));
+
+  // 尾烟粒子：在导弹尾部生成，极小扩散，形成紧贴飞行方向的线形尾迹
+  const tailOffset = dir.clone().multiplyScalar(-1.5);
+  spawnSmoke(m.position.clone().add(tailOffset), dir.clone());
+
+  // 连续碰撞检测：检查从 prevPos 到当前位置的线段是否穿入地形
+  const segLen = m.position.distanceTo(prevPos);
+  const steps = Math.max(1, Math.ceil(segLen / 50));  // 每 50m 采样一次
+  for (let s = 1; s <= steps; s++) {
+    const t = s / steps;
+    const cx = prevPos.x + (m.position.x - prevPos.x) * t;
+    const cz = prevPos.z + (m.position.z - prevPos.z) * t;
+    const cy = prevPos.y + (m.position.y - prevPos.y) * t;
+    const gh = effectiveTerrainHeight(cx, cz);
+    if (cy <= gh + 10) {
+      // 命中！精确命中点
+      const hitPos = new THREE.Vector3(cx, Math.max(cy, gh), cz);
+      createExplosion(hitPos, 6);  // 巨型爆炸
+      addTunnel(cx, Math.max(cy, gh), cz);
+      triggerShake(60, 0.8);
+      return false;
+    }
+  }
+  return true;
+}
+
+// —— 弹坑：永久存储 + 重建受影响 chunk ——
+function addCrater(x, z) {
+  craters.push({ x, z, radius: CRATER_RADIUS, depth: CRATER_DEPTH, type: 'crater' });
+  if (craters.length > MAX_CRATERS) craters.shift();
+  rebuildChunksAround(x, z, CRATER_RADIUS);
+}
+
+// —— 永久隧道：穿透整座山体的大范围镂空 ——
+function addTunnel(x, y, z) {
+  craters.push({ x, z, y, radius: TUNNEL_RADIUS, depth: TUNNEL_DEPTH, type: 'tunnel' });
+  if (craters.length > MAX_CRATERS) craters.shift();
+  rebuildChunksAround(x, z, TUNNEL_RADIUS);
+}
+
+// 重建受影响的所有已加载 chunk
+function rebuildChunksAround(x, z, radius) {
+  const minCx = Math.floor((x - radius) / CHUNK_SIZE);
+  const maxCx = Math.floor((x + radius) / CHUNK_SIZE);
+  const minCz = Math.floor((z - radius) / CHUNK_SIZE);
+  const maxCz = Math.floor((z + radius) / CHUNK_SIZE);
+  for (let cx = minCx; cx <= maxCx; cx++) {
+    for (let cz = minCz; cz <= maxCz; cz++) {
+      const key = chunkKey(cx, cz);
+      if (chunks.has(key)) {
+        const old = chunks.get(key);
+        scene.remove(old);
+        old.geometry.dispose();
+        chunks.delete(key);
+        chunks.set(key, buildChunk(cx, cz));
+      }
+    }
+  }
+}
+
+// —— 爆炸特效：巨型火球 + 冲击波粒子 ——
+function createExplosion(pos, scale) {
+  // 巨型火球闪光（多层叠加，更亮更大）
+  const flash = new THREE.Mesh(
+    new THREE.SphereGeometry(20 * scale, 24, 18),
+    new THREE.MeshBasicMaterial({ color: 0xffdd66, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })
+  );
+  flash.position.copy(pos);
+  scene.add(flash);
+
+  // 内层白热火球
+  const core = new THREE.Mesh(
+    new THREE.SphereGeometry(10 * scale, 20, 16),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })
+  );
+  core.position.copy(pos);
+  scene.add(core);
+
+  // 大量碎屑粒子
+  const N = Math.floor(150 * scale);
+  const geo = new THREE.BufferGeometry();
+  const positions = new Float32Array(N * 3);
+  const vels = [];
+  for (let i = 0; i < N; i++) {
+    positions[i*3] = pos.x; positions[i*3+1] = pos.y; positions[i*3+2] = pos.z;
+    const d = new THREE.Vector3(
+      (Math.random()-0.5)*2, Math.random()*2, (Math.random()-0.5)*2
+    ).normalize().multiplyScalar((80 + Math.random()*300) * scale);
+    vels.push(d);
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const mat = new THREE.PointsMaterial({
+    color: 0xff7700, size: 10*scale, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false,
+  });
+  const particles = new THREE.Points(geo, mat);
+  scene.add(particles);
+
+  explosions.push({ flash, core, particles, geo, mat, vels, life: 0, maxLife: 2.5, scale });
+}
+
+function updateExplosions(dt) {
+  for (let i = explosions.length - 1; i >= 0; i--) {
+    const e = explosions[i];
+    e.life += dt;
+    if (e.life >= e.maxLife) {
+      scene.remove(e.flash); scene.remove(e.core); scene.remove(e.particles);
+      e.flash.geometry.dispose(); e.flash.material.dispose();
+      e.core.geometry.dispose(); e.core.material.dispose();
+      e.geo.dispose(); e.mat.dispose();
+      explosions.splice(i, 1);
+      continue;
+    }
+    const t = e.life / e.maxLife;
+    // 外层火球膨胀淡出（更大范围）
+    const s = (1 + e.life * 120) * e.scale;
+    e.flash.scale.set(s, s, s);
+    e.flash.material.opacity = Math.max(0, 1 - t / 0.4);
+    // 内层白核更快膨胀淡出
+    const sc = (1 + e.life * 80) * e.scale;
+    e.core.scale.set(sc, sc, sc);
+    e.core.material.opacity = Math.max(0, 1 - t / 0.25);
+    // 粒子飞散+重力
+    const arr = e.geo.attributes.position.array;
+    for (let j = 0; j < e.vels.length; j++) {
+      arr[j*3] += e.vels[j].x * dt;
+      arr[j*3+1] += e.vels[j].y * dt - 30 * dt * e.life;  // 重力
+      arr[j*3+2] += e.vels[j].z * dt;
+    }
+    e.geo.attributes.position.needsUpdate = true;
+    e.mat.opacity = Math.max(0, 1 - t);
+    e.mat.size = 10 * e.scale * (1 - t * 0.3);
+  }
+}
+
+// —— 尾烟粒子 ——
+const SMOKE_MAX = 400;
+const smokeGeo = new THREE.BufferGeometry();
+const smokePos = new Float32Array(SMOKE_MAX * 3);
+const smokeAlpha = new Float32Array(SMOKE_MAX);
+const smokeSize = new Float32Array(SMOKE_MAX);
+smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePos, 3));
+smokeGeo.setAttribute('alpha', new THREE.BufferAttribute(smokeAlpha, 1));
+smokeGeo.setAttribute('size', new THREE.BufferAttribute(smokeSize, 1));
+// 用 ShaderMaterial 让粒子有独立 alpha+size
+const smokeMat = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false, blending: THREE.NormalBlending, fog: false,
+  uniforms: { uTex: { value: null } },
+  vertexShader: `
+    attribute float alpha;
+    attribute float size;
+    varying float vAlpha;
+    void main() {
+      vAlpha = alpha;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = size * (300.0 / -mv.z);
+      gl_Position = projectionMatrix * mv;
+    }
+  `,
+  fragmentShader: `
+    varying float vAlpha;
+    void main() {
+      vec2 c = gl_PointCoord - 0.5;
+      float r = length(c);
+      if (r > 0.5) discard;
+      float a = (1.0 - r * 2.0) * vAlpha;
+      gl_FragColor = vec4(0.6, 0.6, 0.6, a);
+    }
+  `,
+});
+const smokePoints = new THREE.Points(smokeGeo, smokeMat);
+smokePoints.frustumCulled = false;
+scene.add(smokePoints);
+for (let i = 0; i < SMOKE_MAX; i++) { smokeAlpha[i] = 0; smokeSize[i] = 4; smokeParticles.push({ life: 0, vel: null }); }
+
+function spawnSmoke(pos, dir) {
+  // 沿飞行方向线形排列：生成 2 个粒子，一个在当前位置，一个稍微靠后
+  for (let s = 0; s < 2; s++) {
+    for (let i = 0; i < SMOKE_MAX; i++) {
+      if (smokeAlpha[i] <= 0) {
+        const back = s * 0.8;  // 第二个粒子在尾部后方 0.8m
+        smokePos[i*3]   = pos.x - dir.x * back;
+        smokePos[i*3+1] = pos.y - dir.y * back;
+        smokePos[i*3+2] = pos.z - dir.z * back;
+        smokeAlpha[i] = 0.7;
+        smokeSize[i] = 2.5 + Math.random() * 1.5;
+        smokeParticles[i].life = 0;
+        // 极小横向扩散 + 微弱上升（不后退，形成紧贴飞行方向的尾迹）
+        smokeParticles[i].vel = new THREE.Vector3(
+          (Math.random()-0.5) * 1.5,
+          (Math.random()-0.5) * 1.5 + 2,  // 微弱上升
+          (Math.random()-0.5) * 1.5
+        );
+        break;
+      }
+    }
+  }
+}
+
+function updateSmoke(dt) {
+  let any = false;
+  for (let i = 0; i < SMOKE_MAX; i++) {
+    if (smokeAlpha[i] > 0) {
+      any = true;
+      smokeParticles[i].life += dt;
+      smokePos[i*3] += smokeParticles[i].vel.x * dt;
+      smokePos[i*3+1] += smokeParticles[i].vel.y * dt + 5 * dt;  // 烟雾上升
+      smokePos[i*3+2] += smokeParticles[i].vel.z * dt;
+      smokeSize[i] += 8 * dt;  // 膨胀
+      smokeAlpha[i] = Math.max(0, 0.8 - smokeParticles[i].life / 1.5);
+    }
+  }
+  if (any) {
+    smokeGeo.attributes.position.needsUpdate = true;
+    smokeGeo.attributes.alpha.needsUpdate = true;
+    smokeGeo.attributes.size.needsUpdate = true;
+  }
+}
+
+// —— 屏幕震动 ——
+function triggerShake(mag, dur) { shakeMag = mag; shakeTime = dur; }
+
+const clock = new THREE.Clock();
+const forwardBase = new THREE.Vector3(0, 0, 1);
+const upBase = new THREE.Vector3(0, 1, 0);
+const rightBase = new THREE.Vector3(1, 0, 0);
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (isPaused) {
+    // 机库打开时：主场景渲染静帧（预览渲染挂在 renderer.render 里）
+    if (hangarOpen) renderer.render(scene, camera);
+    return; // 暂停时不更新物理
+  }
+  let dt = Math.min(clock.getDelta(), 0.05);
+
+  // —— 油门 ——
+  if (keys['KeyW']) throttle += AC.throttleRate * dt;
+  if (keys['KeyS']) throttle -= AC.throttleRate * dt;
+  throttle = clamp(throttle, 0, 100);
+
+  // —— 加力燃烧（仅战斗机，Shift 触发） ——
+  const abActive = AC.afterburner && keys['ShiftLeft'] && throttle > 5;
+  if (abActive !== afterburnerOn) afterburnerOn = abActive;
+
+  // —— 姿态控制 ——
+  // 注：用户偏好反向映射，A=右倾 / D=左倾（与标准相反）
+  const rollInput = (keys['KeyA'] ? 1 : 0) - (keys['KeyD'] ? 1 : 0);
+  if (rollInput !== 0) {
+    plane.rotateZ(-rollInput * AC.rollRate * dt);
+  } else {
+    // 松开 A/D 自动回正（仅剥离 roll，保留 pitch 让俯仰持续生效）
+    const targetQ = noRollQuat(plane.quaternion);
+    plane.quaternion.slerp(targetQ, 1.8 * dt);
+  }
+
+  // 限制最大倾斜角（剥离不可见 inverted 飞行）
+  const right = rightBase.clone().applyQuaternion(plane.quaternion);
+  const up = upBase.clone().applyQuaternion(plane.quaternion);
+  const bank = Math.atan2(right.y, up.y);
+  if (Math.abs(bank) > MAX_BANK) {
+    const over = bank - Math.sign(bank) * MAX_BANK;
+    plane.rotateZ(-over); // 反向修正
+  }
+
+  // —— 偏航（手动） —— 注：用户偏好反向，←=右偏航、→=左偏航
+  const yawInput = (keys['ArrowLeft'] ? 1 : 0) - (keys['ArrowRight'] ? 1 : 0);
+  if (yawInput !== 0) {
+    plane.rotateY(yawInput * AC.yawRate * dt);
+  }
+
+  // —— 俯仰（手动） —— 注：用户偏好反向，↑=低头、↓=抬头
+  // 飞机本地 +Z 为机头方向。绕 +X 旋转：+angle 把 +Z 转向 -Y（低头），-angle 把 +Z 转向 +Y（抬头）
+  const pitchInput = (keys['ArrowUp'] ? 1 : 0) - (keys['ArrowDown'] ? 1 : 0);
+  if (pitchInput !== 0) {
+    plane.rotateX(pitchInput * AC.pitchRate * dt);
+  }
+
+  // —— 协调转弯：根据倾斜角自动偏航，使压杆产生弧线 ——
+  const bankNow = Math.atan2(right.y, up.y);
+  plane.rotateY(-bankNow * 0.9 * dt); // 左倾斜 → 左偏航
+
+  // —— 螺旋桨旋转（教练机） ——
+  if (plane.userData.prop) {
+    plane.userData.prop.rotation.z += (4 + throttle * 0.06) * dt * 8;
+  }
+
+  // —— 尾焰动画（战斗机）：油门驱动亮度/长度，加力变蓝变长 ——
+  if (plane.userData.flame) {
+    const f = plane.userData.flame, fc = plane.userData.flameCore;
+    const base = throttle / 100;
+    if (base > 0.05) {
+      const flicker = 0.9 + Math.sin(performance.now() * 0.03) * 0.1;
+      f.material.opacity = (base * 0.55) * flicker;
+      fc.material.opacity = base * 0.8 * flicker;
+      const len = 1.0 + base * 2.2 + (afterburnerOn ? 2.5 : 0);
+      f.scale.set(1, 1, len * flicker);
+      fc.scale.set(1, 1, len * 0.6 * flicker);
+      if (afterburnerOn) {
+        f.material.color.setHex(0x4aa8ff);   // 加力：蓝色
+        fc.material.color.setHex(0xd8f0ff);
+      } else {
+        f.material.color.setHex(0xff8c3a);   // 军推：橙色
+        fc.material.color.setHex(0xfff3c0);
+      }
+    } else {
+      f.material.opacity = 0;
+      fc.material.opacity = 0;
+    }
+  }
+
+  // —— 防撞灯闪烁（客机）——
+  if (plane.userData.beacon) {
+    plane.userData.beacon.visible = Math.sin(performance.now() * 0.004) > 0.2;
+  }
+
+  // —— 起落架动画（放下/收起）——
+  const targetGear = gearDown ? 1 : 0;
+  gearAnim += (targetGear - gearAnim) * Math.min(1, dt * 2.5);  // 0.4秒过渡
+  if (plane.userData.gear) {
+    const grp = plane.userData.gear;
+    // 放下时正常显示；收起时向上收入机身并缩小到几乎不可见
+    if (gearAnim > 0.02) {
+      grp.visible = true;
+      const retract = 1 - gearAnim;
+      grp.position.y = -retract * 0.8;
+      grp.scale.setScalar(gearAnim * gearAnim);  // 平方衰减，收起时接近0
+    } else {
+      grp.visible = false;
+    }
+    // 更新 HUD 文本
+    const ge = document.getElementById('gear-status');
+    if (ge) {
+      if (gearAnim > 0.95) {
+        ge.textContent = gearDown ? '起落架：已放下 (Q收回)' : '起落架：已收起 (Q放下)';
+        ge.style.color = '#4f8';
+      } else {
+        ge.textContent = gearDown ? '起落架：放下中…' : '起落架：收起中…';
+        ge.style.color = '#fa4';
+      }
+    }
+  }
+
+  // —— 当前朝向（用于物理与位移） ——
+  const forward = forwardBase.clone().applyQuaternion(plane.quaternion).normalize();
+
+  // —— 力合加速模型（实现滑翔） ——
+  // 总加速度 = 推力（加力时 ×2.2） + 重力沿前向分量 + 阻力
+  const abBoost = afterburnerOn ? 2.2 : 1.0;
+  const thrustAccel = (throttle / 100) * AC.thrust * abBoost;
+  const gravityAlongForward = -forward.y * G * AC.gravityFactor;
+  const dragAccel = -speed * speed * AC.dragCoeff;
+  const totalAccel = thrustAccel + gravityAlongForward + dragAccel;
+  speed += totalAccel * dt;
+  const speedCap = AC.maxSpeed * (afterburnerOn ? 1.25 : 1.05); // 加力突破极速
+  speed = clamp(speed, 0, speedCap);
+
+  // —— 位移：沿当前朝向移动（俯仰带来的升降已由 forward.y 体现） ——
+  plane.position.addScaledVector(forward, speed * dt);
+
+  // —— 速度线粒子：>250 m/s 渐显，沿飞行方向掠过 ——
+  const slVis = clamp((speed - 250) / 300, 0, 1);
+  speedLineMat.opacity = slVis * 0.45;
+  if (slVis > 0.01) {
+    const lineLen = clamp(speed * 0.08, 5, 55);
+    for (let i = 0; i < SL_COUNT; i++) {
+      const off = slOffsets[i];
+      off.z -= speed * dt * 1.6;   // 相对飞机向后掠（1.6 倍视差夸张）
+      if (off.z < -200) {
+        off.z += 520;
+        off.x = (Math.random() - 0.5) * 130;
+        off.y = (Math.random() - 0.5) * 90 + 12;
+      }
+      const wx = plane.position.x + off.x;
+      const wy = plane.position.y + off.y;
+      const wz = plane.position.z + off.z;
+      slPositions[i*6]   = wx;              slPositions[i*6+1] = wy;              slPositions[i*6+2] = wz;
+      slPositions[i*6+3] = wx - forward.x * lineLen;
+      slPositions[i*6+4] = wy - forward.y * lineLen;
+      slPositions[i*6+5] = wz - forward.z * lineLen;
+    }
+    speedLineGeo.attributes.position.needsUpdate = true;
+  }
+
+  // —— 失速下沉 + 大坡度掉高（高度尺度 ×10，系数同步放大） ——
+  if (speed < AC.stallSpeed) {
+    plane.position.y -= (AC.stallSpeed - speed) * 3.0 * dt;
+  }
+  plane.position.y -= Math.abs(Math.sin(bankNow)) * 15 * dt;
+
+  // —— 地形碰撞 / 坠毁重置 ——
+  const groundY = effectiveTerrainHeight(plane.position.x, plane.position.z);
+  // 判断是否在机场区域
+  let inAirportZone = false;
+  for (let ai = 0; ai < AIRPORT_POSITIONS.length; ai++) {
+    const ap = AIRPORT_POSITIONS[ai];
+    const ddx = plane.position.x - ap.x, ddz = plane.position.z - ap.z;
+    const dist = Math.sqrt(ddx * ddx + ddz * ddz);
+    if (dist < AIRPORT_FLAT_RADIUS * 0.7) { inAirportZone = true; break; }
+  }
+
+  let crashThreshold;
+  if (inAirportZone) {
+    if (gearDown && gearAnim > 0.9) {
+      // 起落架放下 + 在机场：允许完全触地，不坠毁（着陆成功）
+      crashThreshold = -100;  // 负值 = 即使低于地面也不触发坠毁
+    } else {
+      crashThreshold = 5;  // 起落架收起：贴近地面 5m 坠毁
+    }
+  } else {
+    crashThreshold = 30;  // 非机场区域：30m
+  }
+
+  // 起落架放下且在机场 → 着陆状态（贴地滑行，不坠毁）
+  const canLand = gearDown && gearAnim > 0.9 && inAirportZone;
+  const takeoffSpeed = AC.stallSpeed * 1.5;  // 起飞速度
+  // 起落架高度（飞机中心到轮子底部）
+  const gearHeight = currentAC === 'airliner' ? 2.2 : 1.4;
+
+  if (canLand && plane.position.y <= groundY + gearHeight + 1.0 && speed < takeoffSpeed) {
+    // 已触地且速度未达起飞速度：贴地滑行
+    plane.position.y = groundY + gearHeight;
+    if (throttle > 5) {
+      // 玩家推油门 → 加速
+      speed += (throttle / 100) * 120 * dt;
+    } else {
+      // 自动刹车：速度越高刹车越强（比例+线性混合）
+      speed -= (20 + speed * 0.3) * dt;
+    }
+    if (speed < 2) speed = 0;
+    checkLanding(plane.position, speed);
+  } else if (canLand && plane.position.y < groundY + gearHeight) {
+    // 起落架放下 + 在机场 + 接近地面：防穿模，不坠毁
+    plane.position.y = groundY + gearHeight;
+  } else if (plane.position.y < groundY + crashThreshold) {
+    // 重置到高空（避开所有地形）
+    plane.position.set(
+      plane.position.x + (Math.random() - 0.5) * 2000,
+      8000,
+      plane.position.z + (Math.random() - 0.5) * 2000
+    );
+    plane.quaternion.identity();
+    speed = 0;
+    throttle = 0;
+    showCrash();
+  }
+
+  // —— chunk 动态加载 ——
+  updateChunks(plane.position.x, plane.position.z);
+  updateDecorChunks(plane.position.x, plane.position.z);
+
+  // —— 导弹系统更新 ——
+  if (missileCooldown > 0) missileCooldown = Math.max(0, missileCooldown - dt);
+  for (let i = missiles.length - 1; i >= 0; i--) {
+    const alive = updateMissile(missiles[i], dt);
+    if (!alive) {
+      scene.remove(missiles[i]);
+      missiles.splice(i, 1);
+    }
+  }
+  updateExplosions(dt);
+  updateSmoke(dt);
+
+  // —— HUD 导弹状态（仅战斗机显示）——
+  if (currentAC === 'fighter') {
+    mslStatusEl.style.display = 'block';
+    if (missileCooldown > 0) {
+      mslEl.textContent = '冷却 ' + missileCooldown.toFixed(1) + 's';
+      mslEl.style.color = '#f80';
+    } else {
+      mslEl.textContent = '就绪 (R)';
+      mslEl.style.color = '#ff6';
+    }
+  } else {
+    mslStatusEl.style.display = 'none';
+  }
+
+  // —— 天空/太阳/水面跟随飞机（无限世界）：飞多远都不会飞出天穹、不会看到海到边 ——
+  skyMesh.position.copy(plane.position);
+  sunSprite.position.copy(sunDirBase).multiplyScalar(46000).add(plane.position);
+  sunHalo.position.copy(sunSprite.position);
+  water.position.x = plane.position.x;
+  water.position.z = plane.position.z;
+
+  // —— 太阳阴影跟随飞机（无限地图）：低角度阳光 → 山脊投长阴影 ——
+  sun.position.set(plane.position.x + 800, 3500, plane.position.z + 600);
+  sun.target.position.set(plane.position.x, 0, plane.position.z);
+  sun.target.updateMatrixWorld();
+  // 天空/水面 shader 的 sunDir 更新
+  skyMat.uniforms.sunDir.value.copy(sunDirBase);
+  waterMat.uniforms.uSunDir.value.copy(sunDirBase);
+  // 水面 shader 时间驱动波
+  waterMat.uniforms.uTime.value += dt;
+
+  if (crashTimer > 0) {
+    crashTimer -= dt;
+    if (crashTimer <= 0) crashEl.style.display = 'none';
+  }
+
+  // —— 相机 ——
+  const speedRatio = clamp(speed / AC.maxSpeed, 0, 1);
+  if (viewMode === 'third') {
+    // 只跟 yaw 的尾随相机（不跟 roll，避免眩晕）
+    const yawQ = yawOnlyQuat(plane.quaternion);
+    // 滚轮调距 + 高速时自动拉近 25%（增强速度感）
+    const effDist = camDist * (1 - speedRatio * 0.25);
+    const camOffset = new THREE.Vector3(0, effDist * 0.32, -effDist).applyQuaternion(yawQ);
+    const targetPos = plane.position.clone().add(camOffset);
+    camera.position.lerp(targetPos, 1 - Math.pow(0.001, dt));
+    // 让相机稍微抬升并看向飞机前方
+    const lookAt = plane.position.clone().add(forward.clone().multiplyScalar(8)).add(new THREE.Vector3(0, 1, 0));
+    camera.lookAt(lookAt);
+    camera.up.set(0, 1, 0); // 强制世界上作为相机 up
+    // FOV 动态拉伸：72° → 90°，速度越快视野越广（速度模糊感）
+    const targetFov = 72 + speedRatio * 18;
+    camera.fov = lerp(camera.fov, targetFov, 1 - Math.pow(0.05, dt));
+    camera.updateProjectionMatrix();
+  } else {
+    // 第一人称：座舱位置，相机姿态完全跟随飞机（含 roll）
+    const cockpitOffset = new THREE.Vector3(0, 0.55, 1.2).applyQuaternion(plane.quaternion);
+    camera.position.copy(plane.position).add(cockpitOffset);
+    camera.up.copy(up).normalize();
+    const lookTarget = plane.position.clone().add(forward.clone().multiplyScalar(30));
+    camera.lookAt(lookTarget);
+    // 第一人称 FOV 拉伸更夸张（主观速度感更强）
+    const targetFov = 72 + speedRatio * 22;
+    camera.fov = lerp(camera.fov, targetFov, 1 - Math.pow(0.05, dt));
+    camera.updateProjectionMatrix();
+  }
+
+  // —— 屏幕震动（爆炸冲击波）——
+  if (shakeTime > 0) {
+    shakeTime -= dt;
+    const s = shakeMag * Math.max(0, shakeTime / 0.35);
+    camera.position.x += (Math.random()-0.5) * s;
+    camera.position.y += (Math.random()-0.5) * s;
+    camera.position.z += (Math.random()-0.5) * s;
+  }
+
+  // —— 着陆检测 ——
+  checkLanding(plane.position, speed);
+  if (landingMessageTimer > 0) {
+    landingMessageTimer -= dt;
+    if (landingMessageTimer <= 0) landingEl.style.display = 'none';
+  }
+
+  // —— HUD ——
+  document.getElementById('spd').textContent = (speed * 3.6).toFixed(0);
+  document.getElementById('alt').textContent = Math.max(0, plane.position.y).toFixed(0);
+  document.getElementById('thr').textContent = throttle.toFixed(0);
+
+  // —— 着陆引导系统 ——
+  // 找最近机场，计算跑道入口，引导飞机对准跑道方向着陆
+  let nearestAp = null, nearestDist = Infinity;
+  for (const ap of airports) {
+    const ddx = plane.position.x - ap.position.x;
+    const ddz = plane.position.z - ap.position.z;
+    const d = Math.sqrt(ddx * ddx + ddz * ddz);
+    if (d < nearestDist) { nearestDist = d; nearestAp = ap; }
+  }
+  const ilsBox = document.getElementById('ils');
+  const aptArrow = document.getElementById('apt-arrow');
+  if (nearestAp && nearestDist < 20000) {
+    const ap = nearestAp;
+    const hdg = ap.rotation.y;  // 机场朝向
+    // 跑道在局部坐标沿 X 轴延伸（长 3000m），入口在 x=±1500
+    // 旋转后世界坐标方向向量
+    const cosH = Math.cos(hdg), sinH = Math.sin(hdg);
+    // 跑道方向（从入口1到入口2的世界向量）
+    const rwyDirX = cosH, rwyDirZ = -sinH;
+    // 两个入口的世界坐标
+    const entry1 = { x: ap.position.x + 1500 * cosH, z: ap.position.z - 1500 * sinH };
+    const entry2 = { x: ap.position.x - 1500 * cosH, z: ap.position.z + 1500 * sinH };
+    // 选离飞机较近的入口
+    const d1 = Math.hypot(plane.position.x - entry1.x, plane.position.z - entry1.z);
+    const d2 = Math.hypot(plane.position.x - entry2.x, plane.position.z - entry2.z);
+    const target = d1 < d2 ? entry1 : entry2;
+    const targetDist = Math.min(d1, d2);
+    const distKm = targetDist / 1000;
+
+    // 飞机当前航向（机头朝 +Z，getWorldDirection 返回 -Z，需取反）
+    const fwd = new THREE.Vector3();
+    plane.getWorldDirection(fwd);
+    fwd.negate();
+    const planeHdg = (Math.atan2(fwd.x, fwd.z) * 180 / Math.PI + 360) % 360;
+
+    // 航向：从飞机指向跑道入口
+    const ddx = target.x - plane.position.x;
+    const ddz = target.z - plane.position.z;
+    const bearing = (Math.atan2(ddx, ddz) * 180 / Math.PI + 360) % 360;
+    let hdgDiff = bearing - planeHdg;
+    if (hdgDiff > 180) hdgDiff -= 360;
+    if (hdgDiff < -180) hdgDiff += 360;
+
+    // 跑道着陆方向（飞机应对准的方向）
+    // 如果目标是入口1，飞机应朝入口2方向飞（即跑道方向）
+    const landDirRad = (target === entry1) ? Math.atan2(rwyDirX, rwyDirZ) : Math.atan2(-rwyDirX, -rwyDirZ);
+    const landDirDeg = (landDirRad * 180 / Math.PI + 360) % 360;
+    let alignDiff = landDirDeg - planeHdg;
+    if (alignDiff > 180) alignDiff -= 360;
+    if (alignDiff < -180) alignDiff += 360;
+
+    // 高差
+    const altDiff = plane.position.y - ap.position.y;
+
+    ilsBox.style.display = 'block';
+    document.getElementById('ils-name').textContent = ap.name;
+    document.getElementById('ils-dist').textContent = distKm.toFixed(1);
+    document.getElementById('ils-hdg').textContent = landDirDeg.toFixed(0);
+    document.getElementById('ils-alt').textContent = (altDiff >= 0 ? '+' : '') + altDiff.toFixed(0);
+
+    // 进近指导提示
+    let hint = '';
+    if (distKm < 8) {
+      if (altDiff > 300) hint = '⚠ 高度过高，请下降';
+      else if (altDiff < 20 && altDiff > 0) hint = '✅ 接近跑道高度，准备着陆';
+      else if (altDiff < 0) hint = '⚠ 低于跑道！立即爬升';
+      if (Math.abs(alignDiff) > 15) hint += (hint ? ' ' : '') + '⚠ 航向偏离 ' + Math.abs(alignDiff).toFixed(0) + '°，请对准跑道方向 ' + landDirDeg.toFixed(0) + '°';
+      else if (altDiff < 200 && altDiff > 0) hint += (hint ? ' ' : '') + '✅ 航向对准';
+      if (speed * 3.6 > 350) hint += (hint ? ' ' : '') + '⚠ 速度过快，请减速';
+      else if (speed * 3.6 < 150 && altDiff < 100) hint += (hint ? ' ' : '') + '✅ 着陆速度';
+    } else {
+      hint = '对准跑道方向 ' + landDirDeg.toFixed(0) + '° 飞行';
+    }
+    document.getElementById('ils-hint').textContent = hint;
+
+    // 方向箭头：指向跑道入口
+    if (distKm > 2) {
+      aptArrow.style.display = 'block';
+      aptArrow.style.transform = 'translate(-50%,-60px) rotate(' + hdgDiff + 'deg)';
+      aptArrow.style.opacity = Math.abs(hdgDiff) > 10 ? '1' : '0.3';
+      aptArrow.textContent = hdgDiff > 10 ? '➡' : (hdgDiff < -10 ? '⬅' : '⬆');
+    } else {
+      aptArrow.style.display = 'none';
+    }
+  } else {
+    ilsBox.style.display = 'none';
+    aptArrow.style.display = 'none';
+  }
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// 初始化机场
+initAirports();
+
+// ============================================================
+// 机库：选飞机界面 + 3D 预览 + 换机
+// ============================================================
+const hangarEl = document.getElementById('hangar');
+
+// —— 3D 预览：三张卡片各一个独立小渲染器，缓慢自转 ——
+const previews = [];
+function buildPreviews() {
+  const defs = [
+    { key: 'trainer',  canvas: document.getElementById('prev-trainer'),  zoom: 13 },
+    { key: 'fighter',  canvas: document.getElementById('prev-fighter'),  zoom: 15 },
+    { key: 'airliner', canvas: document.getElementById('prev-airliner'), zoom: 17 },
+  ];
+  for (const d of defs) {
+    const pr = new THREE.WebGLRenderer({ canvas: d.canvas, antialias: true, alpha: true });
+    pr.setSize(190, 120, false);
+    pr.setPixelRatio(window.devicePixelRatio);
+    const sc = new THREE.Scene();
+    const cam = new THREE.PerspectiveCamera(40, 190 / 120, 0.1, 200);
+    cam.position.set(0, 3.2, d.zoom);
+    cam.lookAt(0, 0, 0);
+    // 预览灯光：主光 + 补光 + 环境光
+    const key = new THREE.DirectionalLight(0xffffff, 2.2);
+    key.position.set(4, 6, 5);
+    sc.add(key);
+    const fill = new THREE.DirectionalLight(0x88aaff, 0.8);
+    fill.position.set(-5, 2, -3);
+    sc.add(fill);
+    sc.add(new THREE.AmbientLight(0xffffff, 0.35));
+    // 飞机模型（从下方 3/4 视角看）
+    const model = AIRCRAFT_TYPES[d.key].create();
+    model.rotation.x = 0.12;
+    sc.add(model);
+    previews.push({ renderer: pr, scene: sc, camera: cam, model });
+  }
+}
+buildPreviews();
+
+function renderPreviews(t) {
+  for (const p of previews) {
+    p.model.rotation.y = t * 0.0006;  // 缓慢自转
+    p.renderer.render(p.scene, p.camera);
+  }
+}
+
+// —— 卡片选中态 ——
+function selectCard(key) {
+  hangarSel = key;
+  for (const card of document.querySelectorAll('.acard')) {
+    card.classList.toggle('sel', card.dataset.ac === key);
+  }
+}
+for (const card of document.querySelectorAll('.acard')) {
+  card.addEventListener('click', () => selectCard(card.dataset.ac));
+}
+
+// —— 打开/关闭机库 ——
+function openHangar() {
+  hangarOpen = true;
+  isPaused = true;                    // 暂停飞行物理
+  pauseEl.style.display = 'none';     // 不显示普通暂停提示
+  hangarEl.classList.remove('hidden');
+  selectCard(currentAC);
+}
+function closeHangar() {
+  hangarOpen = false;
+  hangarEl.classList.add('hidden');
+  if (!gameStarted) {
+    gameStarted = true;
+    isPaused = false;
+  } else {
+    isPaused = false;
+  }
+  clock.getDelta(); // 清空暂停期间累积的 dt，防止时间跳跃
+}
+
+// 起飞按钮：应用选中机型
+document.getElementById('flyBtn').addEventListener('click', () => {
+  if (hangarSel !== currentAC) switchAircraft(hangarSel);
+  closeHangar();
+});
+
+// 在主循环里挂预览渲染（机库打开时主场景渲染后顺便渲染三张卡片）
+const _origRender = renderer.render.bind(renderer);
+renderer.render = function (scene, camera) {
+  _origRender(scene, camera);
+  if (hangarOpen) renderPreviews(performance.now());
+};
+
+// 初始：打开机库（animate 已启动，isPaused 阻止物理，主场景静帧 + 预览转动）
+openHangar();
+
+// ============================================================
+// 窗口尺寸自适应
+// ============================================================
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

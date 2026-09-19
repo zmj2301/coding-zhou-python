@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Explorer · 风格原型 A</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0: #000000;
+    --bg-1: #0A0A0A;
+    --bg-2: #111111;
+    --bg-3: #1A1A1A;
+    --text-0: #FFFFFF;
+    --text-1: #E6E6E6;
+    --text-2: #9CA3AF;
+    --text-3: #6B7280;
+    --accent: #0070F3;
+    --accent-hover: #0051D4;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --error: #EF4444;
+    --border: #1F1F1F;
+    --border-hover: #2A2A2A;
+    --code-bg: #0D1117;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-1);
+    color: var(--text-1);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===== 导航栏 ===== */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    height: 56px; padding: 0 24px;
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-left { display: flex; align-items: center; gap: 40px; }
+  .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .logo-mark {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--accent), #7C3AED);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; color: #fff;
+  }
+  .logo-text { font-size: 16px; font-weight: 600; color: var(--text-0); letter-spacing: -0.01em; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 500;
+    transition: color .15s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--text-0); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-user {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #4B5563, #1F2937);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: var(--text-0); cursor: pointer;
+  }
+
+  /* ===== 按钮 ===== */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none; transition: all .15s ease; font-family: inherit;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary { background: var(--bg-2); color: var(--text-0); border: 1px solid #2A2A2A; }
+  .btn-secondary:hover { background: var(--bg-3); }
+  .btn-ghost { background: transparent; color: var(--text-2); }
+  .btn-ghost:hover { background: var(--bg-2); color: var(--text-0); }
+  .btn-run { background: var(--success); color: #fff; }
+  .btn-run:hover { background: #059669; }
+
+  /* ===== Bento Grid 首页 ===== */
+  .bento {
+    max-width: 1200px; margin: 0 auto; padding: 40px 24px 60px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  /* Hero 大格：跨 2 列 2 行 */
+  .bento-hero {
+    grid-column: span 2; grid-row: span 2;
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 48px; display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .bento-hero::before {
+    content: ''; position: absolute; top: -40%; right: -20%; width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,112,243,0.08), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px; width: fit-content;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(0,112,243,0.1); border: 1px solid rgba(0,112,243,0.3);
+    font-size: 13px; color: var(--accent); margin-bottom: 24px;
+  }
+  .bento-hero h1 {
+    font-size: 48px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
+    color: var(--text-0); margin-bottom: 20px;
+  }
+  .bento-hero h1 .grad {
+    background: linear-gradient(135deg, var(--accent), #7C3AED);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .bento-hero p { font-size: 16px; color: var(--text-2); margin-bottom: 32px; line-height: 1.7; max-width: 460px; }
+  .hero-cta { display: flex; gap: 12px; }
+
+  /* 代码预览格：右上，跨 1 列 2 行 */
+  .bento-code {
+    grid-column: span 1; grid-row: span 2;
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .preview-bar {
+    display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+    background: var(--bg-2); border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #FF5F56; } .dot.y { background: #FFBD2E; } .dot.g { background: #27C93F; }
+  .preview-title { margin-left: 12px; font-size: 13px; color: var(--text-3); font-family: 'JetBrains Mono', monospace; }
+  .preview-code { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; flex: 1; overflow: auto; }
+  .tok-kw { color: #C586C0; } .tok-fn { color: #DCDCAA; } .tok-str { color: #CE9178; }
+  .tok-cm { color: #6A9955; } .tok-num { color: #B5CEA8; }
+
+  /* 统计格：3 个小格横排 */
+  .bento-stat {
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .stat-num { font-size: 32px; font-weight: 700; color: var(--text-0); font-family: 'JetBrains Mono', monospace; letter-spacing: -0.02em; }
+  .stat-label { font-size: 13px; color: var(--text-2); }
+
+  /* 项目分类格 */
+  .bento-section-head {
+    grid-column: span 3; display: flex; justify-content: space-between; align-items: end; margin-top: 16px;
+  }
+  .bento-section-head h2 { font-size: 28px; font-weight: 600; color: var(--text-0); letter-spacing: -0.01em; }
+  .bento-section-head p { color: var(--text-2); font-size: 14px; margin-top: 6px; }
+
+  .card {
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; cursor: pointer; transition: all .2s ease;
+    display: flex; flex-direction: column; min-height: 200px;
+  }
+  .card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .card-icon {
+    width: 40px; height: 40px; border-radius: 10px; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  .card-icon.py { background: rgba(52,142,236,0.15); }
+  .card-icon.sc { background: rgba(255,165,0,0.15); }
+  .card-icon.wg { background: rgba(124,58,237,0.15); }
+  .card h3 { font-size: 17px; font-weight: 600; color: var(--text-0); margin-bottom: 6px; }
+  .card p { font-size: 13px; color: var(--text-2); margin-bottom: 16px; flex: 1; line-height: 1.6; }
+  .card-meta { display: flex; gap: 12px; font-size: 12px; color: var(--text-3); }
+  .card-meta span { display: flex; align-items: center; gap: 4px; }
+
+  /* 功能特性格 */
+  .bento-feat {
+    background: var(--bg-0); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px; display: flex; flex-direction: column; gap: 12px; min-height: 160px;
+  }
+  .feat-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); }
+  .bento-feat h4 { font-size: 17px; font-weight: 600; color: var(--text-0); }
+  .bento-feat p { font-size: 13px; color: var(--text-2); line-height: 1.7; flex: 1; }
+
+  /* 页脚格 */
+  .bento-footer {
+    grid-column: span 3; text-align: center; padding: 32px 0;
+    color: var(--text-3); font-size: 13px; border-top: 1px solid var(--border); margin-top: 16px;
+  }
+
+  /* ===== 代码浏览页 ===== */
+  .browse { display: grid; grid-template-columns: 240px 1fr 320px; height: calc(100vh - 56px); }
+  .tree { background: var(--bg-1); border-right: 1px solid var(--border); overflow-y: auto; padding: 12px 0; }
+  .tree-item {
+    display: flex; align-items: center; gap: 8px; padding: 6px 16px;
+    font-size: 13px; color: var(--text-1); cursor: pointer; transition: background .15s;
+    border-left: 2px solid transparent;
+  }
+  .tree-item:hover { background: var(--bg-2); }
+  .tree-item.active { background: var(--bg-2); border-left-color: var(--accent); color: var(--text-0); }
+  .tree-folder { color: var(--text-2); font-weight: 500; }
+  .tree-icon { font-size: 14px; }
+  .editor { display: flex; flex-direction: column; overflow: hidden; }
+  .editor-bar {
+    display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+    background: var(--bg-2); border-bottom: 1px solid var(--border);
+  }
+  .breadcrumb { font-size: 13px; color: var(--text-2); font-family: 'JetBrains Mono', monospace; }
+  .editor-bar .btn { padding: 6px 14px; font-size: 13px; }
+  .editor-content { flex: 1; overflow: auto; background: var(--code-bg); }
+  .code-lines { padding: 16px 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.7; }
+  .code-line { display: flex; }
+  .line-num { width: 48px; text-align: right; padding-right: 16px; color: var(--text-3); user-select: none; }
+  .line-code { color: var(--text-1); white-space: pre; }
+  .line-code.hl { background: rgba(0,112,243,0.08); }
+  .notes { background: var(--bg-1); border-left: 1px solid var(--border); overflow-y: auto; }
+  .notes-head { padding: 16px; border-bottom: 1px solid var(--border); }
+  .notes-head h4 { font-size: 14px; font-weight: 600; color: var(--text-0); }
+  .note-card {
+    margin: 12px; padding: 14px; background: var(--bg-2);
+    border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px;
+  }
+  .note-line { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); margin-bottom: 6px; }
+  .note-text { font-size: 13px; color: var(--text-1); line-height: 1.6; }
+
+  /* ===== 代码运行页 ===== */
+  .run { display: grid; grid-template-rows: 1fr 1fr; height: calc(100vh - 56px); }
+  .run-editor { border-bottom: 1px solid var(--border); display: flex; flex-direction: column; }
+  .run-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; background: var(--bg-2); border-bottom: 1px solid var(--border);
+  }
+  .run-bar-left { display: flex; align-items: center; gap: 12px; }
+  .run-bar .btn { padding: 6px 16px; font-size: 13px; }
+  .run-code { flex: 1; overflow: auto; background: var(--code-bg); padding: 16px 0; }
+  .terminal { background: var(--bg-0); display: flex; flex-direction: column; }
+  .terminal-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; background: var(--bg-2); border-bottom: 1px solid var(--border);
+  }
+  .terminal-bar h4 { font-size: 13px; font-weight: 600; color: var(--text-0); }
+  .terminal-out {
+    flex: 1; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    line-height: 1.7; color: var(--text-1); overflow-y: auto;
+  }
+  .term-prompt { color: var(--text-3); }
+  .term-out { color: var(--text-1); }
+  .term-success { color: var(--success); }
+
+  /* ===== 标签 ===== */
+  .tag {
+    display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 4px;
+    background: var(--bg-3); color: var(--text-2); font-size: 12px; font-weight: 500;
+  }
+  .tag.active { background: var(--accent); color: #fff; }
+
+  /* ===== 页脚 ===== */
+  .footer {
+    padding: 40px 24px; text-align: center;
+    background: var(--bg-0); border-top: 1px solid var(--border);
+    color: var(--text-3); font-size: 13px;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+</style>
+</head>
+<body>
+
+<!-- ===== 导航栏 ===== -->
+<nav class="nav">
+  <div class="nav-left">
+    <div class="logo" onclick="go('home')">
+      <div class="logo-mark">CE</div>
+      <span class="logo-text">Code Explorer</span>
+    </div>
+    <div class="nav-links">
+      <a class="active" onclick="go('home')">首页</a>
+      <a onclick="go('browse')">代码浏览</a>
+      <a onclick="go('run')">在线运行</a>
+      <a>资源下载</a>
+      <a>关于</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-ghost" style="padding:6px 14px;font-size:13px;">登录</button>
+    <div class="nav-user" title="用户">U</div>
+  </div>
+</nav>
+
+<!-- ===== 首页 ===== -->
+<div id="page-home" class="page active">
+  <div class="bento">
+    <!-- Hero 大格 -->
+    <div class="bento-hero">
+      <div class="hero-tag"><span>✨</span> v3.0 全新视觉上线</div>
+      <h1>探索代码，<br><span class="grad">边看边学</span></h1>
+      <p>一个面向编程学习者的代码浏览与在线运行平台。浏览真实项目源码，逐行理解教学注释，一键运行验证你的想法。</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="go('browse')">开始探索 →</button>
+        <button class="btn btn-secondary" onclick="go('run')">在线运行</button>
+      </div>
+    </div>
+
+    <!-- 代码预览格 -->
+    <div class="bento-code">
+      <div class="preview-bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <div class="preview-title">hello.py</div>
+      </div>
+      <div class="preview-code">
+<span class="tok-cm"># 一个简单的 Python 程序</span><br>
+<span class="tok-kw">def</span> <span class="tok-fn">greet</span>(name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tok-str">"""向某人打招呼"""</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tok-kw">return</span> <span class="tok-str">f"Hello, {name}!"</span><br>
+<br>
+<span class="tok-kw">if</span> __name__ == <span class="tok-str">"__main__"</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print(greet(<span class="tok-str">"World"</span>))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="tok-cm"># 输出: Hello, World!</span>
+      </div>
+    </div>
+
+    <!-- 统计格 × 3 -->
+    <div class="bento-stat">
+      <div class="stat-num">85</div>
+      <div class="stat-label">教学项目</div>
+    </div>
+    <div class="bento-stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">编程语言</div>
+    </div>
+    <div class="bento-stat">
+      <div class="stat-num">1.2k</div>
+      <div class="stat-label">代码注释</div>
+    </div>
+
+    <!-- 分类标题 -->
+    <div class="bento-section-head">
+      <div><h2>项目分类</h2><p>从基础到进阶，选择适合你的学习路径</p></div>
+    </div>
+
+    <!-- 项目卡 × 3 -->
+    <div class="card" onclick="go('browse')">
+      <div class="card-icon py">🐍</div>
+      <h3>Python 编程</h3>
+      <p>从变量、循环到函数、面向对象，系统学习 Python 核心语法。</p>
+      <div class="card-meta"><span>📁 42 个项目</span><span>⭐ 精选</span></div>
+    </div>
+    <div class="card" onclick="go('browse')">
+      <div class="card-icon sc">🎮</div>
+      <h3>Scratch 少儿编程</h3>
+      <p>图形化编程入门，通过拖拽积木培养编程思维，适合小朋友。</p>
+      <div class="card-meta"><span>📁 28 个项目</span><span>⭐ 精选</span></div>
+    </div>
+    <div class="card" onclick="go('browse')">
+      <div class="card-icon wg">🌐</div>
+      <h3>网页游戏</h3>
+      <p>用 HTML/CSS/JavaScript 制作可玩的网页小游戏，边玩边学。</p>
+      <div class="card-meta"><span>📁 15 个项目</span><span>🔥 热门</span></div>
+    </div>
+
+    <!-- 功能标题 -->
+    <div class="bento-section-head">
+      <div><h2>核心能力</h2><p>为编程学习者精心设计的三大功能</p></div>
+    </div>
+
+    <!-- 功能格 × 3 -->
+    <div class="bento-feat">
+      <div class="feat-num">01</div>
+      <h4>源码逐行浏览</h4>
+      <p>真实项目代码，语法高亮 + 文件树导航，像在 IDE 里一样流畅阅读。</p>
+    </div>
+    <div class="bento-feat">
+      <div class="feat-num">02</div>
+      <h4>教学注释联动</h4>
+      <p>每一段代码都配有详尽的中文教学注释，点击代码行即可查看讲解。</p>
+    </div>
+    <div class="bento-feat">
+      <div class="feat-num">03</div>
+      <h4>一键在线运行</h4>
+      <p>无需安装环境，直接在浏览器中运行代码，实时查看输出结果。</p>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="bento-footer">© 2026 Code Explorer · 让编程学习更简单</div>
+  </div>
+</div>
+
+<!-- ===== 代码浏览页 ===== -->
+<div id="page-browse" class="page">
+  <div class="browse">
+    <!-- 文件树 -->
+    <div class="tree">
+      <div class="tree-item tree-folder"><span class="tree-icon">📁</span> coding-zhou-python</div>
+      <div class="tree-item" style="padding-left:32px;"><span class="tree-icon">📄</span> AGENTS.md</div>
+      <div class="tree-item tree-folder" style="padding-left:32px;"><span class="tree-icon">📁</span> code-explorer</div>
+      <div class="tree-item" style="padding-left:48px;"><span class="tree-icon">📄</span> worker.ts</div>
+      <div class="tree-item" style="padding-left:48px;"><span class="tree-icon">📄</span> index.html</div>
+      <div class="tree-item tree-folder" style="padding-left:48px;"><span class="tree-icon">📁</span> public</div>
+      <div class="tree-item active" style="padding-left:64px;"><span class="tree-icon">🐍</span> hello.py</div>
+      <div class="tree-item" style="padding-left:64px;"><span class="tree-icon">🐍</span> calculator.py</div>
+      <div class="tree-item" style="padding-left:64px;"><span class="tree-icon">🐍</span> guess_game.py</div>
+      <div class="tree-item" style="padding-left:32px;"><span class="tree-icon">📄</span> build.py</div>
+      <div class="tree-item" style="padding-left:32px;"><span class="tree-icon">📄</span> wrangler.toml</div>
+    </div>
+
+    <!-- 代码编辑器 -->
+    <div class="editor">
+      <div class="editor-bar">
+        <div class="breadcrumb">coding-zhou-python / code-explorer / public / hello.py</div>
+        <div style="flex:1"></div>
+        <span class="tag">Python</span>
+        <button class="btn btn-run" onclick="go('run')">▶ 运行</button>
+      </div>
+      <div class="editor-content">
+        <div class="code-lines">
+          <div class="code-line"><span class="line-num">1</span><span class="line-code tok-cm"># 一个简单的 Python 问候程序</span></div>
+          <div class="code-line"><span class="line-num">2</span><span class="line-code"></span></div>
+          <div class="code-line"><span class="line-num">3</span><span class="line-code tok-kw">def</span> <span class="line-code tok-fn">greet</span>(name):</div>
+          <div class="code-line"><span class="line-num">4</span><span class="line-code" style="padding-left:24px;"><span class="tok-str">"""向指定的人打招呼。"""</span></span></div>
+          <div class="code-line"><span class="line-num">5</span><span class="line-code hl" style="padding-left:24px;"><span class="tok-kw">return</span> <span class="tok-str">f"Hello, {name}!"</span></span></div>
+          <div class="code-line"><span class="line-num">6</span><span class="line-code"></span></div>
+          <div class="code-line"><span class="line-num">7</span><span class="line-code tok-kw">if</span> __name__ == <span class="tok-str">"__main__"</span>:</div>
+          <div class="code-line"><span class="line-num">8</span><span class="line-code" style="padding-left:24px;">print(greet(<span class="tok-str">"World"</span>))</div>
+          <div class="code-line"><span class="line-num">9</span><span class="line-code" style="padding-left:24px;"><span class="tok-cm"># 控制台会输出: Hello, World!</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 教学注释面板 -->
+    <div class="notes">
+      <div class="notes-head"><h4>📖 教学注释</h4></div>
+      <div class="note-card">
+        <div class="note-line">第 3 行</div>
+        <div class="note-text">定义函数 <b>greet</b>，参数 name 表示要问候的人的名字。</div>
+      </div>
+      <div class="note-card">
+        <div class="note-line">第 5 行</div>
+        <div class="note-text"><b>f-string</b> 格式化字符串，{name} 会被替换为实际传入的值。这是 Python 3.6+ 推荐的字符串格式化方式。</div>
+      </div>
+      <div class="note-card">
+        <div class="note-line">第 7 行</div>
+        <div class="note-text"><b>if __name__ == "__main__"</b> 是 Python 的惯用法，表示"当这个文件被直接运行时"才执行下面的代码。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 代码运行页 ===== -->
+<div id="page-run" class="page">
+  <div class="run">
+    <div class="run-editor">
+      <div class="run-bar">
+        <div class="run-bar-left">
+          <span class="tag">Python 3</span>
+          <span style="font-size:13px;color:var(--text-2);">hello.py</span>
+        </div>
+        <div>
+          <button class="btn btn-run" onclick="runCode()">▶ 运行</button>
+          <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;">停止</button>
+        </div>
+      </div>
+      <div class="run-code">
+        <div class="code-lines">
+          <div class="code-line"><span class="line-num">1</span><span class="line-code tok-cm"># 一个简单的 Python 问候程序</span></div>
+          <div class="code-line"><span class="line-num">2</span><span class="line-code"></span></div>
+          <div class="code-line"><span class="line-num">3</span><span class="line-code tok-kw">def</span> <span class="line-code tok-fn">greet</span>(name):</div>
+          <div class="code-line"><span class="line-num">4</span><span class="line-code" style="padding-left:24px;"><span class="tok-str">"""向指定的人打招呼。"""</span></span></div>
+          <div class="code-line"><span class="line-num">5</span><span class="line-code" style="padding-left:24px;"><span class="tok-kw">return</span> <span class="tok-str">f"Hello, {name}!"</span></span></div>
+          <div class="code-line"><span class="line-num">6</span><span class="line-code"></span></div>
+          <div class="code-line"><span class="line-num">7</span><span class="line-code tok-kw">if</span> __name__ == <span class="tok-str">"__main__"</span>:</div>
+          <div class="code-line"><span class="line-num">8</span><span class="line-code" style="padding-left:24px;">print(greet(<span class="tok-str">"World"</span>))</div>
+        </div>
+      </div>
+    </div>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <h4>▶ 终端输出</h4>
+        <span class="tag" id="term-status">就绪</span>
+      </div>
+      <div class="terminal-out" id="term-out">
+        <span class="term-prompt">$ python hello.py</span><br>
+        <span class="term-success">Hello, World!</span><br>
+        <span class="term-prompt">$ </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function go(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const map = { home: 0, browse: 1, run: 2 };
+    const idx = map[page];
+    if (idx !== undefined) document.querySelectorAll('.nav-links a')[idx]?.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function runCode() {
+    const out = document.getElementById('term-out');
+    const status = document.getElementById('term-status');
+    status.textContent = '运行中...';
+    status.className = 'tag';
+    out.innerHTML = '<span class="term-prompt">$ python hello.py</span><br><span class="term-out" style="opacity:0.5;">运行中...</span>';
+    setTimeout(() => {
+      out.innerHTML = '<span class="term-prompt">$ python hello.py</span><br><span class="term-success">Hello, World!</span><br><span class="term-prompt">$ </span>';
+      status.textContent = '完成';
+      status.className = 'tag active';
+    }, 1200);
+  }
+</script>
+</body>
+</html>

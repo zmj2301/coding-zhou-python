@@ -1,0 +1,26 @@
+[
+  {
+    "name": "ai-usage:2026-09-18",
+    "expiration": 1789825390
+  },
+  {
+    "name": "cache:comment-counts",
+    "expiration": 1789779232
+  },
+  {
+    "name": "cache:likes",
+    "expiration": 1789779231
+  },
+  {
+    "name": "cache:project-meta-v2",
+    "expiration": 1789779232
+  },
+  {
+    "name": "cache:static:/components/nav.css",
+    "expiration": 1790342753
+  },
+  {
+    "name": "cache:static:/components/nav.js",
+    "expiration": 1790342753
+  }
+]

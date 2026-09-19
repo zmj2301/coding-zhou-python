@@ -1,100 +1,128 @@
 [
   {
+    "name": "img",
+    "type": "directory",
+    "path": "img",
+    "children": [
+      {
+        "name": "icon.png",
+        "type": "file",
+        "path": "img/icon.png",
+        "ext": ".png",
+        "lastModified": 1785829305577
+      }
+    ]
+  },
+  {
     "name": "456.xlsx",
     "type": "file",
     "path": "456.xlsx",
     "ext": ".xlsx",
-    "lastModified": 1785762150413
+    "lastModified": 1785830343520
   },
   {
     "name": "7777777.xlsx",
     "type": "file",
     "path": "7777777.xlsx",
     "ext": ".xlsx",
-    "lastModified": 1785762150415
+    "lastModified": 1785830343522
   },
   {
     "name": "ai.py",
     "type": "file",
     "path": "ai.py",
     "ext": ".py",
-    "lastModified": 1785762150419
+    "lastModified": 1785830343524
   },
   {
     "name": "ai_awswers.json",
     "type": "file",
     "path": "ai_awswers.json",
     "ext": ".json",
-    "lastModified": 1785762150420
+    "lastModified": 1785830343525
   },
   {
     "name": "build_exe.py",
     "type": "file",
     "path": "build_exe.py",
     "ext": ".py",
-    "lastModified": 1785762150422
+    "lastModified": 1785830343526
+  },
+  {
+    "name": "combined.ico",
+    "type": "file",
+    "path": "combined.ico",
+    "ext": ".ico",
+    "lastModified": 1785829305812
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
     "ext": ".md",
-    "lastModified": 1785762150418
+    "lastModified": 1785830343523
   },
   {
     "name": "requirements.txt",
     "type": "file",
     "path": "requirements.txt",
     "ext": ".txt",
-    "lastModified": 1785762150423
+    "lastModified": 1785830343529
   },
   {
     "name": "show_yourwindows.py",
     "type": "file",
     "path": "show_yourwindows.py",
     "ext": ".py",
-    "lastModified": 1785762150424
+    "lastModified": 1785830343531
   },
   {
     "name": "test.py",
     "type": "file",
     "path": "test.py",
     "ext": ".py",
-    "lastModified": 1785762150424
+    "lastModified": 1785830343531
   },
   {
     "name": "text.xlsx",
     "type": "file",
     "path": "text.xlsx",
     "ext": ".xlsx",
-    "lastModified": 1785762150426
+    "lastModified": 1785830343532
   },
   {
     "name": "user.json",
     "type": "file",
     "path": "user.json",
     "ext": ".json",
-    "lastModified": 1785762150427
+    "lastModified": 1785830343533
   },
   {
     "name": "user_data.json",
     "type": "file",
     "path": "user_data.json",
     "ext": ".json",
-    "lastModified": 1785762150428
+    "lastModified": 1785830343534
+  },
+  {
+    "name": "window_icon.png",
+    "type": "file",
+    "path": "window_icon.png",
+    "ext": ".png",
+    "lastModified": 1785829305581
   },
   {
     "name": "work.xlsx",
     "type": "file",
     "path": "work.xlsx",
     "ext": ".xlsx",
-    "lastModified": 1785762150437
+    "lastModified": 1785830343535
   },
   {
     "name": "安装指南.md",
     "type": "file",
     "path": "安装指南.md",
     "ext": ".md",
-    "lastModified": 1785762150440
+    "lastModified": 1785830343536
   }
 ]

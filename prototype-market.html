@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Explorer · 项目广场</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    --brand: #0070F3;
+    --brand-bg: rgba(0,112,243,0.12);
+    --sidebar-bg: #000000;
+    --sidebar-hover: rgba(255,255,255,0.06);
+    --sidebar-active: rgba(0,112,243,0.15);
+    --sidebar-text: rgba(255,255,255,0.65);
+    --sidebar-text-dim: rgba(255,255,255,0.4);
+    --sidebar-border: rgba(255,255,255,0.06);
+    --filter-bg: #0A0A0A;
+    --filter-chip-bg: #141414;
+    --content-bg: #0A0A0A;
+    --card-bg: #111111;
+    --card-border: #1F1F1F;
+    --card-border-hover: #2A2A2A;
+    --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.5);
+    --text-0: #FFFFFF;
+    --text-1: #D4D4D4;
+    --text-2: #A1A1A1;
+    --text-3: #737373;
+    --border: #1F1F1F;
+    --border-light: #171717;
+    --tag-bg: #141414;
+    --tag-bg-lang: rgba(0,112,243,0.12);
+    --tag-text: #A1A1A1;
+    --tag-text-lang: #60A5FA;
+    --ic-py: #0D1B2A; --ic-sc: #1A120B; --ic-wg: #0F1714;
+    --badge-new-bg: rgba(239,68,68,0.12); --badge-new-text: #F87171;
+    --badge-hot-bg: rgba(245,158,11,0.12); --badge-hot-text: #FBBF24;
+    --input-bg: #141414; --input-border: #262626;
+    --banner-bg: linear-gradient(90deg, rgba(245,158,11,0.12), rgba(236,72,153,0.12));
+    --banner-text: #FBBF24;
+    --drawer-bg: #0F0F0F;
+    --drawer-header-bg: #0F0F0F;
+  }
+  [data-theme="light"] {
+    --brand-bg: rgba(0,112,243,0.08);
+    --sidebar-bg: #FFFFFF;
+    --sidebar-hover: #F5F5F5;
+    --sidebar-active: rgba(0,112,243,0.08);
+    --sidebar-text: #525252;
+    --sidebar-text-dim: #A3A3A3;
+    --sidebar-border: #E5E5E5;
+    --filter-bg: #F5F5F5;
+    --filter-chip-bg: #FFFFFF;
+    --content-bg: #FAFAFA;
+    --card-bg: #FFFFFF;
+    --card-border: #E5E5E5;
+    --card-border-hover: #D4D4D4;
+    --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.08);
+    --text-0: #171717; --text-1: #404040; --text-2: #737373; --text-3: #A3A3A3;
+    --border: #E5E5E5; --border-light: #F5F5F5;
+    --tag-bg: #F5F5F5; --tag-bg-lang: rgba(0,112,243,0.08); --tag-text: #525252; --tag-text-lang: #0070F3;
+    --ic-py: #EFF6FF; --ic-sc: #FFF7ED; --ic-wg: #F0FDF4;
+    --badge-new-bg: #FEF2F2; --badge-new-text: #DC2626;
+    --badge-hot-bg: #FEF3C7; --badge-hot-text: #B45309;
+    --input-bg: #FFFFFF; --input-border: #E5E5E5;
+    --banner-bg: linear-gradient(90deg, #FEF3C7, #FCE7F3); --banner-text: #92400E;
+    --drawer-bg: #FFFFFF; --drawer-header-bg: #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, 'PingFang SC', system-ui, sans-serif;
+    background: var(--content-bg); color: var(--text-0); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; font-size: 14px;
+    transition: background-color .3s, color .3s;
+  }
+  .layout { display: flex; height: 100vh; overflow: hidden; position: relative; }
+
+  /* ========== 左栏 ========== */
+  .sidebar {
+    width: 200px; flex-shrink: 0; background: var(--sidebar-bg);
+    display: flex; flex-direction: column; overflow-y: auto;
+    border-right: 1px solid var(--sidebar-border); transition: background-color .3s;
+  }
+  .sidebar-logo { height: 56px; padding: 0 18px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .logo-mark { width: 28px; height: 28px; border-radius: 7px; background: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; color: #fff; }
+  .logo-text { font-size: 15px; font-weight: 600; color: var(--text-0); letter-spacing: -0.01em; }
+  .sidebar-nav { flex: 1; padding: 16px 0 8px; }
+  .nav-group { margin-bottom: 12px; }
+  .nav-group-title { padding: 0 18px; margin-bottom: 4px; font-size: 11px; font-weight: 500; color: var(--sidebar-text-dim); letter-spacing: 0.06em; text-transform: uppercase; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 18px; margin: 0 8px 2px;
+    border-radius: 6px; cursor: pointer; font-size: 13px; color: var(--sidebar-text); transition: all .15s;
+  }
+  .nav-item:hover { background: var(--sidebar-hover); color: #fff; }
+  .nav-item.active { background: var(--sidebar-active); color: #fff; font-weight: 500; }
+  .nav-item .ni-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+  .nav-item .ni-icon svg { width: 18px; height: 18px; }
+  .nav-item .ni-badge { margin-left: auto; font-size: 11px; background: var(--sidebar-hover); padding: 1px 6px; border-radius: 10px; }
+  .sidebar-bottom { padding: 12px 14px; border-top: 1px solid var(--sidebar-border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .theme-toggle { width: 36px; height: 36px; border-radius: 8px; border: none; background: var(--sidebar-hover); color: var(--sidebar-text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s; font-family: inherit; }
+  .theme-toggle svg { width: 18px; height: 18px; }
+  .theme-toggle:hover { background: var(--sidebar-active); color: #fff; }
+  .sidebar-version { font-size: 11px; color: var(--sidebar-text-dim); }
+
+  /* ========== 筛选面板 ========== */
+  .filter-panel {
+    width: 240px; flex-shrink: 0; background: var(--filter-bg); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; transition: width .3s, opacity .2s, background-color .3s;
+    overflow: hidden;
+  }
+  .filter-panel.hidden { width: 0; opacity: 0; border-right: none; }
+  .filter-header { height: 56px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .filter-header h3 { font-size: 14px; font-weight: 600; color: var(--text-0); }
+  .toggle-filter { font-size: 12px; color: var(--text-2); cursor: pointer; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--filter-chip-bg); font-family: inherit; transition: all .15s; }
+  .toggle-filter:hover { color: var(--text-0); }
+  .filter-body { flex: 1; overflow-y: auto; padding: 4px 0; }
+  .filter-group { padding: 14px 16px; border-bottom: 1px solid var(--border-light); }
+  .filter-group.collapsed .filter-options { display: none; }
+  .filter-group-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 2px 0 10px; }
+  .filter-group-header h4 { font-size: 13px; font-weight: 600; color: var(--text-0); }
+  .filter-group-header .arrow { font-size: 10px; color: var(--text-3); transition: transform .2s; }
+  .filter-group.collapsed .filter-group-header .arrow { transform: rotate(-90deg); }
+  .filter-options { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filter-chip { padding: 5px 12px; border-radius: 20px; font-size: 12px; border: 1px solid var(--border); background: var(--filter-chip-bg); color: var(--text-1); cursor: pointer; font-family: inherit; transition: all .15s; }
+  .filter-chip:hover { border-color: var(--brand); color: var(--brand); }
+  .filter-chip.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+  /* ========== 主内容 ========== */
+  .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; position: relative; }
+  .topbar { height: 56px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; background: var(--content-bg); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+  .topbar-title { font-size: 16px; font-weight: 700; color: var(--text-0); letter-spacing: -0.01em; }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .topbar-banner { padding: 5px 14px; border-radius: 20px; font-size: 12px; background: var(--banner-bg); color: var(--banner-text); }
+  .topbar-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s; color: var(--text-1); }
+  .topbar-btn svg { width: 16px; height: 16px; }
+  .topbar-btn:hover { border-color: var(--brand); color: var(--brand); }
+  .searchbar { padding: 20px 24px; background: var(--content-bg); flex-shrink: 0; border-bottom: 1px solid var(--border); }
+  .search-box { max-width: 480px; position: relative; }
+  .search-box input { width: 100%; padding: 10px 16px 10px 38px; border: 1px solid var(--input-border); border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--input-bg); color: var(--text-0); transition: all .15s; }
+  .search-box input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(0,112,243,0.1); }
+  .search-box .search-ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-3); }
+  .search-box .search-ic svg { width: 14px; height: 14px; }
+  .cards-wrap { flex: 1; overflow-y: auto; padding: 20px 24px 32px; background: var(--content-bg); }
+  .result-info { padding: 8px 0 16px; font-size: 13px; color: var(--text-2); }
+  .result-info strong { color: var(--text-0); font-weight: 600; }
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; transition: grid-template-columns .3s; }
+  .filter-panel.hidden ~ .content .card-grid { grid-template-columns: repeat(5, 1fr); }
+  .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 20px; cursor: pointer; transition: all .2s; position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 200px; }
+  .card:hover { border-color: var(--brand); box-shadow: var(--card-shadow-hover); transform: translateY(-1px); }
+  .card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .card-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .ci-py { background: var(--ic-py); } .ci-sc { background: var(--ic-sc); } .ci-wg { background: var(--ic-wg); }
+  .card-title-area { flex: 1; min-width: 0; }
+  .card-title { font-size: 15px; font-weight: 600; color: var(--text-0); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-author { font-size: 12px; color: var(--text-2); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-badge { position: absolute; top: 12px; right: 12px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .badge-new { background: var(--badge-new-bg); color: var(--badge-new-text); }
+  .badge-hot { background: var(--badge-hot-bg); color: var(--badge-hot-text); }
+  .card-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: auto; flex: 1; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tag { padding: 3px 10px; border-radius: 4px; font-size: 12px; background: var(--tag-bg); color: var(--tag-text); border: 1px solid var(--border); }
+  .tag.lang { background: var(--tag-bg-lang); color: var(--tag-text-lang); border-color: var(--brand-bg); }
+  .tag.num { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  /* ========== 右侧详情抽屉 ========== */
+  .drawer-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s; z-index: 90;
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 560px; max-width: 90vw;
+    background: var(--drawer-bg); border-left: 1px solid var(--border);
+    z-index: 100; display: flex; flex-direction: column;
+    transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header {
+    flex-shrink: 0; padding: 20px 24px; border-bottom: 1px solid var(--border);
+    background: var(--drawer-header-bg);
+  }
+  .drawer-header-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+  .drawer-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .drawer-title-area { flex: 1; min-width: 0; }
+  .drawer-title { font-size: 18px; font-weight: 700; color: var(--text-0); margin-bottom: 3px; }
+  .drawer-meta { font-size: 13px; color: var(--text-2); }
+  .drawer-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-1); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all .15s; }
+  .drawer-close svg { width: 16px; height: 16px; }
+  .drawer-close:hover { border-color: #EF4444; color: #EF4444; }
+
+  .drawer-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border); background: var(--card-bg); color: var(--text-0);
+    cursor: pointer; font-family: inherit; transition: all .15s; white-space: nowrap;
+  }
+  .btn svg { width: 15px; height: 15px; }
+  .btn:hover { border-color: var(--brand); color: var(--brand); }
+  .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .btn.primary:hover { background: #0051D4; border-color: #0051D4; color: #fff; }
+  .btn.ghost { background: transparent; }
+  .btn.sm { padding: 5px 10px; font-size: 12px; }
+  .btn.sm svg { width: 13px; height: 13px; }
+  .drawer-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .drawer-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .drawer-section { margin-bottom: 28px; }
+  .drawer-section:last-child { margin-bottom: 0; }
+  .drawer-section-title {
+    font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: 0.06em;
+    margin-bottom: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+  }
+  .drawer-section-title svg { width: 13px; height: 13px; }
+  .drawer-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .info-item { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); }
+  .info-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .info-value { font-size: 14px; font-weight: 600; color: var(--text-0); }
+
+  /* README */
+  .readme-container {
+    border: 1px solid var(--border); border-radius: 10px; background: var(--card-bg);
+    overflow: hidden;
+  }
+  .readme-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    background: var(--card-bg);
+  }
+  .readme-header-left { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); font-family: 'JetBrains Mono', monospace; }
+  .readme-content {
+    max-height: 380px; overflow-y: auto; padding: 20px 24px;
+  }
+  .readme-content.full { max-height: none; }
+  .readme-content h1, .readme-content h2, .readme-content h3 {
+    color: var(--text-0); margin: 0 0 12px; font-weight: 700; line-height: 1.3;
+  }
+  .readme-content h1 { font-size: 22px; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 16px; }
+  .readme-content h2 { font-size: 17px; margin-top: 20px; }
+  .readme-content h3 { font-size: 14px; margin-top: 16px; }
+  .readme-content p { color: var(--text-1); line-height: 1.7; margin: 0 0 12px; font-size: 14px; }
+  .readme-content ul, .readme-content ol { margin: 0 0 12px 20px; color: var(--text-1); line-height: 1.8; }
+  .readme-content li { margin-bottom: 4px; }
+  .readme-content code {
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+    background: rgba(127,127,127,0.12); padding: 2px 6px; border-radius: 4px;
+    color: var(--brand);
+  }
+  .readme-content pre {
+    background: #0D1117; border-radius: 8px; padding: 14px 16px; margin: 0 0 14px;
+    overflow-x: auto; border: 1px solid var(--border);
+  }
+  .readme-content pre code { background: transparent; padding: 0; color: #E6EDF3; font-size: 12.5px; line-height: 1.7; }
+  .readme-content a { color: var(--brand); text-decoration: none; }
+  .readme-content a:hover { text-decoration: underline; }
+  .readme-content blockquote {
+    border-left: 3px solid var(--brand); margin: 0 0 14px; padding: 4px 14px;
+    color: var(--text-2); background: var(--brand-bg); border-radius: 0 6px 6px 0;
+  }
+  .readme-content hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 20px; right: 20px; z-index: 1000;
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 18px; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3); transform: translateY(-20px);
+    opacity: 0; pointer-events: none; transition: all .25s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast svg { width: 18px; height: 18px; color: var(--brand); flex-shrink: 0; }
+  .toast-text { font-size: 13px; color: var(--text-0); }
+
+  .sidebar::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 3px; }
+  .sidebar::-webkit-scrollbar, .filter-body::-webkit-scrollbar, .cards-wrap::-webkit-scrollbar, .drawer-body::-webkit-scrollbar, .readme-content::-webkit-scrollbar { width: 6px; }
+  .filter-body::-webkit-scrollbar-thumb, .cards-wrap::-webkit-scrollbar-thumb, .drawer-body::-webkit-scrollbar-thumb, .readme-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ===== 左栏 ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">CE</div>
+      <div class="logo-text">Code Explorer</div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-title">广场</div>
+        <div class="nav-item active" onclick="switchView('square', this)">
+          <span class="ni-icon"><i data-lucide="home"></i></span> 项目广场 <span class="ni-badge">85</span>
+        </div>
+        <div class="nav-item" onclick="switchView('run', this)">
+          <span class="ni-icon"><i data-lucide="play"></i></span> 在线运行
+        </div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">资源</div>
+        <div class="nav-item" onclick="showToast('打开资源下载页面...')">
+          <span class="ni-icon"><i data-lucide="package"></i></span> 资源下载
+        </div>
+        <div class="nav-item" onclick="showToast('打开 AGENTS 手册...')">
+          <span class="ni-icon"><i data-lucide="book-open"></i></span> AGENTS 手册
+        </div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">账户</div>
+        <div class="nav-item" onclick="showToast('登录 / 注册')">
+          <span class="ni-icon"><i data-lucide="user"></i></span> 登录 / 注册
+        </div>
+        <div class="nav-item" onclick="showToast('API 密钥管理')">
+          <span class="ni-icon"><i data-lucide="key"></i></span> API 密钥
+        </div>
+        <div class="nav-item" onclick="showToast('设置')">
+          <span class="ni-icon"><i data-lucide="settings"></i></span> 设置
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="theme-toggle" onclick="toggleTheme()" title="切换亮色/暗色">
+        <i data-lucide="moon"></i>
+      </button>
+      <div class="sidebar-version">v2.4.3</div>
+    </div>
+  </aside>
+
+  <!-- ===== 筛选面板 ===== -->
+  <aside class="filter-panel" id="filterPanel">
+    <div class="filter-header">
+      <h3>筛选器</h3>
+      <button class="toggle-filter" onclick="toggleFilter()">隐藏筛选器</button>
+    </div>
+    <div class="filter-body">
+      <div class="filter-group">
+        <div class="filter-group-header" onclick="toggleGroup(this)">
+          <h4>类型</h4><span class="arrow">▼</span>
+        </div>
+        <div class="filter-options">
+          <button class="filter-chip active" onclick="this.classList.toggle('active')">Python</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">Scratch</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">网页游戏</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-header" onclick="toggleGroup(this)">
+          <h4>难度</h4><span class="arrow">▼</span>
+        </div>
+        <div class="filter-options">
+          <button class="filter-chip" onclick="this.classList.toggle('active')">入门</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">中级</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">高级</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-header" onclick="toggleGroup(this)">
+          <h4>语言</h4><span class="arrow">▼</span>
+        </div>
+        <div class="filter-options">
+          <button class="filter-chip active" onclick="this.classList.toggle('active')">Python</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">JavaScript</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">HTML/CSS</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">Scratch</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-header" onclick="toggleGroup(this)">
+          <h4>特性</h4><span class="arrow">▼</span>
+        </div>
+        <div class="filter-options">
+          <button class="filter-chip" onclick="this.classList.toggle('active')">可运行</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">可下载</button>
+          <button class="filter-chip" onclick="this.classList.toggle('active')">有注释</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== 主内容 ===== -->
+  <main class="content">
+    <div class="topbar">
+      <div class="topbar-title">项目广场</div>
+      <div class="topbar-right">
+        <div class="topbar-banner">🔥 新增 Scratch 少儿编程专区</div>
+        <button class="topbar-btn" onclick="toggleFilter()" title="显示/隐藏筛选器">
+          <i data-lucide="panel-left"></i>
+        </button>
+      </div>
+    </div>
+    <div class="searchbar">
+      <div class="search-box">
+        <span class="search-ic"><i data-lucide="search"></i></span>
+        <input type="text" placeholder="输入项目名称或关键词搜索..." id="searchInput" oninput="renderCards()">
+      </div>
+    </div>
+    <div class="cards-wrap">
+      <div class="result-info">共 <strong id="countLabel">16</strong> 个项目</div>
+      <div class="card-grid" id="cardGrid"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== 详情抽屉 ===== -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-header" id="drawerHeader"></div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i data-lucide="info"></i>
+  <span class="toast-text" id="toastText"></span>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  // ========== 主题 ==========
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const toggleBtn = document.querySelector('.theme-toggle i');
+    if (isDark) {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('ce-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('ce-theme', 'dark');
+    }
+    toggleBtn.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+    lucide.createIcons();
+  }
+  (function() {
+    const saved = localStorage.getItem('ce-theme');
+    const toggleBtn = document.querySelector('.theme-toggle i');
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      toggleBtn.setAttribute('data-lucide', 'sun');
+    }
+    lucide.createIcons();
+  })();
+
+  function toggleFilter() { document.getElementById('filterPanel').classList.toggle('hidden'); }
+  function toggleGroup(h) { h.parentElement.classList.toggle('collapsed'); }
+
+  // ========== 视图切换 ==========
+  function switchView(view, el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    if (view === 'run') showToast('切换到在线运行视图...（原型中）');
+  }
+
+  // ========== Toast ==========
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastText').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+    lucide.createIcons();
+  }
+
+  // ========== 项目数据 ==========
+  const projects = [
+    { id:1, icon:'🐍', ic:'ci-py', title:'Python 入门：Hello World', author:'code-explorer', desc:'从第一个程序开始，学习 Python 的基本语法、变量和输出函数。适合完全零基础的初学者。', tags:['Python','初级','可运行'], count:'2.1k', badge:'new', lang:'Python', level:'入门', files:12, updated:'2026-09-10' },
+    { id:2, icon:'🐍', ic:'ci-py', title:'计算器程序', author:'code-explorer', desc:'实现一个支持加减乘除的命令行计算器，练习函数定义和条件判断。', tags:['Python','初级','可运行'], count:'1.8k', badge:'', lang:'Python', level:'入门', files:18, updated:'2026-09-05' },
+    { id:3, icon:'🐍', ic:'ci-py', title:'猜数字游戏', author:'code-explorer', desc:'经典小游戏：电脑随机生成数字，玩家猜测并获得提示。练习循环和输入处理。', tags:['Python','初级','可运行'], count:'3.2k', badge:'hot', lang:'Python', level:'入门', files:15, updated:'2026-08-28' },
+    { id:4, icon:'🐍', ic:'ci-py', title:'学生成绩管理系统', author:'code-explorer', desc:'用列表和字典实现的学生成绩增删改查系统，练习数据结构和文件操作。', tags:['Python','中级','可运行'], count:'956', badge:'', lang:'Python', level:'中级', files:32, updated:'2026-08-15' },
+    { id:5, icon:'🐍', ic:'ci-py', title:'贪吃蛇游戏 PyGame', author:'code-explorer', desc:'使用 PyGame 库开发的经典贪吃蛇游戏，包含完整的游戏循环和碰撞检测。', tags:['Python','中级','GUI'], count:'4.5k', badge:'hot', lang:'Python', level:'中级', files:28, updated:'2026-09-01' },
+    { id:6, icon:'🐍', ic:'ci-py', title:'Web 爬虫入门', author:'code-explorer', desc:'学习使用 requests 和 BeautifulSoup 抓取网页数据，解析并保存到本地。', tags:['Python','高级','网络'], count:'1.2k', badge:'new', lang:'Python', level:'高级', files:22, updated:'2026-09-11' },
+    { id:7, icon:'🎮', ic:'ci-sc', title:'Scratch：小猫走路', author:'code-explorer', desc:'Scratch 第一个程序：让小猫在舞台上走动，学习角色移动和循环积木。', tags:['Scratch','入门','图形化'], count:'5.6k', badge:'', lang:'Scratch', level:'入门', files:8, updated:'2026-07-20' },
+    { id:8, icon:'🎮', ic:'ci-sc', title:'打地鼠小游戏', author:'code-explorer', desc:'用 Scratch 制作的打地鼠游戏，练习消息广播和事件处理。', tags:['Scratch','入门','图形化'], count:'2.8k', badge:'hot', lang:'Scratch', level:'入门', files:14, updated:'2026-08-30' },
+    { id:9, icon:'🎮', ic:'ci-sc', title:'迷宫冒险', author:'code-explorer', desc:'设计一个多关卡迷宫，角色通过键盘控制穿越。学习碰撞检测和关卡设计。', tags:['Scratch','中级','图形化'], count:'1.4k', badge:'', lang:'Scratch', level:'中级', files:20, updated:'2026-08-10' },
+    { id:10, icon:'🌐', ic:'ci-wg', title:'飞机大战', author:'code-explorer', desc:'HTML5 Canvas 实现的飞机大战游戏，包含敌人 AI、子弹系统和得分机制。', tags:['HTML/JS','中级','可玩'], count:'6.7k', badge:'hot', lang:'JavaScript', level:'中级', files:25, updated:'2026-09-02' },
+    { id:11, icon:'🌐', ic:'ci-wg', title:'成语接龙', author:'code-explorer', desc:'多人成语接龙网页游戏，实时匹配对手，积累词汇量。', tags:['HTML/JS','中级','可玩'], count:'3.1k', badge:'', lang:'JavaScript', level:'中级', files:16, updated:'2026-08-22' },
+    { id:12, icon:'🌐', ic:'ci-wg', title:'植物大战僵尸', author:'code-explorer', desc:'网页版 PvZ 简化版，完整的波次系统、植物放置和僵尸 AI。', tags:['HTML/JS','高级','可玩'], count:'8.9k', badge:'hot', lang:'JavaScript', level:'高级', files:45, updated:'2026-09-08' },
+    { id:13, icon:'🐍', ic:'ci-py', title:'自动化桌面助手', author:'code-explorer', desc:'使用 pyautogui 实现的桌面自动化脚本，可以模拟键鼠操作。', tags:['Python','高级','自动化'], count:'723', badge:'new', lang:'Python', level:'高级', files:38, updated:'2026-09-12' },
+    { id:14, icon:'🐍', ic:'ci-py', title:'数据分析：Pandas 入门', author:'code-explorer', desc:'用 Pandas 库分析真实数据集，学习数据清洗、分组统计和可视化。', tags:['Python','中级','可运行'], count:'2.3k', badge:'', lang:'Python', level:'中级', files:30, updated:'2026-08-25' },
+    { id:15, icon:'🎮', ic:'ci-sc', title:'音乐盒', author:'code-explorer', desc:'用 Scratch 制作一个可交互的音乐盒，点击不同按键播放不同音符。', tags:['Scratch','入门','图形化'], count:'892', badge:'', lang:'Scratch', level:'入门', files:10, updated:'2026-07-30' },
+    { id:16, icon:'🌐', ic:'ci-wg', title:'贪吃蛇 HTML', author:'code-explorer', desc:'纯 HTML/CSS/JS 实现的贪吃蛇，不需要任何框架代码只有 200 行。', tags:['HTML/JS','入门','可玩'], count:'4.2k', badge:'', lang:'JavaScript', level:'入门', files:6, updated:'2026-09-06' },
+  ];
+
+  // ========== README 生成 ==========
+  function generateReadme(p) {
+    const codes = {
+      'Python': `def hello():\n    print("Hello, Code Explorer!")\n\nhello()`,
+      'JavaScript': `function greet() {\n    console.log("Hello, Code Explorer!");\n}\n\ngreet();`,
+      'Scratch': `// Scratch 图形化程序\n// 点击绿旗运行\n// 小猫会说 "Hello!" 2 秒`,
+    };
+    return `# ${p.title}\n\n> **作者**: ${p.author}  \n> **最后更新**: ${p.updated}  \n> **浏览量**: ${p.count}\n\n## 📖 项目简介\n\n${p.desc}\n\n## 🎯 你将学到什么\n\n- **${p.tags[1] || p.level}** 难度的编程概念\n- 基础语法和常用库\n- 完整的项目结构和代码组织\n- 如何从零构建一个可运行的程序\n\n## 🚀 快速开始\n\n### 环境要求\n\n- ${p.lang === 'Python' ? 'Python 3.8+' : p.lang === 'JavaScript' ? '现代浏览器' : 'Scratch 3.0 或在线版'}\n- 代码编辑器（推荐 VS Code）\n\n### 运行步骤\n\n1. 克隆或下载项目源码\n2. 打开主程序文件\n3. 查看代码注释理解每一步\n4. 修改参数，运行，观察变化！\n\n### 示例代码\n\n\`\`\`${p.lang === 'Python' ? 'python' : p.lang === 'JavaScript' ? 'javascript' : 'text'}\n${codes[p.lang] || codes['Python']}\n\`\`\`\n\n## 📁 项目结构\n\n\`\`\`\n${p.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}/\n├── main.py          # 主程序入口\n├── utils.py         # 工具函数\n├── README.md        # 你正在看的文件\n└── requirements.txt # 依赖列表（如需要）\n\`\`\`\n\n## 💡 学习建议\n\n> 编程不是看出来的，是敲出来的。每看完一段代码，**立刻动手修改它**，看看会发生什么。\n\n## 🔗 相关项目\n\n- [Python 入门：Hello World](#)\n- [计算器程序](#)\n- [猜数字游戏](#)\n\n---\n\n由 Code Explorer 出品 · 让编程学习更简单 🚀`;
+  }
+
+  // ========== 渲染卡片 ==========
+  function renderCards() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = projects.filter(p => !q || p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+    document.getElementById('countLabel').textContent = filtered.length;
+    const grid = document.getElementById('cardGrid');
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-3);">没有找到匹配的项目</div>';
+      return;
+    }
+    grid.innerHTML = filtered.map(p => `
+      <div class="card" onclick="openDrawer(${p.id})">
+        ${p.badge ? `<span class="card-badge ${p.badge === 'hot' ? 'badge-hot' : 'badge-new'}">${p.badge === 'hot' ? '🔥' : '✨'} ${p.badge === 'hot' ? '热门' : 'New'}</span>` : ''}
+        <div class="card-head">
+          <div class="card-icon ${p.ic}">${p.icon}</div>
+          <div class="card-title-area">
+            <div class="card-title">${p.title}</div>
+            <div class="card-author">${p.author}</div>
+          </div>
+        </div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-tags">
+          ${p.tags.slice(0,3).map((t,i) => `<span class="tag ${i===0?'lang':''}">${t}</span>`).join('')}
+          <span class="tag num">${p.count}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+  renderCards();
+
+  // ========== 抽屉 ==========
+  let currentDrawerId = null;
+  let readmeExpanded = false;
+
+  function openDrawer(id) {
+    const p = projects.find(x => x.id === id);
+    if (!p) return;
+    currentDrawerId = id;
+    readmeExpanded = false;
+
+    // Header
+    document.getElementById('drawerHeader').innerHTML = `
+      <div class="drawer-header-top">
+        <div class="drawer-icon ${p.ic}">${p.icon}</div>
+        <div class="drawer-title-area">
+          <div class="drawer-title">${p.title}</div>
+          <div class="drawer-meta">by ${p.author} · ${p.lang} · 更新于 ${p.updated} · ${p.count} 浏览</div>
+        </div>
+        <button class="drawer-close" onclick="closeDrawer()" title="关闭">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="drawer-actions">
+        <button class="btn primary" onclick="showToast('进入代码浏览页：${p.title}')">
+          <i data-lucide="folder-open"></i> 浏览源码
+        </button>
+        <button class="btn" onclick="showToast('在线运行：${p.title}')">
+          <i data-lucide="play"></i> 在线运行
+        </button>
+        <button class="btn ghost" onclick="showToast('下载 ${p.title} 源码')">
+          <i data-lucide="download"></i> 下载
+        </button>
+        <button class="btn ghost" onclick="showToast('在 GitHub 上打开 ${p.author}')">
+          <i data-lucide="external-link"></i> GitHub
+        </button>
+      </div>
+      <div class="drawer-tags">
+        ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+        ${p.badge ? `<span class="tag ${p.badge==='hot'?'badge-hot':'badge-new'}" style="background:var(${p.badge==='hot'?'--badge-hot-bg':'--badge-new-bg'});color:var(${p.badge==='hot'?'--badge-hot-text':'--badge-new-text'})">${p.badge==='hot'?'🔥 热门':'✨ New'}</span>` : ''}
+      </div>
+    `;
+
+    // Body
+    const readmeMd = generateReadme(p);
+    document.getElementById('drawerBody').innerHTML = `
+      <div class="drawer-section">
+        <div class="drawer-section-title"><i data-lucide="info"></i> 项目信息</div>
+        <div class="drawer-info-grid">
+          <div class="info-item"><div class="info-label">语言</div><div class="info-value">${p.lang}</div></div>
+          <div class="info-item"><div class="info-label">难度</div><div class="info-value">${p.level}</div></div>
+          <div class="info-item"><div class="info-label">文件数</div><div class="info-value">${p.files} 个</div></div>
+          <div class="info-item"><div class="info-label">最后更新</div><div class="info-value">${p.updated}</div></div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title"><i data-lucide="file-text"></i> README</div>
+        <div class="readme-container">
+          <div class="readme-header">
+            <div class="readme-header-left"><i data-lucide="file-text"></i> README.md</div>
+            <button class="btn sm ghost" onclick="toggleReadme()" id="readmeToggle">
+              <i data-lucide="chevron-down"></i> 展开全文
+            </button>
+          </div>
+          <div class="readme-content" id="readmeContent">${marked.parse(readmeMd)}</div>
+        </div>
+      </div>
+    `;
+
+    lucide.createIcons();
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawerOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    currentDrawerId = null;
+  }
+
+  function toggleReadme() {
+    const content = document.getElementById('readmeContent');
+    const toggle = document.getElementById('readmeToggle');
+    if (!content) return;
+    readmeExpanded = !readmeExpanded;
+    if (readmeExpanded) {
+      content.classList.add('full');
+      toggle.innerHTML = '<i data-lucide="chevron-up"></i> 收起';
+    } else {
+      content.classList.remove('full');
+      toggle.innerHTML = '<i data-lucide="chevron-down"></i> 展开全文';
+    }
+    lucide.createIcons();
+  }
+
+  // ESC 关闭
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+</body>
+</html>

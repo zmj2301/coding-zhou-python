@@ -1,0 +1,32 @@
+﻿
+node.exe : [31mX [41;31m[[41;97mERROR[41;31m][0m [1mspawn EFTYPE[0m
+At line:1 char:1
++ & "C:\Users\Administrator\.trae-cn\binaries\node\versions\24.13.0/nod ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([31mX [41;31m...pawn EFTYPE[0m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+
+
+[32mIf you think this is a bug then please create an issue at https://github.com/cloudflare/workers-sdk/issues/new/choose[0m
+Note that there is a newer version of Wrangler available (4.135.0). Consider checking whether upgrading resolves this error.
+🪵  Logs were written to "C:\Users\Administrator\AppData\Roaming\xdg.config\.wrangler\logs\wrangler-2026-09-19_00-32-53
+_185.log"
+
+A
+ssertion failed: !(handle->flags & UV_HANDLE_CLOSIN
+G
+)
+,
+ fil
+e
+ src
+\
+win
+\
+a
+s
+ync.c, line
+ 76
+

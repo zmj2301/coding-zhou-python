@@ -1,5 +1,41 @@
 [
     {
+        "version":  "2.6.3",
+        "date":  "2026-09-19",
+        "title":  "修复运行文件403：API路径改名绕过WAF",
+        "changes":  [
+                        "修复运行文件返回 403 错误：Cloudflare WAF 拦截 /api/run/ 路径",
+                        "将前端接口路径从 /api/run/ 改为 /api/code/，Worker 内部仍代理到 ECS 的 /api/run/",
+                        "ECS 服务器 URL 从 IP 改为 nip.io 域名，解决 Cloudflare Direct IP 1003 错误",
+                        "proxyStreamToEcs 恢复完整请求头传递（含 Host/User-Agent 等）",
+                        "在线编辑点击后直接进入编辑器空状态",
+                        "移除 README 抽屉预览按钮，保留开始和下载 ZIP"
+                    ]
+    },
+    {
+        "version":  "2.6.2",
+        "date":  "2026-09-19",
+        "title":  "在线编辑直接进编辑器 + 移除预览板块",
+        "changes":  [
+                        "侧栏「在线编辑」点击后直接进入编辑器空状态，不再显示引导页",
+                        "移除 README 抽屉中的「预览」按钮（保留「开始」和「下载为 ZIP」）",
+                        "移除独立预览板块逻辑，预览功能整合进编辑器"
+                    ]
+    },
+    {
+        "version":  "2.6.1",
+        "date":  "2026-09-19",
+        "title":  "侧栏改名在线编辑 + README抽屉新增下载ZIP",
+        "changes":  [
+                        "左侧导航栏「在线预览」更名为「在线编辑」",
+                        "README 抽屉新增「下载为 ZIP」按钮，点击通过 GitHub 下载项目目录",
+                        "修复 app-shell HTML 结构（splash-overlay 闭合 + editor/preview 移入 app-shell）",
+                        "修复 switchSidebarView 未恢复 changelog/主题按钮显示",
+                        "侧栏版本号更新为 v2.6.0",
+                        "清除 Cloudflare CDN 缓存确保更新生效"
+                    ]
+    },
+    {
         "version":  "2.6.0",
         "date":  "2026-09-19",
         "title":  "新增在线预览板块 + 修复编辑器布局",

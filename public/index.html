@@ -4591,7 +4591,7 @@ body.preview-active .app-preview { display: flex; }
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
-      <div class="sidebar-version">v2.6.2</div>
+      <div class="sidebar-version">v2.6.3</div>
     </div>
   </aside>
 
@@ -6596,7 +6596,7 @@ async function runPythonCodeSSE() {
   currentRunId = null;
 
   try {
-    const res = await fetch('/api/run/start', {
+    const res = await fetch('/api/code/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -6709,7 +6709,7 @@ async function stopPythonCode() {
   if (runAbortController) runAbortController.abort();
   if (currentRunId) {
     try {
-      await fetch('/api/run/stop', {
+      await fetch('/api/code/stop', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ runId: currentRunId }),

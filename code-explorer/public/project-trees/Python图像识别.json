@@ -4,34 +4,41 @@
     "type": "file",
     "path": "image.py",
     "ext": ".py",
-    "lastModified": 1785762144775
+    "lastModified": 1785830339924
   },
   {
     "name": "README.md",
     "type": "file",
     "path": "README.md",
     "ext": ".md",
-    "lastModified": 1785762144774
+    "lastModified": 1785830339922
+  },
+  {
+    "name": "test.jpg",
+    "type": "file",
+    "path": "test.jpg",
+    "ext": ".jpg",
+    "lastModified": 1785829305824
   },
   {
     "name": "test.py",
     "type": "file",
     "path": "test.py",
     "ext": ".py",
-    "lastModified": 1785762144781
+    "lastModified": 1785830339926
   },
   {
     "name": "test_gui.py",
     "type": "file",
     "path": "test_gui.py",
     "ext": ".py",
-    "lastModified": 1785762144782
+    "lastModified": 1785830339928
   },
   {
     "name": "video_file.py",
     "type": "file",
     "path": "video_file.py",
     "ext": ".py",
-    "lastModified": 1785762144784
+    "lastModified": 1785830339929
   }
 ]

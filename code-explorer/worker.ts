@@ -193,7 +193,7 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
 // ------------------------------------------------------------
 
 async function fetchFromEcs(path: string, env: Env, request: Request): Promise<Response> {
-  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165.nip.io';
   const url = `${ecsUrl}${path}`;
   const headers = new Headers(request.headers);
   headers.set('Host', new URL(ecsUrl).host);
@@ -206,13 +206,10 @@ async function fetchFromEcs(path: string, env: Env, request: Request): Promise<R
 }
 
 async function proxyStreamToEcs(path: string, env: Env, request: Request): Promise<Response> {
-  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165.nip.io';
   const url = `${ecsUrl}${path}`;
-  const headers = new Headers();
-  const contentType = request.headers.get('Content-Type');
-  if (contentType) headers.set('Content-Type', contentType);
-  const cookie = request.headers.get('Cookie');
-  if (cookie) headers.set('Cookie', cookie);
+  const headers = new Headers(request.headers);
+  headers.set('Host', new URL(ecsUrl).host);
   headers.set('Accept', 'text/event-stream');
   const body = request.method === 'POST' ? await request.text() : undefined;
   const ecsResp = await fetch(url, {
@@ -597,7 +594,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // ---- 需要认证的 API ----
   const needAuth = path.startsWith('/api/files/') ||
     path.startsWith('/api/comments') ||
-    path.startsWith('/api/run/') ||
+    path.startsWith('/api/code/') ||
     path === '/api/likes' ||
     path === '/api/admin/dashboard';
 
@@ -607,11 +604,11 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   }
 
   // ---- 代码执行 API（流式）----
-  if (path === '/api/run/start') {
-    return proxyStreamToEcs(path + (url.search || ''), env, request);
+  if (path === '/api/code/start') {
+    return proxyStreamToEcs('/api/run/start' + (url.search || ''), env, request);
   }
-  if (path === '/api/run/stop') {
-    return fetchFromEcs(path, env, request);
+  if (path === '/api/code/stop') {
+    return fetchFromEcs('/api/run/stop', env, request);
   }
 
   // ---- 文件 API ----
@@ -1129,7 +1126,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       let source: string = 'ollama';
 
       // 1) 先尝试代理到 ECS 服务器（本地 Ollama AI）
-      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165.nip.io';
       try {
         const proxyResp = await fetch(`${ecsUrl}/api/recommend`, {
           method: 'POST',
@@ -1204,7 +1201,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
   if (path === '/api/ai-quota') {
     try {
-      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
+      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165.nip.io';
       const resp = await fetchFromEcs('/api/ai-quota', env, request);
       if (resp.ok) {
         return new Response(await resp.text(), {

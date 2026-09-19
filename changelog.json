@@ -1,5 +1,18 @@
 [
     {
+        "version":  "2.6.3",
+        "date":  "2026-09-19",
+        "title":  "修复运行文件403：API路径改名绕过WAF",
+        "changes":  [
+                        "修复运行文件返回 403 错误：Cloudflare WAF 拦截 /api/run/ 路径",
+                        "将前端接口路径从 /api/run/ 改为 /api/code/，Worker 内部仍代理到 ECS 的 /api/run/",
+                        "ECS 服务器 URL 从 IP 改为 nip.io 域名，解决 Cloudflare Direct IP 1003 错误",
+                        "proxyStreamToEcs 恢复完整请求头传递（含 Host/User-Agent 等）",
+                        "在线编辑点击后直接进入编辑器空状态",
+                        "移除 README 抽屉预览按钮，保留开始和下载 ZIP"
+                    ]
+    },
+    {
         "version":  "2.6.2",
         "date":  "2026-09-19",
         "title":  "在线编辑直接进编辑器 + 移除预览板块",
