@@ -1181,6 +1181,38 @@ body.filter-hidden .main-filter-toggle {
 .ai-asst-msg-bubble pre { background: color-mix(in srgb, #1e1e1e 92%, transparent); color: #d4d4d4; padding: 14px; border-radius: 10px; overflow-x: auto; margin: 10px 0; font-size: 13px; font-family: var(--font-mono); border: 1px solid color-mix(in srgb, var(--accent-purple) 18%, transparent); box-shadow: inset 0 1px 0 rgba(255,255,255,0.03); }
 .ai-asst-msg-bubble code { background: color-mix(in srgb, var(--bg-tertiary) 70%, transparent); padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: var(--font-mono); color: var(--accent-purple); }
 .ai-asst-msg.user .ai-asst-msg-bubble code { background: rgba(255,255,255,0.22); color: #fff; }
+.ai-asst-msg-source {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+  padding-left: 40px;
+  opacity: 0;
+  transition: opacity .2s;
+  pointer-events: none;
+}
+.ai-asst-msg.assistant:hover .ai-asst-msg-source {
+  opacity: 1;
+}
+.ai-asst-msg-recs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.ai-asst-msg-rec-btn {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--accent-purple);
+  border: 1px solid color-mix(in srgb, var(--accent-purple) 30%, transparent);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s;
+}
+.ai-asst-msg-rec-btn:hover {
+  background: color-mix(in srgb, var(--accent-purple) 10%, transparent);
+}
 .ai-asst-msg-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .ai-asst-msg-card {
   display: flex; align-items: center; gap: 12px;
@@ -4591,7 +4623,7 @@ body.preview-active .app-preview { display: flex; }
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
-      <div class="sidebar-version">v2.6.3</div>
+      <div class="sidebar-version">v2.6.4</div>
     </div>
   </aside>
 
@@ -7295,10 +7327,10 @@ async function aiAsstSend(prefilled) {
       body: JSON.stringify(body), signal: AI_ASST.abortCtrl.signal
     });
     aiAsstRemoveTyping();
-    const data = await resp.json();
-    if (data.success) {
-      AI_ASST.messages.push({ role: 'assistant', content: data.response || '' });
-      aiAsstAddMsg('assistant', data.response, data.recommendations, data.reasoning);
+      const data = await resp.json();
+      if (data.success) {
+        AI_ASST.messages.push({ role: 'assistant', content: data.response || '', source: data.source });
+        aiAsstAddMsg('assistant', data.response, data.recommendations, data.reasoning, data.source);
       if (AI_ASST.currentConv !== null) {
         AI_ASST.conversations[AI_ASST.currentConv].messages = [...AI_ASST.messages];
         aiAsstSaveConvs();
@@ -7318,7 +7350,7 @@ async function aiAsstSend(prefilled) {
   }
 }
 
-function aiAsstAddMsg(role, content, recommendations, reasoning) {
+function aiAsstAddMsg(role, content, recommendations, reasoning, source) {
   const container = document.getElementById('aiAsstMessages');
   const welcome = document.getElementById('aiAsstWelcome');
   if (!container) return;
@@ -7346,21 +7378,27 @@ function aiAsstAddMsg(role, content, recommendations, reasoning) {
   }
   msg.appendChild(avatar);
   msg.appendChild(bubble);
+  // 模型来源小字：悬停显示
+  if (role === 'assistant' && source) {
+    const sourceLabelMap = { 'ollama': '本地', 'zhipu': '智谱 AI', 'workers': 'Workers AI', 'openrouter': 'OpenRouter' };
+    const sourceSpan = document.createElement('div');
+    sourceSpan.className = 'ai-asst-msg-source';
+    sourceSpan.textContent = '模型: ' + (sourceLabelMap[source] || source);
+    msg.appendChild(sourceSpan);
+  }
+  // 项目推荐：轻量链接形式，非气泡效果
   if (recommendations && recommendations.length > 0) {
-    const cards = document.createElement('div');
-    cards.className = 'ai-asst-msg-cards';
+    const recs = document.createElement('div');
+    recs.className = 'ai-asst-msg-recs';
     const typeLabels = { 'game': '游戏', 'ai': 'AI', 'tool': '工具', 'other': '其他', 'web-game': '网页游戏' };
     const icons = { 'game': '🎮', 'ai': '🤖', 'tool': '🔧', 'other': '📁', 'web-game': '🌐' };
-    cards.innerHTML = recommendations.map(rec => {
+    recs.innerHTML = recommendations.map(rec => {
       const icon = icons[rec.type] || '📁';
       const label = typeLabels[rec.type] || '';
-      return '<div class="ai-asst-msg-card" onclick="closeAIAssistant();setTimeout(function(){openProject(\'' + (rec.path||'').replace(/'/g,'') + '\')},200)">' +
-        '<span class="ai-asst-msg-card-icon">' + icon + '</span>' +
-        '<div class="ai-asst-msg-card-info"><div class="ai-asst-msg-card-name">' + aiAsstEsc(rec.name) + '</div>' +
-        '<div class="ai-asst-msg-card-reason">' + aiAsstEsc(rec.reason) + '</div></div>' +
-        (label ? '<span class="ai-asst-msg-card-type">' + label + '</span>' : '') + '</div>';
+      return '<button class="ai-asst-msg-rec-btn" onclick="closeAIAssistant();setTimeout(function(){openProject(\'' + (rec.path||'').replace(/'/g,'') + '\')},200)">' +
+        icon + ' ' + aiAsstEsc(rec.name) + (label ? ' · ' + label : '') + '</button>';
     }).join('');
-    bubble.appendChild(cards);
+    bubble.appendChild(recs);
   }
   container.appendChild(msg);
   container.scrollTop = container.scrollHeight;
