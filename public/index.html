@@ -4591,7 +4591,7 @@ body.preview-active .app-preview { display: flex; }
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
-      <div class="sidebar-version">v2.5.0</div>
+      <div class="sidebar-version">v2.6.0</div>
     </div>
   </aside>
 
@@ -8542,6 +8542,12 @@ function switchSidebarView(view) {
   }
   // 退出编辑器/预览模式
   document.body.classList.remove('editor-active', 'preview-active');
+  // 恢复侧栏底部按钮显示（编辑器模式下会被隐藏）
+  $('#themeToggleBtn').style.display = '';
+  $('#changelogBtn').style.display = '';
+  if (state.isAuthenticated) {
+    $('#userMenuBtn').style.display = '';
+  }
 
   if (view === 'plaza') {
     if (extras) extras.hidden = true;
