@@ -1,5 +1,34 @@
 [
     {
+        "version":  "2.6.0",
+        "date":  "2026-09-19",
+        "title":  "新增在线预览板块 + 修复编辑器布局",
+        "changes":  [
+                        "左侧导航栏新增「在线预览」入口（与项目广场同级），点击展示引导页",
+                        "README 抽屉新增「预览」按钮，点击跳转项目预览板块（与广场同级）",
+                        "项目预览板块：上方 README + 左侧文件树 + 右侧代码浏览，支持语法高亮",
+                        "预览板块「开始编辑」按钮可直接进入编辑器",
+                        "修复编辑器页面在 app-shell 外导致侧栏消失的布局问题",
+                        "编辑器/预览移入 app-shell 内，共享侧栏导航",
+                        "移除编辑器 toolbar/code-header 旧 padding-right:160px 残留",
+                        "使用 body.editor-active/preview-active 类替代直接 display 控制"
+                    ]
+    },
+    {
+        "version":  "2.5.1",
+        "date":  "2026-09-18",
+        "title":  "项目卡片点击弹出右侧 README 简介抽屉",
+        "changes":  [
+                        "点击项目卡片不再直接进入编辑器，改为右侧滑出 README 简介抽屉（浮层，不切页面）",
+                        "抽屉打开时自动扫描项目根目录 README：依次尝试 README.md/readme.md/Readme.md/README.markdown 等常见命名",
+                        "新增 Worker 端点 /api/projects/readme ：从 GitHub 代理读取 README 并返回内容，找不到返回 found:false",
+                        "未找到 README 时，根据项目名称/描述/类型自动生成一份简介（仅预览展示，不写入项目目录）",
+                        "抽屉底部新增「开始」按钮：关闭抽屉后复用现有编辑器 openProject 逻辑进入项目编辑器",
+                        "登录检查与 openProject 保持一致：网页游戏/节日祝福公开，其余需登录后才弹抽屉或进入编辑器",
+                        "抽屉支持遮罩点击 / 关闭按钮 / ESC 键关闭，隐藏时锁定页面滚动"
+                    ]
+    },
+    {
         "version":  "2.5.0",
         "date":  "2026-09-18",
         "title":  "三栏应用式布局重构：左侧导航 + 中间筛选器 + 右侧项目广场",

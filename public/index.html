@@ -2319,10 +2319,10 @@ body.filter-hidden .main-filter-toggle {
   flex-shrink: 0;
 }
 .editor-page .toolbar {
-  padding-right: 160px;
+  padding-right: 10px;
 }
 .editor-page .code-header {
-  padding-right: 160px;
+  padding-right: 10px;
 }
 .toolbar-btn {
   display: flex;
@@ -2350,6 +2350,192 @@ body.filter-hidden .main-filter-toggle {
   display: flex;
   flex: 1;
   overflow: hidden;
+}
+
+/* Editor/Preview inside app-shell */
+body.editor-active .app-filter,
+body.preview-active .app-filter { display: none; }
+body.editor-active .app-main,
+body.preview-active .app-main { display: none !important; }
+body.editor-active .editor-page { display: flex; }
+body.preview-active .app-preview { display: flex; }
+
+/* Preview page */
+.app-preview {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+.preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 44px;
+  background: var(--glass-bg);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  flex-shrink: 0;
+  z-index: 10;
+  position: relative;
+  gap: 12px;
+}
+.preview-header::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), rgba(167,139,250,0.4), transparent);
+  pointer-events: none;
+}
+.preview-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.preview-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.preview-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.preview-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  transition: all var(--transition);
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+.preview-back-btn:hover {
+  background: color-mix(in srgb, var(--accent-blue) 12%, transparent);
+  border-color: rgba(56,189,248,0.35);
+  color: var(--text-primary);
+}
+.preview-back-btn svg { width: 14px; height: 14px; }
+.preview-edit-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.preview-edit-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+.preview-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.preview-tree {
+  width: 220px;
+  min-width: 160px;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.preview-tree-header {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.preview-tree-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+.preview-content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.preview-readme-section {
+  max-height: 35%;
+  overflow-y: auto;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.preview-code-section {
+  flex: 1;
+  overflow: auto;
+  padding: 0;
+}
+.preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+.preview-empty svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+.preview-empty p { font-size: 14px; }
+.preview-empty .hint { font-size: 12px; margin-top: 4px; }
+
+/* Preview guidance page (在线预览 empty state) */
+.preview-guidance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+.preview-guidance svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+.preview-guidance h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.preview-guidance p {
+  font-size: 14px;
+  max-width: 400px;
+  line-height: 1.6;
 }
 .editor-right {
   display: flex;
@@ -4345,6 +4531,12 @@ body.filter-hidden .main-filter-toggle {
         </span>
         <span class="sidebar-item-label">AGENTS 手册</span>
       </a>
+      <a class="sidebar-item" data-view="preview" id="navPreview">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
+        <span class="sidebar-item-label">在线预览</span>
+      </a>
 
       <!-- 资源 -->
       <div class="sidebar-group-label">资源</div>
@@ -4618,7 +4810,42 @@ body.filter-hidden .main-filter-toggle {
       <button class="splash-skip" id="splashSkip">稍后再说</button>
     </div>
   </div>
-</div>
+
+<!-- ==================== PREVIEW PAGE (项目预览板块) ==================== -->
+<section class="app-preview" id="previewPage">
+  <div class="preview-guidance" id="previewGuidance">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    <h2>在线预览</h2>
+    <p>请从「项目广场」点击任意项目卡片，在弹出的 README 简介中点击「预览」按钮进入项目预览。</p>
+  </div>
+  <div class="preview-header" id="previewHeader" style="display:none">
+    <div class="preview-header-left">
+      <button class="preview-back-btn" id="previewBackBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        返回广场
+      </button>
+      <span class="preview-header-title" id="previewProjectTitle">—</span>
+    </div>
+    <div class="preview-header-actions">
+      <button class="preview-edit-btn" id="previewEditBtn">开始编辑</button>
+    </div>
+  </div>
+  <div class="preview-body" id="previewBody" style="display:none">
+    <div class="preview-tree">
+      <div class="preview-tree-header">文件浏览器</div>
+      <div class="preview-tree-body" id="previewTree"></div>
+    </div>
+    <div class="preview-content-area">
+      <div class="preview-readme-section" id="previewReadmeSection"></div>
+      <div class="preview-code-section" id="previewCodeSection">
+        <div class="preview-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <p>从左侧选择一个文件查看代码</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ==================== EDITOR PAGE ==================== -->
 <div class="editor-page" id="editorPage">
@@ -4747,6 +4974,7 @@ body.filter-hidden .main-filter-toggle {
     </div>
   </div>
 </div>
+<!-- end app-shell -->
 
 <!-- ==================== README DRAWER (项目卡片右侧弹出) ==================== -->
 <div class="readme-drawer-backdrop" id="readmeDrawerBackdrop"></div>
@@ -4768,6 +4996,7 @@ body.filter-hidden .main-filter-toggle {
   </div>
   <div class="readme-drawer-footer">
     <button class="readme-drawer-btn" id="readmeDrawerStart">开始</button>
+    <button class="readme-drawer-btn" id="readmeDrawerPreview" style="background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);margin-top:8px">预览</button>
   </div>
 </div>
 
@@ -5445,8 +5674,10 @@ async function openProject(projectPath) {
 
   state.currentProject = project;
   $('#toolbarProject').textContent = project.name;
-  $('#homePage').style.display = 'none';
-  $('#editorPage').style.display = 'flex';
+  $('#homePage').style.display = '';
+  $('#editorPage').style.display = '';
+  document.body.classList.add('editor-active');
+  document.body.classList.remove('preview-active');
   state.view = 'editor';
   $('#themeToggleBtn').style.display = 'none';
   $('#changelogBtn').style.display = 'none';
@@ -5481,8 +5712,9 @@ async function openProject(projectPath) {
 }
 
 function goHome() {
-  $('#editorPage').style.display = 'none';
-  $('#homePage').style.display = 'flex';
+  document.body.classList.remove('editor-active', 'preview-active');
+  $('#homePage').style.display = '';
+  $('#editorPage').style.display = '';
   state.currentProject = null;
   state.currentProjectTreeNode = null;
   state.openTabs = [];
@@ -5606,15 +5838,171 @@ function initReadmeDrawer() {
     closeReadmeDrawer();
     if (project) openProject(project.path);
   });
+  $('#readmeDrawerPreview').addEventListener('click', function() {
+    const project = _drawerActiveProject;
+    closeReadmeDrawer();
+    if (project) openProjectPreview(project);
+  });
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && $('#readmeDrawer').classList.contains('show')) closeReadmeDrawer();
   });
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initReadmeDrawer);
+  document.addEventListener('DOMContentLoaded', function() { initReadmeDrawer(); initPreviewPage(); });
 } else {
   initReadmeDrawer();
+  initPreviewPage();
+}
+
+// ==================== PROJECT PREVIEW (项目预览板块) ====================
+let _previewProject = null;
+let _previewReadmeLoaded = false;
+
+function showPreviewGuidance() {
+  $('#previewGuidance').style.display = 'flex';
+  $('#previewHeader').style.display = 'none';
+  $('#previewBody').style.display = 'none';
+  _previewProject = null;
+}
+
+async function openProjectPreview(project) {
+  _previewProject = project;
+  $('#previewGuidance').style.display = 'none';
+  $('#previewHeader').style.display = 'flex';
+  $('#previewBody').style.display = 'flex';
+  $('#previewProjectTitle').textContent = project.name;
+  document.body.classList.add('preview-active');
+  document.body.classList.remove('editor-active');
+
+  // 更新侧栏高亮
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  var navPreview = document.getElementById('navPreview');
+  if (navPreview) navPreview.classList.add('active');
+
+  // 加载 README
+  _previewReadmeLoaded = false;
+  $('#previewReadmeSection').innerHTML = '<div style="padding:20px;color:var(--text-tertiary)">加载中...</div>';
+  loadPreviewReadme(project);
+
+  // 加载文件树
+  $('#previewTree').innerHTML = '<div style="padding:16px;color:var(--text-tertiary);font-size:13px">加载文件树...</div>';
+  $('#previewCodeSection').innerHTML = '<div class="preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><p>从左侧选择一个文件查看代码</p></div>';
+
+  try {
+    const treeData = await fetchProjectTree(project.path);
+    const projectTreeNode = {
+      name: project.name,
+      type: 'directory',
+      path: project.path,
+      themeColor: project.themeColor,
+      children: treeData
+    };
+    renderPreviewTree([projectTreeNode]);
+  } catch(err) {
+    $('#previewTree').innerHTML = '<div style="padding:16px;color:var(--accent-red);font-size:13px">加载失败</div>';
+  }
+}
+
+async function loadPreviewReadme(project) {
+  try {
+    const res = await fetch(`/api/projects/readme?path=${encodeURIComponent(project.path)}`);
+    const data = await res.json();
+    if (data.found && data.content) {
+      if (typeof marked !== 'undefined') {
+        $('#previewReadmeSection').innerHTML = marked.parse(data.content);
+      } else {
+        $('#previewReadmeSection').innerHTML = '<pre style="white-space:pre-wrap;font-family:var(--font-mono);font-size:13px">' + esc(data.content) + '</pre>';
+      }
+    } else {
+      $('#previewReadmeSection').innerHTML = '<div style="padding:12px;color:var(--text-tertiary);font-size:13px">' + esc(project.desc || '暂无 README') + '</div>';
+    }
+  } catch {
+    $('#previewReadmeSection').innerHTML = '<div style="padding:12px;color:var(--text-tertiary);font-size:13px">' + esc(project.desc || '暂无 README') + '</div>';
+  }
+  _previewReadmeLoaded = true;
+}
+
+function renderPreviewTree(nodes) {
+  const tree = $('#previewTree');
+  tree.innerHTML = buildPreviewTreeHTML(nodes, 0);
+  tree.onclick = function(e) {
+    const item = e.target.closest('.preview-tree-item');
+    if (!item) return;
+    const path = item.dataset.path;
+    const isDir = item.dataset.dir === '1';
+    if (isDir) {
+      item.classList.toggle('expanded');
+      const child = item.nextElementSibling;
+      if (child && child.classList.contains('preview-tree-children')) {
+        child.style.display = child.style.display === 'none' ? 'block' : 'none';
+      }
+    } else {
+      loadPreviewFile(path);
+    }
+  };
+}
+
+function buildPreviewTreeHTML(nodes, depth) {
+  if (!nodes || !nodes.length) return '';
+  let html = '';
+  for (const node of nodes) {
+    const indent = depth * 16;
+    if (node.type === 'directory') {
+      const childHtml = node.children ? buildPreviewTreeHTML(node.children, depth + 1) : '';
+      html += `<div class="preview-tree-item" data-path="${esc(node.path)}" data-dir="1" style="padding-left:${indent + 20}px;cursor:pointer;font-size:13px;color:var(--text-secondary);padding-top:4px;padding-bottom:4px;display:flex;align-items:center;gap:4px">`;
+      html += `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>`;
+      html += `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`;
+      html += `<span>${esc(node.name)}</span></div>`;
+      html += `<div class="preview-tree-children" style="display:none">${childHtml}</div>`;
+    } else {
+      const icon = node.name.endsWith('.py') ? '#3b82f6' : node.name.endsWith('.md') ? '#22c55e' : '#888';
+      html += `<div class="preview-tree-item" data-path="${esc(node.path)}" data-dir="0" style="padding-left:${indent + 20}px;cursor:pointer;font-size:13px;color:var(--text-secondary);padding-top:3px;padding-bottom:3px;display:flex;align-items:center;gap:4px">`;
+      html += `<svg viewBox="0 0 24 24" fill="none" stroke="${icon}" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-left:14px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+      html += `<span>${esc(node.name)}</span></div>`;
+    }
+  }
+  return html;
+}
+
+async function loadPreviewFile(filePath) {
+  $('#previewCodeSection').innerHTML = '<div style="padding:20px;color:var(--text-tertiary)">加载中...</div>';
+  try {
+    const data = await fetchContent(filePath);
+    if (data.content) {
+      const ext = filePath.split('.').pop().toLowerCase();
+      let lang = 'plaintext';
+      if (ext === 'py') lang = 'python';
+      else if (ext === 'js') lang = 'javascript';
+      else if (ext === 'html') lang = 'html';
+      else if (ext === 'css') lang = 'css';
+      else if (ext === 'md') lang = 'markdown';
+      else if (ext === 'json') lang = 'json';
+
+      if (typeof hljs !== 'undefined') {
+        const highlighted = hljs.highlight(data.content, { language: lang }).value;
+        $('#previewCodeSection').innerHTML = '<pre style="margin:0;padding:16px;font-family:var(--font-mono);font-size:13px;line-height:1.5;overflow-x:auto"><code>' + highlighted + '</code></pre>';
+      } else {
+        $('#previewCodeSection').innerHTML = '<pre style="margin:0;padding:16px;font-family:var(--font-mono);font-size:13px;line-height:1.5;overflow-x:auto;white-space:pre-wrap">' + esc(data.content) + '</pre>';
+      }
+    }
+  } catch(err) {
+    $('#previewCodeSection').innerHTML = '<div style="padding:20px;color:var(--accent-red)">加载失败: ' + esc(err.message) + '</div>';
+  }
+}
+
+function initPreviewPage() {
+  var backBtn = document.getElementById('previewBackBtn');
+  if (backBtn) backBtn.addEventListener('click', function() {
+    document.body.classList.remove('preview-active');
+    switchSidebarView('plaza');
+  });
+  var editBtn = document.getElementById('previewEditBtn');
+  if (editBtn) editBtn.addEventListener('click', function() {
+    if (_previewProject) {
+      openProject(_previewProject.path);
+    }
+  });
 }
 
 // ==================== POPUP PREVIEW ====================
@@ -8152,6 +8540,9 @@ function switchSidebarView(view) {
   if (view !== 'ai-asst' && aiPage.classList.contains('active')) {
     closeAIAssistant();
   }
+  // 退出编辑器/预览模式
+  document.body.classList.remove('editor-active', 'preview-active');
+
   if (view === 'plaza') {
     if (extras) extras.hidden = true;
     if (cardsGrid) cardsGrid.style.display = 'grid';
@@ -8163,10 +8554,16 @@ function switchSidebarView(view) {
   } else if (view === 'ai-asst') {
     if (extras) extras.hidden = true;
     openAIAssistant();
+  } else if (view === 'preview') {
+    // 在线预览：显示引导页（无项目选中时）
+    if (extras) extras.hidden = true;
+    if (cardsGrid) cardsGrid.style.display = 'none';
+    if (aiPage) aiPage.classList.remove('active');
+    showPreviewGuidance();
   }
   // 更新侧栏高亮
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap' };
+  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap', preview: 'navPreview' };
   var navId = navMap[view];
   if (navId) { var el = document.getElementById(navId); if (el) el.classList.add('active'); }
 }
@@ -8174,7 +8571,7 @@ function switchSidebarView(view) {
 // 侧栏导航点击
 document.querySelectorAll('.sidebar-item[data-view]').forEach(item => {
   item.addEventListener('click', e => {
-    if (item.hasAttribute('href') && item.getAttribute('data-view') !== 'plaza' && item.getAttribute('data-view') !== 'home' && item.getAttribute('data-view') !== 'ai-asst' && item.getAttribute('data-view') !== 'about' && item.getAttribute('data-view') !== 'mindmap') return;
+    if (item.hasAttribute('href') && item.getAttribute('data-view') !== 'plaza' && item.getAttribute('data-view') !== 'home' && item.getAttribute('data-view') !== 'ai-asst' && item.getAttribute('data-view') !== 'about' && item.getAttribute('data-view') !== 'mindmap' && item.getAttribute('data-view') !== 'preview') return;
     e.preventDefault();
     const view = item.dataset.view;
     if (view) switchSidebarView(view);
