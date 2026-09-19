@@ -12,6 +12,7 @@ export interface Env {
   GITHUB_BRANCH: string;
   ZHIPU_API_KEY: string;
   ECS_SERVER_URL: string;
+  OLLAMA_TUNNEL_URL: string;
   ASSETS: {
     fetch: (request: Request) => Promise<Response>;
   };
@@ -1111,7 +1112,6 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string; needsProjects?: boolean };
       let messages = data.messages;
 
-      // 兼容旧格式: { input } 或 { preferences }
       if (!messages && (data.input || data.preferences)) {
         const userInput = (data.input || data.preferences || '').trim();
         if (!userInput) return errorResponse('请输入你的兴趣或需求', 400);
@@ -1122,67 +1122,57 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         return errorResponse('请输入消息', 400);
       }
 
+      const projects = await loadProjectsForRecommend(env);
       let aiResponse: { text: string; recommendations: any[]; reasoning?: string };
-      let source: string = 'ollama';
+      let source = 'workers';
 
-      // 1) 先尝试代理到 ECS 服务器（本地 Ollama AI）
-      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165.nip.io';
-      try {
-        const proxyResp = await fetch(`${ecsUrl}/api/recommend`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Cookie': request.headers.get('Cookie') || '',
-            'Host': new URL(ecsUrl).host,
-            'User-Agent': request.headers.get('User-Agent') || 'Cloudflare-Workers',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({
-            messages,
-            model: data.model || 'ollama',
-            context: data.context,
-          }),
-        });
+      // AI 优先级链: Ollama (本地 ECS via Tunnel) → Workers AI (Cloudflare) → Zhipu AI
+      const tunnelUrl = env.OLLAMA_TUNNEL_URL || '';
+      let ollamaDebug = '';
 
-        if (proxyResp.ok) {
-          const result = await proxyResp.json();
-          if (result.response || result.recommendations?.length > 0) {
-            aiResponse = {
-              text: result.response || '',
-              recommendations: result.recommendations || [],
-              reasoning: result.reasoning || '',
-            };
-            source = 'ollama';
-          } else {
-            throw new Error('ECS 返回空响应');
-          }
-        } else {
-          throw new Error(`ECS 返回 ${proxyResp.status}`);
-        }
-      } catch (ecsErr) {
-        // 2) ECS 失败，降级到 Zhipu AI
+      // 1. 尝试 Ollama (本地 qwen2.5:1.5b)
+      if (tunnelUrl && tunnelUrl.includes('ollama')) {
         try {
-          const projects = await loadProjectsForRecommend(env);
-          aiResponse = await getConversationalAI(messages, projects, env, data.context, 'glm-4.7-flash');
-          source = 'zhipu';
+          const started = Date.now();
+          aiResponse = await callOllamaAI(messages, tunnelUrl, projects, data.context);
+          source = 'ollama';
+          ollamaDebug = `ok(${Date.now() - started}ms)`;
           if (!aiResponse.text && aiResponse.recommendations.length === 0) {
-            // 3) Zhipu 也失败，降级到 Workers AI
-            aiResponse = await getConversationalAI(messages, projects, env, data.context);
-            source = 'workers';
+            throw new Error('Ollama 空响应');
           }
-        } catch (aiErr) {
-          // 4) 全部失败
-          return errorResponse(`AI 服务暂不可用，请稍后再试`, 503);
+          console.log('[AI] Ollama OK:', ollamaDebug);
+          // Ollama 成功，直接返回
+          return jsonResponse({
+            success: true,
+            response: aiResponse.text,
+            recommendations: aiResponse.recommendations || [],
+            reasoning: aiResponse.reasoning || '',
+            source,
+          });
+        } catch (e: any) {
+          ollamaDebug = `fail: ${e.message || e}`;
+          console.warn('[AI] Ollama failed:', ollamaDebug, '→ 降级');
         }
+      } else {
+        ollamaDebug = 'skipped(no tunnel url)';
       }
 
-      // 记录 Cloudflare KV 用量统计
+      // 2. 降级到 Workers AI (Cloudflare 内置 Llama 3.1)
       try {
-        const today = new Date().toISOString().slice(0, 10);
-        const usageKey = `ai-usage:${today}`;
-        const currentUsage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
-        await env.CODE_EXPLORER_KV.put(usageKey, String(currentUsage + 1), { expirationTtl: 86400 });
-      } catch {}
+        aiResponse = await getConversationalAI(messages, projects, env, data.context);
+        source = 'workers';
+        if (!aiResponse.text && aiResponse.recommendations.length === 0) {
+          throw new Error('Workers AI 空响应');
+        }
+      } catch {
+        // 3. 最后降级到 Zhipu AI
+        try {
+          aiResponse = await getConversationalAI(messages, projects, env, data.context, 'glm-4.7-flash');
+          source = 'zhipu';
+        } catch {
+          return errorResponse('AI 服务暂不可用（本地模型 + Workers AI + 智谱 AI 全部失败）', 503);
+        }
+      }
 
       return jsonResponse({
         success: true,
@@ -1190,6 +1180,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         recommendations: aiResponse.recommendations || [],
         reasoning: aiResponse.reasoning || '',
         source,
+        _ollama_debug: ollamaDebug,
       });
     } catch (e: any) {
       return errorResponse(`请求失败: ${e.message || e}`, 500);
@@ -1326,6 +1317,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 const AI_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
 const ZHIPU_API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
 const ZHIPU_MODEL = 'glm-4.7-flash';
+const OLLAMA_MODEL = 'qwen2.5:1.5b';
 const AI_CACHE_TTL = 3600;
 
 function simpleHashForAI(str: string): string {
@@ -1380,6 +1372,64 @@ function buildConversationalPrompt(projects: any[], contextInfo?: { folder?: str
 - 如果用户问了具体需求，就帮他匹配最合适的项目
 - 如果只是聊天，就轻松愉快地聊，不用每次都推荐项目
 ${projectSection}${contextNote}${recommendInstruction}`;
+}
+
+async function callOllamaAI(messages: { role: string; content: string }[], tunnelUrl: string, projects: any[], contextInfo?: { folder?: string }): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {
+  const systemPrompt = buildConversationalPrompt(projects, contextInfo);
+  const payload = {
+    model: OLLAMA_MODEL,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...messages
+    ],
+    stream: false,
+    options: { num_predict: 600, temperature: 0.7 }
+  };
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+  try {
+    const resp = await fetch(`${tunnelUrl.replace(/\/$/, '')}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+      cf: { connectTimeout: 25 }
+    });
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error(`Ollama HTTP ${resp.status}: ${err.substring(0, 200)}`);
+    }
+
+    const data: any = await resp.json();
+    let text = data.message?.content || '';
+
+    // 解析推荐 JSON
+    const recMatch = text.match(/---RECOMMEND---\n?([\s\S]*?)\n?---END---/);
+    let recommendations: any[] = [];
+    if (recMatch) {
+      try {
+        const parsed = JSON.parse(recMatch[1]);
+        if (Array.isArray(parsed)) {
+          recommendations = parsed.filter((r: any) => r.path && r.reason).map((r: any) => ({
+            path: r.path, reason: r.reason, name: r.name || r.path
+          })).slice(0, 5);
+        }
+      } catch {}
+      text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
+    }
+
+    if (!text && recommendations.length > 0) {
+      text = '为你推荐以下项目：';
+    } else if (!text) {
+      text = '抱歉，AI 暂时无法生成回复，请稍后再试。';
+    }
+    return { text, recommendations };
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 async function callZhipuAI(messages: { role: string; content: string }[], apiKey: string, projects: any[], contextInfo?: { folder?: string }, model: string = ZHIPU_MODEL): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {

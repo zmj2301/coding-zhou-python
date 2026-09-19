@@ -1,4 +1,16 @@
-[
+﻿[
+    {
+        "date":  "2026-09-19",
+        "title":  "Cloudflare Tunnel 接入本地 Ollama",
+        "version":  "2.6.5",
+        "changes":  [
+                        "新增 Cloudflare Named Tunnel (ecs-ollama) 将 Worker 直连 ECS 本地 Ollama",
+                        "AI 优先级链: Ollama (qwen2.5:1.5b) → Workers AI (Llama 3.1) → Zhipu AI (glm-4.7-flash)",
+                        "Worker 调用 Ollama 通过 Tunnel hostname ollama.codingzhou.top，绕过 Cloudflare WAF/网络拦截",
+                        "Ollama 调用加 25s 超时，自动降级到 Workers AI / 智谱 AI",
+                        "wrangler.toml 新增 OLLAMA_TUNNEL_URL 变量"
+                    ]
+    },
     {
         "version":  "2.6.4",
         "date":  "2026-09-19",
