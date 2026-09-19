@@ -1,5 +1,18 @@
 [
     {
+        "version":  "2.6.1",
+        "date":  "2026-09-19",
+        "title":  "侧栏改名在线编辑 + README抽屉新增下载ZIP",
+        "changes":  [
+                        "左侧导航栏「在线预览」更名为「在线编辑」",
+                        "README 抽屉新增「下载为 ZIP」按钮，点击通过 GitHub 下载项目目录",
+                        "修复 app-shell HTML 结构（splash-overlay 闭合 + editor/preview 移入 app-shell）",
+                        "修复 switchSidebarView 未恢复 changelog/主题按钮显示",
+                        "侧栏版本号更新为 v2.6.0",
+                        "清除 Cloudflare CDN 缓存确保更新生效"
+                    ]
+    },
+    {
         "version":  "2.6.0",
         "date":  "2026-09-19",
         "title":  "新增在线预览板块 + 修复编辑器布局",

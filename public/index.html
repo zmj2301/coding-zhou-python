@@ -4535,7 +4535,7 @@ body.preview-active .app-preview { display: flex; }
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
         </span>
-        <span class="sidebar-item-label">在线预览</span>
+        <span class="sidebar-item-label">在线编辑</span>
       </a>
 
       <!-- 资源 -->
@@ -4591,7 +4591,7 @@ body.preview-active .app-preview { display: flex; }
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
-      <div class="sidebar-version">v2.6.0</div>
+      <div class="sidebar-version">v2.6.1</div>
     </div>
   </aside>
 
@@ -4815,7 +4815,7 @@ body.preview-active .app-preview { display: flex; }
 <section class="app-preview" id="previewPage">
   <div class="preview-guidance" id="previewGuidance">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
-    <h2>在线预览</h2>
+    <h2>在线编辑</h2>
     <p>请从「项目广场」点击任意项目卡片，在弹出的 README 简介中点击「预览」按钮进入项目预览。</p>
   </div>
   <div class="preview-header" id="previewHeader" style="display:none">
@@ -4998,6 +4998,10 @@ body.preview-active .app-preview { display: flex; }
   <div class="readme-drawer-footer">
     <button class="readme-drawer-btn" id="readmeDrawerStart">开始</button>
     <button class="readme-drawer-btn" id="readmeDrawerPreview" style="background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border-color);margin-top:8px">预览</button>
+    <button class="readme-drawer-btn" id="readmeDrawerDownload" style="background:transparent;color:var(--text-secondary);border:1px solid var(--border-color);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      下载为 ZIP
+    </button>
   </div>
 </div>
 
@@ -5843,6 +5847,15 @@ function initReadmeDrawer() {
     const project = _drawerActiveProject;
     closeReadmeDrawer();
     if (project) openProjectPreview(project);
+  });
+  $('#readmeDrawerDownload').addEventListener('click', function() {
+    const project = _drawerActiveProject;
+    if (!project) return;
+    const repo = 'zmj2301/coding-zhou-python';
+    const branch = 'main';
+    const cleanPath = project.path.replace(/^\/+/, '');
+    const url = `https://download-directory.github.io/?url=https://github.com/${repo}/tree/${branch}/${cleanPath}`;
+    window.open(url, '_blank');
   });
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && $('#readmeDrawer').classList.contains('show')) closeReadmeDrawer();
