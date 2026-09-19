@@ -18,3 +18,6 @@ preview_id = "69c61f369a764a519631b00e613f7ea6"
 [assets]
 binding = "ASSETS"
 directory = "public"
+
+[ai]
+binding = "AI"

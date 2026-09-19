@@ -1134,13 +1134,14 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
             'Content-Type': 'application/json',
             'Cookie': request.headers.get('Cookie') || '',
             'Host': new URL(ecsUrl).host,
+            'User-Agent': request.headers.get('User-Agent') || 'Cloudflare-Workers',
+            'Accept': 'application/json',
           },
           body: JSON.stringify({
             messages,
             model: data.model || 'ollama',
             context: data.context,
           }),
-          cf: { connectTimeout: 5, timeout: 120 },
         });
 
         if (proxyResp.ok) {
