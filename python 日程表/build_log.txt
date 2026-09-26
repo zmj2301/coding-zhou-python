@@ -1,0 +1,269 @@
+﻿python.exe : 528 INFO: PyInstaller: 6.10.0, contrib hooks: 2024.8
+At line:48 char:1
++ & D:\python.exe -m PyInstaller @pi > build_log.txt 2>&1; echo "exit=$ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (528 INFO: PyIns...b hooks: 2024.8:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+529 INFO: Python: 3.12.1
+
+566 INFO: Platform: Windows-10-10.0.19041-SP0
+
+566 INFO: Python environment: D:
+
+567 INFO: wrote E:\coding-zhou\Python\python 日程表\日程表.spec
+
+573 INFO: Module search paths (PYTHONPATH):
+['E:\\coding-zhou\\Python\\python 日程表',
+ 'D:\\python312.zip',
+ 'D:\\DLLs',
+ 'D:\\Lib',
+ 'D:\\',
+ 'C:\\Users\\Administrator\\AppData\\Roaming\\Python\\Python312\\site-packages',
+ 'D:\\Lib\\site-packages',
+ 'D:\\Lib\\site-packages\\win32',
+ 'D:\\Lib\\site-packages\\win32\\lib',
+ 'D:\\Lib\\site-packages\\Pythonwin',
+ 'D:\\Lib\\site-packages\\setuptools\\_vendor',
+ 'E:\\coding-zhou\\Python\\python 日程表']
+
+pygame 2.5.2 (SDL 2.28.3, Python 3.12.1)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+3077 INFO: Appending 'datas' from .spec
+
+3078 INFO: checking Analysis
+
+3078 INFO: Building Analysis because Analysis-00.toc is non existent
+
+3078 INFO: Running Analysis Analysis-00.toc
+
+3078 INFO: Target bytecode optimization level: 0
+
+3078 INFO: Initializing module dependency graph...
+
+3078 INFO: Caching module graph hooks...
+
+3118 INFO: Analyzing base_library.zip ...
+
+5326 INFO: Processing standard module hook 'hook-encodings.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+6697 INFO: Processing standard module hook 'hook-pickle.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+7361 INFO: Processing standard module hook 'hook-heapq.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+7702 INFO: Caching module dependency graph...
+
+7849 INFO: Looking for Python shared library...
+
+7947 INFO: Using Python shared library: D:\python312.dll
+
+7947 INFO: Analyzing E:\coding-zhou\Python\python 日程表\show_yourwindows.py
+
+8034 INFO: Processing standard module hook 'hook-PySide6.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+8287 INFO: Processing standard module hook 'hook-shiboken6.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+8290 INFO: Processing standard module hook 'hook-PySide6.QtWidgets.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks
+'
+
+9232 INFO: Processing standard module hook 'hook-PySide6.QtCore.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+10169 INFO: Processing standard module hook 'hook-PySide6.QtGui.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+14644 INFO: Processing standard module hook 'hook-_tkinter.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+14702 INFO: Processing standard module hook 'hook-pandas.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+654 INFO: NumExpr defaulting to 16 threads.
+
+16667 INFO: Processing standard module hook 'hook-platform.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+16687 INFO: Processing standard module hook 'hook-sysconfig.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+16699 INFO: Processing standard module hook 'hook-numpy.py' from 'D:\\Lib\\site-packages\\numpy\\_pyinstaller'
+
+17235 INFO: Processing standard module hook 'hook-difflib.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+17435 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from 'D:\\Lib\\site-packages\\PyInstaller\\h
+ooks'
+
+17540 INFO: Processing standard module hook 'hook-xml.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+18116 INFO: Processing standard module hook 'hook-clr.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\std
+hooks'
+
+18127 INFO: Processing standard module hook 'hook-clr_loader.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contr
+ib\\stdhooks'
+
+18204 INFO: Processing standard module hook 'hook-pycparser.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contri
+b\\stdhooks'
+
+18475 INFO: Processing standard module hook 'hook-setuptools.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+18477 INFO: SetuptoolsInfo: initializing cached setuptools info...
+
+22683 INFO: Processing pre-safe-import-module hook 'hook-distutils.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks
+\\pre_safe_import_module'
+
+22725 INFO: Processing pre-safe-import-module hook 'hook-jaraco.functools.py' from 'D:\\Lib\\site-packages\\PyInstaller
+\\hooks\\pre_safe_import_module'
+
+22739 INFO: Processing pre-safe-import-module hook 'hook-more_itertools.py' from 'D:\\Lib\\site-packages\\PyInstaller\\
+hooks\\pre_safe_import_module'
+
+22878 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from 'D:\\Lib\\site-packages\\PyInstalle
+r\\hooks\\pre_safe_import_module'
+
+23087 INFO: Processing pre-safe-import-module hook 'hook-packaging.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks
+\\pre_safe_import_module'
+
+23101 INFO: Processing standard module hook 'hook-packaging.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+23256 INFO: Processing pre-safe-import-module hook 'hook-jaraco.text.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hoo
+ks\\pre_safe_import_module'
+
+23257 INFO: Setuptools: 'jaraco.text' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.
+jaraco.text'!
+
+23270 INFO: Processing pre-safe-import-module hook 'hook-importlib_resources.py' from 'D:\\Lib\\site-packages\\PyInstal
+ler\\hooks\\pre_safe_import_module'
+
+23274 INFO: Processing standard module hook 'hook-importlib_resources.py' from 'D:\\Lib\\site-packages\\PyInstaller\\ho
+oks'
+
+23314 INFO: Processing pre-safe-import-module hook 'hook-zipp.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\pre
+_safe_import_module'
+
+23342 INFO: Processing pre-safe-import-module hook 'hook-jaraco.context.py' from 'D:\\Lib\\site-packages\\PyInstaller\\
+hooks\\pre_safe_import_module'
+
+23571 INFO: Processing pre-safe-import-module hook 'hook-backports.tarfile.py' from 'D:\\Lib\\site-packages\\PyInstalle
+r\\hooks\\pre_safe_import_module'
+
+23572 INFO: Setuptools: 'backports.tarfile' appears to be a setuptools-vendored copy - creating alias to 'setuptools._v
+endor.backports.tarfile'!
+
+23667 INFO: Processing standard module hook 'hook-backports.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contri
+b\\stdhooks'
+
+23776 INFO: Processing pre-safe-import-module hook 'hook-importlib_metadata.py' from 'D:\\Lib\\site-packages\\PyInstall
+er\\hooks\\pre_safe_import_module'
+
+23805 INFO: Processing standard module hook 'hook-importlib_metadata.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hoo
+ks'
+
+24127 INFO: Processing pre-safe-import-module hook 'hook-tomli.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\pr
+e_safe_import_module'
+
+24129 INFO: Setuptools: 'tomli' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.tomli'
+!
+
+24647 INFO: Processing standard module hook 'hook-pkg_resources.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+25233 INFO: Processing pre-safe-import-module hook 'hook-platformdirs.py' from 'D:\\Lib\\site-packages\\PyInstaller\\ho
+oks\\pre_safe_import_module'
+
+25244 INFO: Processing standard module hook 'hook-platformdirs.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_con
+trib\\stdhooks'
+
+25506 INFO: Processing pre-safe-import-module hook 'hook-wheel.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\pr
+e_safe_import_module'
+
+26231 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'D:\\Lib\\site-packages\\PyInstaller\
+\hooks'
+
+27177 INFO: Processing standard module hook 'hook-psutil.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\
+stdhooks'
+
+29250 INFO: Processing standard module hook 'hook-zoneinfo.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib
+\\stdhooks'
+
+31036 INFO: Processing standard module hook 'hook-pandas.io.formats.style.py' from 'D:\\Lib\\site-packages\\PyInstaller
+\\hooks'
+
+34870 INFO: Processing standard module hook 'hook-pandas.plotting.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+35289 INFO: Processing pre-safe-import-module hook 'hook-six.moves.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks
+\\pre_safe_import_module'
+
+35737 INFO: Processing standard module hook 'hook-openpyxl.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib
+\\stdhooks'
+
+36090 INFO: Processing standard module hook 'hook-xml.dom.domreg.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+36874 INFO: Processing standard module hook 'hook-PIL.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+36991 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+37932 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+39237 INFO: Processing standard module hook 'hook-sqlite3.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+39840 INFO: Processing standard module hook 'hook-pandas.io.clipboard.py' from 'D:\\Lib\\site-packages\\PyInstaller\\ho
+oks'
+
+41474 INFO: Processing standard module hook 'hook-charset_normalizer.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hoo
+ks_contrib\\stdhooks'
+
+42885 INFO: Processing standard module hook 'hook-certifi.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib\
+\stdhooks'
+
+43854 INFO: Processing standard module hook 'hook-anyio.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\s
+tdhooks'
+
+45494 INFO: Processing standard module hook 'hook-pygments.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+48387 INFO: Processing standard module hook 'hook-pydantic.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib
+\\stdhooks'
+
+49202 INFO: Processing standard module hook 'hook-dns.rdata.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contri
+b\\stdhooks'
+
+D:\Lib\site-packages\wmi.py:2: SyntaxWarning: invalid escape sequence '\_'
+  """Windows Management Instrumentation (WMI) is Microsoft's answer to
+
+D:\Lib\site-packages\wmi.py:917: SyntaxWarning: invalid escape sequence '\_'
+  """This is the equivalent to the raw-WMI SpawnInstance\_
+
+50109 INFO: Processing pre-safe-import-module hook 'hook-win32com.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_
+contrib\\pre_safe_import_module'
+
+51028 INFO: Processing standard module hook 'hook-cryptography.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_con
+trib\\stdhooks'
+
+52557 INFO: Processing standard module hook 'hook-bcrypt.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\
+stdhooks'
+
+52584 INFO: Processing module hooks (post-graph stage)...
+
+52686 WARNING: Hidden import "charset_normalizer.md__mypyc" not found!
+
+52837 WARNING: Hidden import "importlib_resources.trees" not found!
+
+52839 INFO: Processing standard module hook 'hook-jinja2.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\
+stdhooks'
+
+53445 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'D:\\Lib\\site-packages\\PyInstaller\\
+hooks'
+
+55264 INFO: Processing pre-safe-import-module hook 'hook-autocommand.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hoo
+ks\\pre_safe_import_module'
+
+55264 INFO: Setuptools: 'autocommand' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.
+autocommand'!
+
+55362 INFO: Processing pre-safe-import-module hook 'hook-typeguard.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks
+\\pre_safe_import_module'
+
+55362 INFO: Setuptools: 'typeguard' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.ty
+peguard'!
+
+55932 INFO: Processing standard module hook 'hook-_tkinter.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+55932 INFO: TclTkInfo: initializing cached Tcl/Tk info...
+
+56512 INFO: Processing standard module hook 'hook-tzdata.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\
+stdhooks'
+
+57432 INFO: Performing binary vs. data reclassification (1784 entries)
+

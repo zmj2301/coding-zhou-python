@@ -122,12 +122,15 @@ def get_main_file(files):
 def scan_directory(dir_path: Path, base_path: str = ''):
     """扫描目录，返回文件树结构"""
     items = []
+    skip_subdirs = {'__pycache__', 'build', 'dist', 'node_modules', '.git', '.trae', '.venv', 'venv', 'env'}
     try:
         for entry in sorted(dir_path.iterdir(), key=lambda x: (not x.is_dir(), x.name.lower())):
             name = entry.name
             if name.startswith('.'):
                 continue
             if entry.is_dir():
+                if name in skip_subdirs:
+                    continue
                 children = scan_directory(entry, f"{base_path}/{name}" if base_path else name)
                 if children:  # 只包含有文件的目录
                     items.append({
@@ -219,7 +222,7 @@ def _add_project(name, rel_path, projects, color_idx):
     all_files = []
     for root, dirs, files in os.walk(full_path):
         # 跳过隐藏目录
-        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ('__pycache__', 'node_modules')]
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ('__pycache__', 'node_modules', 'build', 'dist')]
         for f in files:
             if f.startswith('.'):
                 continue

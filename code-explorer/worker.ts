@@ -261,7 +261,12 @@ async function fetchAsset(path: string, env: Env): Promise<Response> {
     if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
       const cleanPath = path.startsWith('/') ? path.substring(1) : path;
       const resp = await env.ASSETS.fetch(new Request('/' + cleanPath));
-      if (resp.ok) return ensureUtf8Charset(resp);
+      if (resp.ok) {
+        const r = ensureUtf8Charset(resp);
+        // HTML 不缓存，确保更新后立即可见
+        if (path.endsWith('.html')) r.headers.set('Cache-Control', 'no-store');
+        return r;
+      }
     }
   } catch {}
   // 先尝试 code-explorer/public/，再尝试 public/
@@ -394,6 +399,11 @@ function isStaticAsset(ext: string): boolean {
 
 function addCacheHeader(headers: Headers, maxAgeSeconds: number): void {
   headers.set('Cache-Control', `public, max-age=${maxAgeSeconds}`);
+}
+
+// 文件内容用 private 缓存：避免边缘缓存导致更新后长时间显示旧内容
+function addPrivateCacheHeader(headers: Headers, maxAgeSeconds: number): void {
+  headers.set('Cache-Control', `private, max-age=${maxAgeSeconds}`);
 }
 
 // ------------------------------------------------------------
@@ -873,7 +883,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       // 成功时直接返回 ECS 响应
       const data = await ecsResp.json();
       const resp = jsonResponse(data);
-      addCacheHeader(resp.headers, 3600);
+      addPrivateCacheHeader(resp.headers, 3600);
       return resp;
     }
 
@@ -883,7 +893,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const cached = await env.CODE_EXPLORER_KV.get(cacheKey, { type: 'json' });
       if (cached) {
         const resp = jsonResponse(cached);
-        addCacheHeader(resp.headers, 3600);
+        addPrivateCacheHeader(resp.headers, 3600);
         return resp;
       }
     } catch {}
@@ -909,7 +919,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       });
     } catch {}
     const resp = jsonResponse(result);
-    addCacheHeader(resp.headers, 3600);
+    addPrivateCacheHeader(resp.headers, 3600);
     return resp;
   }
 

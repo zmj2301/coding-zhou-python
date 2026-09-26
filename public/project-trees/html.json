@@ -1,0 +1,30 @@
+[
+  {
+    "name": "ai编程",
+    "type": "directory",
+    "path": "ai编程",
+    "children": [
+      {
+        "name": "index.html",
+        "type": "file",
+        "path": "ai编程/index.html",
+        "ext": ".html",
+        "lastModified": 1763813675916
+      },
+      {
+        "name": "script.js",
+        "type": "file",
+        "path": "ai编程/script.js",
+        "ext": ".js",
+        "lastModified": 1763813850803
+      },
+      {
+        "name": "styles.css",
+        "type": "file",
+        "path": "ai编程/styles.css",
+        "ext": ".css",
+        "lastModified": 1763813752785
+      }
+    ]
+  }
+]

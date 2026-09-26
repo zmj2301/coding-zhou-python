@@ -1,0 +1,4083 @@
+[
+  {
+    "name": "2024魔术揭秘",
+    "type": "directory",
+    "path": "2024魔术揭秘",
+    "children": [
+      {
+        "name": "2024魔术01.sb3",
+        "type": "file",
+        "path": "2024魔术揭秘/2024魔术01.sb3",
+        "ext": ".sb3",
+        "lastModified": 1707989862621
+      },
+      {
+        "name": "2024魔术02.sb3",
+        "type": "file",
+        "path": "2024魔术揭秘/2024魔术02.sb3",
+        "ext": ".sb3",
+        "lastModified": 1708174111347
+      },
+      {
+        "name": "2024魔术素材.sb3",
+        "type": "file",
+        "path": "2024魔术揭秘/2024魔术素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1707881085486
+      }
+    ]
+  },
+  {
+    "name": "2026春晚魔术揭秘",
+    "type": "directory",
+    "path": "2026春晚魔术揭秘",
+    "children": [
+      {
+        "name": "春晚魔术专用计算器.sb3",
+        "type": "file",
+        "path": "2026春晚魔术揭秘/春晚魔术专用计算器.sb3",
+        "ext": ".sb3",
+        "lastModified": 1772181884265
+      }
+    ]
+  },
+  {
+    "name": "2048游戏",
+    "type": "directory",
+    "path": "2048游戏",
+    "children": [
+      {
+        "name": "2048素材",
+        "type": "directory",
+        "path": "2048游戏/2048素材",
+        "children": [
+          {
+            "name": "分数（角色）.sprite3",
+            "type": "file",
+            "path": "2048游戏/2048素材/分数（角色）.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1586573400051
+          },
+          {
+            "name": "数字（角色）.sprite3",
+            "type": "file",
+            "path": "2048游戏/2048素材/数字（角色）.sprite3",
+            "ext": ".sprite3",
+            "lastModified": 1586602128160
+          },
+          {
+            "name": "背景.svg",
+            "type": "file",
+            "path": "2048游戏/2048素材/背景.svg",
+            "ext": ".svg",
+            "lastModified": 1586602145505
+          }
+        ]
+      },
+      {
+        "name": "2048.sb3",
+        "type": "file",
+        "path": "2048游戏/2048.sb3",
+        "ext": ".sb3",
+        "lastModified": 1689086195418
+      },
+      {
+        "name": "作品.sb3",
+        "type": "file",
+        "path": "2048游戏/作品.sb3",
+        "ext": ".sb3",
+        "lastModified": 1689259090003
+      }
+    ]
+  },
+  {
+    "name": "乒乓球游戏",
+    "type": "directory",
+    "path": "乒乓球游戏",
+    "children": [
+      {
+        "name": "乒乓游戏-奥运配色-part1.sb3",
+        "type": "file",
+        "path": "乒乓球游戏/乒乓游戏-奥运配色-part1.sb3",
+        "ext": ".sb3",
+        "lastModified": 1725371670790
+      }
+    ]
+  },
+  {
+    "name": "仿造我的世界",
+    "type": "directory",
+    "path": "仿造我的世界",
+    "children": [
+      {
+        "name": "植物大战僵尸嫁接版1.103电脑端",
+        "type": "directory",
+        "path": "仿造我的世界/植物大战僵尸嫁接版1.103电脑端",
+        "children": [
+          {
+            "name": "植物大战僵尸嫁接版1.103电脑端.exe",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸嫁接版1.103电脑端/植物大战僵尸嫁接版1.103电脑端.exe",
+            "ext": ".exe",
+            "lastModified": 1725342884556
+          }
+        ]
+      },
+      {
+        "name": "植物大战僵尸杂交版v2.2",
+        "type": "directory",
+        "path": "仿造我的世界/植物大战僵尸杂交版v2.2",
+        "children": [
+          {
+            "name": "pvzHE",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/pvzHE",
+            "children": [
+              {
+                "name": "fixes",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/pvzHE/fixes",
+                "children": [
+                  {
+                    "name": "补丁请放在此文件夹",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.2/pvzHE/fixes/补丁请放在此文件夹",
+                    "ext": "",
+                    "lastModified": 1729947716229
+                  }
+                ]
+              },
+              {
+                "name": "bass.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/pvzHE/bass.dll",
+                "ext": ".dll",
+                "lastModified": 1727692022744
+              },
+              {
+                "name": "gdi42.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/pvzHE/gdi42.dll",
+                "ext": ".dll",
+                "lastModified": 1727692022798
+              }
+            ]
+          },
+          {
+            "name": "【三选一】3D加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】3D加速补丁",
+            "children": [
+              {
+                "name": "ddraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】3D加速补丁/ddraw.dll",
+                "ext": ".dll",
+                "lastModified": 1529742006000
+              },
+              {
+                "name": "libwine.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】3D加速补丁/libwine.dll",
+                "ext": ".dll",
+                "lastModified": 1529742006000
+              },
+              {
+                "name": "wined3d.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】3D加速补丁/wined3d.dll",
+                "ext": ".dll",
+                "lastModified": 1529742006000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】3D加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720146024000
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX12加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX12加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX12加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708724000
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX12加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708724000
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX12加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1714724432000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX12加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720146024000
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708724000
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708724000
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1712765634000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【三选一】DX加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720146024000
+              }
+            ]
+          },
+          {
+            "name": "【不懂就看】文件用途说明.txt",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【不懂就看】文件用途说明.txt",
+            "ext": ".txt",
+            "lastModified": 1720156308000
+          },
+          {
+            "name": "【常见问题】杂交版v2.2指南.pdf",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【常见问题】杂交版v2.2指南.pdf",
+            "ext": ".pdf",
+            "lastModified": 1720146862000
+          },
+          {
+            "name": "【运行后打开游戏】窗口白屏卡死.reg",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【运行后打开游戏】窗口白屏卡死.reg",
+            "ext": ".reg",
+            "lastModified": 1717004338000
+          },
+          {
+            "name": "【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "ext": ".bat",
+            "lastModified": 1715180948000
+          },
+          {
+            "name": "植物大战僵尸杂交版v2.2安装程序.exe",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.2/植物大战僵尸杂交版v2.2安装程序.exe",
+            "ext": ".exe",
+            "lastModified": 1720156022000
+          }
+        ]
+      },
+      {
+        "name": "植物大战僵尸杂交版v2.5",
+        "type": "directory",
+        "path": "仿造我的世界/植物大战僵尸杂交版v2.5",
+        "children": [
+          {
+            "name": "【三选一】3D加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】3D加速补丁",
+            "children": [
+              {
+                "name": "ddraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】3D加速补丁/ddraw.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004000
+              },
+              {
+                "name": "libwine.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】3D加速补丁/libwine.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004000
+              },
+              {
+                "name": "wined3d.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】3D加速补丁/wined3d.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】3D加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324495000
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX12加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX12加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX12加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723000
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX12加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723000
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX12加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1714724431000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX12加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324501000
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723000
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723000
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1712765632000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【三选一】DX加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324507000
+              }
+            ]
+          },
+          {
+            "name": "【不懂就看】文件用途说明.txt",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【不懂就看】文件用途说明.txt",
+            "ext": ".txt",
+            "lastModified": 1723967876000
+          },
+          {
+            "name": "【双击打开】存档与游戏文件夹.hta",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【双击打开】存档与游戏文件夹.hta",
+            "ext": ".hta",
+            "lastModified": 1723877614000
+          },
+          {
+            "name": "【常见问题】杂交版v2.3+指南.pdf",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【常见问题】杂交版v2.3+指南.pdf",
+            "ext": ".pdf",
+            "lastModified": 1723872654000
+          },
+          {
+            "name": "【运行后打开游戏】窗口白屏卡死.reg",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【运行后打开游戏】窗口白屏卡死.reg",
+            "ext": ".reg",
+            "lastModified": 1717004336000
+          },
+          {
+            "name": "【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "ext": ".bat",
+            "lastModified": 1723873050000
+          },
+          {
+            "name": "植物大战僵尸杂交版v2.5安装程序.exe",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5/植物大战僵尸杂交版v2.5安装程序.exe",
+            "ext": ".exe",
+            "lastModified": 1726797074000
+          }
+        ]
+      },
+      {
+        "name": "植物大战僵尸杂交版v2.5.1",
+        "type": "directory",
+        "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1",
+        "children": [
+          {
+            "name": "植物大战僵尸杂交版v2.5.1",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1",
+            "children": [
+              {
+                "name": "【三选一】3D加速补丁",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】3D加速补丁",
+                "children": [
+                  {
+                    "name": "ddraw.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】3D加速补丁/ddraw.dll",
+                    "ext": ".dll",
+                    "lastModified": 1529742004457
+                  },
+                  {
+                    "name": "libwine.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】3D加速补丁/libwine.dll",
+                    "ext": ".dll",
+                    "lastModified": 1529742004443
+                  },
+                  {
+                    "name": "wined3d.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】3D加速补丁/wined3d.dll",
+                    "ext": ".dll",
+                    "lastModified": 1529742004452
+                  },
+                  {
+                    "name": "使用说明.txt",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】3D加速补丁/使用说明.txt",
+                    "ext": ".txt",
+                    "lastModified": 1720324495531
+                  }
+                ]
+              },
+              {
+                "name": "【三选一】DX12加速补丁",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX12加速补丁",
+                "children": [
+                  {
+                    "name": "D3DImm.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX12加速补丁/D3DImm.dll",
+                    "ext": ".dll",
+                    "lastModified": 1706708723317
+                  },
+                  {
+                    "name": "DDraw.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX12加速补丁/DDraw.dll",
+                    "ext": ".dll",
+                    "lastModified": 1706708723374
+                  },
+                  {
+                    "name": "dgVoodoo.conf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX12加速补丁/dgVoodoo.conf",
+                    "ext": ".conf",
+                    "lastModified": 1714724431407
+                  },
+                  {
+                    "name": "使用说明.txt",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX12加速补丁/使用说明.txt",
+                    "ext": ".txt",
+                    "lastModified": 1720324501385
+                  }
+                ]
+              },
+              {
+                "name": "【三选一】DX加速补丁",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX加速补丁",
+                "children": [
+                  {
+                    "name": "D3DImm.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX加速补丁/D3DImm.dll",
+                    "ext": ".dll",
+                    "lastModified": 1706708723317
+                  },
+                  {
+                    "name": "DDraw.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX加速补丁/DDraw.dll",
+                    "ext": ".dll",
+                    "lastModified": 1706708723374
+                  },
+                  {
+                    "name": "dgVoodoo.conf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX加速补丁/dgVoodoo.conf",
+                    "ext": ".conf",
+                    "lastModified": 1712765632860
+                  },
+                  {
+                    "name": "使用说明.txt",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【三选一】DX加速补丁/使用说明.txt",
+                    "ext": ".txt",
+                    "lastModified": 1720324507720
+                  }
+                ]
+              },
+              {
+                "name": "【不懂就看】文件用途说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【不懂就看】文件用途说明.txt",
+                "ext": ".txt",
+                "lastModified": 1723967876709
+              },
+              {
+                "name": "【双击打开】存档与游戏文件夹.hta",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【双击打开】存档与游戏文件夹.hta",
+                "ext": ".hta",
+                "lastModified": 1723877614705
+              },
+              {
+                "name": "【常见问题】杂交版v2.3+指南.pdf",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【常见问题】杂交版v2.3+指南.pdf",
+                "ext": ".pdf",
+                "lastModified": 1723872654952
+              },
+              {
+                "name": "【运行后打开游戏】窗口白屏卡死.reg",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【运行后打开游戏】窗口白屏卡死.reg",
+                "ext": ".reg",
+                "lastModified": 1717004336094
+              },
+              {
+                "name": "【需要管理员权限】数据执行保护-关闭DEP.bat",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/【需要管理员权限】数据执行保护-关闭DEP.bat",
+                "ext": ".bat",
+                "lastModified": 1723873050668
+              },
+              {
+                "name": "植物大战僵尸杂交版v2.5.1安装程序.exe",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1/植物大战僵尸杂交版v2.5.1安装程序.exe",
+                "ext": ".exe",
+                "lastModified": 1727161960989
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "植物大战僵尸杂交版v2.6",
+        "type": "directory",
+        "path": "仿造我的世界/植物大战僵尸杂交版v2.6",
+        "children": [
+          {
+            "name": "【三选一】3D加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】3D加速补丁",
+            "children": [
+              {
+                "name": "ddraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】3D加速补丁/ddraw.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004000
+              },
+              {
+                "name": "libwine.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】3D加速补丁/libwine.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004000
+              },
+              {
+                "name": "wined3d.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】3D加速补丁/wined3d.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】3D加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324495000
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX12加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX12加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX12加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723000
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX12加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723000
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX12加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1714724431000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX12加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324501000
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX加速补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723000
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723000
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1712765632000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【三选一】DX加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324507000
+              }
+            ]
+          },
+          {
+            "name": "【不懂就看】文件用途说明.txt",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【不懂就看】文件用途说明.txt",
+            "ext": ".txt",
+            "lastModified": 1728376169000
+          },
+          {
+            "name": "【双击打开】存档与游戏文件夹.hta",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【双击打开】存档与游戏文件夹.hta",
+            "ext": ".hta",
+            "lastModified": 1723877614000
+          },
+          {
+            "name": "【常见问题】杂交版指南.pdf",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【常见问题】杂交版指南.pdf",
+            "ext": ".pdf",
+            "lastModified": 1729876649000
+          },
+          {
+            "name": "【运行后打开游戏】窗口白屏卡死.reg",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【运行后打开游戏】窗口白屏卡死.reg",
+            "ext": ".reg",
+            "lastModified": 1717004336000
+          },
+          {
+            "name": "【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "ext": ".bat",
+            "lastModified": 1723873050000
+          },
+          {
+            "name": "植物大战僵尸杂交版v2.6安装程序.exe",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v2.6/植物大战僵尸杂交版v2.6安装程序.exe",
+            "ext": ".exe",
+            "lastModified": 1729920124000
+          }
+        ]
+      },
+      {
+        "name": "植物大战僵尸杂交版v3.1.5",
+        "type": "directory",
+        "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5",
+        "children": [
+          {
+            "name": "【四选一】补丁",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁",
+            "children": [
+              {
+                "name": "3D加速补丁",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/3D加速补丁",
+                "children": [
+                  {
+                    "name": "ddraw.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/3D加速补丁/ddraw.dll",
+                    "ext": ".dll",
+                    "lastModified": 1529742004457
+                  },
+                  {
+                    "name": "libwine.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/3D加速补丁/libwine.dll",
+                    "ext": ".dll",
+                    "lastModified": 1529742004443
+                  },
+                  {
+                    "name": "wined3d.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/3D加速补丁/wined3d.dll",
+                    "ext": ".dll",
+                    "lastModified": 1529742004452
+                  },
+                  {
+                    "name": "使用说明.txt",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/3D加速补丁/使用说明.txt",
+                    "ext": ".txt",
+                    "lastModified": 1720324495531
+                  }
+                ]
+              },
+              {
+                "name": "DDraw渲染补丁",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DDraw渲染补丁",
+                "children": [
+                  {
+                    "name": "catmull-rom-bilinear.glsl",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DDraw渲染补丁/catmull-rom-bilinear.glsl",
+                    "ext": ".glsl",
+                    "lastModified": 1688688968518
+                  },
+                  {
+                    "name": "ddraw.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DDraw渲染补丁/ddraw.dll",
+                    "ext": ".dll",
+                    "lastModified": 1735371487747
+                  },
+                  {
+                    "name": "ddraw.ini",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DDraw渲染补丁/ddraw.ini",
+                    "ext": ".ini",
+                    "lastModified": 1736261107953
+                  },
+                  {
+                    "name": "使用说明.txt",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DDraw渲染补丁/使用说明.txt",
+                    "ext": ".txt",
+                    "lastModified": 1736261458702
+                  }
+                ]
+              },
+              {
+                "name": "DX12加速补丁",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX12加速补丁",
+                "children": [
+                  {
+                    "name": "D3DImm.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX12加速补丁/D3DImm.dll",
+                    "ext": ".dll",
+                    "lastModified": 1706708723317
+                  },
+                  {
+                    "name": "DDraw.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX12加速补丁/DDraw.dll",
+                    "ext": ".dll",
+                    "lastModified": 1706708723374
+                  },
+                  {
+                    "name": "dgVoodoo.conf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX12加速补丁/dgVoodoo.conf",
+                    "ext": ".conf",
+                    "lastModified": 1714724431407
+                  },
+                  {
+                    "name": "使用说明.txt",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX12加速补丁/使用说明.txt",
+                    "ext": ".txt",
+                    "lastModified": 1720324501385
+                  }
+                ]
+              },
+              {
+                "name": "DX加速补丁",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX加速补丁",
+                "children": [
+                  {
+                    "name": "D3DImm.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX加速补丁/D3DImm.dll",
+                    "ext": ".dll",
+                    "lastModified": 1706708723317
+                  },
+                  {
+                    "name": "DDraw.dll",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX加速补丁/DDraw.dll",
+                    "ext": ".dll",
+                    "lastModified": 1706708723374
+                  },
+                  {
+                    "name": "dgVoodoo.conf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX加速补丁/dgVoodoo.conf",
+                    "ext": ".conf",
+                    "lastModified": 1736056345334
+                  },
+                  {
+                    "name": "使用说明.txt",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【四选一】补丁/DX加速补丁/使用说明.txt",
+                    "ext": ".txt",
+                    "lastModified": 1720324507720
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "【不懂就看】文件用途说明.txt",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【不懂就看】文件用途说明.txt",
+            "ext": ".txt",
+            "lastModified": 1736262881375
+          },
+          {
+            "name": "【双击打开】存档与游戏文件夹.hta",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【双击打开】存档与游戏文件夹.hta",
+            "ext": ".hta",
+            "lastModified": 1723877614705
+          },
+          {
+            "name": "【常见问题】杂交版指南.pdf",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【常见问题】杂交版指南.pdf",
+            "ext": ".pdf",
+            "lastModified": 1734097685809
+          },
+          {
+            "name": "【运行后打开游戏】窗口白屏卡死.reg",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【运行后打开游戏】窗口白屏卡死.reg",
+            "ext": ".reg",
+            "lastModified": 1717004336094
+          },
+          {
+            "name": "【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "ext": ".bat",
+            "lastModified": 1723873050668
+          },
+          {
+            "name": "植物大战僵尸杂交版v3.1.5安装程序.exe",
+            "type": "file",
+            "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5/植物大战僵尸杂交版v3.1.5安装程序.exe",
+            "ext": ".exe",
+            "lastModified": 1737521187699
+          }
+        ]
+      },
+      {
+        "name": "植物大战僵尸杂交版（）v2.2",
+        "type": "directory",
+        "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2",
+        "children": [
+          {
+            "name": "pvzHE",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE",
+            "children": [
+              {
+                "name": "fonts",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/fonts",
+                "children": [
+                  {
+                    "name": "fzcq.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/fonts/fzcq.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1730003031173
+                  },
+                  {
+                    "name": "fzjz.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/fonts/fzjz.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1730003031175
+                  },
+                  {
+                    "name": "fzkt.TTF",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/fonts/fzkt.TTF",
+                    "ext": ".ttf",
+                    "lastModified": 1730003031180
+                  },
+                  {
+                    "name": "fzyh.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/fonts/fzyh.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1730003031182
+                  },
+                  {
+                    "name": "wryh+pico12num.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/fonts/wryh+pico12num.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1730003031196
+                  },
+                  {
+                    "name": "wryh.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/fonts/wryh.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1730003031208
+                  }
+                ]
+              },
+              {
+                "name": "bass.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/bass.dll",
+                "ext": ".dll",
+                "lastModified": 1730003031168
+              },
+              {
+                "name": "config.toml",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/config.toml",
+                "ext": ".toml",
+                "lastModified": 1730003031287
+              },
+              {
+                "name": "crash.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/crash.txt",
+                "ext": ".txt",
+                "lastModified": 1730009005194
+              },
+              {
+                "name": "gdi42.dll",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/gdi42.dll",
+                "ext": ".dll",
+                "lastModified": 1730003031210
+              },
+              {
+                "name": "launcher.log",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/launcher.log",
+                "ext": ".log",
+                "lastModified": 1737769059375
+              },
+              {
+                "name": "logo.ico",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/logo.ico",
+                "ext": ".ico",
+                "lastModified": 1714412682000
+              },
+              {
+                "name": "main.pak",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/main.pak",
+                "ext": ".pak",
+                "lastModified": 1730003031287
+              },
+              {
+                "name": "pvzHE-Launcher.exe",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/pvzHE-Launcher.exe",
+                "ext": ".exe",
+                "lastModified": 1720155923815
+              },
+              {
+                "name": "uninst.exe",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.2/pvzHE/uninst.exe",
+                "ext": ".exe",
+                "lastModified": 1730003026237
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "植物大战僵尸杂交版（）v2.6",
+        "type": "directory",
+        "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6",
+        "children": [
+          {
+            "name": "fixes",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/fixes",
+            "children": [
+              {
+                "name": "补丁请放在此文件夹",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/fixes/补丁请放在此文件夹",
+                "ext": "",
+                "lastModified": 1730003603919
+              }
+            ]
+          },
+          {
+            "name": "pvzHE",
+            "type": "directory",
+            "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE",
+            "children": [
+              {
+                "name": "fixes",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fixes",
+                "children": [
+                  {
+                    "name": "补丁请放在此文件夹",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fixes/补丁请放在此文件夹",
+                    "ext": "",
+                    "lastModified": 1737769076875
+                  }
+                ]
+              },
+              {
+                "name": "fonts",
+                "type": "directory",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fonts",
+                "children": [
+                  {
+                    "name": "fzcq.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fonts/fzcq.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1737769076882
+                  },
+                  {
+                    "name": "fzjz.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fonts/fzjz.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1737769076889
+                  },
+                  {
+                    "name": "fzkt.TTF",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fonts/fzkt.TTF",
+                    "ext": ".ttf",
+                    "lastModified": 1737769076899
+                  },
+                  {
+                    "name": "fzyh.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fonts/fzyh.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1737769076906
+                  },
+                  {
+                    "name": "wryh+pico12num.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fonts/wryh+pico12num.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1737769076928
+                  },
+                  {
+                    "name": "wryh.ttf",
+                    "type": "file",
+                    "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/fonts/wryh.ttf",
+                    "ext": ".ttf",
+                    "lastModified": 1737769076952
+                  }
+                ]
+              },
+              {
+                "name": "config.toml",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/config.toml",
+                "ext": ".toml",
+                "lastModified": 1737769077192
+              },
+              {
+                "name": "crash.txt",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/crash.txt",
+                "ext": ".txt",
+                "lastModified": 1737627865910
+              },
+              {
+                "name": "launcher.log",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/launcher.log",
+                "ext": ".log",
+                "lastModified": 1737768977954
+              },
+              {
+                "name": "logo.ico",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/logo.ico",
+                "ext": ".ico",
+                "lastModified": 1714412682000
+              },
+              {
+                "name": "main.pak",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/main.pak",
+                "ext": ".pak",
+                "lastModified": 1737769077192
+              },
+              {
+                "name": "pvzHE-Launcher.exe",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/pvzHE-Launcher.exe",
+                "ext": ".exe",
+                "lastModified": 1737521024250
+              },
+              {
+                "name": "uninst.exe",
+                "type": "file",
+                "path": "仿造我的世界/植物大战僵尸杂交版（）v2.6/pvzHE/uninst.exe",
+                "ext": ".exe",
+                "lastModified": 1737769074891
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "素材",
+        "type": "directory",
+        "path": "仿造我的世界/素材",
+        "children": [
+          {
+            "name": "参考图.png",
+            "type": "file",
+            "path": "仿造我的世界/素材/参考图.png",
+            "ext": ".png",
+            "lastModified": 1708847689757
+          },
+          {
+            "name": "我的世界-素材-改编草稿.sb3",
+            "type": "file",
+            "path": "仿造我的世界/素材/我的世界-素材-改编草稿.sb3",
+            "ext": ".sb3",
+            "lastModified": 1725765922247
+          },
+          {
+            "name": "手枪.png",
+            "type": "file",
+            "path": "仿造我的世界/素材/手枪.png",
+            "ext": ".png",
+            "lastModified": 1720437769762
+          },
+          {
+            "name": "背景.jpg",
+            "type": "file",
+            "path": "仿造我的世界/素材/背景.jpg",
+            "ext": ".jpg",
+            "lastModified": 1708848178009
+          },
+          {
+            "name": "草地.png",
+            "type": "file",
+            "path": "仿造我的世界/素材/草地.png",
+            "ext": ".png",
+            "lastModified": 1708660209859
+          },
+          {
+            "name": "选择中.png",
+            "type": "file",
+            "path": "仿造我的世界/素材/选择中.png",
+            "ext": ".png",
+            "lastModified": 1708847484865
+          }
+        ]
+      },
+      {
+        "name": "融合版迷雾2.1.3版本",
+        "type": "directory",
+        "path": "仿造我的世界/融合版迷雾2.1.3版本",
+        "children": [
+          {
+            "name": "PlantsVsZombiesRH_Data",
+            "type": "directory",
+            "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data",
+            "children": [
+              {
+                "name": "il2cpp_data",
+                "type": "directory",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/il2cpp_data",
+                "children": [
+                  {
+                    "name": "Metadata",
+                    "type": "directory",
+                    "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/il2cpp_data/Metadata",
+                    "children": [
+                      {
+                        "name": "global-metadata.dat",
+                        "type": "file",
+                        "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/il2cpp_data/Metadata/global-metadata.dat",
+                        "ext": ".dat",
+                        "lastModified": 1727712247216
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Resources",
+                    "type": "directory",
+                    "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/il2cpp_data/Resources",
+                    "children": [
+                      {
+                        "name": "mscorlib.dll-resources.dat",
+                        "type": "file",
+                        "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/il2cpp_data/Resources/mscorlib.dll-resources.dat",
+                        "ext": ".dat",
+                        "lastModified": 1727712247244
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "Plugins",
+                "type": "directory",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/Plugins",
+                "children": [
+                  {
+                    "name": "x86_64",
+                    "type": "directory",
+                    "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/Plugins/x86_64",
+                    "children": [
+                      {
+                        "name": "lib_burst_generated.dll",
+                        "type": "file",
+                        "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/Plugins/x86_64/lib_burst_generated.dll",
+                        "ext": ".dll",
+                        "lastModified": 1727367008340
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "Resources",
+                "type": "directory",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/Resources",
+                "children": [
+                  {
+                    "name": "unity default resources",
+                    "type": "file",
+                    "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/Resources/unity default resources",
+                    "ext": "",
+                    "lastModified": 1727367002384
+                  }
+                ]
+              },
+              {
+                "name": "app.info",
+                "type": "file",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/app.info",
+                "ext": ".info",
+                "lastModified": 1727367002383
+              },
+              {
+                "name": "boot.config",
+                "type": "file",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/boot.config",
+                "ext": ".config",
+                "lastModified": 1727712241012
+              },
+              {
+                "name": "data.unity3d",
+                "type": "file",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/data.unity3d",
+                "ext": ".unity3d",
+                "lastModified": 1727712241007
+              },
+              {
+                "name": "resources.resource",
+                "type": "file",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/resources.resource",
+                "ext": ".resource",
+                "lastModified": 1727712240963
+              },
+              {
+                "name": "RuntimeInitializeOnLoads.json",
+                "type": "file",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/RuntimeInitializeOnLoads.json",
+                "ext": ".json",
+                "lastModified": 1727367002383
+              },
+              {
+                "name": "ScriptingAssemblies.json",
+                "type": "file",
+                "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH_Data/ScriptingAssemblies.json",
+                "ext": ".json",
+                "lastModified": 1727367002383
+              }
+            ]
+          },
+          {
+            "name": "baselib.dll",
+            "type": "file",
+            "path": "仿造我的世界/融合版迷雾2.1.3版本/baselib.dll",
+            "ext": ".dll",
+            "lastModified": 1727367002388
+          },
+          {
+            "name": "GameAssembly.dll",
+            "type": "file",
+            "path": "仿造我的世界/融合版迷雾2.1.3版本/GameAssembly.dll",
+            "ext": ".dll",
+            "lastModified": 1727712250482
+          },
+          {
+            "name": "PlantsVsZombiesRH.exe",
+            "type": "file",
+            "path": "仿造我的世界/融合版迷雾2.1.3版本/PlantsVsZombiesRH.exe",
+            "ext": ".exe",
+            "lastModified": 1727367002388
+          },
+          {
+            "name": "UnityCrashHandler64.exe",
+            "type": "file",
+            "path": "仿造我的世界/融合版迷雾2.1.3版本/UnityCrashHandler64.exe",
+            "ext": ".exe",
+            "lastModified": 1727367002399
+          },
+          {
+            "name": "UnityPlayer.dll",
+            "type": "file",
+            "path": "仿造我的世界/融合版迷雾2.1.3版本/UnityPlayer.dll",
+            "ext": ".dll",
+            "lastModified": 1727367005225
+          },
+          {
+            "name": "游戏指南.txt",
+            "type": "file",
+            "path": "仿造我的世界/融合版迷雾2.1.3版本/游戏指南.txt",
+            "ext": ".txt",
+            "lastModified": 1727695527105
+          }
+        ]
+      },
+      {
+        "name": "我的世界-part1-改编草稿.sb3",
+        "type": "file",
+        "path": "仿造我的世界/我的世界-part1-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1719835738237
+      },
+      {
+        "name": "我的世界-part13-改编草稿.sb3",
+        "type": "file",
+        "path": "仿造我的世界/我的世界-part13-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1726405289130
+      },
+      {
+        "name": "我的世界-part2-改编草稿.sb3",
+        "type": "file",
+        "path": "仿造我的世界/我的世界-part2-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1720436983994
+      },
+      {
+        "name": "我的世界-part3-改编草稿.sb3",
+        "type": "file",
+        "path": "仿造我的世界/我的世界-part3-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1725766760103
+      },
+      {
+        "name": "我的世界-part4-改编草稿.sb3",
+        "type": "file",
+        "path": "仿造我的世界/我的世界-part4-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1726548969866
+      },
+      {
+        "name": "植物大战僵尸嫁接版1.103.手机端.apk",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸嫁接版1.103.手机端.apk",
+        "ext": ".apk",
+        "lastModified": 1725342923754
+      },
+      {
+        "name": "植物大战僵尸嫁接版1.103.手机端.zip",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸嫁接版1.103.手机端.zip",
+        "ext": ".zip",
+        "lastModified": 1727261240826
+      },
+      {
+        "name": "植物大战僵尸嫁接版1.103电脑端.zip",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸嫁接版1.103电脑端.zip",
+        "ext": ".zip",
+        "lastModified": 1727261619345
+      },
+      {
+        "name": "植物大战僵尸射击版.exe",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸射击版.exe",
+        "ext": ".exe",
+        "lastModified": 1727667660018
+      },
+      {
+        "name": "植物大战僵尸射击版.pck",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸射击版.pck",
+        "ext": ".pck",
+        "lastModified": 1727667666033
+      },
+      {
+        "name": "植物大战僵尸射击版v.0.1测试版(1).zip",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸射击版v.0.1测试版(1).zip",
+        "ext": ".zip",
+        "lastModified": 1728130325556
+      },
+      {
+        "name": "植物大战僵尸杂交版v2.2.zip",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸杂交版v2.2.zip",
+        "ext": ".zip",
+        "lastModified": 1727484981610
+      },
+      {
+        "name": "植物大战僵尸杂交版v2.5.1.zip",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸杂交版v2.5.1.zip",
+        "ext": ".zip",
+        "lastModified": 1727518842322
+      },
+      {
+        "name": "植物大战僵尸杂交版v2.6.zip",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸杂交版v2.6.zip",
+        "ext": ".zip",
+        "lastModified": 1729947215049
+      },
+      {
+        "name": "植物大战僵尸杂交版v3.1.5(1).zip",
+        "type": "file",
+        "path": "仿造我的世界/植物大战僵尸杂交版v3.1.5(1).zip",
+        "ext": ".zip",
+        "lastModified": 1737555201195
+      },
+      {
+        "name": "融合版迷雾2.1.3版本(1)(2).zip",
+        "type": "file",
+        "path": "仿造我的世界/融合版迷雾2.1.3版本(1)(2).zip",
+        "ext": ".zip",
+        "lastModified": 1729906263097
+      }
+    ]
+  },
+  {
+    "name": "其他",
+    "type": "directory",
+    "path": "其他",
+    "children": [
+      {
+        "name": "2024魔术02.sb3",
+        "type": "file",
+        "path": "其他/2024魔术02.sb3",
+        "ext": ".sb3",
+        "lastModified": 1717214015398
+      },
+      {
+        "name": "turbowarp-addon-settings.json",
+        "type": "file",
+        "path": "其他/turbowarp-addon-settings.json",
+        "ext": ".json",
+        "lastModified": 1726386445176
+      },
+      {
+        "name": "TurboWarp-Setup-1.12.3-x64.exe",
+        "type": "file",
+        "path": "其他/TurboWarp-Setup-1.12.3-x64.exe",
+        "ext": ".exe",
+        "lastModified": 1725966252644
+      },
+      {
+        "name": "u=1919358967,1722242456&fm=253&fmt=auto&app=138&f=JPEG.webp",
+        "type": "file",
+        "path": "其他/u=1919358967,1722242456&fm=253&fmt=auto&app=138&f=JPEG.webp",
+        "ext": ".webp",
+        "lastModified": 1726494319028
+      },
+      {
+        "name": "作品.sb3",
+        "type": "file",
+        "path": "其他/作品.sb3",
+        "ext": ".sb3",
+        "lastModified": 1726895876747
+      },
+      {
+        "name": "堡垒之夜 (已加入放置方块判断).sb3",
+        "type": "file",
+        "path": "其他/堡垒之夜 (已加入放置方块判断).sb3",
+        "ext": ".sb3",
+        "lastModified": 1727742225099
+      },
+      {
+        "name": "堡垒之夜 (待加入放置方块判断).sb3",
+        "type": "file",
+        "path": "其他/堡垒之夜 (待加入放置方块判断).sb3",
+        "ext": ".sb3",
+        "lastModified": 1727006710879
+      },
+      {
+        "name": "堡垒之夜.sb3",
+        "type": "file",
+        "path": "其他/堡垒之夜.sb3",
+        "ext": ".sb3",
+        "lastModified": 1726531695344
+      },
+      {
+        "name": "大战.sb3",
+        "type": "file",
+        "path": "其他/大战.sb3",
+        "ext": ".sb3",
+        "lastModified": 1717820498884
+      },
+      {
+        "name": "我的世界.sb3",
+        "type": "file",
+        "path": "其他/我的世界.sb3",
+        "ext": ".sb3",
+        "lastModified": 1716553483512
+      },
+      {
+        "name": "打字训练软件-part10.sb3",
+        "type": "file",
+        "path": "其他/打字训练软件-part10.sb3",
+        "ext": ".sb3",
+        "lastModified": 1719120583721
+      },
+      {
+        "name": "新建-打字训练软件-part6-改编草稿.sb3",
+        "type": "file",
+        "path": "其他/新建-打字训练软件-part6-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1719141622044
+      },
+      {
+        "name": "母亲节互动贺卡-改编草稿.sb3",
+        "type": "file",
+        "path": "其他/母亲节互动贺卡-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1715609815088
+      },
+      {
+        "name": "母亲节互动贺卡.sb3",
+        "type": "file",
+        "path": "其他/母亲节互动贺卡.sb3",
+        "ext": ".sb3",
+        "lastModified": 1715697506027
+      },
+      {
+        "name": "沙漠车.sb3",
+        "type": "file",
+        "path": "其他/沙漠车.sb3",
+        "ext": ".sb3",
+        "lastModified": 1717543052213
+      }
+    ]
+  },
+  {
+    "name": "堡垒之夜",
+    "type": "directory",
+    "path": "堡垒之夜",
+    "children": [
+      {
+        "name": "packaged-project",
+        "type": "directory",
+        "path": "堡垒之夜/packaged-project",
+        "children": [
+          {
+            "name": "locales",
+            "type": "directory",
+            "path": "堡垒之夜/packaged-project/locales",
+            "children": [
+              {
+                "name": "af.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/af.pak",
+                "ext": ".pak",
+                "lastModified": 1697366240000
+              },
+              {
+                "name": "am.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/am.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "ar.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ar.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "bg.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/bg.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "bn.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/bn.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "ca.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ca.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "cs.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/cs.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "da.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/da.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "de.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/de.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "el.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/el.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "en-GB.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/en-GB.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "en-US.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/en-US.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "es-419.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/es-419.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "es.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/es.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "et.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/et.pak",
+                "ext": ".pak",
+                "lastModified": 1697366240000
+              },
+              {
+                "name": "fa.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/fa.pak",
+                "ext": ".pak",
+                "lastModified": 1697366240000
+              },
+              {
+                "name": "fi.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/fi.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "fil.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/fil.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "fr.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/fr.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "gu.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/gu.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "he.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/he.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "hi.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/hi.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "hr.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/hr.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "hu.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/hu.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "id.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/id.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "it.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/it.pak",
+                "ext": ".pak",
+                "lastModified": 1697366240000
+              },
+              {
+                "name": "ja.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ja.pak",
+                "ext": ".pak",
+                "lastModified": 1697366240000
+              },
+              {
+                "name": "kn.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/kn.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "ko.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ko.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "lt.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/lt.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "lv.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/lv.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "ml.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ml.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "mr.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/mr.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "ms.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ms.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "nb.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/nb.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "nl.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/nl.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "pl.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/pl.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "pt-BR.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/pt-BR.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "pt-PT.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/pt-PT.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "ro.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ro.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "ru.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ru.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "sk.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/sk.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "sl.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/sl.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "sr.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/sr.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "sv.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/sv.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "sw.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/sw.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "ta.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ta.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "te.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/te.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "th.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/th.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "tr.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/tr.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "uk.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/uk.pak",
+                "ext": ".pak",
+                "lastModified": 1697366240000
+              },
+              {
+                "name": "ur.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/ur.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "vi.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/vi.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "zh-CN.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/zh-CN.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              },
+              {
+                "name": "zh-TW.pak",
+                "type": "file",
+                "path": "堡垒之夜/packaged-project/locales/zh-TW.pak",
+                "ext": ".pak",
+                "lastModified": 1697366242000
+              }
+            ]
+          },
+          {
+            "name": "resources",
+            "type": "directory",
+            "path": "堡垒之夜/packaged-project/resources",
+            "children": [
+              {
+                "name": "app",
+                "type": "directory",
+                "path": "堡垒之夜/packaged-project/resources/app",
+                "children": [
+                  {
+                    "name": "assets",
+                    "type": "directory",
+                    "path": "堡垒之夜/packaged-project/resources/app/assets",
+                    "children": [
+                      {
+                        "name": "018c9779cdf2e5aaa2638184392a61ee.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/018c9779cdf2e5aaa2638184392a61ee.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "01a59217752a3049a96571e0f00fb0cc.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/01a59217752a3049a96571e0f00fb0cc.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "01e6a66b10b2a4971c7b66cc2781e1c5.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/01e6a66b10b2a4971c7b66cc2781e1c5.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "0256539ab975721f6e30208ea8c4475e.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/0256539ab975721f6e30208ea8c4475e.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "05035672f6bf5b8b4c49a560a8f4bf58.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/05035672f6bf5b8b4c49a560a8f4bf58.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "052b13d56e9b905fd9d8278b9e076447.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/052b13d56e9b905fd9d8278b9e076447.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "0537cf89dc8d34ad44e9e48b5a82b9f6.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/0537cf89dc8d34ad44e9e48b5a82b9f6.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "05c0458fec5647b53ce8c9ebbab60c9e.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/05c0458fec5647b53ce8c9ebbab60c9e.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "0710e9a66f4bcd5e83f25a856553f07d.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/0710e9a66f4bcd5e83f25a856553f07d.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "101ca41c9ce82e18e5f7e0999c79bc80.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/101ca41c9ce82e18e5f7e0999c79bc80.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "125be647aa9633a11aec4dd73afa24be.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/125be647aa9633a11aec4dd73afa24be.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "128fea19f1bec0c4e236089fff65e8e7.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/128fea19f1bec0c4e236089fff65e8e7.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "14e46ec3e2ba471c2adfe8f119052307.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/14e46ec3e2ba471c2adfe8f119052307.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "154a4f9be5be559e460caa416b88058c.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/154a4f9be5be559e460caa416b88058c.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "178b993e3655ce0915f9a8fbd7fb3551.png",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/178b993e3655ce0915f9a8fbd7fb3551.png",
+                        "ext": ".png",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "1bc375cd39e4d28b05d24bd5693a998b.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/1bc375cd39e4d28b05d24bd5693a998b.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "1bd46987fee1da4c547c8d8eb061e31a.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/1bd46987fee1da4c547c8d8eb061e31a.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "1c00fb28b04cd58e400b5ed11e3ecb5f.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/1c00fb28b04cd58e400b5ed11e3ecb5f.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "1e2711019b93cb0d9840b49ce557a687.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/1e2711019b93cb0d9840b49ce557a687.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "20deeff49c4e4d9fa08aa5c2691d7618.png",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/20deeff49c4e4d9fa08aa5c2691d7618.png",
+                        "ext": ".png",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "220ba6936016e77eb4bef894b143b901.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/220ba6936016e77eb4bef894b143b901.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "2252bb4da10075337e9ff2e452f47697.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/2252bb4da10075337e9ff2e452f47697.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "22e8679564b798645401fa008f96e18a.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/22e8679564b798645401fa008f96e18a.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "2413fd5ed3e58d0bc2391a94de2fef46.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/2413fd5ed3e58d0bc2391a94de2fef46.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "2969a6b638bfa268df15589bbc0d5ca4.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/2969a6b638bfa268df15589bbc0d5ca4.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "2a0098d159861a5a3d8e5a6d10103a96.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/2a0098d159861a5a3d8e5a6d10103a96.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "303b1b7bfbfe9d689e50625d301e7e8a.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/303b1b7bfbfe9d689e50625d301e7e8a.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "349cfbf22a3916a74a90d32cd24091e9.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/349cfbf22a3916a74a90d32cd24091e9.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "3676f0d45d8601d85895ecf5994d7e02.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/3676f0d45d8601d85895ecf5994d7e02.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "3763cca21984faf84f4213f0deaf2f41.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/3763cca21984faf84f4213f0deaf2f41.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "3b392b89ba3a6019fa5fc39bb7377b34.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/3b392b89ba3a6019fa5fc39bb7377b34.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "3c348c0827ce581704cc0b364361d043.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/3c348c0827ce581704cc0b364361d043.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "4256da7fbd2590375b2873a7e9a397ce.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/4256da7fbd2590375b2873a7e9a397ce.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "42ae6854b71b11baead471b476120d19.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/42ae6854b71b11baead471b476120d19.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "42eb72775b3faa423413fb4cfa8b67e5.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/42eb72775b3faa423413fb4cfa8b67e5.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "438a9c571e64e81e773810830b2f8feb.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/438a9c571e64e81e773810830b2f8feb.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "452395475b773a0ef945da7e9eedf433.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/452395475b773a0ef945da7e9eedf433.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "453996350376d67600f538c5db9c2e0d.png",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/453996350376d67600f538c5db9c2e0d.png",
+                        "ext": ".png",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "46909a5128ba137f29f1d54fa8c44403.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/46909a5128ba137f29f1d54fa8c44403.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "47282ff0f7047c6fab9c94b531abf721.png",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/47282ff0f7047c6fab9c94b531abf721.png",
+                        "ext": ".png",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "475e55fc5566d941183c4b41afecab80.png",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/475e55fc5566d941183c4b41afecab80.png",
+                        "ext": ".png",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "4adcd619641b43cf9c31529d414e0b24.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/4adcd619641b43cf9c31529d414e0b24.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "4d06b2a08c146dd9d288d427d7cae628.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/4d06b2a08c146dd9d288d427d7cae628.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "505a578ecd74af2cf5c017f56d949cc1.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/505a578ecd74af2cf5c017f56d949cc1.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "51043177aff32c582c9aa5b883503015.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/51043177aff32c582c9aa5b883503015.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "53ca03abbcec6dd76d3575d28410c705.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/53ca03abbcec6dd76d3575d28410c705.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "54846c694fc348fc150524ef6534fc8a.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/54846c694fc348fc150524ef6534fc8a.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "57a9fa63d90b1cbe941b49f3da6a2679.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/57a9fa63d90b1cbe941b49f3da6a2679.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "5bed1338126b50a3ee0dcaa7f39ea572.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/5bed1338126b50a3ee0dcaa7f39ea572.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "5d420d91e21d16964ea0cc43b73ffc59.mp3",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/5d420d91e21d16964ea0cc43b73ffc59.mp3",
+                        "ext": ".mp3",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "64b950b772518e5d38d719a5a5de4110.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/64b950b772518e5d38d719a5a5de4110.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "652bd2cadcfd5bcea0215d7f075d9256.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/652bd2cadcfd5bcea0215d7f075d9256.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "67a4d471f2ee4af4faf10f1ac55b05ef.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/67a4d471f2ee4af4faf10f1ac55b05ef.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "6a5cee860f607457ca5a41a230129423.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/6a5cee860f607457ca5a41a230129423.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "6a5d5a720e426fecd58c7d96995d0586.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/6a5d5a720e426fecd58c7d96995d0586.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "6ba4153881206cb14f602cb9a26d65c5.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/6ba4153881206cb14f602cb9a26d65c5.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "6c51c385ce30b04e20dd28539f6a0613.png",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/6c51c385ce30b04e20dd28539f6a0613.png",
+                        "ext": ".png",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "6d3f81e9337360edea4a175379561646.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/6d3f81e9337360edea4a175379561646.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "6ea590baf730709a83b322c2398ccb38.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/6ea590baf730709a83b322c2398ccb38.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "73512273aff5c7f222366cb31d0d4040.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/73512273aff5c7f222366cb31d0d4040.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "79b877f89842509c3e1addb8cff70d59.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/79b877f89842509c3e1addb8cff70d59.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "7a6845027949defc35d8989e97a01bdc.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/7a6845027949defc35d8989e97a01bdc.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "7cf8737ead618ba638891bf5765d7890.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/7cf8737ead618ba638891bf5765d7890.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "7d95d83bc7b317ca0b759230f2ade993.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/7d95d83bc7b317ca0b759230f2ade993.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "7de54c6410ae0f466fef605ec0215a55.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/7de54c6410ae0f466fef605ec0215a55.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "80090fbebe16d12634eebb49a79e30d2.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/80090fbebe16d12634eebb49a79e30d2.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "816cee27dee90b5bf0a386c5f6aef823.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/816cee27dee90b5bf0a386c5f6aef823.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "83a9787d4cb6f3b7632b4ddfebf74367.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/83a9787d4cb6f3b7632b4ddfebf74367.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "83c36d806dc92327b9e7049a565c6bff.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/83c36d806dc92327b9e7049a565c6bff.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "83e13e4ba5e954cfdba6264dbd60793b.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/83e13e4ba5e954cfdba6264dbd60793b.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "8474a7f66719e98603f7a31747e22aaf.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/8474a7f66719e98603f7a31747e22aaf.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "885cce07009c745ab224b5f90beb25ca.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/885cce07009c745ab224b5f90beb25ca.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "8981c81aaeb8ebb98668dbcf214106b0.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/8981c81aaeb8ebb98668dbcf214106b0.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "89aa5ebea1b70e0fd6cbbcaf6fc33841.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/89aa5ebea1b70e0fd6cbbcaf6fc33841.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "8aed99deb21f14444caedd9b0e4e5d8d.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/8aed99deb21f14444caedd9b0e4e5d8d.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "8cca4d1b5c2c288d624d8979511973ec.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/8cca4d1b5c2c288d624d8979511973ec.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "8ebad4e4bfcb15a1aaf47bc5813c748e.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/8ebad4e4bfcb15a1aaf47bc5813c748e.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "91885edd502e4e7c2e3d6665ac5c9f32.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/91885edd502e4e7c2e3d6665ac5c9f32.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "97876c0bbe4eb04dff79d1d78bb4bc9e.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/97876c0bbe4eb04dff79d1d78bb4bc9e.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "9aeab3bae0bdfdc928d8414413cd577a.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/9aeab3bae0bdfdc928d8414413cd577a.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "9e6099813eb4c93093591d71552ab008.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/9e6099813eb4c93093591d71552ab008.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "9f274662b5ead5184addd559b9e44e24.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/9f274662b5ead5184addd559b9e44e24.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "a3075d410877de505d5aae296e990e53.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/a3075d410877de505d5aae296e990e53.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "a3c4183080d713c220d699ece265a018.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/a3c4183080d713c220d699ece265a018.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "a46a4dbe7298c078cec134d8006ece27.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/a46a4dbe7298c078cec134d8006ece27.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "a499c3ed9e636176b70b6c0a2a9b3c31.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/a499c3ed9e636176b70b6c0a2a9b3c31.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "a6cd0372e65e7f66c503ce2b89195564.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/a6cd0372e65e7f66c503ce2b89195564.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "a82d72a83ab80fc50adfaaa00ee2aff7.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/a82d72a83ab80fc50adfaaa00ee2aff7.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "aa0b5be72836d8e44f432e4b4bf60ecd.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/aa0b5be72836d8e44f432e4b4bf60ecd.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "ac88a1b4650b9f7358ffded42af690b2.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/ac88a1b4650b9f7358ffded42af690b2.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "ad6d86c4709138713883bd9f5dfe592c.png",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/ad6d86c4709138713883bd9f5dfe592c.png",
+                        "ext": ".png",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "af6879453b68dfa9532de60fc0eb1194.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/af6879453b68dfa9532de60fc0eb1194.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "b1724151754b30f01b0f493de22d20b1.mp3",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/b1724151754b30f01b0f493de22d20b1.mp3",
+                        "ext": ".mp3",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "b9c127e37e16da12f1d64f26aa1de6b8.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/b9c127e37e16da12f1d64f26aa1de6b8.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "baa1844d370d2bcfcc7516c0cf3a25bc.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/baa1844d370d2bcfcc7516c0cf3a25bc.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "c49f6151a2f029d8cae313e2d36e58dc.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/c49f6151a2f029d8cae313e2d36e58dc.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "c6831c9ba6ed6791fa8c43a08a732e4c.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/c6831c9ba6ed6791fa8c43a08a732e4c.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "c7659a8848cfb8678551b262a0f32666.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/c7659a8848cfb8678551b262a0f32666.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "ca5b320ab6ce791ef460868481dc6827.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/ca5b320ab6ce791ef460868481dc6827.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "cd21514d0531fdffb22204e0ec5ed84a.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/cd21514d0531fdffb22204e0ec5ed84a.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "cd2ffc858cb4015b5d0d8bcf50848163.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/cd2ffc858cb4015b5d0d8bcf50848163.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "d00064fa55a8aff383df477954d9f454.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/d00064fa55a8aff383df477954d9f454.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "d061ba5df9bee0da3302f62d456e1e8b.mp3",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/d061ba5df9bee0da3302f62d456e1e8b.mp3",
+                        "ext": ".mp3",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "d27fcec7329e38c6c0a7badcd36f6ba2.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/d27fcec7329e38c6c0a7badcd36f6ba2.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "d2ac034e64a92f42e8e64298f456d180.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/d2ac034e64a92f42e8e64298f456d180.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "d2e1a9997a86c61f6a52bddb8b037419.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/d2e1a9997a86c61f6a52bddb8b037419.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "d5ba60d3242251fa6de2d290878faa4a.png",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/d5ba60d3242251fa6de2d290878faa4a.png",
+                        "ext": ".png",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "d954b0f3d989ff0ea8e8c8cc38be9b54.mp3",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/d954b0f3d989ff0ea8e8c8cc38be9b54.mp3",
+                        "ext": ".mp3",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "d994afec43215b03b498e2f308373506.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/d994afec43215b03b498e2f308373506.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "dc13c83298ebd810d0a1d7b68b487074.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/dc13c83298ebd810d0a1d7b68b487074.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "dfc4795b814602f2bbac3a1c2826c53d.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/dfc4795b814602f2bbac3a1c2826c53d.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "e10d1555fa7079918dd7e81f3cd46fa3.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/e10d1555fa7079918dd7e81f3cd46fa3.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "e1ce16d62aef1d43a64482a5a79f7fad.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/e1ce16d62aef1d43a64482a5a79f7fad.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "e3feaad3d76503e0eec599b84aab7a69.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/e3feaad3d76503e0eec599b84aab7a69.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "e4dcca822ed40e39c3bb6b3b61d8bb15.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/e4dcca822ed40e39c3bb6b3b61d8bb15.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "e97da2afe95ef7a04d64bb4ea1f9dff3.wav",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/e97da2afe95ef7a04d64bb4ea1f9dff3.wav",
+                        "ext": ".wav",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "ec46e5c3558383cca7773c93bf3ff728.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/ec46e5c3558383cca7773c93bf3ff728.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "ec7b838d3d8d233a383f03b8bd02e2e5.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/ec7b838d3d8d233a383f03b8bd02e2e5.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "ed9968de4c947595bba9cd8134e66987.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/ed9968de4c947595bba9cd8134e66987.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "faf690e282a69188e80f7d9c51789e48.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/faf690e282a69188e80f7d9c51789e48.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "fd7ea80c6252e117a44633a06bd42df7.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/fd7ea80c6252e117a44633a06bd42df7.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "ff49d405985d5beec09defae5ad7536c.svg",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/ff49d405985d5beec09defae5ad7536c.svg",
+                        "ext": ".svg",
+                        "lastModified": 1640880000000
+                      },
+                      {
+                        "name": "project.json",
+                        "type": "file",
+                        "path": "堡垒之夜/packaged-project/resources/app/assets/project.json",
+                        "ext": ".json",
+                        "lastModified": 1640880000000
+                      }
+                    ]
+                  },
+                  {
+                    "name": "electron-main.js",
+                    "type": "file",
+                    "path": "堡垒之夜/packaged-project/resources/app/electron-main.js",
+                    "ext": ".js",
+                    "lastModified": 1725895728000
+                  },
+                  {
+                    "name": "electron-preload.js",
+                    "type": "file",
+                    "path": "堡垒之夜/packaged-project/resources/app/electron-preload.js",
+                    "ext": ".js",
+                    "lastModified": 1725895728000
+                  },
+                  {
+                    "name": "icon.png",
+                    "type": "file",
+                    "path": "堡垒之夜/packaged-project/resources/app/icon.png",
+                    "ext": ".png",
+                    "lastModified": 1725895728000
+                  },
+                  {
+                    "name": "index.html",
+                    "type": "file",
+                    "path": "堡垒之夜/packaged-project/resources/app/index.html",
+                    "ext": ".html",
+                    "lastModified": 1725895726000
+                  },
+                  {
+                    "name": "package.json",
+                    "type": "file",
+                    "path": "堡垒之夜/packaged-project/resources/app/package.json",
+                    "ext": ".json",
+                    "lastModified": 1725895728000
+                  },
+                  {
+                    "name": "script.js",
+                    "type": "file",
+                    "path": "堡垒之夜/packaged-project/resources/app/script.js",
+                    "ext": ".js",
+                    "lastModified": 1725895726000
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "chrome_100_percent.pak",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/chrome_100_percent.pak",
+            "ext": ".pak",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "chrome_200_percent.pak",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/chrome_200_percent.pak",
+            "ext": ".pak",
+            "lastModified": 1697366240000
+          },
+          {
+            "name": "d3dcompiler_47.dll",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/d3dcompiler_47.dll",
+            "ext": ".dll",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "ffmpeg.dll",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/ffmpeg.dll",
+            "ext": ".dll",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "icudtl.dat",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/icudtl.dat",
+            "ext": ".dat",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "libEGL.dll",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/libEGL.dll",
+            "ext": ".dll",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "libGLESv2.dll",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/libGLESv2.dll",
+            "ext": ".dll",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "licenses.html",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/licenses.html",
+            "ext": ".html",
+            "lastModified": 1725895726000
+          },
+          {
+            "name": "README.txt",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/README.txt",
+            "ext": ".txt",
+            "lastModified": 1725895728000
+          },
+          {
+            "name": "resources.pak",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/resources.pak",
+            "ext": ".pak",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "snapshot_blob.bin",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/snapshot_blob.bin",
+            "ext": ".bin",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "v8_context_snapshot.bin",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/v8_context_snapshot.bin",
+            "ext": ".bin",
+            "lastModified": 1697366240000
+          },
+          {
+            "name": "vk_swiftshader.dll",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/vk_swiftshader.dll",
+            "ext": ".dll",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "vk_swiftshader_icd.json",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/vk_swiftshader_icd.json",
+            "ext": ".json",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "vulkan-1.dll",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/vulkan-1.dll",
+            "ext": ".dll",
+            "lastModified": 1697366242000
+          },
+          {
+            "name": "堡垒之夜0.0.1.exe",
+            "type": "file",
+            "path": "堡垒之夜/packaged-project/堡垒之夜0.0.1.exe",
+            "ext": ".exe",
+            "lastModified": 1697366244000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "塔防游戏",
+    "type": "directory",
+    "path": "塔防游戏",
+    "children": [
+      {
+        "name": "1710562891937.jpg",
+        "type": "file",
+        "path": "塔防游戏/1710562891937.jpg",
+        "ext": ".jpg",
+        "lastModified": 1710562891937
+      },
+      {
+        "name": "1710641605589.jpg",
+        "type": "file",
+        "path": "塔防游戏/1710641605589.jpg",
+        "ext": ".jpg",
+        "lastModified": 1710641605589
+      },
+      {
+        "name": "1710647333937.jpg",
+        "type": "file",
+        "path": "塔防游戏/1710647333937.jpg",
+        "ext": ".jpg",
+        "lastModified": 1710647333937
+      },
+      {
+        "name": "作品.sb3",
+        "type": "file",
+        "path": "塔防游戏/作品.sb3",
+        "ext": ".sb3",
+        "lastModified": 1762516166308
+      },
+      {
+        "name": "塔防游戏.sb3",
+        "type": "file",
+        "path": "塔防游戏/塔防游戏.sb3",
+        "ext": ".sb3",
+        "lastModified": 1721741653852
+      },
+      {
+        "name": "塔防游戏Part10-改编草稿.sb3",
+        "type": "file",
+        "path": "塔防游戏/塔防游戏Part10-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1711722832989
+      }
+    ]
+  },
+  {
+    "name": "射击游戏",
+    "type": "directory",
+    "path": "射击游戏",
+    "children": [
+      {
+        "name": "射击游戏0.0.2.sb3",
+        "type": "file",
+        "path": "射击游戏/射击游戏0.0.2.sb3",
+        "ext": ".sb3",
+        "lastModified": 1740278740000
+      }
+    ]
+  },
+  {
+    "name": "恶魔轮盘",
+    "type": "directory",
+    "path": "恶魔轮盘",
+    "children": [
+      {
+        "name": "素材",
+        "type": "directory",
+        "path": "恶魔轮盘/素材",
+        "children": [
+          {
+            "name": "恶魔轮盘封面.png",
+            "type": "file",
+            "path": "恶魔轮盘/素材/恶魔轮盘封面.png",
+            "ext": ".png",
+            "lastModified": 1708417031000
+          },
+          {
+            "name": "恶魔轮盘按钮.png",
+            "type": "file",
+            "path": "恶魔轮盘/素材/恶魔轮盘按钮.png",
+            "ext": ".png",
+            "lastModified": 1708417329000
+          }
+        ]
+      },
+      {
+        "name": "恶魔轮盘 part -1.sb3",
+        "type": "file",
+        "path": "恶魔轮盘/恶魔轮盘 part -1.sb3",
+        "ext": ".sb3",
+        "lastModified": 1708659861622
+      },
+      {
+        "name": "恶魔轮盘part9-改编草稿.sb3",
+        "type": "file",
+        "path": "恶魔轮盘/恶魔轮盘part9-改编草稿.sb3",
+        "ext": ".sb3",
+        "lastModified": 1712367022390
+      }
+    ]
+  },
+  {
+    "name": "植物大战僵尸",
+    "type": "directory",
+    "path": "植物大战僵尸",
+    "children": [
+      {
+        "name": "植物大战僵尸 - 副本.sb3",
+        "type": "file",
+        "path": "植物大战僵尸/植物大战僵尸 - 副本.sb3",
+        "ext": ".sb3",
+        "lastModified": 1727775969113
+      },
+      {
+        "name": "植物大战僵尸.sb3",
+        "type": "file",
+        "path": "植物大战僵尸/植物大战僵尸.sb3",
+        "ext": ".sb3",
+        "lastModified": 1727775969113
+      }
+    ]
+  },
+  {
+    "name": "植物大战僵尸杂交版v2.3",
+    "type": "directory",
+    "path": "植物大战僵尸杂交版v2.3",
+    "children": [
+      {
+        "name": "pvzHE",
+        "type": "directory",
+        "path": "植物大战僵尸杂交版v2.3/pvzHE",
+        "children": [
+          {
+            "name": "fixes",
+            "type": "directory",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/fixes",
+            "children": [
+              {
+                "name": "补丁请放在此文件夹",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/pvzHE/fixes/补丁请放在此文件夹",
+                "ext": "",
+                "lastModified": 1727483053684
+              }
+            ]
+          },
+          {
+            "name": "fonts",
+            "type": "directory",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/fonts",
+            "children": [
+              {
+                "name": "fzcq.ttf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/pvzHE/fonts/fzcq.ttf",
+                "ext": ".ttf",
+                "lastModified": 1727483053688
+              },
+              {
+                "name": "fzjz.ttf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/pvzHE/fonts/fzjz.ttf",
+                "ext": ".ttf",
+                "lastModified": 1727483053692
+              },
+              {
+                "name": "fzkt.TTF",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/pvzHE/fonts/fzkt.TTF",
+                "ext": ".ttf",
+                "lastModified": 1727483053698
+              },
+              {
+                "name": "fzyh.ttf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/pvzHE/fonts/fzyh.ttf",
+                "ext": ".ttf",
+                "lastModified": 1727483053704
+              },
+              {
+                "name": "wryh+pico12num.ttf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/pvzHE/fonts/wryh+pico12num.ttf",
+                "ext": ".ttf",
+                "lastModified": 1727483053718
+              },
+              {
+                "name": "wryh.ttf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/pvzHE/fonts/wryh.ttf",
+                "ext": ".ttf",
+                "lastModified": 1727483053733
+              }
+            ]
+          },
+          {
+            "name": "config.toml",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/config.toml",
+            "ext": ".toml",
+            "lastModified": 1727483053821
+          },
+          {
+            "name": "crash.txt",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/crash.txt",
+            "ext": ".txt",
+            "lastModified": 1727484534274
+          },
+          {
+            "name": "launcher.log",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/launcher.log",
+            "ext": ".log",
+            "lastModified": 1727484569479
+          },
+          {
+            "name": "logo.ico",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/logo.ico",
+            "ext": ".ico",
+            "lastModified": 1714412682000
+          },
+          {
+            "name": "main.pak",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/main.pak",
+            "ext": ".pak",
+            "lastModified": 1727483053821
+          },
+          {
+            "name": "pvzHE-Launcher.exe",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/pvzHE-Launcher.exe",
+            "ext": ".exe",
+            "lastModified": 1722184329558
+          },
+          {
+            "name": "uninst.exe",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/pvzHE/uninst.exe",
+            "ext": ".exe",
+            "lastModified": 1727483052081
+          }
+        ]
+      },
+      {
+        "name": "小游戏",
+        "type": "directory",
+        "path": "植物大战僵尸杂交版v2.3/小游戏",
+        "children": [
+          {
+            "name": "龙卷风.sb3",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/小游戏/龙卷风.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707986079954
+          }
+        ]
+      },
+      {
+        "name": "植物大战僵尸杂交版v2.3",
+        "type": "directory",
+        "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3",
+        "children": [
+          {
+            "name": "【三选一】3D加速补丁",
+            "type": "directory",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】3D加速补丁",
+            "children": [
+              {
+                "name": "ddraw.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】3D加速补丁/ddraw.dll",
+                "ext": ".dll",
+                "lastModified": 1529742006000
+              },
+              {
+                "name": "libwine.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】3D加速补丁/libwine.dll",
+                "ext": ".dll",
+                "lastModified": 1529742006000
+              },
+              {
+                "name": "wined3d.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】3D加速补丁/wined3d.dll",
+                "ext": ".dll",
+                "lastModified": 1529742006000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】3D加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324496000
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX12加速补丁",
+            "type": "directory",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX12加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX12加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708724000
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX12加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708724000
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX12加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1714724432000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX12加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324502000
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX加速补丁",
+            "type": "directory",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708724000
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708724000
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1712765634000
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【三选一】DX加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324508000
+              }
+            ]
+          },
+          {
+            "name": "【不懂就看】文件用途说明.txt",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【不懂就看】文件用途说明.txt",
+            "ext": ".txt",
+            "lastModified": 1721888654000
+          },
+          {
+            "name": "【存档文件夹】双击打开.bat",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【存档文件夹】双击打开.bat",
+            "ext": ".bat",
+            "lastModified": 1721887906000
+          },
+          {
+            "name": "【常见问题】杂交版v2.3指南.pdf",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【常见问题】杂交版v2.3指南.pdf",
+            "ext": ".pdf",
+            "lastModified": 1721537220000
+          },
+          {
+            "name": "【运行后打开游戏】窗口白屏卡死.reg",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【运行后打开游戏】窗口白屏卡死.reg",
+            "ext": ".reg",
+            "lastModified": 1717004338000
+          },
+          {
+            "name": "【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "ext": ".bat",
+            "lastModified": 1715180948000
+          },
+          {
+            "name": "植物大战僵尸杂交版v2.3安装程序.exe",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3/植物大战僵尸杂交版v2.3安装程序.exe",
+            "ext": ".exe",
+            "lastModified": 1722184418000
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "植物大战僵尸杂交版v2.3.7",
+    "type": "directory",
+    "path": "植物大战僵尸杂交版v2.3.7",
+    "children": [
+      {
+        "name": "植物大战僵尸杂交版v2.3.7",
+        "type": "directory",
+        "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7",
+        "children": [
+          {
+            "name": "【三选一】3D加速补丁",
+            "type": "directory",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】3D加速补丁",
+            "children": [
+              {
+                "name": "ddraw.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】3D加速补丁/ddraw.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004457
+              },
+              {
+                "name": "libwine.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】3D加速补丁/libwine.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004443
+              },
+              {
+                "name": "wined3d.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】3D加速补丁/wined3d.dll",
+                "ext": ".dll",
+                "lastModified": 1529742004452
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】3D加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324495531
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX12加速补丁",
+            "type": "directory",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX12加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX12加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723317
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX12加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723374
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX12加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1714724431407
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX12加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324501385
+              }
+            ]
+          },
+          {
+            "name": "【三选一】DX加速补丁",
+            "type": "directory",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX加速补丁",
+            "children": [
+              {
+                "name": "D3DImm.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX加速补丁/D3DImm.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723317
+              },
+              {
+                "name": "DDraw.dll",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX加速补丁/DDraw.dll",
+                "ext": ".dll",
+                "lastModified": 1706708723374
+              },
+              {
+                "name": "dgVoodoo.conf",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX加速补丁/dgVoodoo.conf",
+                "ext": ".conf",
+                "lastModified": 1712765632860
+              },
+              {
+                "name": "使用说明.txt",
+                "type": "file",
+                "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【三选一】DX加速补丁/使用说明.txt",
+                "ext": ".txt",
+                "lastModified": 1720324507720
+              }
+            ]
+          },
+          {
+            "name": "【不懂就看】文件用途说明.txt",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【不懂就看】文件用途说明.txt",
+            "ext": ".txt",
+            "lastModified": 1723967876709
+          },
+          {
+            "name": "【双击打开】存档与游戏文件夹.hta",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【双击打开】存档与游戏文件夹.hta",
+            "ext": ".hta",
+            "lastModified": 1723877614705
+          },
+          {
+            "name": "【常见问题】杂交版v2.3+指南.pdf",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【常见问题】杂交版v2.3+指南.pdf",
+            "ext": ".pdf",
+            "lastModified": 1723872654952
+          },
+          {
+            "name": "【运行后打开游戏】窗口白屏卡死.reg",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【运行后打开游戏】窗口白屏卡死.reg",
+            "ext": ".reg",
+            "lastModified": 1717004336094
+          },
+          {
+            "name": "【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/【需要管理员权限】数据执行保护-关闭DEP.bat",
+            "ext": ".bat",
+            "lastModified": 1723873050668
+          },
+          {
+            "name": "植物大战僵尸杂交版v2.3.7安装程序.exe",
+            "type": "file",
+            "path": "植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7/植物大战僵尸杂交版v2.3.7安装程序.exe",
+            "ext": ".exe",
+            "lastModified": 1723968199361
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "消消乐",
+    "type": "directory",
+    "path": "消消乐",
+    "children": [
+      {
+        "name": "消消乐素材",
+        "type": "directory",
+        "path": "消消乐/消消乐素材",
+        "children": [
+          {
+            "name": "1.动物（手绘）",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/1.动物（手绘）",
+            "children": [
+              {
+                "name": "动物（手绘）.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/1.动物（手绘）/动物（手绘）.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706921563386
+              }
+            ]
+          },
+          {
+            "name": "10.熊出没",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/10.熊出没",
+            "children": [
+              {
+                "name": "熊出没.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/10.熊出没/熊出没.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922196365
+              }
+            ]
+          },
+          {
+            "name": "11.猫和老鼠",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/11.猫和老鼠",
+            "children": [
+              {
+                "name": "猫和老鼠.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/11.猫和老鼠/猫和老鼠.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922216151
+              }
+            ]
+          },
+          {
+            "name": "12.小猪佩奇",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/12.小猪佩奇",
+            "children": [
+              {
+                "name": "小猪佩奇.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/12.小猪佩奇/小猪佩奇.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922226674
+              }
+            ]
+          },
+          {
+            "name": "13.开心超人",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/13.开心超人",
+            "children": [
+              {
+                "name": "开心超人.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/13.开心超人/开心超人.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922237284
+              }
+            ]
+          },
+          {
+            "name": "2.喜羊羊与灰太狼",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/2.喜羊羊与灰太狼",
+            "children": [
+              {
+                "name": "喜羊羊与灰太狼.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/2.喜羊羊与灰太狼/喜羊羊与灰太狼.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922082633
+              }
+            ]
+          },
+          {
+            "name": "3.愤怒的小鸟",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/3.愤怒的小鸟",
+            "children": [
+              {
+                "name": "愤怒的小鸟.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/3.愤怒的小鸟/愤怒的小鸟.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922106191
+              }
+            ]
+          },
+          {
+            "name": "4.果宝特攻",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/4.果宝特攻",
+            "children": [
+              {
+                "name": "果宝特攻.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/4.果宝特攻/果宝特攻.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922115046
+              }
+            ]
+          },
+          {
+            "name": "5.蛋仔（手绘）",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/5.蛋仔（手绘）",
+            "children": [
+              {
+                "name": "蛋仔（手绘）.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/5.蛋仔（手绘）/蛋仔（手绘）.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922127025
+              }
+            ]
+          },
+          {
+            "name": "6.猪猪侠",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/6.猪猪侠",
+            "children": [
+              {
+                "name": "猪猪侠.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/6.猪猪侠/猪猪侠.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922143703
+              }
+            ]
+          },
+          {
+            "name": "7.米奇妙妙屋",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/7.米奇妙妙屋",
+            "children": [
+              {
+                "name": "米奇妙妙屋.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/7.米奇妙妙屋/米奇妙妙屋.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922159295
+              }
+            ]
+          },
+          {
+            "name": "8.缤纷动物（手绘）",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/8.缤纷动物（手绘）",
+            "children": [
+              {
+                "name": "缤纷动物（手绘）.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/8.缤纷动物（手绘）/缤纷动物（手绘）.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922171129
+              }
+            ]
+          },
+          {
+            "name": "9.西游记",
+            "type": "directory",
+            "path": "消消乐/消消乐素材/9.西游记",
+            "children": [
+              {
+                "name": "西游记.sprite3",
+                "type": "file",
+                "path": "消消乐/消消乐素材/9.西游记/西游记.sprite3",
+                "ext": ".sprite3",
+                "lastModified": 1706922184772
+              }
+            ]
+          },
+          {
+            "name": "new.jpg",
+            "type": "file",
+            "path": "消消乐/消消乐素材/new.jpg",
+            "ext": ".jpg",
+            "lastModified": 1707972758652
+          },
+          {
+            "name": "失败图片.png",
+            "type": "file",
+            "path": "消消乐/消消乐素材/失败图片.png",
+            "ext": ".png",
+            "lastModified": 1707184994878
+          },
+          {
+            "name": "开始界面.webp",
+            "type": "file",
+            "path": "消消乐/消消乐素材/开始界面.webp",
+            "ext": ".webp",
+            "lastModified": 1707187074975
+          },
+          {
+            "name": "查看.png",
+            "type": "file",
+            "path": "消消乐/消消乐素材/查看.png",
+            "ext": ".png",
+            "lastModified": 1707225205604
+          },
+          {
+            "name": "胜利图片.png",
+            "type": "file",
+            "path": "消消乐/消消乐素材/胜利图片.png",
+            "ext": ".png",
+            "lastModified": 1707183885705
+          },
+          {
+            "name": "退出.png",
+            "type": "file",
+            "path": "消消乐/消消乐素材/退出.png",
+            "ext": ".png",
+            "lastModified": 1707224679542
+          }
+        ]
+      },
+      {
+        "name": "程序",
+        "type": "directory",
+        "path": "消消乐/程序",
+        "children": [
+          {
+            "name": "消消乐-part0.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part0.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707055897012
+          },
+          {
+            "name": "消消乐-part1.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part1.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707054646922
+          },
+          {
+            "name": "消消乐-part10.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part10.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707892288633
+          },
+          {
+            "name": "消消乐-part2.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part2.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707055829726
+          },
+          {
+            "name": "消消乐-part3.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part3.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707059258022
+          },
+          {
+            "name": "消消乐-part4.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part4.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707100601324
+          },
+          {
+            "name": "消消乐-part5.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part5.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707101664174
+          },
+          {
+            "name": "消消乐-part6.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part6.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707103532815
+          },
+          {
+            "name": "消消乐-part7.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part7.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707104094991
+          },
+          {
+            "name": "消消乐-part8.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part8.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707105688362
+          },
+          {
+            "name": "消消乐-part9.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-part9.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707219020224
+          },
+          {
+            "name": "消消乐-线性运动.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐-线性运动.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707101224384
+          },
+          {
+            "name": "消消乐完整版.sb3",
+            "type": "file",
+            "path": "消消乐/程序/消消乐完整版.sb3",
+            "ext": ".sb3",
+            "lastModified": 1707982453482
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "黑神话悟空",
+    "type": "directory",
+    "path": "黑神话悟空",
+    "children": [
+      {
+        "name": "黑神话像素版-part4.sb3",
+        "type": "file",
+        "path": "黑神话悟空/黑神话像素版-part4.sb3",
+        "ext": ".sb3",
+        "lastModified": 1737702980756
+      },
+      {
+        "name": "黑神话像素版-part5.sb3",
+        "type": "file",
+        "path": "黑神话悟空/黑神话像素版-part5.sb3",
+        "ext": ".sb3",
+        "lastModified": 1737709811348
+      },
+      {
+        "name": "黑神话悟空-part1.sb3",
+        "type": "file",
+        "path": "黑神话悟空/黑神话悟空-part1.sb3",
+        "ext": ".sb3",
+        "lastModified": 1737593965100
+      },
+      {
+        "name": "黑神话悟空-part2.sb3",
+        "type": "file",
+        "path": "黑神话悟空/黑神话悟空-part2.sb3",
+        "ext": ".sb3",
+        "lastModified": 1737613834152
+      },
+      {
+        "name": "黑神话悟空-素材.sb3",
+        "type": "file",
+        "path": "黑神话悟空/黑神话悟空-素材.sb3",
+        "ext": ".sb3",
+        "lastModified": 1737593986358
+      }
+    ]
+  }
+]
