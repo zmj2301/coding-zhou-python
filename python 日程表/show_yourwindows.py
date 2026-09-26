@@ -1,9 +1,11 @@
 import sys
 from typing import Any
-from PySide6.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QWidget, QTextEdit
-from PySide6.QtCore import QSize, Qt, QPoint, QTimer, QDateTime
-from PySide6.QtGui import QIcon, QPixmap, QFont
-from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import (QApplication, QMainWindow, QMenu, QVBoxLayout, QHBoxLayout,
+                               QWidget, QTextEdit, QLabel, QScrollArea, QFrame, QPushButton,
+                               QGraphicsDropShadowEffect, QMessageBox)
+from PySide6.QtCore import (QSize, Qt, QPoint, QRectF, QTimer, QDateTime,
+                            Signal, QPropertyAnimation, QEasingCurve)
+from PySide6.QtGui import QIcon, QPixmap, QFont, QPainter, QColor, QPen, QLinearGradient
 import os
 import random
 import time
@@ -1916,12 +1918,11 @@ class MyWindow(QMainWindow):
         self.content_label = QTextEdit(self)
         self.content_label.setReadOnly(True)
         self.content_label.setFont(QFont('Microsoft YaHei', 14))
-        # 设置初始最大高度
-        # self.content_label.setMaximumHeight(220)
-        self.content_label.setFixedHeight(700)
-        self.content_label.setFixedWidth(300)
+        # 宽度跟随窗口自适应（不再固定 300）；高度随内容动态计算（见 _fit_content_height）
+        self.content_label.setMinimumWidth(280)
+        self.content_label.setMaximumHeight(560)
         self.content_label.setStyleSheet("color: #333333; background-color: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 15px; border: none;")
-        self.layout.addWidget(self.content_label, alignment=Qt.AlignCenter)
+        self.layout.addWidget(self.content_label, 1)  # stretch=1：填满可用宽度
         
         # 添加间距
         self.layout.setSpacing(15)
@@ -1932,6 +1933,181 @@ class MyWindow(QMainWindow):
 
         self.drag_positon = QPoint()
         self.menu = QMenu(self)
+
+        # 程序启动时自动校验上次使用的 Excel 数据
+        self.validate_and_load_data()
+
+    def _fit_content_height(self):
+        """内容白框高度随文字多少动态变化：内容少就矮、内容多就高（上限 560），
+        同时让窗口高度跟随内容收/放，避免出现一大块固定空白。"""
+        if not hasattr(self, 'content_label'):
+            return
+        edit = self.content_label
+        doc = edit.document()
+        # 按当前可视宽度重新排版，拿到真实的文档高度
+        doc.setTextWidth(max(edit.viewport().width(), 0))
+        margins = edit.contentsMargins()
+        total = int(doc.size().height()) + margins.top() + margins.bottom() + 2
+        total = min(max(total, 110), 560)
+        edit.setFixedHeight(total)
+
+        self.layout.activate()
+        # 窗口高度跟随内容（宽度、位置保持不变）
+        if self.isVisible():
+            target_h = self.sizeHint().height()
+            if abs(target_h - self.height()) > 1:
+                # Qt 会随布局最小尺寸自动抬高窗口 minimumSize，但内容变少时
+                # 不会自动回落，需先放开，否则窗口“只放大不缩小”
+                self.setMinimumHeight(0)
+                self.resize(self.width(), target_h)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        # 窗口宽度变化导致文字换行变化时，重新计算内容高度
+        self._fit_content_height()
+
+    @staticmethod
+    def _parse_event_date(time_str):
+        """解析「月.日」类日期，规则与 analysis_excel 保持一致。
+        返回 (month:int, day:int) 或 None。"""
+        s = str(time_str).strip()
+        if not s or s.lower() == 'nan':
+            return None
+        month = None
+        day = None
+        for sep in ('.', '/', '-'):
+            if sep in s:
+                parts = s.split(sep)
+                if len(parts) >= 2:
+                    month = parts[0].strip()
+                    day = parts[1].strip()
+                    break
+        if month is None and s.isdigit() and len(s) in (3, 4):
+            if len(s) == 3:
+                month, day = s[0], s[1:]
+            else:
+                month, day = s[:2], s[2:]
+        if month is not None and str(day).startswith('.'):
+            day = str(day)[1:]
+        try:
+            int_month, int_day = int(month), int(day)
+        except (TypeError, ValueError):
+            return None
+        if 1 <= int_month <= 12 and 1 <= int_day <= 31:
+            return int_month, int_day
+        return None
+
+    def validate_and_load_data(self):
+        """程序启动时自动校验上次使用的 Excel 数据：
+        - 数据合法：直接加载到 self.events，不弹窗；
+        - 存在问题：跳过坏行、加载其余数据，弹窗列出问题明细。"""
+        import pandas as pd
+
+        user_data_file = os.path.join(self.dir_path, 'user_data.json')
+        if not os.path.exists(user_data_file):
+            return  # 从未导入过，无需校验
+
+        try:
+            with open(user_data_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            paths = data.get('user_data', []) if isinstance(data, dict) else []
+            if not paths:
+                return
+            file_path = paths[0]
+        except Exception as e:
+            QMessageBox.warning(self, '启动数据校验', f'读取 user_data.json 失败：\n{e}')
+            return
+
+        if not os.path.isabs(file_path):
+            file_path = os.path.abspath(os.path.join(self.dir_path, file_path))
+        if not os.path.exists(file_path):
+            QMessageBox.warning(
+                self, '启动数据校验',
+                f'上次使用的 Excel 文件不存在：\n{file_path}\n\n请通过“打开日历”重新选择文件。')
+            return
+
+        try:
+            df = pd.read_excel(file_path)
+        except Exception as e:
+            QMessageBox.critical(
+                self, '启动数据校验',
+                f'Excel 文件读取失败：\n{e}\n\n请检查文件是否损坏或正被其他程序占用。')
+            return
+
+        # 列识别（与 analysis_excel 规则一致）
+        time_column = None
+        things_column = None
+        for col in df.columns:
+            cl = str(col).lower()
+            if 'time' in cl or '日期' in str(col) or 'date' in cl:
+                time_column = col
+                break
+        if 'things' in df.columns:
+            things_column = 'things'
+        else:
+            for col in df.columns:
+                cl = str(col).lower()
+                if 'thing' in cl or '事件' in str(col) or 'content' in cl:
+                    things_column = col
+                    break
+
+        if time_column is None or things_column is None:
+            QMessageBox.critical(
+                self, '启动数据校验',
+                'Excel 缺少必要的列：需要包含 time 和 things 两列。\n'
+                f'当前列名：{df.columns.tolist()}\n\n请通过“打开日历”修正文件。')
+            return
+
+        problems = []
+        loaded = []
+        times_list = df[time_column].astype(str).tolist()
+        things_list = df[things_column].tolist()
+        for row_no, (raw_time, raw_thing) in enumerate(zip(times_list, things_list), start=2):
+            time_s = str(raw_time).strip()
+            thing_empty = (bool(pd.isna(raw_thing))
+                           or str(raw_thing).strip() == ''
+                           or str(raw_thing).strip().lower() == 'nan')
+            if (not time_s or time_s.lower() == 'nan') and thing_empty:
+                continue  # 整行为空，跳过，不计为错误
+
+            parsed = self._parse_event_date(raw_time)
+            if parsed is None:
+                problems.append(f'第 {row_no} 行：日期 “{time_s}” 无法识别（应为 月.日，如 9.26）')
+                continue
+            if thing_empty:
+                problems.append(f'第 {row_no} 行：待办内容为空（日期 {parsed[0]}.{parsed[1]}）')
+                continue
+
+            month, day = parsed
+            loaded.append({
+                'month': f'{month:02d}',
+                'day': f'{day:02d}',
+                'things': str(raw_thing).strip()
+            })
+
+        def problem_text(probs):
+            detail = '\n'.join(probs[:10])
+            if len(probs) > 10:
+                detail += f'\n…等共 {len(probs)} 个问题'
+            return detail
+
+        if not loaded:
+            QMessageBox.critical(
+                self, '启动数据校验',
+                f'文件中没有可加载的有效待办数据，共发现 {len(problems)} 个问题：\n\n'
+                + problem_text(problems))
+            return
+
+        # 加载有效数据，主窗口下一次倒计时刷新即会显示
+        self.events = loaded
+        print(f"启动数据校验：加载 {len(loaded)} 条待办，发现 {len(problems)} 个问题")
+
+        if problems:
+            QMessageBox.warning(
+                self, '启动数据校验',
+                f'已加载 {len(loaded)} 条有效待办；\n'
+                f'同时发现 {len(problems)} 个问题，对应行已跳过：\n\n'
+                + problem_text(problems))
     
     def button_quit(self, event=None):
         self.close()
@@ -1970,6 +2146,7 @@ class MyWindow(QMainWindow):
         if not self.events:
             self.countdown_label.setText(f"{self.time_year}/{self.time_month}/{self.time_day}\n {self.time_hour}:{self.time_minute}:{self.time_second} \n\n{self.current_time_period}")
             self.content_label.setText("请从Excel文件中导入事件数据")
+            self._fit_content_height()
             return
         
         # 获取当前时间
@@ -2060,6 +2237,7 @@ class MyWindow(QMainWindow):
             self.content_label.setText(today_content)
             # 恢复滚动位置
             self.content_label.verticalScrollBar().setValue(scroll_pos)
+            self._fit_content_height()
         elif upcoming_events:
             # 按时间差排序，找出最近的事件
             upcoming_events.sort(key=lambda x: x['seconds_diff'])
@@ -2110,6 +2288,7 @@ class MyWindow(QMainWindow):
             self.content_label.setText(future_content)
             # 恢复滚动位置
             self.content_label.verticalScrollBar().setValue(scroll_pos)
+            self._fit_content_height()
         else:
             # 所有事件都已过期
             self.countdown_label.setText(f"当前时间\n{self.time_year}/{self.time_month}/{self.time_day}\n{self.time_hour}:{self.time_minute}:{self.time_second} \n\n{self.current_time_period}")
@@ -2119,6 +2298,7 @@ class MyWindow(QMainWindow):
             self.content_label.setText(f"请导入新的事件数据\n\n")
             # 恢复滚动位置
             self.content_label.verticalScrollBar().setValue(scroll_pos)
+            self._fit_content_height()
     
     def button_open_calendar(self):
             import tkinter as tk
@@ -3538,11 +3718,23 @@ class MyWindow(QMainWindow):
         self.showMinimized()
 
     def button_maximize_to_desktop(self, event=None):
-        # 导入图片
-        window_icon_path = os.path.join(self.dir_path, 'window_icon.png')
-        window_img = QIcon(window_icon_path)
-        # 使用该图片作为窗口图标
-        self.setWindowIcon(window_img)
+        # 保存当前窗口几何信息，恢复完整版时使用
+        self._saved_geometry = self.saveGeometry()
+
+        # 创建桌面悬浮球
+        self.floating_ball = FloatingBall(self)
+
+        # 初始位置取当前窗口的右上角，并保证在屏幕可用区域内
+        screen = self.screen().availableGeometry()
+        ball_x = self.frameGeometry().right() - FloatingBall.BALL_SIZE
+        ball_y = self.frameGeometry().top()
+        ball_x = min(max(ball_x, screen.left() + 2), screen.right() - FloatingBall.BALL_SIZE - 2)
+        ball_y = min(max(ball_y, screen.top() + 2), screen.bottom() - FloatingBall.BALL_SIZE - 2)
+        self.floating_ball.move(ball_x, ball_y)
+        self.floating_ball.show()
+
+        # 隐藏完整版主窗口
+        self.hide()
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -3566,9 +3758,469 @@ class MyWindow(QMainWindow):
             self.move(event.globalPosition().toPoint() - self.drag_positon)
 
 
+class FloatingPanel(QWidget):
+    """悬浮球旁弹出的待办事项竖列面板"""
+
+    restore_clicked = Signal()
+    mouse_entered = Signal()
+    mouse_left = Signal()
+
+    PANEL_WIDTH = 268
+
+    def __init__(self, main_window, parent=None):
+        super().__init__(parent)
+        self.main_window = main_window
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        self.setAttribute(Qt.WA_TranslucentBackground, True)
+
+        # 每行: {'event': dict, 'is_today': bool, 'sub_label': QLabel}
+        self.rows = []
+
+        # 外层布局，留出阴影空间
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(12, 12, 12, 12)
+
+        # 白色圆角容器
+        self.container = QFrame()
+        self.container.setObjectName('panel')
+        self.container.setFixedWidth(self.PANEL_WIDTH - 24)
+        outer.addWidget(self.container)
+
+        layout = QVBoxLayout(self.container)
+        layout.setContentsMargins(14, 12, 14, 12)
+        layout.setSpacing(8)
+
+        # 顶部标题栏
+        header = QHBoxLayout()
+        header.setSpacing(6)
+        title = QLabel('待办事项')
+        title.setObjectName('title')
+        title.setFont(QFont('Microsoft YaHei', 12, QFont.Bold))
+        header.addWidget(title)
+        header.addStretch()
+        close_btn = QPushButton('×')
+        close_btn.setObjectName('closeBtn')
+        close_btn.setFixedSize(22, 22)
+        close_btn.setCursor(Qt.PointingHandCursor)
+        close_btn.clicked.connect(self.hide)
+        header.addWidget(close_btn)
+        layout.addLayout(header)
+
+        # 分隔线
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFixedHeight(1)
+        line.setStyleSheet('background-color: #eef1f6;')
+        layout.addWidget(line)
+
+        # 待办滚动区域
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scroll.setFrameShape(QFrame.NoFrame)
+        self.content = QWidget()
+        self.content.setObjectName('scrollContent')
+        self.list_layout = QVBoxLayout(self.content)
+        self.list_layout.setContentsMargins(2, 2, 6, 2)
+        self.list_layout.setSpacing(8)
+        self.list_layout.addStretch()
+        self.scroll.setWidget(self.content)
+        layout.addWidget(self.scroll)
+
+        # 底部：回到完整版按钮
+        restore_btn = QPushButton('回到完整版')
+        restore_btn.setObjectName('restoreBtn')
+        restore_btn.setFixedHeight(40)
+        restore_btn.setCursor(Qt.PointingHandCursor)
+        restore_btn.clicked.connect(self.restore_clicked.emit)
+        layout.addWidget(restore_btn)
+
+        # 阴影效果
+        shadow = QGraphicsDropShadowEffect(self.container)
+        shadow.setBlurRadius(26)
+        shadow.setColor(QColor(31, 45, 80, 70))
+        shadow.setOffset(0, 4)
+        self.container.setGraphicsEffect(shadow)
+
+        self.container.setStyleSheet("""
+            QFrame#panel { background: #ffffff; border-radius: 16px; }
+            QLabel#title { color: #1f2a44; background: transparent; }
+            QPushButton#closeBtn { color: #8a94a6; background: transparent;
+                                   border: none; font-size: 16px; }
+            QPushButton#closeBtn:hover { color: #1f2a44; }
+            QFrame#todoRow { background: #f2f6fe; border-radius: 10px; }
+            QFrame#todoRowToday { background: #fff3e2; border-radius: 10px; }
+            QLabel#rowTitle { color: #1f2a44; background: transparent; }
+            QLabel#rowTitleToday { color: #b25c09; background: transparent; }
+            QLabel#rowSub { color: #7a8499; background: transparent; }
+            QLabel#rowSubToday { color: #e08a1e; background: transparent; }
+            QLabel#empty { color: #9aa3b5; background: transparent; }
+            QLabel#moreLabel { color: #9aa3b5; background: transparent; }
+            QScrollArea { background: transparent; border: none; }
+            QScrollArea > QWidget > QWidget { background: transparent; }
+            QScrollBar:vertical { background: transparent; width: 8px; margin: 2px; }
+            QScrollBar::handle:vertical { background: #d3dbea; border-radius: 4px;
+                                         min-height: 30px; }
+            QScrollBar::handle:vertical:hover { background: #b9c5da; }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }
+            QPushButton#restoreBtn {
+                color: white; border: none; font-size: 13px; font-weight: 600;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                            stop:0 #5596f7, stop:1 #2f6be0);
+                border-radius: 10px;
+            }
+            QPushButton#restoreBtn:hover {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                            stop:0 #69a5ff, stop:1 #3b7bf0);
+            }
+            QPushButton#restoreBtn:pressed {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                            stop:0 #3b7ef0, stop:1 #2456c2);
+            }
+        """)
+
+        # 面板可见时每秒刷新倒计时
+        self.tick_timer = QTimer(self)
+        self.tick_timer.setInterval(1000)
+        self.tick_timer.timeout.connect(self.update_countdowns)
+
+    @staticmethod
+    def relative_text(seconds_diff):
+        """与主窗口保持一致的相对时间描述"""
+        days = seconds_diff // (24 * 3600)
+        hours = (seconds_diff % (24 * 3600)) // 3600
+        minutes = (seconds_diff % 3600) // 60
+        seconds = seconds_diff % 60
+        if days > 0:
+            return f"{days + 1}天后"
+        if hours > 0:
+            return f"{hours}小时后"
+        if minutes > 0:
+            return f"{minutes}分钟后"
+        return f"{seconds}秒后"
+
+    def _collect_items(self):
+        """返回 (今日事件列表, 未来事件列表[(event, diff)...])"""
+        now = QDateTime.currentDateTime()
+        year = now.date().year()
+        today_items = []
+        future_items = []
+        for event in self.main_window.events:
+            try:
+                month = int(event['month'])
+                day = int(event['day'])
+            except (KeyError, TypeError, ValueError):
+                continue
+            event_dt = QDateTime(year, month, day, 0, 0, 0)
+            if month == now.date().month() and day == now.date().day():
+                today_items.append(event)
+            else:
+                diff = now.secsTo(event_dt)
+                if diff > 0:
+                    future_items.append((event, diff))
+        today_items.sort(key=lambda e: str(e.get('things', '')))
+        future_items.sort(key=lambda item: item[1])
+        return today_items, future_items
+
+    def refresh(self):
+        """重新构建待办列表内容"""
+        # 清空旧行（保留末尾的 stretch）
+        while self.list_layout.count() > 1:
+            item = self.list_layout.takeAt(0)
+            w = item.widget()
+            if w is not None:
+                w.deleteLater()
+        self.rows = []
+
+        today_items, future_items = self._collect_items()
+        visible_future = future_items[:20]
+
+        card_count = 0
+        for event in today_items:
+            self._add_row(event, is_today=True)
+            card_count += 1
+        for event, _diff in visible_future:
+            self._add_row(event, is_today=False)
+            card_count += 1
+
+        has_more = len(future_items) > len(visible_future)
+
+        if card_count == 0:
+            empty = QLabel('暂无待办事项\n请先从 Excel 导入事件')
+            empty.setObjectName('empty')
+            empty.setAlignment(Qt.AlignCenter)
+            empty.setFont(QFont('Microsoft YaHei', 11))
+            empty.setWordWrap(True)
+            self.list_layout.insertWidget(0, empty)
+            content_h = 120
+        else:
+            if has_more:
+                more = QLabel(f"还有 {len(future_items) - len(visible_future)} 个待办…")
+                more.setObjectName('moreLabel')
+                more.setAlignment(Qt.AlignCenter)
+                more.setFont(QFont('Microsoft YaHei', 9))
+                self.list_layout.insertWidget(self.list_layout.count() - 1, more)
+            content_h = min(300, max(96, card_count * 56 + (24 if has_more else 0)))
+
+        self.scroll.setFixedHeight(content_h)
+        self.setFixedWidth(self.PANEL_WIDTH)
+        self.adjustSize()
+        self.update_countdowns()
+        self.tick_timer.start()
+
+    def _add_row(self, event, is_today):
+        thing = str(event.get('things', '')).strip()
+        if not thing or thing == 'nan':
+            thing = '(未命名事项)'
+
+        row = QFrame()
+        row.setObjectName('todoRowToday' if is_today else 'todoRow')
+
+        row_layout = QHBoxLayout(row)
+        row_layout.setContentsMargins(10, 8, 10, 8)
+        row_layout.setSpacing(8)
+
+        dot = QLabel()
+        dot.setFixedSize(8, 8)
+        if is_today:
+            dot.setStyleSheet('background-color: #f59e0b; border-radius: 4px; margin-top: 5px;')
+        else:
+            dot.setStyleSheet('background-color: #3b82f6; border-radius: 4px; margin-top: 5px;')
+        row_layout.addWidget(dot, alignment=Qt.AlignTop)
+
+        v = QVBoxLayout()
+        v.setSpacing(2)
+        title = QLabel(thing)
+        title.setObjectName('rowTitleToday' if is_today else 'rowTitle')
+        title.setWordWrap(True)
+        title.setFont(QFont('Microsoft YaHei', 10, QFont.Bold if is_today else QFont.Normal))
+        sub = QLabel()
+        sub.setObjectName('rowSubToday' if is_today else 'rowSub')
+        sub.setFont(QFont('Microsoft YaHei', 9))
+        v.addWidget(title)
+        v.addWidget(sub)
+        row_layout.addLayout(v, 1)
+
+        self.list_layout.insertWidget(self.list_layout.count() - 1, row)
+        self.rows.append({'event': event, 'is_today': is_today, 'sub_label': sub})
+
+    def update_countdowns(self):
+        """每秒更新每行的相对时间（不重建控件，避免闪烁）"""
+        now = QDateTime.currentDateTime()
+        year = now.date().year()
+        for item in self.rows:
+            event = item['event']
+            try:
+                month = int(event['month'])
+                day = int(event['day'])
+            except (KeyError, TypeError, ValueError):
+                continue
+            event_dt = QDateTime(year, month, day, 0, 0, 0)
+            if item['is_today']:
+                item['sub_label'].setText('今天')
+            else:
+                diff = now.secsTo(event_dt)
+                if diff <= 0:
+                    item['sub_label'].setText(f"{event['month']}.{event['day']} · 已过期")
+                else:
+                    item['sub_label'].setText(
+                        f"{event['month']}.{event['day']} · {self.relative_text(diff)}")
+
+    def hideEvent(self, event):
+        self.tick_timer.stop()
+        super().hideEvent(event)
+
+    def enterEvent(self, event):
+        self.mouse_entered.emit()
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        self.mouse_left.emit()
+        super().leaveEvent(event)
+
+
+class FloatingBall(QWidget):
+    """桌面悬浮球：可拖拽移动，鼠标悬停展开待办竖列"""
+
+    BALL_SIZE = 48
+
+    def __init__(self, main_window):
+        super().__init__()
+        self.main_window = main_window
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
+        self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.setFixedSize(self.BALL_SIZE, self.BALL_SIZE)
+
+        icon_size = int(self.BALL_SIZE * 0.5)
+        self.calendar_pixmap = QPixmap(main_window.icon_path).scaled(
+            icon_size, icon_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+
+        self.panel = FloatingPanel(main_window)
+        self.panel.restore_clicked.connect(self.restore_full)
+        self.panel.mouse_entered.connect(self._cancel_hide)
+        self.panel.mouse_left.connect(self._schedule_hide)
+
+        # 离开悬浮球/面板后延迟收起，避免移动间隙误触
+        self.hide_timer = QTimer(self)
+        self.hide_timer.setSingleShot(True)
+        self.hide_timer.setInterval(260)
+        self.hide_timer.timeout.connect(self.panel.hide)
+
+        self._drag_offset = QPoint()
+        self._pressed = False
+        self._moved = False
+
+        self.snap_anim = QPropertyAnimation(self, b'pos', self)
+        self.snap_anim.setEasingCurve(QEasingCurve.OutCubic)
+        self.snap_anim.setDuration(200)
+
+    def paintEvent(self, event):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing, True)
+        p.setRenderHint(QPainter.SmoothPixmapTransform, True)
+
+        w = self.width()
+        h = self.height()
+        grad = QLinearGradient(0, 0, 0, h)
+        grad.setColorAt(0.0, QColor('#5aa0ff'))
+        grad.setColorAt(1.0, QColor('#2e6be6'))
+        p.setPen(Qt.NoPen)
+        p.setBrush(grad)
+        p.drawEllipse(QRectF(1, 1, w - 2, h - 2))
+
+        # 白色圆底 + 日历图标（位置和大小均按球直径比例计算）
+        white_margin = w * 0.18
+        white_size = w - 2 * white_margin
+        p.setBrush(QColor(255, 255, 255, 255))
+        p.drawEllipse(QRectF(white_margin, white_margin, white_size, white_size))
+
+        icon_margin = w * 0.25
+        icon_rect_size = w - 2 * icon_margin
+        target = QRectF(icon_margin, icon_margin, icon_rect_size, icon_rect_size)
+        p.drawPixmap(target, self.calendar_pixmap,
+                     QRectF(0, 0, self.calendar_pixmap.width(), self.calendar_pixmap.height()))
+
+    # ---------- 悬停展开 / 收起 ----------
+    def enterEvent(self, event):
+        self._cancel_hide()
+        self.show_panel()
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        self._schedule_hide()
+        super().leaveEvent(event)
+
+    def _cancel_hide(self):
+        self.hide_timer.stop()
+
+    def _schedule_hide(self):
+        self.hide_timer.start()
+
+    def show_panel(self):
+        self.panel.refresh()
+        self.reposition_panel()
+        self.panel.show()
+        self.panel.raise_()
+
+    def reposition_panel(self):
+        """面板出现在悬浮球靠屏幕内侧，自动避开屏幕边缘"""
+        screen = QApplication.screenAt(self.frameGeometry().center())
+        if screen is None:
+            screen = QApplication.primaryScreen()
+        geo = screen.availableGeometry()
+        ball = self.frameGeometry()
+
+        pw = self.panel.width()
+        ph = self.panel.height()
+        if ball.center().x() < geo.center().x():
+            x = ball.right() + 10
+        else:
+            x = ball.left() - 10 - pw
+        x = min(max(x, geo.left() + 6), geo.right() - pw - 6)
+
+        y = ball.center().y() - ph // 2
+        y = min(max(y, geo.top() + 6), geo.bottom() - ph - 6)
+        self.panel.move(x, y)
+
+    # ---------- 拖拽 ----------
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.snap_anim.stop()
+            self._pressed = True
+            self._moved = False
+            self._drag_offset = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
+        elif event.button() == Qt.RightButton:
+            self._show_menu(event.globalPosition().toPoint())
+
+    def mouseMoveEvent(self, event):
+        if self._pressed and event.buttons() & Qt.LeftButton:
+            self._moved = True
+            self.move(event.globalPosition().toPoint() - self._drag_offset)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton and self._pressed:
+            self._pressed = False
+            if not self._moved:
+                # 单击（未拖动）切换面板
+                if self.panel.isVisible():
+                    self.panel.hide()
+                else:
+                    self.show_panel()
+            else:
+                self._snap_to_edge()
+
+    def _snap_to_edge(self):
+        """拖动结束后，靠近屏幕边缘时自动吸附（类似豆包悬浮球）"""
+        screen = QApplication.screenAt(self.frameGeometry().center())
+        if screen is None:
+            screen = QApplication.primaryScreen()
+        geo = screen.availableGeometry()
+        center = self.frameGeometry().center()
+        dist_left = center.x() - geo.left()
+        dist_right = geo.right() - center.x()
+
+        target = QPoint(self.pos())
+        if min(dist_left, dist_right) <= 80:
+            if dist_left < dist_right:
+                target.setX(geo.left())
+            else:
+                target.setX(geo.right() - self.width())
+        target.setY(min(max(target.y(), geo.top()), geo.bottom() - self.height()))
+
+        if target != self.pos():
+            self.snap_anim.stop()
+            self.snap_anim.setStartValue(QPoint(self.pos()))
+            self.snap_anim.setEndValue(target)
+            self.snap_anim.start()
+
+    def _show_menu(self, pos):
+        menu = QMenu(self)
+        menu.addAction('回到完整版', self.restore_full)
+        menu.addSeparator()
+        menu.addAction('退出', QApplication.instance().quit)
+        menu.exec(pos)
+
+    def restore_full(self):
+        """收起悬浮球，回到完整版主窗口"""
+        self.hide_timer.stop()
+        self.panel.hide()
+        main_window = self.main_window
+        saved = getattr(main_window, '_saved_geometry', None)
+        if saved is not None:
+            main_window.restoreGeometry(saved)
+        main_window.show()
+        main_window.raise_()
+        main_window.activateWindow()
+        main_window.floating_ball = None
+        self.panel.close()
+        self.close()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    # 主窗口缩小为悬浮球后，关闭悬浮窗不应退出整个程序
+    app.setQuitOnLastWindowClosed(False)
     window = MyWindow()
     window.show()
     sys.exit(app.exec())
