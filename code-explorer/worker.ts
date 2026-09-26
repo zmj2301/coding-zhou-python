@@ -107,8 +107,14 @@ function getTokenFromRequest(request: Request): string | null {
   return cookies['wg_token'] || null;
 }
 
+// 密码哈希（SHA-256）
+async function hashPassword(password: string): Promise<string> {
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest('SHA-256', enc.encode(password));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 async function checkAuth(request: Request, env: Env): Promise<boolean> {
-  if (!env.USER_PASSWORD) return true;
   const token = getTokenFromRequest(request);
   if (!token) return false;
   const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
@@ -460,21 +466,65 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   if (path === '/api/login' && request.method === 'POST') {
     try {
       const data = await request.json();
+      const username = (data.username || '').trim();
       const password = data.password || '';
-      if (!env.USER_PASSWORD) return errorResponse('服务器未设置密码', 500);
-      if (password !== env.USER_PASSWORD) return errorResponse('密码错误', 401);
+      if (!username || !password) return errorResponse('请输入用户名和密码', 400);
+
+      let valid = false;
+      // 1. 优先检查 KV 中注册的用户
+      const userStr = await env.CODE_EXPLORER_KV.get(`user:${username}`);
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        const hashed = await hashPassword(password);
+        valid = (user.passwordHash === hashed);
+      }
+      // 2. 回退到共享密码（向后兼容）
+      if (!valid && env.USER_PASSWORD && password === env.USER_PASSWORD) {
+        valid = true;
+      }
+
+      if (!valid) return errorResponse('用户名或密码错误', 401);
+
       const token = await signJwt(
-        { sub: data.username || 'user', is_admin: false },
+        { sub: username, is_admin: false },
         env.JWT_SECRET || 'default-secret-change-me',
         604800
       );
       const resp = jsonResponse({
         token,
-        user: { id: 1, username: data.username || 'user', role: 'user' }
+        user: { id: 1, username, role: 'user' }
       });
       return setCookie(resp, 'wg_token', token, 604800);
     } catch {
       return errorResponse('无效的请求', 400);
+    }
+  }
+
+  // 用户注册
+  if (path === '/api/register' && request.method === 'POST') {
+    try {
+      const data = await request.json();
+      const username = (data.username || '').trim();
+      const password = data.password || '';
+      if (!username || !password) return errorResponse('请填写用户名和密码', 400);
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) return errorResponse('用户名需为3-20位字母、数字或下划线', 400);
+      if (password.length < 6) return errorResponse('密码长度至少6位', 400);
+
+      // 检查用户名是否已存在
+      const existing = await env.CODE_EXPLORER_KV.get(`user:${username}`);
+      if (existing) return errorResponse('用户名已被注册', 409);
+
+      // 存储用户（密码哈希）
+      const passwordHash = await hashPassword(password);
+      await env.CODE_EXPLORER_KV.put(`user:${username}`, JSON.stringify({
+        username,
+        passwordHash,
+        createdAt: Math.floor(Date.now() / 1000),
+      }));
+
+      return jsonResponse({ success: true, username });
+    } catch (e: any) {
+      return errorResponse('注册失败: ' + (e.message || '未知错误'), 500);
     }
   }
 
@@ -1307,6 +1357,159 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     return jsonResponse({ status: 'ok', feature: 'proxy-download-available' });
   }
 
+  // ---- API Key 管理 API（使用 KV 存储）----
+  if (path.startsWith('/api/api-keys')) {
+    const kv = env.CODE_EXPLORER_KV;
+
+    if (path === '/api/api-keys') {
+      if (request.method === 'GET') {
+        try {
+          const token = getTokenFromRequest(request);
+          if (!token) return errorResponse('请先登录', 401);
+          const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+          if (!payload) return errorResponse('请先登录', 401);
+          const showAll = url.searchParams.get('all') === '1';
+          const username = payload.sub || payload.username || 'user';
+          const isAdmin = payload.role === 'admin';
+          if (showAll && !isAdmin) return errorResponse('无权限查看全部 Key', 403);
+          const keysListStr = await kv.get('api-keys:list');
+          let keys = keysListStr ? JSON.parse(keysListStr) : [];
+          if (!showAll) keys = keys.filter((k: any) => k.username === username);
+          keys.sort((a: any, b: any) => (b.created_at || 0) - (a.created_at || 0));
+          return jsonResponse({ keys }, 200);
+        } catch (e: any) {
+          return errorResponse('加载失败: ' + (e.message || '未知错误'), 500);
+        }
+      }
+      if (request.method === 'POST') {
+        try {
+          const token = getTokenFromRequest(request);
+          if (!token) return errorResponse('请先登录', 401);
+          const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+          if (!payload) return errorResponse('请先登录', 401);
+          const username = payload.sub || payload.username || 'user';
+          const userRole = payload.role || 'user';
+          const bodyText = await request.text();
+          const body = bodyText ? JSON.parse(bodyText) : {};
+          const name = (body.name || '').trim() || `Key-${Date.now()}`;
+          const desc = (body.desc || '').trim().slice(0, 100);
+          const dailyLimit = Math.max(0, parseInt(body.daily_limit) || 0);
+          const expiresAt = Math.max(0, parseInt(body.expires_at) || 0);
+          const keyId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+          const apiKey = 'sk-' + keyId;
+          const newKey = {
+            id: Date.now(), user_id: 0, username, key: apiKey, name, desc,
+            daily_limit: dailyLimit, expires_at: expiresAt,
+            created_at: Math.floor(Date.now() / 1000), last_used_at: 0,
+            is_active: 1, calls: 0, role: userRole
+          };
+          const keysListStr = await kv.get('api-keys:list');
+          const keys = keysListStr ? JSON.parse(keysListStr) : [];
+          keys.push(newKey);
+          await kv.put('api-keys:list', JSON.stringify(keys));
+          return jsonResponse({ success: true, key: apiKey, name }, 200);
+        } catch (e: any) {
+          return errorResponse('创建失败: ' + (e.message || '未知错误'), 500);
+        }
+      }
+    }
+
+    if (path === '/api/api-keys/delete' || path === '/api/api-keys/toggle') {
+      try {
+        const token = getTokenFromRequest(request);
+        if (!token) return errorResponse('请先登录', 401);
+        const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+        if (!payload) return errorResponse('请先登录', 401);
+        const username = payload.sub || payload.username || 'user';
+        const isAdmin = payload.role === 'admin';
+        let keyId: number;
+        if (request.method === 'GET') {
+          keyId = parseInt(url.searchParams.get('id') || '0');
+        } else {
+          const bodyText = await request.text();
+          const body = bodyText ? JSON.parse(bodyText) : {};
+          keyId = parseInt(body.id || '0');
+        }
+        if (!keyId) return errorResponse('缺少 id 参数', 400);
+        const keysListStr = await kv.get('api-keys:list');
+        let keys = keysListStr ? JSON.parse(keysListStr) : [];
+        if (path === '/api/api-keys/delete') {
+          if (isAdmin) {
+            keys = keys.filter((k: any) => k.id !== keyId);
+          } else {
+            keys = keys.filter((k: any) => !(k.id === keyId && k.username === username));
+          }
+          await kv.put('api-keys:list', JSON.stringify(keys));
+          return jsonResponse({ success: true }, 200);
+        }
+        if (path === '/api/api-keys/toggle') {
+          let found = false;
+          for (const k of keys) {
+            if (k.id === keyId) {
+              if (!isAdmin && k.username !== username) return errorResponse('无权限操作', 403);
+              k.is_active = k.is_active ? 0 : 1;
+              found = true;
+              break;
+            }
+          }
+          if (!found) return errorResponse('未找到 Key', 404);
+          await kv.put('api-keys:list', JSON.stringify(keys));
+          return jsonResponse({ success: true }, 200);
+        }
+      } catch (e: any) {
+        return errorResponse('操作失败: ' + (e.message || '未知错误'), 500);
+      }
+    }
+
+    return errorResponse('接口不存在', 404);
+  }
+
+  // ---- 文件上传 API（KV 存储 + 子域名访问）----
+  if (path === '/api/upload') {
+    if (request.method !== 'POST') return errorResponse('方法不允许', 405);
+    try {
+      const token = getTokenFromRequest(request);
+      if (!token) return errorResponse('请先登录', 401);
+      const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+      if (!payload) return errorResponse('请先登录', 401);
+
+      const formData = await request.formData();
+      const file = formData.get('file') as File;
+      if (!file || !(file instanceof File)) return errorResponse('未选择文件', 400);
+
+      // 限制文件大小 20MB（KV 单 value 最大 25MB）
+      if (file.size > 20 * 1024 * 1024) return errorResponse('文件大小不能超过 20MB', 400);
+
+      // 生成 8 位随机子域名标识
+      const id = Math.random().toString(36).slice(2, 10);
+      const filename = file.name;
+      const contentType = file.type || 'application/octet-stream';
+
+      // 文件内容存 KV（ArrayBuffer），元数据通过 metadata 附加
+      const buf = await file.arrayBuffer();
+      await env.CODE_EXPLORER_KV.put(`upload:file:${id}`, buf, {
+        metadata: {
+          id, filename, contentType,
+          size: file.size,
+          uploader: payload.sub || payload.username || 'unknown',
+          created_at: Math.floor(Date.now() / 1000),
+        },
+      });
+
+      const subdomainUrl = `https://${id}.codingzhou.top`;
+      return jsonResponse({
+        success: true,
+        id,
+        filename,
+        url: subdomainUrl,
+        size: file.size,
+        contentType,
+      }, 200);
+    } catch (e: any) {
+      return errorResponse('上传失败: ' + (e.message || '未知错误'), 500);
+    }
+  }
+
   return errorResponse('未找到接口', 404);
 }
 
@@ -1383,11 +1586,11 @@ async function callOllamaAI(messages: { role: string; content: string }[], tunne
       ...messages
     ],
     stream: false,
-    options: { num_predict: 600, temperature: 0.7 }
+    options: { num_predict: 100, temperature: 0.7 }
   };
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 25000);
+  const timeoutId = setTimeout(() => controller.abort(), 85000);
 
   try {
     const resp = await fetch(`${tunnelUrl.replace(/\/$/, '')}/api/chat`, {
@@ -1395,7 +1598,7 @@ async function callOllamaAI(messages: { role: string; content: string }[], tunne
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
       signal: controller.signal,
-      cf: { connectTimeout: 25 }
+      cf: { connectTimeout: 85 }
     });
 
     if (!resp.ok) {
@@ -1765,6 +1968,28 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
 }
 
 // ------------------------------------------------------------
+// 子域名文件访问（KV 存储）
+// ------------------------------------------------------------
+async function handleFileSubdomain(request: Request, env: Env, hostname: string): Promise<Response> {
+  // 子域名部分作为文件标识，如 abc123.codingzhou.top → id = abc123
+  const id = hostname.split('.')[0];
+  if (!id) return errorResponse('无效的访问地址', 400);
+
+  // 从 KV 读取文件内容（ArrayBuffer）和元数据
+  const obj = await env.CODE_EXPLORER_KV.getWithMetadata(`upload:file:${id}`, { type: 'arrayBuffer' });
+  if (!obj || !obj.value) return errorResponse('文件不存在或已过期', 404);
+
+  const meta = (obj.metadata as any) || {};
+  const headers = new Headers();
+  headers.set('Content-Type', meta.contentType || 'application/octet-stream');
+  headers.set('Cache-Control', 'public, max-age=31536000');
+  headers.set('Content-Disposition', `inline; filename="${encodeURIComponent(meta.filename || id)}"`);
+  headers.set('Access-Control-Allow-Origin', '*');
+
+  return new Response(obj.value, { headers });
+}
+
+// ------------------------------------------------------------
 // Worker 入口
 // ------------------------------------------------------------
 
@@ -1772,6 +1997,12 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname;
+    const hostname = url.hostname;
+
+    // 子域名文件访问：xxx.codingzhou.top 从 R2 读取文件
+    if (hostname.endsWith('.codingzhou.top') && hostname !== 'codingzhou.top' && hostname !== 'www.codingzhou.top') {
+      return handleFileSubdomain(request, env, hostname);
+    }
 
     // API 请求
     if (path.startsWith('/api/')) {

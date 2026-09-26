@@ -1672,6 +1672,256 @@ body.filter-hidden .main-filter-toggle {
 }
 .project-card:hover .card-arrow svg { color: #fff; }
 
+/* ========== API 密钥页面 ========== */
+.apikey-page { flex: 1; display: flex; flex-direction: column; }
+.main-head-right { display: flex; align-items: center; gap: 10px; }
+.view-switch {
+  display: inline-flex; padding: 3px; gap: 3px;
+  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  border-radius: var(--radius-md);
+}
+.view-pill {
+  padding: 6px 14px; border-radius: 8px; border: none;
+  background: transparent; color: var(--text-secondary);
+  font-size: 13px; font-weight: 500; cursor: pointer; transition: all 150ms ease; font-family: var(--font-sans);
+}
+.view-pill.active { background: var(--bg-tertiary); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.create-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: var(--radius-md); border: none;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: var(--font-sans); transition: transform .15s ease, box-shadow .15s ease;
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--accent-blue) 30%, transparent);
+}
+.create-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px color-mix(in srgb, var(--accent-blue) 40%, transparent); }
+.create-btn svg { width: 14px; height: 14px; }
+
+.key-card {
+  background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  border-radius: var(--radius-lg); padding: 20px; cursor: default;
+  position: relative; overflow: hidden;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.key-card:hover {
+  transform: translateY(-4px); border-color: var(--accent-blue);
+  background: color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.22), 0 4px 10px rgba(0,0,0,0.12), 0 0 0 1px color-mix(in srgb, var(--accent-blue) 22%, transparent);
+}
+.key-card.revoked { opacity: 0.65; }
+.key-card.revoked:hover { border-color: var(--accent-red); box-shadow: 0 12px 28px rgba(0,0,0,0.22), 0 0 0 1px color-mix(in srgb, var(--accent-red) 22%, transparent); }
+.key-accent-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent-blue), color-mix(in srgb, var(--accent-blue) 40%, var(--accent-purple)));
+  opacity: 0.95;
+}
+.key-card.revoked .key-accent-bar { background: linear-gradient(90deg, var(--accent-red), color-mix(in srgb, var(--accent-red) 40%, var(--accent-orange))); }
+.key-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.key-name-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.key-icon {
+  width: 36px; height: 36px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-blue) 18%, transparent), color-mix(in srgb, var(--accent-purple) 18%, transparent));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-blue) 18%, transparent); color: var(--accent-blue);
+}
+.key-icon svg { width: 18px; height: 18px; }
+.key-name {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.3; letter-spacing: -0.2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.key-card:hover .key-name { color: var(--accent-blue); }
+.key-status {
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.3px; line-height: 1.4; flex-shrink: 0;
+}
+.key-status.active { background: color-mix(in srgb, var(--accent-green) 22%, transparent); color: var(--accent-green); }
+.key-status.expired { background: color-mix(in srgb, var(--accent-yellow) 22%, transparent); color: var(--accent-yellow); }
+.key-status.revoked { background: color-mix(in srgb, var(--accent-red) 22%, transparent); color: var(--accent-red); }
+.key-mask-row {
+  display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  border-radius: var(--radius-sm);
+}
+.key-mask {
+  font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);
+  flex: 1; letter-spacing: 0.02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.copy-btn {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  background: var(--bg-secondary); color: var(--text-secondary);
+  font-size: 12px; cursor: pointer; transition: all 150ms ease; font-family: var(--font-sans);
+}
+.copy-btn:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+.copy-btn svg { width: 12px; height: 12px; }
+.copy-btn.copied { color: var(--accent-green); border-color: var(--accent-green); }
+.key-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: var(--text-tertiary); }
+.key-meta-item { display: inline-flex; align-items: center; gap: 4px; }
+.key-meta-item svg { width: 12px; height: 12px; }
+.key-meta-item b { color: var(--text-secondary); font-weight: 500; }
+.key-card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 10px; border-top: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent); gap: 12px;
+}
+.key-owner { font-size: 12px; color: var(--text-tertiary); }
+.key-actions { display: flex; gap: 6px; }
+.action-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  background: transparent; color: var(--text-secondary); cursor: pointer; transition: all 150ms ease;
+}
+.action-btn:hover { color: var(--accent-blue); border-color: var(--accent-blue); background: color-mix(in srgb, var(--accent-blue) 8%, transparent); }
+.action-btn.danger:hover { color: var(--accent-red); border-color: var(--accent-red); background: color-mix(in srgb, var(--accent-red) 8%, transparent); }
+.action-btn svg { width: 13px; height: 13px; }
+.apikey-empty {
+  grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 60px 24px; text-align: center;
+  background: color-mix(in srgb, var(--bg-secondary) 50%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--border-color) 70%, transparent); border-radius: var(--radius-lg);
+}
+.apikey-empty-icon {
+  width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-blue) 18%, transparent), color-mix(in srgb, var(--accent-purple) 18%, transparent));
+  color: var(--accent-blue);
+}
+.apikey-empty-icon svg { width: 26px; height: 26px; }
+.apikey-empty h3 { font-size: 16px; font-weight: 600; font-family: var(--font-display); }
+.apikey-empty p { color: var(--text-secondary); font-size: 13px; max-width: 360px; }
+.apikey-empty-actions { display: flex; gap: 12px; margin-top: 8px; }
+.apikey-empty-btn {
+  padding: 10px 22px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; border: none; font-family: inherit;
+}
+.apikey-empty-btn.primary {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #fff;
+}
+.apikey-empty-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent-blue) 35%, transparent);
+}
+.apikey-empty-btn.ghost {
+  background: var(--bg-tertiary); color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.apikey-empty-btn.ghost:hover {
+  background: var(--bg-secondary); color: var(--text-primary);
+}
+
+/* ===== 文件上传页面 ===== */
+.upload-page { display: flex; flex-direction: column; }
+.upload-area {
+  max-width: 560px; width: 100%; margin: 24px auto;
+}
+.upload-zone {
+  border: 2px dashed color-mix(in srgb, var(--border-color) 80%, transparent);
+  border-radius: var(--radius-lg);
+  padding: 48px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: color-mix(in srgb, var(--bg-secondary) 40%, transparent);
+}
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: var(--accent-blue);
+  background: color-mix(in srgb, var(--accent-blue) 6%, transparent);
+}
+.upload-zone-icon {
+  width: 64px; height: 64px; margin: 0 auto 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-blue) 15%, transparent), color-mix(in srgb, var(--accent-purple) 15%, transparent));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent-blue);
+}
+.upload-zone-icon svg { width: 32px; height: 32px; }
+.upload-zone-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+.upload-zone-desc { font-size: 13px; color: var(--text-secondary); }
+.upload-progress { margin-top: 24px; }
+.upload-progress-bar {
+  height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;
+}
+.upload-progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+  border-radius: 4px; transition: width 0.3s;
+}
+.upload-progress-text { text-align: center; margin-top: 10px; font-size: 13px; color: var(--text-secondary); }
+.upload-result {
+  margin-top: 24px; text-align: center;
+  padding: 32px; border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--bg-secondary) 50%, transparent);
+  border: 1px solid var(--border-color);
+}
+.upload-result-icon {
+  width: 56px; height: 56px; margin: 0 auto 12px;
+  border-radius: 50%; background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff; font-size: 28px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.upload-result-title { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+.upload-result-file { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; word-break: break-all; }
+.upload-result-link {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.upload-result-link a {
+  color: var(--accent-blue); text-decoration: none; word-break: break-all;
+}
+.upload-result-link a:hover { text-decoration: underline; }
+.upload-copy-btn {
+  padding: 4px 12px; border-radius: 6px; font-size: 12px;
+  background: var(--bg-tertiary); color: var(--text-secondary);
+  border: 1px solid var(--border-color); cursor: pointer;
+}
+.upload-copy-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.upload-again-btn {
+  padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #fff; border: none; cursor: pointer;
+}
+.upload-again-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px color-mix(in srgb, var(--accent-blue) 35%, transparent); }
+
+/* API 密钥创建弹窗 */
+.apikey-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; z-index: 100020; padding: 20px;
+}
+.apikey-modal-overlay.show { display: flex; }
+.apikey-modal {
+  width: 100%; max-width: 460px; background: var(--bg-secondary);
+  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  border-radius: var(--radius-lg); padding: 24px; box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+.apikey-modal h2 { font-size: 18px; font-weight: 700; font-family: var(--font-display); margin-bottom: 4px; }
+.apikey-modal .modal-desc { color: var(--text-secondary); font-size: 13px; margin-bottom: 18px; }
+.apikey-form-group { margin-bottom: 16px; }
+.apikey-form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-primary); }
+.apikey-form-group input, .apikey-form-group select, .apikey-form-group textarea {
+  width: 100%; padding: 9px 12px; border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  background: var(--bg-tertiary); color: var(--text-primary);
+  font-size: 13.5px; font-family: var(--font-sans); outline: none; transition: border-color .15s ease;
+}
+.apikey-form-group input:focus, .apikey-form-group select:focus, .apikey-form-group textarea:focus { border-color: var(--accent-blue); }
+.apikey-modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.apikey-created-box {
+  margin-top: 16px; padding: 14px;
+  background: color-mix(in srgb, var(--accent-green) 10%, var(--bg-tertiary));
+  border: 1px solid color-mix(in srgb, var(--accent-green) 40%, transparent); border-radius: var(--radius-sm);
+}
+.apikey-created-box .label { font-size: 12px; color: var(--accent-green); font-weight: 600; margin-bottom: 6px; }
+.apikey-created-box .key-text { font-family: var(--font-mono); font-size: 13px; word-break: break-all; color: var(--text-primary); margin-bottom: 10px; }
+
 /* ========== Comment Modal ========== */
 .comment-btn {
   cursor: pointer;
@@ -4593,11 +4843,17 @@ body.preview-active .app-preview { display: flex; }
         </span>
         <span class="sidebar-item-label" id="sidebarLoginLabel">登录/注册</span>
       </a>
-      <a class="sidebar-item" data-view="apikey" href="/console">
+      <a class="sidebar-item" data-view="apikey" id="navApikey">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg>
         </span>
         <span class="sidebar-item-label">API 密钥</span>
+      </a>
+      <a class="sidebar-item" data-view="upload" id="navUpload">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </span>
+        <span class="sidebar-item-label">文件上传</span>
       </a>
 
       <!-- 快捷链接 -->
@@ -4796,9 +5052,58 @@ body.preview-active .app-preview { display: flex; }
         </div>
       </div>
     </div>
-  </main>
 
-<!-- 移动端底部导航栏 -->
+    <!-- ====== API 密钥页面（与 cardsGrid 同级，默认隐藏） ====== -->
+    <div class="apikey-page" id="apikeyPage" style="display:none">
+      <header class="main-head">
+        <h1>API 密钥</h1>
+        <div class="main-head-right">
+          <div class="view-switch" id="apikeyViewSwitch">
+            <button class="view-pill active" onclick="apikeySwitchView('mine')">我的 Keys</button>
+            <button class="view-pill" onclick="apikeySwitchView('all')">全部用户 Keys</button>
+          </div>
+          <button class="create-btn" onclick="apikeyOpenCreate()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            创建密钥
+          </button>
+        </div>
+      </header>
+      <div class="main-sub">共 <span id="apikeyCount">0</span> 个密钥 · 用于外部程序调用 AI 推荐接口</div>
+      <div class="cards-grid" id="apikeyGrid"></div>
+    </div>
+    <div class="upload-page" id="uploadPage" style="display:none">
+      <header class="main-head">
+        <h1>文件上传</h1>
+        <div class="main-head-right"></div>
+      </header>
+      <div class="main-sub">上传图片、Markdown、TXT 等文件，生成专属子域名链接，浏览器直接访问预览</div>
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-zone" id="uploadZone">
+          <div class="upload-zone-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="upload-zone-title">拖拽文件到此处，或点击选择</div>
+          <div class="upload-zone-desc">支持图片、Markdown、TXT 等，单文件最大 20MB</div>
+          <input type="file" id="uploadFileInput" style="display:none">
+        </div>
+        <div class="upload-progress" id="uploadProgress" style="display:none">
+          <div class="upload-progress-bar"><div class="upload-progress-fill" id="uploadProgressFill"></div></div>
+          <div class="upload-progress-text" id="uploadProgressText">上传中...</div>
+        </div>
+        <div class="upload-result" id="uploadResult" style="display:none">
+          <div class="upload-result-icon">✓</div>
+          <div class="upload-result-title">上传成功</div>
+          <div class="upload-result-file" id="uploadResultFile"></div>
+          <div class="upload-result-link">
+            <span>访问链接：</span>
+            <a id="uploadResultUrl" href="#" target="_blank"></a>
+            <button class="upload-copy-btn" onclick="copyUploadUrl()">复制</button>
+          </div>
+          <button class="upload-again-btn" onclick="resetUpload()">再传一个</button>
+        </div>
+      </div>
+    </div>
+  </main>
 <div class="mobile-bottom-nav" id="mobileBottomNav">
   <div class="mb-nav-item active" data-page="home" onclick="mbNavClick('home')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -5111,6 +5416,45 @@ body.preview-active .app-preview { display: flex; }
   </div>
 </div>
 
+<!-- ========== API 密钥创建弹窗 ========== -->
+<div class="apikey-modal-overlay" id="apikeyCreateModal" onclick="if(event.target===this)apikeyCloseCreate()">
+  <div class="apikey-modal">
+    <h2>创建新的 API 密钥</h2>
+    <p class="modal-desc">为密钥起个名字，方便后续管理。完整密钥仅创建时显示一次。</p>
+    <div class="apikey-form-group">
+      <label>密钥名称</label>
+      <input type="text" id="apikeyName" placeholder="例如：我的脚本调用">
+    </div>
+    <div class="apikey-form-group">
+      <label>有效期</label>
+      <select id="apikeyExpire">
+        <option value="0">永久</option>
+        <option value="30">30 天</option>
+        <option value="90">90 天</option>
+        <option value="180">180 天</option>
+        <option value="365">1 年</option>
+      </select>
+    </div>
+    <div class="apikey-form-group">
+      <label>每日调用限额（可选）</label>
+      <input type="number" id="apikeyLimit" placeholder="留空表示不限制">
+    </div>
+    <div class="apikey-form-group">
+      <label>用途说明（可选）</label>
+      <textarea id="apikeyDesc" rows="2" placeholder="例如：批量推荐项目"></textarea>
+    </div>
+    <div class="apikey-created-box" id="apikeyCreatedBox" style="display:none">
+      <div class="label">✓ 密钥已创建，请立即复制（关闭后无法再查看）</div>
+      <div class="key-text" id="apikeyCreatedValue"></div>
+      <button class="btn btn-primary" onclick="apikeyCopyCreated()">复制密钥</button>
+    </div>
+    <div class="apikey-modal-actions">
+      <button class="btn" onclick="apikeyCloseCreate()">关闭</button>
+      <button class="btn btn-primary" id="apikeyCreateConfirmBtn" onclick="apikeyConfirmCreate()">创建密钥</button>
+    </div>
+  </div>
+</div>
+
 <!-- AI 助手页面已移至 project-list-layout 内部（cardsGrid 之后）-->
 
 <!-- ========== 登录提示弹窗 ========== -->
@@ -5128,6 +5472,7 @@ body.preview-active .app-preview { display: flex; }
   </div>
 </div>
 
+<!-- ========== 留言弹窗 ========== -->
 <div class="comment-modal-overlay" id="commentModalOverlay" onclick="if(event.target===this)closeCommentModal()">
   <div class="comment-modal">
     <div class="comment-modal-header">
@@ -8184,6 +8529,12 @@ async function doUserLogin() {
       loginPasswordInput.value = '';
       loginError.textContent = '';
       init();
+      // 若当前在 API 密钥页面，登录后自动刷新列表
+      const apikeyPage = document.getElementById('apikeyPage');
+      if (apikeyPage && apikeyPage.style.display !== 'none' && typeof loadApiKeys === 'function') {
+        apikeyCurrentUser = null;
+        loadApiKeys();
+      }
     } else {
       loginError.textContent = d.error || '用户名或密码错误';
       loginError.classList.add('show');
@@ -8583,6 +8934,248 @@ if (navAiAsst) navAiAsst.addEventListener('click', openAIAssistant);
 const aiRecommendInput = document.getElementById('aiRecommendInput');
 if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
 
+// ===== API 密钥管理 =====
+let apikeyView = 'mine';
+let apikeyCurrentUser = null;
+const APIKEY_MASK = key => key ? key.slice(0, 7) + '•'.repeat(Math.max(0, key.length - 11)) + key.slice(-4) : '';
+const APIKEY_FMT = ts => {
+  if (!ts) return '永久';
+  const d = new Date(ts * 1000);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+
+async function loadApiKeys() {
+  const grid = $('#apikeyGrid');
+  if (!grid) return;
+  grid.innerHTML = '<div class="apikey-empty" style="grid-column:1/-1"><div class="apikey-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><h3>加载中...</h3></div>';
+  try {
+    if (!apikeyCurrentUser) {
+      const authRes = await fetch('/api/auth-check');
+      const authData = await authRes.json();
+      if (!authData.authenticated) {
+        grid.innerHTML = '<div class="apikey-empty" style="grid-column:1/-1"><div class="apikey-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h3>请先登录</h3><p>登录后即可管理你的 API 密钥</p><div class="apikey-empty-actions"><button class="apikey-empty-btn primary" onclick="showLoginPage()">立即登录</button><button class="apikey-empty-btn ghost" onclick="switchSidebarView(\'home\')">稍后再说</button></div></div>';
+        return;
+      }
+      apikeyCurrentUser = authData.user;
+    }
+    const isAdmin = apikeyCurrentUser && apikeyCurrentUser.role === 'admin';
+    const sw = $('#apikeyViewSwitch');
+    if (sw) sw.style.display = isAdmin ? 'inline-flex' : 'none';
+    const url = '/api/api-keys' + (isAdmin ? '?all=' + (apikeyView === 'all' ? '1' : '0') : '');
+    const res = await fetch(url);
+    if (res.status === 401) {
+      grid.innerHTML = '<div class="apikey-empty" style="grid-column:1/-1"><div class="apikey-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h3>请先登录</h3><p>登录后即可管理你的 API 密钥</p><div class="apikey-empty-actions"><button class="apikey-empty-btn primary" onclick="showLoginPage()">立即登录</button><button class="apikey-empty-btn ghost" onclick="switchSidebarView(\'home\')">稍后再说</button></div></div>';
+      return;
+    }
+    const data = await res.json();
+    if (data.error) { grid.innerHTML = `<div class="apikey-empty" style="grid-column:1/-1"><h3>加载失败</h3><p>${esc(data.error)}</p></div>`; return; }
+    renderApiKeys(data.keys || [], isAdmin);
+  } catch (e) {
+    grid.innerHTML = `<div class="apikey-empty" style="grid-column:1/-1"><h3>加载失败</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+function renderApiKeys(keys, isAdmin) {
+  const grid = $('#apikeyGrid');
+  $('#apikeyCount').textContent = keys.length;
+  if (!keys.length) {
+    grid.innerHTML = `<div class="apikey-empty"><div class="apikey-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg></div><h3>还没有 API 密钥</h3><p>点击右上角「创建密钥」生成你的第一个 API Key</p></div>`;
+    return;
+  }
+  const now = Math.floor(Date.now() / 1000);
+  grid.innerHTML = keys.map(k => {
+    let status, statusCls;
+    if (!k.is_active) { status = '已禁用'; statusCls = 'revoked'; }
+    else if (k.expires_at && now > k.expires_at) { status = '已过期'; statusCls = 'expired'; }
+    else { status = '有效'; statusCls = 'active'; }
+    const expired = k.expires_at ? APIKEY_FMT(k.expires_at) : '永久';
+    const owner = (isAdmin && apikeyView === 'all') ? `<span class="key-owner">所有者：${esc(k.username || '')}</span>` : '<span class="key-owner"></span>';
+    return `
+    <div class="key-card ${statusCls === 'revoked' ? 'revoked' : ''}">
+      <div class="key-accent-bar"></div>
+      <div class="key-card-top">
+        <div class="key-name-row">
+          <span class="key-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg></span>
+          <span class="key-name">${esc(k.name)}</span>
+        </div>
+        <span class="key-status ${statusCls}">${status}</span>
+      </div>
+      <div class="key-mask-row">
+        <span class="key-mask">${APIKEY_MASK(k.key)}</span>
+        <button class="copy-btn" onclick="apikeyCopy('${esc(k.key)}', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          复制
+        </button>
+      </div>
+      <div class="key-meta">
+        <span class="key-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg><b>${APIKEY_FMT(k.created_at)}</b></span>
+        <span class="key-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><b>${expired}</b></span>
+        <span class="key-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><b>${k.calls || 0} 次</b></span>
+        ${k.daily_limit ? `<span class="key-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg><b>${k.daily_limit}/天</b></span>` : ''}
+        ${k.desc ? `<span class="key-meta-item"><b>${esc(k.desc)}</b></span>` : ''}
+      </div>
+      <div class="key-card-foot">
+        ${owner}
+        <div class="key-actions">
+          <button class="action-btn" title="${k.is_active ? '禁用' : '启用'}" onclick="apikeyToggle(${k.id})">
+            ${k.is_active
+              ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>'
+              : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>'}
+          </button>
+          <button class="action-btn danger" title="删除" onclick="apikeyDelete(${k.id}, '${esc(k.name)}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function apikeySwitchView(v) {
+  apikeyView = v;
+  document.querySelectorAll('#apikeyViewSwitch .view-pill').forEach((b, i) => b.classList.toggle('active', (v === 'mine' && i === 0) || (v === 'all' && i === 1)));
+  loadApiKeys();
+}
+
+function apikeyCopy(key, btn) {
+  navigator.clipboard.writeText(key).then(() => {
+    btn.classList.add('copied'); btn.lastChild.textContent = ' 已复制';
+    setTimeout(() => { btn.classList.remove('copied'); btn.lastChild.textContent = ' 复制'; }, 1800);
+  }).catch(() => prompt('请手动复制', key));
+}
+
+async function apikeyToggle(id) {
+  try {
+    const res = await fetch(`/api/api-keys/toggle?id=${id}`);
+    const data = await res.json();
+    if (data.success) loadApiKeys(); else alert(data.error || '操作失败');
+  } catch (e) { alert('网络错误: ' + e.message); }
+}
+
+async function apikeyDelete(id, name) {
+  if (!confirm(`确定删除密钥「${name}」吗？此操作不可撤销。`)) return;
+  try {
+    const res = await fetch(`/api/api-keys/delete?id=${id}`);
+    const data = await res.json();
+    if (data.success) loadApiKeys(); else alert(data.error || '删除失败');
+  } catch (e) { alert('网络错误: ' + e.message); }
+}
+
+function apikeyOpenCreate() {
+  if (!state.isAuthenticated) { showLoginPage(); return; }
+  $('#apikeyCreateModal').classList.add('show');
+  $('#apikeyCreatedBox').style.display = 'none';
+  $('#apikeyCreateConfirmBtn').style.display = '';
+  $('#apikeyName').value = ''; $('#apikeyLimit').value = ''; $('#apikeyDesc').value = '';
+}
+function apikeyCloseCreate() { $('#apikeyCreateModal').classList.remove('show'); }
+
+async function apikeyConfirmCreate() {
+  const name = $('#apikeyName').value.trim();
+  if (!name) { alert('请输入密钥名称'); $('#apikeyName').focus(); return; }
+  const expireDays = parseInt($('#apikeyExpire').value) || 0;
+  const expires_at = expireDays > 0 ? Math.floor(Date.now() / 1000) + expireDays * 86400 : 0;
+  const btn = $('#apikeyCreateConfirmBtn');
+  btn.disabled = true; btn.textContent = '创建中...';
+  try {
+    const res = await fetch('/api/api-keys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        desc: $('#apikeyDesc').value.trim(),
+        daily_limit: $('#apikeyLimit').value ? parseInt($('#apikeyLimit').value) : 0,
+        expires_at
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      $('#apikeyCreatedValue').textContent = data.key;
+      $('#apikeyCreatedBox').style.display = 'block';
+      $('#apikeyCreateConfirmBtn').style.display = 'none';
+      loadApiKeys();
+    } else {
+      alert(data.error || '创建失败');
+    }
+  } catch (e) { alert('网络错误: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = '创建密钥'; }
+}
+
+function apikeyCopyCreated() {
+  const key = $('#apikeyCreatedValue').textContent;
+  navigator.clipboard.writeText(key).catch(() => prompt('请手动复制', key));
+}
+
+// ===== 文件上传 =====
+let _lastUploadUrl = '';
+function initUploadPage() {
+  const zone = $('#uploadZone');
+  const input = $('#uploadFileInput');
+  if (!zone || !input) return;
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFileUpload(e.dataTransfer.files[0]);
+  });
+  input.addEventListener('change', e => {
+    if (e.target.files.length) handleFileUpload(e.target.files[0]);
+  });
+}
+function resetUpload() {
+  $('#uploadZone').style.display = '';
+  $('#uploadProgress').style.display = 'none';
+  $('#uploadResult').style.display = 'none';
+  $('#uploadFileInput').value = '';
+  _lastUploadUrl = '';
+}
+async function handleFileUpload(file) {
+  if (!state.isAuthenticated) { showLoginPage(); return; }
+  if (file.size > 20 * 1024 * 1024) { alert('文件大小不能超过 20MB'); return; }
+  $('#uploadZone').style.display = 'none';
+  $('#uploadResult').style.display = 'none';
+  $('#uploadProgress').style.display = 'block';
+  $('#uploadProgressFill').style.width = '30%';
+  $('#uploadProgressText').textContent = `正在上传 ${file.name}...`;
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const r = await fetch('/api/upload', { method: 'POST', body: formData });
+    const d = await r.json();
+    if (r.ok && d.success) {
+      $('#uploadProgressFill').style.width = '100%';
+      $('#uploadProgressText').textContent = '上传完成';
+      setTimeout(() => {
+        $('#uploadProgress').style.display = 'none';
+        $('#uploadResult').style.display = 'block';
+        $('#uploadResultFile').textContent = `${d.filename} (${(d.size / 1024).toFixed(1)} KB)`;
+        const urlEl = $('#uploadResultUrl');
+        urlEl.href = d.url;
+        urlEl.textContent = d.url;
+        _lastUploadUrl = d.url;
+      }, 400);
+    } else {
+      throw new Error(d.error || '上传失败');
+    }
+  } catch (e) {
+    $('#uploadProgress').style.display = 'none';
+    $('#uploadZone').style.display = '';
+    alert('上传失败: ' + (e.message || '未知错误'));
+  }
+}
+function copyUploadUrl() {
+  if (_lastUploadUrl) {
+    navigator.clipboard.writeText(_lastUploadUrl).then(() => {
+      const btn = event.target;
+      const orig = btn.textContent;
+      btn.textContent = '已复制';
+      setTimeout(() => btn.textContent = orig, 1500);
+    }).catch(() => prompt('请手动复制', _lastUploadUrl));
+  }
+}
+
 // ===== 三栏布局交互 =====
 function switchSidebarView(view) {
   const extras = $('#homeExtras');
@@ -8622,10 +9215,36 @@ function switchSidebarView(view) {
     $('#editorPage').style.display = '';
     state.view = 'editor';
     showEmptyState();
+  } else if (view === 'apikey') {
+    // API 密钥页面
+    if (extras) extras.hidden = true;
+    if (cardsGrid) cardsGrid.style.display = 'none';
+    if (aiPage) aiPage.classList.remove('active');
+    const apikeyPage = $('#apikeyPage');
+    if (apikeyPage) apikeyPage.style.display = 'flex';
+    loadApiKeys();
+  } else if (view === 'upload') {
+    // 文件上传页面
+    if (extras) extras.hidden = true;
+    if (cardsGrid) cardsGrid.style.display = 'none';
+    if (aiPage) aiPage.classList.remove('active');
+    const uploadPage = $('#uploadPage');
+    if (uploadPage) uploadPage.style.display = 'flex';
+    resetUpload();
+  }
+  // 非 apikey 视图时隐藏 API 密钥页
+  if (view !== 'apikey') {
+    const apikeyPage = $('#apikeyPage');
+    if (apikeyPage) apikeyPage.style.display = 'none';
+  }
+  // 非 upload 视图时隐藏上传页
+  if (view !== 'upload') {
+    const uploadPage = $('#uploadPage');
+    if (uploadPage) uploadPage.style.display = 'none';
   }
   // 更新侧栏高亮
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap', preview: 'navPreview' };
+  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap', preview: 'navPreview', apikey: 'navApikey', upload: 'navUpload' };
   var navId = navMap[view];
   if (navId) { var el = document.getElementById(navId); if (el) el.classList.add('active'); }
 }
@@ -8703,9 +9322,11 @@ if (mainFilterToggle) {
 // 侧栏登录/注册按钮
 const sidebarLogin = document.getElementById('sidebarLogin');
 if (sidebarLogin) {
-  sidebarLogin.addEventListener('click', () => {
+  sidebarLogin.addEventListener('click', (e) => {
+    e.stopPropagation();
     const userMenuBtn = document.getElementById('userMenuBtn');
-    if (userMenuBtn && !userMenuBtn.classList.contains('hidden')) {
+    const isLoggedIn = userMenuBtn && !userMenuBtn.classList.contains('hidden') && state.currentUser;
+    if (isLoggedIn) {
       // 已登录，打开用户菜单
       document.getElementById('userDropdown').classList.toggle('show');
     } else {
@@ -9087,6 +9708,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeBtn = document.getElementById('btnCloseReadme');
   if (toggleBtn) toggleBtn.addEventListener('click', toggleReadmePanel);
   if (closeBtn) closeBtn.addEventListener('click', closeReadmePanel);
+  initUploadPage();
 });
 
 // ==================== 启动流程优化 ====================
