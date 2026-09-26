@@ -28,12 +28,22 @@ def get_app_path():
     return os.getcwd()
 
 
+def get_assets_path():
+    """只读资源（如 img 图标）目录：
+    单文件模式在临时解压目录 sys._MEIPASS，单目录模式在 _internal，开发模式为当前目录。"""
+    if getattr(sys, 'frozen', False):
+        meipass = getattr(sys, '_MEIPASS', None)
+        if meipass:
+            return meipass
+    return get_app_path()
+
+
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.dir_path = get_app_path()
         # 确保能找到img目录
-        self.icon_path = os.path.join(self.dir_path, 'img', 'icon.png')
+        self.icon_path = os.path.join(get_assets_path(), 'img', 'icon.png')
         
         # 初始化事件数据
         self.events = []
@@ -2311,7 +2321,7 @@ class MyWindow(QMainWindow):
             def get_answer(question):
                 # 调用AI模型获取回答
                 try:
-                    from zai import ZhipuAiClient
+                    from zai._client import ZhipuAiClient
                     
                     client = ZhipuAiClient(api_key=os.environ.get('ZHIPUAI_API_KEY', ''))
                     response = client.chat.completions.create(

@@ -5716,7 +5716,7 @@ async function fetchProjectList() {
 }
 async function fetchProjectTree(path) { return (await api(`/api/projects/tree?path=${encodeURIComponent(path)}&depth=1`)).json(); }
 async function fetchSubtree(project, dir) { return (await api(`/api/files/subtree?project=${encodeURIComponent(project)}&dir=${encodeURIComponent(dir)}&depth=1`)).json(); }
-async function fetchContent(path) { return (await api(`/api/files/content?path=${encodeURIComponent(path)}`)).json(); }
+async function fetchContent(path) { return (await api(`/api/files/content?path=${encodeURIComponent(path)}&_t=${Date.now()}`)).json(); }
 async function fetchSearch(q) { return (await api(`/api/files/search?q=${encodeURIComponent(q)}`)).json(); }
 
 // ==================== UTILS ====================
