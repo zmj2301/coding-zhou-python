@@ -414,8 +414,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 21,
-    "lastModified": 1785830343598,
+    "fileCount": 23,
+    "lastModified": 1790258031174,
     "themeColor": "hsl(222, 42%, 65%)",
     "popupUrl": null
   },
@@ -438,7 +438,7 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 182,
+    "fileCount": 184,
     "lastModified": 1788005438453,
     "themeColor": "hsl(22, 37%, 65%)",
     "popupUrl": null
