@@ -41678,13 +41678,69 @@
     "type": "directory",
     "path": "python文字转语音",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1785830343598,
+    "lastModified": 1790258031174,
     "children": [
+      {
+        "name": "__pycache__",
+        "type": "directory",
+        "path": "python文字转语音/__pycache__",
+        "children": [
+          {
+            "name": "main.cpython-312.pyc",
+            "type": "file",
+            "path": "python文字转语音/__pycache__/main.cpython-312.pyc",
+            "ext": ".pyc",
+            "lastModified": 1790258031174
+          }
+        ]
+      },
       {
         "name": "core",
         "type": "directory",
         "path": "python文字转语音/core",
         "children": [
+          {
+            "name": "__pycache__",
+            "type": "directory",
+            "path": "python文字转语音/core/__pycache__",
+            "children": [
+              {
+                "name": "__init__.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/core/__pycache__/__init__.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966407
+              },
+              {
+                "name": "ai_enhancer.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/core/__pycache__/ai_enhancer.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966690
+              },
+              {
+                "name": "audio_handler.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/core/__pycache__/audio_handler.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966673
+              },
+              {
+                "name": "config_manager.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/core/__pycache__/config_manager.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966408
+              },
+              {
+                "name": "tts_engine.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/core/__pycache__/tts_engine.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966414
+              }
+            ]
+          },
           {
             "name": "__init__.py",
             "type": "file",
@@ -41744,10 +41800,87 @@
         ]
       },
       {
+        "name": "output",
+        "type": "directory",
+        "path": "python文字转语音/output",
+        "children": [
+          {
+            "name": "tts_20260924_215259.mp3",
+            "type": "file",
+            "path": "python文字转语音/output/tts_20260924_215259.mp3",
+            "ext": ".mp3",
+            "lastModified": 1790257979291
+          },
+          {
+            "name": "tts_20260924_215404.mp3",
+            "type": "file",
+            "path": "python文字转语音/output/tts_20260924_215404.mp3",
+            "ext": ".mp3",
+            "lastModified": 1790258044317
+          }
+        ]
+      },
+      {
         "name": "ui",
         "type": "directory",
         "path": "python文字转语音/ui",
         "children": [
+          {
+            "name": "__pycache__",
+            "type": "directory",
+            "path": "python文字转语音/ui/__pycache__",
+            "children": [
+              {
+                "name": "__init__.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/ui/__pycache__/__init__.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966697
+              },
+              {
+                "name": "ai_panel.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/ui/__pycache__/ai_panel.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966748
+              },
+              {
+                "name": "control_panel.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/ui/__pycache__/control_panel.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966745
+              },
+              {
+                "name": "main_window.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/ui/__pycache__/main_window.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966700
+              },
+              {
+                "name": "settings_panel.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/ui/__pycache__/settings_panel.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966747
+              },
+              {
+                "name": "status_panel.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/ui/__pycache__/status_panel.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966750
+              },
+              {
+                "name": "text_input_panel.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/ui/__pycache__/text_input_panel.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966743
+              }
+            ]
+          },
           {
             "name": "__init__.py",
             "type": "file",
@@ -41804,6 +41937,34 @@
         "type": "directory",
         "path": "python文字转语音/utils",
         "children": [
+          {
+            "name": "__pycache__",
+            "type": "directory",
+            "path": "python文字转语音/utils/__pycache__",
+            "children": [
+              {
+                "name": "__init__.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/utils/__pycache__/__init__.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966691
+              },
+              {
+                "name": "file_utils.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/utils/__pycache__/file_utils.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966694
+              },
+              {
+                "name": "history_manager.cpython-312.pyc",
+                "type": "file",
+                "path": "python文字转语音/utils/__pycache__/history_manager.cpython-312.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790257966694
+              }
+            ]
+          },
           {
             "name": "__init__.py",
             "type": "file",
@@ -43162,7 +43323,21 @@
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/logs/app_20260919_075822.log",
                 "ext": ".log",
-                "lastModified": 1789785295336
+                "lastModified": 1789790148377
+              },
+              {
+                "name": "app_20260924_183145.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260924_183145.log",
+                "ext": ".log",
+                "lastModified": 1790250443511
+              },
+              {
+                "name": "app_20260925_154740.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20260925_154740.log",
+                "ext": ".log",
+                "lastModified": 1790331017100
               }
             ]
           },
@@ -43313,7 +43488,7 @@
         "type": "file",
         "path": "Python桌面宠物/config.json",
         "ext": ".json",
-        "lastModified": 1789215962799
+        "lastModified": 1790249331336
       },
       {
         "name": "flip_countdown_preview.html",

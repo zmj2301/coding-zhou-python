@@ -43,8 +43,7 @@ Thumbs.db
 !.env.example
 ecs-env.sh
 code-explorer/ecs-env.sh
-<<<<<<< HEAD
-=======
+ecs-ollama-token.txt
 
 # 图片文件
 *.png
@@ -55,7 +54,6 @@ code-explorer/ecs-env.sh
 *.webp
 *.bmp
 !code-explorer/public/images/covers/*.jpg
->>>>>>> 893abfaec1736766143a262d5a9654d4419e51f6
 
 # 视频文件
 *.mp4

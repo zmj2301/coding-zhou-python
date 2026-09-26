@@ -1897,6 +1897,85 @@ body.filter-hidden .main-filter-toggle {
   display: none; align-items: center; justify-content: center; z-index: 100020; padding: 20px;
 }
 .apikey-modal-overlay.show { display: flex; }
+
+/* ========== 资源下载页面 ========== */
+.resources-page { flex: 1; display: flex; flex-direction: column; }
+.resources-stats { font-size: 13px; color: var(--text-secondary); }
+.resource-card {
+  background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  border-radius: var(--radius-lg); padding: 20px;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.resource-card::before {
+  content: ''; display: block; height: 3px; margin: -20px -20px 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--card-accent, var(--accent-purple)); opacity: 0.8;
+}
+.resource-card:hover {
+  transform: translateY(-4px); border-color: var(--card-accent, var(--accent-purple));
+  box-shadow: 0 12px 28px rgba(0,0,0,0.22), 0 0 0 1px color-mix(in srgb, var(--card-accent, var(--accent-purple)) 22%, transparent);
+}
+.card-header { display: flex; align-items: center; gap: 14px; }
+.card-icon {
+  width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; background: color-mix(in srgb, var(--card-accent, var(--accent-purple)) 12%, transparent);
+  flex-shrink: 0;
+}
+.card-title { font-size: 17px; font-weight: 600; line-height: 1.3; }
+.card-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; flex: 1; }
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.card-tag {
+  font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 10px;
+  background: var(--bg-tertiary); color: var(--text-secondary);
+}
+.card-tag.format { background: color-mix(in srgb, var(--accent-blue) 15%, transparent); color: var(--accent-blue); }
+.card-tag.size { background: color-mix(in srgb, var(--accent-yellow) 15%, transparent); color: var(--accent-yellow); }
+.card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent); }
+.card-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-tertiary); }
+.card-meta-item { display: flex; align-items: center; gap: 4px; }
+.download-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px;
+  background: linear-gradient(135deg, var(--card-accent, var(--accent-purple)), color-mix(in srgb, var(--card-accent, var(--accent-purple)) 70%, #000));
+  color: #fff; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; font-family: var(--font-sans);
+}
+.download-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px color-mix(in srgb, var(--card-accent, var(--accent-purple)) 30%, transparent); }
+.download-btn svg { width: 14px; height: 14px; }
+.accent-blue { --card-accent: var(--accent-blue); }
+.accent-purple { --card-accent: var(--accent-purple); }
+.accent-green { --card-accent: var(--accent-green); }
+.accent-orange { --card-accent: var(--accent-orange); }
+.accent-pink { --card-accent: var(--accent-pink); }
+.accent-cyan { --card-accent: var(--accent-cyan); }
+
+/* 教材下载区域 */
+.textbook-section { margin-top: 32px; }
+.textbook-section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+.textbook-section-head h2 { font-size: 20px; font-weight: 700; font-family: var(--font-display); }
+.textbook-section-sub { font-size: 13px; color: var(--text-secondary); }
+.textbook-card {
+  background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  border-radius: var(--radius-lg); padding: 20px;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.textbook-card::before {
+  content: ''; display: block; height: 3px; margin: -20px -20px 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--accent-green); opacity: 0.8;
+}
+.textbook-card:hover {
+  transform: translateY(-4px); border-color: var(--accent-green);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.22), 0 0 0 1px color-mix(in srgb, var(--accent-green) 22%, transparent);
+}
+.textbook-card .card-title { font-size: 16px; }
+.textbook-card .download-btn {
+  background: linear-gradient(135deg, var(--accent-green), color-mix(in srgb, var(--accent-green) 70%, #000));
+}
+
 .apikey-modal {
   width: 100%; max-width: 460px; background: var(--bg-secondary);
   border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
@@ -4801,7 +4880,7 @@ body.preview-active .app-preview { display: flex; }
         </span>
         <span class="sidebar-item-label">首页 (轮播/最近/收藏)</span>
       </a>
-      <a class="sidebar-item" data-view="resources" href="/resources/">
+      <a class="sidebar-item" data-view="resources" id="navResources">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </span>
@@ -4907,7 +4986,7 @@ body.preview-active .app-preview { display: flex; }
 
   <!-- ====== 右侧主内容 ====== -->
   <main class="app-main" id="homePage">
-    <header class="main-head">
+    <header class="main-head" id="plazaHeader">
       <h1>项目广场</h1>
       <div class="main-search" id="heroSearch">
         <input type="text" id="heroSearchInput" placeholder="输入项目名称或关键词搜索..." autocomplete="off">
@@ -4915,7 +4994,7 @@ body.preview-active .app-preview { display: flex; }
       </div>
       <button class="main-filter-toggle" id="mainFilterToggle">筛选</button>
     </header>
-    <div class="main-sub">共 <span id="projectCount">0</span> 个项目</div>
+    <div class="main-sub" id="plazaSub">共 <span id="projectCount">0</span> 个项目</div>
 
     <!-- 首页附加内容（轮播/最近/收藏，默认隐藏，点击侧栏「首页」显示） -->
     <div class="home-extras" id="homeExtras" hidden>
@@ -5101,6 +5180,25 @@ body.preview-active .app-preview { display: flex; }
           </div>
           <button class="upload-again-btn" onclick="resetUpload()">再传一个</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ====== 资源下载页面（与 cardsGrid 同级，默认隐藏） ====== -->
+    <div class="resources-page" id="resourcesPage" style="display:none">
+      <header class="main-head">
+        <h1>资源下载</h1>
+        <div class="main-head-right">
+          <div class="resources-stats" id="resourcesStats"></div>
+        </div>
+      </header>
+      <div class="main-sub">精选 Python 学习资源、项目模板、开发工具和文档合集</div>
+      <div class="cards-grid" id="resourcesGrid"></div>
+      <div class="textbook-section">
+        <div class="textbook-section-head">
+          <h2>📚 八年级上册教材</h2>
+          <span class="textbook-section-sub">PDF 电子版 · 可直接下载</span>
+        </div>
+        <div class="cards-grid" id="textbookGrid"></div>
       </div>
     </div>
   </main>
@@ -8561,10 +8659,11 @@ async function doRegister() {
       registerError.classList.add('show');
       registerError.style.color = 'var(--success, #22c55e)';
       registerError.style.borderColor = 'var(--success, #22c55e)';
-      // 自动填充登录表单并登录
+      // 切换到登录表单并自动填充
+      showAuthForm('login');
       loginUsernameInput.value = username;
       loginPasswordInput.value = pw;
-      setTimeout(() => doUserLogin(), 500);
+      setTimeout(() => doUserLogin(), 300);
     } else {
       registerError.textContent = d.error || '注册失败';
       registerError.classList.add('show');
@@ -8934,6 +9033,129 @@ if (navAiAsst) navAiAsst.addEventListener('click', openAIAssistant);
 const aiRecommendInput = document.getElementById('aiRecommendInput');
 if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
 
+// ===== 资源下载 =====
+async function loadResources() {
+  const grid = document.getElementById('resourcesGrid');
+  const stats = document.getElementById('resourcesStats');
+  if (!grid) return;
+  grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div><span>加载资源中...</span></div>';
+  try {
+    const r = await fetch('/api/resources/list');
+    const d = await r.json();
+    const resources = d.resources || [];
+    if (stats) stats.textContent = `共 ${resources.length} 个资源`;
+    if (resources.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--text-secondary)">暂无资源</div>';
+      return;
+    }
+    grid.innerHTML = resources.map(res => `
+      <div class="resource-card accent-${res.accent || 'purple'}">
+        <div class="card-header">
+          <div class="card-icon">${res.icon || '📦'}</div>
+          <div class="card-title">${esc(res.name)}</div>
+        </div>
+        <div class="card-desc">${esc(res.desc || '')}</div>
+        <div class="card-tags">
+          <span class="card-tag format">${esc(res.format || '')}</span>
+          <span class="card-tag size">${esc(res.size || '')}</span>
+          ${(res.tags || []).map(t => `<span class="card-tag">${esc(t)}</span>`).join('')}
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">⬇ ${res.downloads || 0} 次下载</span>
+            <span class="card-meta-item">🕐 ${esc(res.updated || '')} 更新</span>
+          </div>
+          <button class="download-btn" onclick="downloadResource('${esc(res.path)}','${esc(res.name)}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--accent-red)">加载失败</div>';
+  }
+}
+
+function downloadResource(path, name) {
+  const url = '/api/resources/download?path=' + encodeURIComponent(path);
+  fetch(url)
+    .then(async resp => {
+      if (!resp.ok) {
+        let msg = '下载失败';
+        try { const d = await resp.json(); msg = d.error || msg; } catch {}
+        alert(msg);
+        return;
+      }
+      const blob = await resp.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = name || path;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    })
+    .catch(() => alert('下载失败，请稍后重试'));
+}
+
+// ===== 教材下载 =====
+const SUBJECT_ICONS = {
+  '语文': '📖', '数学': '📐', '英语': '🔤', '物理': '⚛️',
+  '生物学': '🧬', '地理': '🌍', '中国历史': '📜', '道德与法治': '⚖️'
+};
+
+function formatSize(bytes) {
+  if (!bytes) return '未知';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+}
+
+async function loadTextbooks() {
+  const grid = document.getElementById('textbookGrid');
+  if (!grid) return;
+  grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:40px"><div class="spinner"></div><span>加载教材列表...</span></div>';
+  try {
+    const r = await fetch('/api/textbook/list');
+    const d = await r.json();
+    const textbooks = d.textbooks || [];
+    if (textbooks.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text-secondary)">暂无教材</div>';
+      return;
+    }
+    grid.innerHTML = textbooks.map(tb => {
+      const icon = SUBJECT_ICONS[tb.subject] || '📚';
+      const dlUrl = '/api/textbook/download?subject=' + encodeURIComponent(tb.subject);
+      return `
+        <div class="textbook-card">
+          <div class="card-header">
+            <div class="card-icon">${icon}</div>
+            <div class="card-title">${esc(tb.name)}</div>
+          </div>
+          <div class="card-desc">义务教育教科书 · PDF 电子版</div>
+          <div class="card-tags">
+            <span class="card-tag format">PDF</span>
+            <span class="card-tag size">八年级上册</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-meta">
+              <span class="card-meta-item">📄 八年级上册</span>
+            </div>
+            <a class="download-btn" href="${dlUrl}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              下载
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--accent-red)">教材加载失败</div>';
+  }
+}
+
 // ===== API 密钥管理 =====
 let apikeyView = 'mine';
 let apikeyCurrentUser = null;
@@ -9181,6 +9403,12 @@ function switchSidebarView(view) {
   const extras = $('#homeExtras');
   const cardsGrid = $('#cardsGrid');
   const aiPage = $('#aiAsstPage');
+  const plazaHeader = $('#plazaHeader');
+  const plazaSub = $('#plazaSub');
+  // 广场/首页视图显示主标题，其他视图隐藏
+  const showPlazaHeader = (view === 'plaza' || view === 'home');
+  if (plazaHeader) plazaHeader.style.display = showPlazaHeader ? '' : 'none';
+  if (plazaSub) plazaSub.style.display = showPlazaHeader ? '' : 'none';
   // 关闭 AI 助手（如打开）
   if (view !== 'ai-asst' && aiPage.classList.contains('active')) {
     closeAIAssistant();
@@ -9231,6 +9459,15 @@ function switchSidebarView(view) {
     const uploadPage = $('#uploadPage');
     if (uploadPage) uploadPage.style.display = 'flex';
     resetUpload();
+  } else if (view === 'resources') {
+    // 资源下载页面
+    if (extras) extras.hidden = true;
+    if (cardsGrid) cardsGrid.style.display = 'none';
+    if (aiPage) aiPage.classList.remove('active');
+    const resourcesPage = $('#resourcesPage');
+    if (resourcesPage) resourcesPage.style.display = 'flex';
+    loadResources();
+    loadTextbooks();
   }
   // 非 apikey 视图时隐藏 API 密钥页
   if (view !== 'apikey') {
@@ -9242,9 +9479,14 @@ function switchSidebarView(view) {
     const uploadPage = $('#uploadPage');
     if (uploadPage) uploadPage.style.display = 'none';
   }
+  // 非 resources 视图时隐藏资源下载页
+  if (view !== 'resources') {
+    const resourcesPage = $('#resourcesPage');
+    if (resourcesPage) resourcesPage.style.display = 'none';
+  }
   // 更新侧栏高亮
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap', preview: 'navPreview', apikey: 'navApikey', upload: 'navUpload' };
+  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap', preview: 'navPreview', apikey: 'navApikey', upload: 'navUpload', resources: 'navResources' };
   var navId = navMap[view];
   if (navId) { var el = document.getElementById(navId); if (el) el.classList.add('active'); }
 }

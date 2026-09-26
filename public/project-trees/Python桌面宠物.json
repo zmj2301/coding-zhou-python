@@ -1267,7 +1267,21 @@
             "type": "file",
             "path": "relax_exe/logs/app_20260919_075822.log",
             "ext": ".log",
-            "lastModified": 1789785295336
+            "lastModified": 1789790148377
+          },
+          {
+            "name": "app_20260924_183145.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260924_183145.log",
+            "ext": ".log",
+            "lastModified": 1790250443511
+          },
+          {
+            "name": "app_20260925_154740.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260925_154740.log",
+            "ext": ".log",
+            "lastModified": 1790331017100
           }
         ]
       },
@@ -1418,7 +1432,7 @@
     "type": "file",
     "path": "config.json",
     "ext": ".json",
-    "lastModified": 1789215962799
+    "lastModified": 1790249331336
   },
   {
     "name": "flip_countdown_preview.html",

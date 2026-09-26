@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API 密钥 - 模板预览</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+/* ===== 变量：完全照搬 index.html ===== */
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1a2332;
+  --bg-overlay: #243044;
+  --border-color: #1e293b;
+  --border-light: #141b2d;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --accent-blue: #38bdf8;
+  --accent-green: #34d399;
+  --accent-yellow: #fbbf24;
+  --accent-red: #fb7185;
+  --accent-purple: #a78bfa;
+  --accent-orange: #fb923c;
+  --accent-pink: #f472b6;
+  --accent-cyan: #22d3ee;
+  --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas',monospace;
+  --font-sans: 'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-display: 'Outfit','DM Sans',sans-serif;
+  --transition: 200ms ease;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+}
+[data-theme="light"] {
+  --bg-primary: #faf9f6;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f0ede8;
+  --bg-overlay: #e6e2db;
+  --border-color: #e2ddd5;
+  --border-light: #f0ede8;
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a68;
+  --text-tertiary: #8a8a9a;
+  --accent-blue: #0284c7;
+  --accent-green: #059669;
+  --accent-yellow: #d97706;
+  --accent-red: #e11d48;
+  --accent-purple: #7c3aed;
+  --accent-orange: #ea580c;
+  --accent-pink: #db2777;
+  --accent-cyan: #0891b2;
+  --glass-bg: rgba(255,255,255,0.6);
+  --glass-border: rgba(0,0,0,0.06);
+}
+
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#475569}
+
+/* ===== Body：照搬主站径向渐变背景 ===== */
+body {
+  font-family: var(--font-sans);
+  background: radial-gradient(ellipse at 20% 0%, rgba(56,189,248,0.05) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(167,139,250,0.05) 0%, transparent 50%), var(--bg-primary);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ===== app-shell ===== */
+.app-shell { display: flex; height: 100vh; overflow: hidden; position: relative; z-index: 1; }
+
+/* ===== 侧栏：照搬 .app-sidebar / .sidebar-item ===== */
+.app-sidebar {
+  flex-shrink: 0;
+  width: 200px;
+  background: color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  flex-shrink: 0;
+}
+.sidebar-logo {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(56,189,248,0.3);
+}
+.sidebar-brand-text { font-size: 14px; font-weight: 700; color: var(--text-primary); white-space: nowrap; font-family: var(--font-display); }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+.sidebar-group-label {
+  font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 12px 14px 4px; white-space: nowrap;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; font-size: 13px; color: var(--text-secondary);
+  cursor: pointer; transition: all 150ms ease;
+  border-left: 3px solid transparent; white-space: nowrap; user-select: none; text-decoration: none;
+}
+.sidebar-item:hover { background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent); color: var(--text-primary); }
+.sidebar-item.active {
+  background: color-mix(in srgb, var(--accent-blue) 12%, transparent);
+  color: var(--accent-blue);
+  border-left-color: var(--accent-blue);
+  font-weight: 600;
+}
+.sidebar-item-icon { width: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.sidebar-item-icon svg { width: 16px; height: 16px; }
+.sidebar-item-label { flex: 1; }
+
+/* 侧栏底部：照搬 .sidebar-footer */
+.sidebar-footer {
+  flex-shrink: 0;
+  border-top: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  padding: 8px 0;
+}
+.sidebar-footer-icon {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 4px 0 8px;
+}
+.sidebar-footer-icon button {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: transparent; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary); transition: all 150ms ease;
+}
+.sidebar-footer-icon button:hover {
+  background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  color: var(--text-primary);
+}
+.sidebar-footer-icon svg { width: 16px; height: 16px; }
+.sidebar-footer-icon .user-menu-btn {
+  width: auto; padding: 4px 8px; gap: 5px;
+  font-size: 12px; box-shadow: none; background: transparent;
+  border: 1px solid transparent;
+}
+.sidebar-footer-icon .user-menu-btn:hover {
+  background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  border-color: color-mix(in srgb, var(--border-color) 50%, transparent);
+}
+.sidebar-footer-icon .user-menu-btn span { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+.theme-toggle-btn .moon-icon { display: none; }
+[data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
+[data-theme="light"] .theme-toggle-btn .moon-icon { display: flex; }
+.sidebar-version {
+  text-align: center; font-size: 11px; color: var(--text-tertiary); padding: 4px 0;
+}
+
+/* ===== 主内容区：照搬 .app-main / .main-head ===== */
+.app-main { flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
+.main-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 12px; gap: 16px;
+}
+.main-head h1 {
+  font-size: 22px; font-weight: 700; color: var(--text-primary);
+  font-family: var(--font-display); letter-spacing: -0.5px;
+}
+.main-head-right { display: flex; align-items: center; gap: 10px; }
+.main-sub { padding: 0 24px 8px; font-size: 13px; color: var(--text-tertiary); }
+.main-sub span { font-weight: 600; color: var(--text-secondary); }
+
+/* 视图切换 pill（管理员） */
+.view-switch {
+  display: inline-flex; padding: 3px; gap: 3px;
+  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  border-radius: var(--radius-md);
+}
+.view-pill {
+  padding: 6px 14px; border-radius: 8px; border: none;
+  background: transparent; color: var(--text-secondary);
+  font-size: 13px; font-weight: 500; cursor: pointer; transition: all 150ms ease; font-family: var(--font-sans);
+}
+.view-pill.active { background: var(--bg-tertiary); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+
+/* 创建按钮 - 用主站渐变风格 */
+.create-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: var(--radius-md); border: none;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: var(--font-sans); transition: transform .15s ease, box-shadow .15s ease;
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--accent-blue) 30%, transparent);
+}
+.create-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px color-mix(in srgb, var(--accent-blue) 40%, transparent); }
+.create-btn svg { width: 14px; height: 14px; }
+
+/* ===== 卡片网格：照搬 .cards-grid ===== */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  flex: 1; min-width: 0;
+  padding: 8px 24px 24px;
+}
+
+/* ===== 密钥卡片：照搬 .project-card 视觉 ===== */
+.key-card {
+  background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.key-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-blue);
+  background: color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.22), 0 4px 10px rgba(0,0,0,0.12), 0 0 0 1px color-mix(in srgb, var(--accent-blue) 22%, transparent);
+}
+.key-card.revoked { opacity: 0.65; }
+.key-card.revoked:hover { border-color: var(--accent-red); box-shadow: 0 12px 28px rgba(0,0,0,0.22), 0 0 0 1px color-mix(in srgb, var(--accent-red) 22%, transparent); }
+
+/* 顶部装饰条 - 照搬 .card-accent-bar */
+.key-accent-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent-blue), color-mix(in srgb, var(--accent-blue) 40%, var(--accent-purple)));
+  opacity: 0.95;
+}
+.key-card.revoked .key-accent-bar { background: linear-gradient(90deg, var(--accent-red), color-mix(in srgb, var(--accent-red) 40%, var(--accent-orange))); }
+
+/* 卡片头部：图标+名称 + 状态徽章 */
+.key-card-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.key-name-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.key-icon {
+  width: 36px; height: 36px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-blue) 18%, transparent), color-mix(in srgb, var(--accent-purple) 18%, transparent));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-blue) 18%, transparent);
+  color: var(--accent-blue);
+}
+.key-icon svg { width: 18px; height: 18px; }
+.key-name {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.3; letter-spacing: -0.2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.key-card:hover .key-name { color: var(--accent-blue); }
+
+/* 状态徽章 - 照搬 .card-badge 风格 */
+.key-status {
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.3px; line-height: 1.4;
+  flex-shrink: 0;
+}
+.key-status.active { background: color-mix(in srgb, var(--accent-green) 22%, transparent); color: var(--accent-green); }
+.key-status.expired { background: color-mix(in srgb, var(--accent-yellow) 22%, transparent); color: var(--accent-yellow); }
+.key-status.revoked { background: color-mix(in srgb, var(--accent-red) 22%, transparent); color: var(--accent-red); }
+
+/* 掩码密钥行 */
+.key-mask-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  border-radius: var(--radius-sm);
+}
+.key-mask {
+  font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);
+  flex: 1; letter-spacing: 0.02em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.copy-btn {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  background: var(--bg-secondary); color: var(--text-secondary);
+  font-size: 12px; cursor: pointer; transition: all 150ms ease; font-family: var(--font-sans);
+}
+.copy-btn:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+.copy-btn svg { width: 12px; height: 12px; }
+.copy-btn.copied { color: var(--accent-green); border-color: var(--accent-green); }
+
+/* 元信息 - 照搬 .card-meta */
+.key-meta {
+  display: flex; flex-wrap: wrap; gap: 8px 14px;
+  font-size: 12px; color: var(--text-tertiary);
+}
+.key-meta-item { display: inline-flex; align-items: center; gap: 4px; }
+.key-meta-item svg { width: 12px; height: 12px; }
+.key-meta-item b { color: var(--text-secondary); font-weight: 500; }
+
+/* 底部操作 - 照搬 .card-footer */
+.key-card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  gap: 12px;
+}
+.key-owner { font-size: 12px; color: var(--text-tertiary); }
+.key-actions { display: flex; gap: 6px; }
+.action-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  background: transparent; color: var(--text-secondary);
+  cursor: pointer; transition: all 150ms ease;
+}
+.action-btn:hover { color: var(--accent-blue); border-color: var(--accent-blue); background: color-mix(in srgb, var(--accent-blue) 8%, transparent); }
+.action-btn.danger:hover { color: var(--accent-red); border-color: var(--accent-red); background: color-mix(in srgb, var(--accent-red) 8%, transparent); }
+.action-btn svg { width: 13px; height: 13px; }
+
+/* 空状态 */
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 60px 24px; text-align: center;
+  background: color-mix(in srgb, var(--bg-secondary) 50%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--border-color) 70%, transparent);
+  border-radius: var(--radius-lg);
+}
+.empty-state-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-blue) 18%, transparent), color-mix(in srgb, var(--accent-purple) 18%, transparent));
+  color: var(--accent-blue);
+}
+.empty-state-icon svg { width: 26px; height: 26px; }
+.empty-state h3 { font-size: 16px; font-weight: 600; font-family: var(--font-display); }
+.empty-state p { color: var(--text-secondary); font-size: 13px; max-width: 360px; }
+
+/* 弹窗 - 用主站风格 */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px); display: none;
+  align-items: center; justify-content: center; z-index: 200; padding: 20px;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  width: 100%; max-width: 460px;
+  background: var(--bg-secondary);
+  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  border-radius: var(--radius-lg); padding: 24px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+.modal h2 { font-size: 18px; font-weight: 700; font-family: var(--font-display); margin-bottom: 4px; }
+.modal .modal-desc { color: var(--text-secondary); font-size: 13px; margin-bottom: 18px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-primary); }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 9px 12px; border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  background: var(--bg-tertiary); color: var(--text-primary);
+  font-size: 13.5px; font-family: var(--font-sans); outline: none; transition: border-color .15s ease;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-blue); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.btn { padding: 8px 16px; border-radius: 8px; border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent); background: var(--bg-tertiary); color: var(--text-primary); font-size: 13px; cursor: pointer; font-family: var(--font-sans); transition: all .15s ease; }
+.btn:hover { border-color: var(--accent-blue); }
+.btn-primary { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: #fff; border-color: transparent; }
+.btn-primary:hover { opacity: 0.92; }
+
+.created-key-box {
+  margin-top: 16px; padding: 14px;
+  background: color-mix(in srgb, var(--accent-green) 10%, var(--bg-tertiary));
+  border: 1px solid color-mix(in srgb, var(--accent-green) 40%, transparent);
+  border-radius: var(--radius-sm);
+}
+.created-key-box .label { font-size: 12px; color: var(--accent-green); font-weight: 600; margin-bottom: 6px; }
+.created-key-box .key-text { font-family: var(--font-mono); font-size: 13px; word-break: break-all; color: var(--text-primary); margin-bottom: 10px; }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--bg-secondary);
+  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  color: var(--text-primary); padding: 10px 18px; border-radius: 10px;
+  font-size: 13px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  opacity: 0; transition: all .25s ease; z-index: 300; pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* 更新日志弹窗 - 主站风格 */
+.changelog-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.changelog-overlay.show { display: flex; }
+.changelog-modal {
+  width: 100%; max-width: 560px; max-height: 80vh;
+  background: var(--bg-secondary);
+  border: 1px solid color-mix(in srgb, var(--border-color) 75%, transparent);
+  border-radius: var(--radius-lg); padding: 24px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  display: flex; flex-direction: column;
+}
+.changelog-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.changelog-head h2 { font-size: 18px; font-weight: 700; font-family: var(--font-display); }
+.changelog-close {
+  width: 30px; height: 30px; border-radius: 8px; border: none;
+  background: transparent; color: var(--text-secondary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all .15s ease;
+}
+.changelog-close:hover { background: color-mix(in srgb, var(--bg-tertiary) 60%, transparent); color: var(--text-primary); }
+.changelog-body { overflow-y: auto; padding-right: 4px; }
+.changelog-item { padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent); }
+.changelog-item:last-child { border-bottom: none; }
+.changelog-ver { font-size: 13px; font-weight: 700; color: var(--accent-blue); margin-bottom: 4px; font-family: var(--font-display); }
+.changelog-date { font-size: 11px; color: var(--text-tertiary); margin-left: 8px; font-weight: 400; }
+.changelog-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- 侧栏（照搬主站结构，API 密钥高亮） -->
+  <aside class="app-sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">CE</div>
+      <span class="sidebar-brand-text">Code Explorer</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-group-label">广场</div>
+      <a class="sidebar-item"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span class="sidebar-item-label">项目广场</span></a>
+      <a class="sidebar-item"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span class="sidebar-item-label">首页</span></a>
+      <a class="sidebar-item"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><span class="sidebar-item-label">资源下载</span></a>
+      <a class="sidebar-item"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="sidebar-item-label">在线编辑</span></a>
+
+      <div class="sidebar-group-label">资源</div>
+      <a class="sidebar-item"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span><span class="sidebar-item-label">关于</span></a>
+
+      <div class="sidebar-group-label">账户</div>
+      <a class="sidebar-item"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span class="sidebar-item-label">登录/注册</span></a>
+      <a class="sidebar-item active"><span class="sidebar-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg></span><span class="sidebar-item-label">API 密钥</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-icon">
+        <button class="user-menu-btn" id="userMenuBtn" title="用户菜单">
+          <span id="userMenuName">admin</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <button class="changelog-btn" id="changelogBtn" title="更新日志">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </button>
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+      <div class="sidebar-version">v2.6.5</div>
+    </div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="app-main">
+    <header class="main-head">
+      <h1>API 密钥</h1>
+      <div class="main-head-right">
+        <div class="view-switch">
+          <button class="view-pill active" onclick="switchView('mine')">我的 Keys</button>
+          <button class="view-pill" onclick="switchView('all')">全部用户 Keys</button>
+        </div>
+        <button class="create-btn" onclick="openCreateModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          创建密钥
+        </button>
+      </div>
+    </header>
+    <div class="main-sub">共 <span id="keyCount">0</span> 个密钥 · 用于外部程序调用 AI 推荐接口</div>
+
+    <div class="cards-grid" id="keyGrid"></div>
+  </main>
+
+</div>
+
+<!-- 创建弹窗 -->
+<div class="modal-overlay" id="createModal">
+  <div class="modal">
+    <h2>创建新的 API 密钥</h2>
+    <p class="modal-desc">为密钥起个名字，方便后续管理。完整密钥仅创建时显示一次。</p>
+    <div class="form-group">
+      <label>密钥名称</label>
+      <input type="text" id="keyName" placeholder="例如：我的脚本调用">
+    </div>
+    <div class="form-group">
+      <label>有效期</label>
+      <select id="keyExpire">
+        <option value="0">永久</option>
+        <option value="30">30 天</option>
+        <option value="90">90 天</option>
+        <option value="180">180 天</option>
+        <option value="365">1 年</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>每日调用限额（可选）</label>
+      <input type="number" id="keyLimit" placeholder="留空表示不限制">
+    </div>
+    <div class="form-group">
+      <label>用途说明（可选）</label>
+      <textarea id="keyDesc" rows="2" placeholder="例如：批量推荐项目"></textarea>
+    </div>
+    <div class="created-key-box" id="createdKeyBox" style="display:none">
+      <div class="label">✓ 密钥已创建，请立即复制（关闭后无法再查看）</div>
+      <div class="key-text" id="createdKeyValue"></div>
+      <button class="btn btn-primary" onclick="copyCreatedKey()">复制密钥</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeCreateModal()">关闭</button>
+      <button class="btn btn-primary" id="createConfirmBtn" onclick="confirmCreate()">创建密钥</button>
+    </div>
+  </div>
+</div>
+
+<!-- 更新日志弹窗 -->
+<div class="changelog-overlay" id="changelogOverlay" onclick="if(event.target===this)closeChangelog()">
+  <div class="changelog-modal">
+    <div class="changelog-head">
+      <h2>更新日志</h2>
+      <button class="changelog-close" onclick="closeChangelog()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="changelog-body" id="changelogBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MOCK_KEYS = [
+  { id: 1, name: '主站推荐调用', key: 'sk-9f3a2b1c8d7e6f5a4b3c2d1e0f9a8b7c', is_active: true, created_at: 1726000000, expires_at: 0, calls: 1284, daily_limit: 5000, desc: 'codingzhou.top 生产环境' },
+  { id: 2, name: '本地测试脚本', key: 'sk-a1b2c3d4e5f6789012345678901234ab', is_active: true, created_at: 1727000000, expires_at: 1735000000, calls: 42, daily_limit: null, desc: '' },
+  { id: 3, name: '旧版爬虫（已废弃）', key: 'sk-zz99887766554433221100aabbccddee', is_active: false, created_at: 1720000000, expires_at: 0, calls: 3056, daily_limit: null, desc: '已迁移到新密钥' },
+];
+
+const $ = id => document.getElementById(id);
+const fmtTime = ts => {
+  if (!ts) return '永久';
+  const d = new Date(ts * 1000);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+const MASK = key => key ? key.slice(0, 7) + '•'.repeat(Math.max(0, key.length - 11)) + key.slice(-4) : '';
+let currentView = 'mine';
+
+function renderKeys(keys) {
+  const grid = $('keyGrid');
+  $('keyCount').textContent = keys.length;
+  if (!keys.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg></div>
+        <h3>还没有 API 密钥</h3>
+        <p>点击右上角「创建密钥」生成你的第一个 API Key，用于外部调用 AI 推荐接口。</p>
+      </div>`;
+    return;
+  }
+  grid.innerHTML = keys.map(k => {
+    const now = Math.floor(Date.now() / 1000);
+    let status, statusCls;
+    if (!k.is_active) { status = '已禁用'; statusCls = 'revoked'; }
+    else if (k.expires_at && now > k.expires_at) { status = '已过期'; statusCls = 'expired'; }
+    else { status = '有效'; statusCls = 'active'; }
+    const expired = k.expires_at ? fmtTime(k.expires_at) : '永久';
+    return `
+    <div class="key-card ${statusCls === 'revoked' ? 'revoked' : ''}">
+      <div class="key-accent-bar"></div>
+      <div class="key-card-top">
+        <div class="key-name-row">
+          <span class="key-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg></span>
+          <span class="key-name">${k.name}</span>
+        </div>
+        <span class="key-status ${statusCls}">${status}</span>
+      </div>
+      <div class="key-mask-row">
+        <span class="key-mask">${MASK(k.key)}</span>
+        <button class="copy-btn" onclick="copyKey('${k.key}', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          复制
+        </button>
+      </div>
+      <div class="key-meta">
+        <span class="key-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg><b>${fmtTime(k.created_at)}</b></span>
+        <span class="key-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><b>${expired}</b></span>
+        <span class="key-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><b>${k.calls || 0} 次</b></span>
+        ${k.daily_limit ? `<span class="key-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg><b>${k.daily_limit}/天</b></span>` : ''}
+        ${k.desc ? `<span class="key-meta-item"><b>${k.desc}</b></span>` : ''}
+      </div>
+      <div class="key-card-foot">
+        <span class="key-owner">${currentView === 'all' ? '所有者：admin' : ''}</span>
+        <div class="key-actions">
+          <button class="action-btn" title="${k.is_active ? '禁用' : '启用'}" onclick="toggleKey(${k.id})">
+            ${k.is_active
+              ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>'
+              : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>'}
+          </button>
+          <button class="action-btn danger" title="删除" onclick="deleteKey(${k.id}, '${k.name}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function switchView(v) {
+  currentView = v;
+  document.querySelectorAll('.view-pill').forEach((b, i) => b.classList.toggle('active', (v === 'mine' && i === 0) || (v === 'all' && i === 1)));
+  renderKeys(MOCK_KEYS);
+}
+function copyKey(key, btn) {
+  navigator.clipboard.writeText(key).then(() => {
+    btn.classList.add('copied'); btn.lastChild.textContent = ' 已复制';
+    showToast('密钥已复制到剪贴板');
+    setTimeout(() => { btn.classList.remove('copied'); btn.lastChild.textContent = ' 复制'; }, 1800);
+  });
+}
+function toggleKey(id) { const k = MOCK_KEYS.find(x => x.id === id); if (k) { k.is_active = !k.is_active; renderKeys(MOCK_KEYS); showToast(k.is_active ? '已启用' : '已禁用'); } }
+function deleteKey(id, name) {
+  if (confirm(`确定删除密钥「${name}」吗？此操作不可撤销。`)) {
+    const i = MOCK_KEYS.findIndex(x => x.id === id);
+    if (i > -1) { MOCK_KEYS.splice(i, 1); renderKeys(MOCK_KEYS); showToast('密钥已删除'); }
+  }
+}
+function openCreateModal() { $('createModal').classList.add('show'); $('createdKeyBox').style.display = 'none'; $('createConfirmBtn').style.display = ''; }
+function closeCreateModal() { $('createModal').classList.remove('show'); }
+function confirmCreate() {
+  const name = $('keyName').value.trim() || '未命名密钥';
+  const newKey = 'sk-' + Array.from({length: 32}, () => '0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
+  $('createdKeyValue').textContent = newKey;
+  $('createdKeyBox').style.display = 'block';
+  $('createConfirmBtn').style.display = 'none';
+  MOCK_KEYS.unshift({ id: Date.now(), name, key: newKey, is_active: true, created_at: Math.floor(Date.now()/1000), expires_at: 0, calls: 0, daily_limit: null, desc: '' });
+  renderKeys(MOCK_KEYS);
+}
+function copyCreatedKey() { navigator.clipboard.writeText($('createdKeyValue').textContent).then(() => showToast('密钥已复制，请妥善保存')); }
+function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+
+// ===== 主题切换（照搬主站逻辑）=====
+const THEME_KEY = 'code-explorer-theme';
+function getTheme() { return localStorage.getItem(THEME_KEY) || 'dark'; }
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(THEME_KEY, theme);
+}
+function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
+setTheme(getTheme());
+$('themeToggleBtn').addEventListener('click', toggleTheme);
+
+// ===== 更新日志（mock 数据，整合时替换为 /changelog.json）=====
+const MOCK_CHANGELOG = [
+  { version: 'v2.6.5', date: '2026-09-25', desc: '接入本地 Ollama 模型（qwen2.5:1.5b），AI 推荐优先走本地模型；配置 Cloudflare Tunnel 暴露 Ollama 服务。' },
+  { version: 'v2.6.4', date: '2026-09-20', desc: 'API 密钥管理页改版为卡片式布局，与项目广场风格统一。' },
+  { version: 'v2.6.0', date: '2026-09-10', desc: '新增项目广场卡片视图、收藏/点赞/留言功能。' },
+];
+function openChangelog() {
+  $('changelogBody').innerHTML = MOCK_CHANGELOG.map(c => `
+    <div class="changelog-item">
+      <div class="changelog-ver">${c.version}<span class="changelog-date">${c.date}</span></div>
+      <div class="changelog-desc">${c.desc}</div>
+    </div>`).join('');
+  $('changelogOverlay').classList.add('show');
+}
+function closeChangelog() { $('changelogOverlay').classList.remove('show'); }
+$('changelogBtn').addEventListener('click', openChangelog);
+
+renderKeys(MOCK_KEYS);
+</script>
+</body>
+</html>
