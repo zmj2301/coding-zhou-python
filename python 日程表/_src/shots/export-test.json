@@ -1,0 +1,143 @@
+{
+  "tasks": [
+    {
+      "id": 28,
+      "title": "提交上月考勤统计",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-09-15",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 29,
+      "title": "完成季度工作汇报 PPT",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-09-02",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 30,
+      "title": "和设计师对接悬浮球界面稿",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-09-24",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 31,
+      "title": "整理本周开发笔记",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-09-25",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 32,
+      "title": "测试桌面悬浮球缩小与恢复",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-09-26",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 33,
+      "title": "验证待办倒计时每秒实时刷新",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-09-26",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 34,
+      "title": "提交悬浮球功能测试反馈",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-09-27",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 35,
+      "title": "完成 9 月工作总结",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-09-03",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 36,
+      "title": "国庆节假期开始",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-10-01",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 37,
+      "title": "假期结束，回到岗位",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-10-08",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 38,
+      "title": "双十一项目促销值班",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-11-11",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 39,
+      "title": "参加年终复盘会议",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-12-28",
+      "status": "todo",
+      "created": 1790476196650
+    },
+    {
+      "id": 40,
+      "title": "和团队一起跨年",
+      "desc": "",
+      "priority": "medium",
+      "due": "2026-12-31",
+      "status": "todo",
+      "created": 1790476196650
+    }
+  ],
+  "activities": [
+    {
+      "kind": "import",
+      "html": "从 <strong>测试待办数据.xlsx</strong> 导入 13 条待办",
+      "t": 1790476196650
+    },
+    {
+      "kind": "import",
+      "html": "从 <strong>测试待办数据.xlsx</strong> 导入 13 条待办",
+      "t": 1790476194930
+    }
+  ],
+  "info": {
+    "name": "待办中心",
+    "desc": "本地待办总览与进度追踪"
+  },
+  "settings": {
+    "showDoneColumn": true,
+    "overdueHighlight": true,
+    "compact": false
+  },
+  "exportedAt": "2026-09-27T02:29:58.648Z"
+}
