@@ -267,3 +267,84 @@ stdhooks'
 
 57432 INFO: Performing binary vs. data reclassification (1784 entries)
 
+149476 INFO: Looking for ctypes DLLs
+
+149575 INFO: Analyzing run-time hooks ...
+
+149586 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+
+149588 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+
+149590 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\rth
+ooks'
+
+149592 INFO: Including run-time hook 'pyi_rth_pkgres.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+
+149595 INFO: Including run-time hook 'pyi_rth_setuptools.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+
+149597 INFO: Including run-time hook 'pyi_rth_cryptography_openssl.py' from 'D:\\Lib\\site-packages\\_pyinstaller_hooks
+_contrib\\rthooks'
+
+149598 INFO: Including run-time hook 'pyi_rth__tkinter.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+
+149599 INFO: Including run-time hook 'pyi_rth_pyside6.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+
+149600 INFO: Processing pre-find-module-path hook 'hook-_pyi_rth_utils.py' from 'D:\\Lib\\site-packages\\PyInstaller\\h
+ooks\\pre_find_module_path'
+
+149603 INFO: Processing standard module hook 'hook-_pyi_rth_utils.py' from 'D:\\Lib\\site-packages\\PyInstaller\\hooks'
+
+149681 INFO: Looking for dynamic libraries
+
+D:\Lib\site-packages\PyInstaller\building\build_main.py:207: UserWarning: The numpy.array_api submodule is still experi
+mental. See NEP 47.
+  __import__(package)
+
+156904 INFO: Extra DLL search directories (AddDllDirectory): ['D:\\Lib\\site-packages\\shiboken6', 'D:\\Lib\\site-packa
+ges\\numpy.libs', 'D:\\Lib\\site-packages\\pandas.libs', 'D:\\Lib\\site-packages\\scipy.libs', 'D:\\Lib\\site-packages\
+\llvmlite.libs']
+
+156904 INFO: Extra DLL search directories (PATH): ['D:\\Lib\\site-packages\\PySide6']
+
+242977 INFO: Warnings written to E:\coding-zhou\Python\python 日程表\build\日程表\warn-日程表.txt
+
+243152 INFO: Graph cross-reference written to E:\coding-zhou\Python\python 日程表\build\日程表\xref-日程表.html
+
+243215 INFO: checking PYZ
+
+243215 INFO: Building PYZ because PYZ-00.toc is non existent
+
+243215 INFO: Building PYZ (ZlibArchive) E:\coding-zhou\Python\python 日程表\build\日程表\PYZ-00.pyz
+
+245804 INFO: Building PYZ (ZlibArchive) E:\coding-zhou\Python\python 日程表\build\日程表\PYZ-00.pyz completed successfully.
+
+246299 INFO: checking PKG
+
+246299 INFO: Building PKG because PKG-00.toc is non existent
+
+246299 INFO: Building PKG (CArchive) 日程表.pkg
+
+266885 INFO: Building PKG (CArchive) 日程表.pkg completed successfully.
+
+266904 INFO: Bootloader D:\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+
+266904 INFO: checking EXE
+
+266904 INFO: Building EXE because EXE-00.toc is non existent
+
+266904 INFO: Building EXE from EXE-00.toc
+
+266905 INFO: Copying bootloader EXE to E:\coding-zhou\Python\python 日程表\dist\日程表.exe
+
+266909 INFO: Copying icon to EXE
+
+266911 INFO: Copying 0 resources to EXE
+
+266911 INFO: Embedding manifest in EXE
+
+266913 INFO: Appending PKG archive to EXE
+
+267012 INFO: Fixing EXE headers
+
+267460 INFO: Building EXE from EXE-00.toc completed successfully.
+
