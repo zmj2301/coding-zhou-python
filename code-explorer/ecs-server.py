@@ -67,8 +67,9 @@ def _find_projects_root():
         return PROJECTS_ROOT
     # 候选路径：ECS 常见部署结构（优先级：先父目录，再public）
     candidates = [
-        BASE_DIR.parent,                         # code-explorer/ (实际项目所在)
+        BASE_DIR.parent.parent.parent,          # 更深层嵌套的 repo 根目录（如 code-explorer 嵌套在项目子目录中）
         BASE_DIR.parent.parent,                  # repo 根目录
+        BASE_DIR.parent,                         # code-explorer/ (实际项目所在)
         Path('/home/code-explorer'),             # 常见 ECS 绝对路径（项目目录）
         Path('/opt/code-explorer'),
         Path('/var/www/code-explorer'),
@@ -81,6 +82,18 @@ def _find_projects_root():
         Path('/www/code-explorer/public'),
         Path('/root/code-explorer/public'),
     ]
+    # 从 project-list.json 读取项目名称，用于匹配正确的根目录
+    project_names = set()
+    try:
+        list_path = BASE_DIR / 'project-list.json'
+        if list_path.exists():
+            data = json.loads(list_path.read_text(encoding='utf-8'))
+            for p in data:
+                if isinstance(p, dict) and p.get('path'):
+                    project_names.add(p['path'].split('/')[0])
+    except Exception:
+        pass
+
     best = None
     best_score = -1
     for c in candidates:
@@ -100,6 +113,11 @@ def _find_projects_root():
             # public 目录降权（即使有project-list.json，它也是静态资源目录）
             if c.name == 'public':
                 score -= 5
+            # 关键：匹配 project-list.json 中的项目目录名，优先选择包含实际项目的根目录
+            # 权重设为 100，确保包含正确项目目录的根目录优先被选中
+            if project_names:
+                match_count = sum(1 for name in project_names if (c / name).exists() and (c / name).is_dir())
+                score += match_count * 100
             if score > best_score:
                 best_score = score
                 best = c

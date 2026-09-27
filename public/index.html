@@ -1490,6 +1490,70 @@ body.filter-hidden .main-filter-toggle {
   grid-template-columns: 1fr;
 }
 
+/* Python 子项目卡片 */
+.python-sub-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-primary);
+  z-index: 2;
+}
+.python-back-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.python-back-btn:hover { background: var(--bg-tertiary); }
+.python-sub-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.python-sub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+.python-sub-card {
+  background: color-mix(in srgb, var(--bg-secondary) 70%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid var(--theme);
+}
+.python-sub-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--theme);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.sub-card-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.sub-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+.sub-card-meta {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
 /* Card */
 .project-card {
   background: color-mix(in srgb, var(--bg-secondary) 68%, transparent);
@@ -6169,6 +6233,65 @@ function updateStats(projects) {
 }
 
 // ==================== VIEW SWITCHING ====================
+// ==================== Python 子项目导航 ====================
+// 点击 Python 项目后，展示其子文件夹作为子项目卡片
+let _pythonSubProjects = null; // 缓存 Python 子项目列表
+let _pythonBackHandler = null;  // 返回子项目列表的回调
+
+function renderPythonSubProjects(treeData, container, onSelect) {
+  const skipDirs = new Set(['code-explorer', 'public', 'functions', 'images', 'node_modules',
+    '__pycache__', '.trae', '.uploads', '.wrangler', 'output', 'portfolio', 'codinghou',
+    'converter', 'deepseek_v3_tokenizer', 'fathers-day', 'image-proxy', 'web-games',
+    'workbody', 'GitHub文件', 'python-学习资料', '学习资料', '快捷键操作',
+    '每日励志语句', '趣味小游戏', '逗神文化管理', '动物消消乐', '口算战争',
+    '坦克大战ai版', '奇奇怪怪的AI功能', 'Scratch水果忍者-素材']);
+  const dirs = treeData.filter(n => n.type === 'directory' && !n.name.startsWith('.') && !skipDirs.has(n.name));
+  _pythonSubProjects = dirs;
+  const cards = dirs.map(d => {
+    const fileCount = (d.children || []).length;
+    const subPath = `Python/${d.name}`;
+    return `
+    <div class="python-sub-card" data-path="${esc(subPath)}" style="--theme:hsl(${Math.abs(hashCode(d.name)) % 360}, 40%, 60%)">
+      <div class="sub-card-icon">📁</div>
+      <div class="sub-card-name">${esc(d.name)}</div>
+      <div class="sub-card-meta">${fileCount} 个文件/文件夹</div>
+    </div>`;
+  }).join('');
+  container.innerHTML = `
+    <div class="python-sub-header">
+      <button class="python-back-btn" id="pythonBackBtn" style="display:none">← 返回 Python 子项目</button>
+      <span class="python-sub-title">Python 子项目（共 ${dirs.length} 个）</span>
+    </div>
+    <div class="python-sub-grid">${cards}</div>
+  `;
+  container.querySelectorAll('.python-sub-card').forEach(card => {
+    card.addEventListener('click', () => onSelect(card.dataset.path));
+  });
+  const backBtn = container.querySelector('#pythonBackBtn');
+  if (backBtn) backBtn.addEventListener('click', () => {
+    if (_pythonBackHandler) _pythonBackHandler();
+  });
+}
+
+function hashCode(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return h;
+}
+
+// 递归为树节点路径添加前缀
+function prefixTreePaths(nodes, prefix) {
+  if (!nodes) return nodes;
+  return nodes.map(n => {
+    const newPath = `${prefix}/${n.name}`;
+    const result = { ...n, path: newPath };
+    if (n.children && n.children.length) {
+      result.children = prefixTreePaths(n.children, newPath);
+    }
+    return result;
+  });
+}
+
 async function openProject(projectPath) {
   const project = state.projects.find(p => p.path === projectPath);
   if (!project) return;
@@ -6219,6 +6342,42 @@ async function openProject(projectPath) {
 
   try {
     const treeData = await fetchProjectTree(projectPath);
+
+    // Python 项目：展示子文件夹作为子项目卡片
+    if (projectPath === 'Python') {
+      const handleSelect = async (subPath) => {
+        $('#fileTree').innerHTML = '<div class="home-loading" style="padding:20px"><div class="spinner"></div> 加载中...</div>';
+        try {
+          const subTree = await fetchProjectTree(subPath);
+          const subName = subPath.split('/').pop();
+          const prefixedTree = prefixTreePaths(subTree, subPath);
+          const subTreeNode = {
+            name: subName,
+            type: 'directory',
+            path: subPath,
+            themeColor: project.themeColor,
+            children: prefixedTree
+          };
+          state.currentProjectTreeNode = subTreeNode;
+          state.flatFiles = flattenTree([subTreeNode]);
+          renderProjectFileTree([subTreeNode]);
+          updateRunButtonVisibility();
+          loadReadme(subPath);
+          // 在文件树顶部添加返回按钮
+          $('#fileTree').insertAdjacentHTML('afterbegin',
+            '<div class="python-sub-header"><button class="python-back-btn" id="pythonBackBtn">← 返回 Python 子项目</button></div>');
+          const backBtn = $('#pythonBackBtn');
+          if (backBtn) backBtn.addEventListener('click', () => _pythonBackHandler && _pythonBackHandler());
+        } catch(e) {
+          $('#fileTree').innerHTML = `<div style="padding:20px;color:var(--accent-red)">加载失败: ${esc(e.message)}</div>`;
+        }
+      };
+      renderPythonSubProjects(treeData, $('#fileTree'), handleSelect);
+      _pythonBackHandler = () => renderPythonSubProjects(treeData, $('#fileTree'), handleSelect);
+      loadReadme(projectPath);
+      return;
+    }
+
     const projectTreeNode = {
       name: project.name,
       type: 'directory',
@@ -6421,6 +6580,37 @@ async function openProjectPreview(project) {
 
   try {
     const treeData = await fetchProjectTree(project.path);
+
+    // Python 项目：展示子文件夹作为子项目卡片
+    if (project.path === 'Python') {
+      const handleSelect = async (subPath) => {
+        $('#previewTree').innerHTML = '<div style="padding:16px;color:var(--text-tertiary);font-size:13px">加载文件树...</div>';
+        try {
+          const subTree = await fetchProjectTree(subPath);
+          const subName = subPath.split('/').pop();
+          const prefixedTree = prefixTreePaths(subTree, subPath);
+          const subTreeNode = {
+            name: subName,
+            type: 'directory',
+            path: subPath,
+            themeColor: project.themeColor,
+            children: prefixedTree
+          };
+          renderPreviewTree([subTreeNode]);
+          // 在预览树顶部添加返回按钮
+          $('#previewTree').insertAdjacentHTML('afterbegin',
+            '<div class="python-sub-header"><button class="python-back-btn" id="pythonBackBtn">← 返回 Python 子项目</button></div>');
+          const backBtn = $('#pythonBackBtn');
+          if (backBtn) backBtn.addEventListener('click', () => _pythonBackHandler && _pythonBackHandler());
+        } catch(e) {
+          $('#previewTree').innerHTML = '<div style="padding:16px;color:var(--accent-red);font-size:13px">加载失败</div>';
+        }
+      };
+      renderPythonSubProjects(treeData, $('#previewTree'), handleSelect);
+      _pythonBackHandler = () => renderPythonSubProjects(treeData, $('#previewTree'), handleSelect);
+      return;
+    }
+
     const projectTreeNode = {
       name: project.name,
       type: 'directory',

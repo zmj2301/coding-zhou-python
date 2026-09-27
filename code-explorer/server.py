@@ -46,16 +46,49 @@ if not sys.stderr.isatty():
 
 # 配置
 PORT = 8765
-# 代码目录优先级：1) 同目录下的 code/ 文件夹 2) server.py 上级目录
+# 代码目录优先级：1) 同目录下的 code/ 文件夹 2) server.py 上级目录 3) 再上级目录
 # 把你的 Python 项目放到 code/ 文件夹里，或者直接把整个目录发给别人
 _code_dir = Path(__file__).resolve().parent / 'code'
 _parent_dir = Path(__file__).resolve().parent.parent
-if _code_dir.exists() and any(_code_dir.iterdir()):
-    BASE_DIR = _code_dir
-elif _parent_dir.exists() and any(str(p) for p in _parent_dir.iterdir() if p.name != 'code-explorer' and not p.name.startswith('.')):
-    BASE_DIR = _parent_dir
-else:
-    BASE_DIR = Path(__file__).resolve().parent
+_grandparent_dir = Path(__file__).resolve().parent.parent.parent
+
+def _detect_base_dir():
+    """检测正确的项目根目录：优先选择包含 project-list.json 中项目目录的路径"""
+    if _code_dir.exists() and any(_code_dir.iterdir()):
+        return _code_dir
+    # 从 project-list.json 读取项目名称
+    project_names = set()
+    for candidate in [_parent_dir, _grandparent_dir]:
+        list_path = candidate / 'code-explorer' / 'public' / 'project-list.json'
+        if not list_path.exists():
+            list_path = candidate / 'public' / 'project-list.json'
+        if list_path.exists():
+            try:
+                import json
+                data = json.loads(list_path.read_text(encoding='utf-8'))
+                for p in data:
+                    if isinstance(p, dict) and p.get('path'):
+                        project_names.add(p['path'].split('/')[0])
+            except Exception:
+                pass
+            break
+    # 评分选择
+    best = None
+    best_score = -1
+    for c in [_grandparent_dir, _parent_dir, Path(__file__).resolve().parent]:
+        if not c.exists() or not c.is_dir():
+            continue
+        if project_names:
+            match_count = sum(1 for name in project_names if (c / name).exists() and (c / name).is_dir())
+            score = match_count * 100
+        else:
+            score = len([p for p in c.iterdir() if p.name != 'code-explorer' and not p.name.startswith('.')])
+        if score > best_score:
+            best_score = score
+            best = c
+    return best if best else Path(__file__).resolve().parent
+
+BASE_DIR = _detect_base_dir()
 HOST = '0.0.0.0'
 
 # HTML 预览时的资源路径重写
