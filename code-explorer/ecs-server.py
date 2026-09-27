@@ -1779,6 +1779,10 @@ def get_project_tree(project_path, max_depth=0):
         BASE_DIR.parent / project_path,              # code-explorer/ 下的项目目录
         BASE_DIR.parent.parent / project_path,       # repo 根目录下的项目目录
     ]
+    # ECS 兼容：Python 子项目路径 "Python/xxx" 实际在项目根目录下
+    if project_path.startswith('Python/') or project_path.startswith('python/'):
+        stripped = project_path.split('/', 1)[1]
+        candidates.insert(1, root / stripped)
     for full_path in candidates:
         try:
             full_path = full_path.resolve()
@@ -1786,6 +1790,46 @@ def get_project_tree(project_path, max_depth=0):
                 return scan_directory(full_path, max_depth=max_depth)
         except Exception:
             continue
+
+    # Python 项目特殊处理：ECS 上 Python 子目录直接放在项目根目录下
+    # 当找不到 Python 子目录时，扫描项目根目录并过滤出 Python 相关子目录
+    # 过滤依据：目录中包含 .py 文件即为 Python 子项目
+    if project_path.lower() == 'python':
+        try:
+            items = scan_directory(root, max_depth=max_depth)
+            skip = {'public', 'code-explorer', '__pycache__', 'node_modules', '.git',
+                    '.venv', 'venv', 'data', 'comments', 'uploads', 'functions', 'images',
+                    'project-trees', 'templates', 'static', 'logs', 'tmp'}
+            result = []
+            for it in items:
+                if it.get('type') != 'directory':
+                    continue
+                name = it.get('name', '')
+                if name in skip or name.startswith('.'):
+                    continue
+                # 检查目录中是否包含 Python 文件（.py 或 .ipynb）
+                dir_full = root / name
+                has_python = False
+                try:
+                    for entry in dir_full.iterdir():
+                        if entry.is_file() and entry.suffix.lower() in ('.py', '.ipynb'):
+                            has_python = True
+                            break
+                        if entry.is_dir() and entry.name not in skip and not entry.name.startswith('.'):
+                            # 检查子目录中的 Python 文件（最多一层）
+                            for sub in entry.iterdir():
+                                if sub.is_file() and sub.suffix.lower() in ('.py', '.ipynb'):
+                                    has_python = True
+                                    break
+                            if has_python:
+                                break
+                except (PermissionError, OSError):
+                    pass
+                if has_python:
+                    result.append(it)
+            return result
+        except Exception:
+            pass
 
     return []
 
@@ -2334,6 +2378,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     BASE_DIR.parent / file_path,
                     BASE_DIR / file_path,
                 ]
+                # ECS 兼容：去掉 Python/ 前缀（真实路径直接在项目根目录下）
+                if file_path.startswith('Python/') or file_path.startswith('python/'):
+                    stripped = file_path.split('/', 1)[1]
+                    search_paths.insert(0, root / stripped)
                 local_path = None
                 for sp in search_paths:
                     if sp.exists() and sp.is_file():
@@ -2397,6 +2445,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     BASE_DIR.parent / file_path,
                     BASE_DIR / file_path,
                 ]
+                # ECS 兼容：去掉 Python/ 前缀（真实路径直接在项目根目录下）
+                if file_path.startswith('Python/') or file_path.startswith('python/'):
+                    stripped = file_path.split('/', 1)[1]
+                    search_paths.insert(0, root / stripped)
                 local_path = None
                 for sp in search_paths:
                     if sp.exists() and sp.is_file():
