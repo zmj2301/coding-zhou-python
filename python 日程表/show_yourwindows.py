@@ -13,6 +13,30 @@ import random
 import time
 import json
 
+# ========== 中文字体 fallback ==========
+# Win7 默认没有 Microsoft YaHei，Win10 有。按优先级选第一个可用的。
+_QT_CN_FONT_CANDIDATES = ["Microsoft YaHei", "微软雅黑", "SimHei", "黑体", "Microsoft YaHei UI"]
+
+def cn_font(size, bold=False):
+    """Qt 中文字体：自动在跨 Win7/Win10/Win11 的字体中选一个可用的"""
+    font = QFont()
+    font.setStyleHint(QFont.SansSerif)
+    for name in _QT_CN_FONT_CANDIDATES:
+        font.setFamily(name)
+        if font.exactMatch():
+            break
+    font.setPointSize(size)
+    font.setBold(bold)
+    return font
+
+def cn_tkfont(size, bold=False):
+    """tkinter 中文字体：跨 Win7/Win10 的安全字体"""
+    import tkinter as _tk
+    # tkinter 在某些环境下可能还没初始化，用 try 保护
+    fallback = ("Microsoft YaHei", "SimHei", _tk.font.nametofont("TkDefaultFont").cget("family"))
+    weight = "bold" if bold else "normal"
+    return (fallback[0], size, weight)
+
 # ========== tkinter 替代层（PySide2 嵌入版不自带 tkinter） ==========
 # 提供 messagebox / filedialog / StringVar / BooleanVar 的兼容包装
 class _MessageBox:
@@ -1974,7 +1998,7 @@ class MyWindow(QMainWindow):
         # 创建倒计时标签
         self.countdown_label = QLabel(self)
         self.countdown_label.setText('倒计时应用程序')
-        self.countdown_label.setFont(QFont('Microsoft YaHei', 18, QFont.Bold))
+        self.countdown_label.setFont(cn_font(18, bold=True))
         self.countdown_label.setAlignment(Qt.AlignCenter)
         self.countdown_label.setStyleSheet("color: #FFFFFF; background-color: rgba(64, 158, 255, 0.8); padding: 12px 20px; border-radius: 15px;")
         self.layout.addWidget(self.countdown_label, alignment=Qt.AlignCenter)
@@ -1982,7 +2006,7 @@ class MyWindow(QMainWindow):
         # 创建内容信息显示
         self.content_label = QTextEdit(self)
         self.content_label.setReadOnly(True)
-        self.content_label.setFont(QFont('Microsoft YaHei', 14))
+        self.content_label.setFont(cn_font(14))
         # 宽度跟随窗口自适应（不再固定 300）；高度随内容动态计算（见 _fit_content_height）
         self.content_label.setMinimumWidth(280)
         self.content_label.setMaximumHeight(560)
@@ -2661,7 +2685,7 @@ class MyWindow(QMainWindow):
                     
                     ttk.Label(calendar_frame, text=weekday, 
                             style=weekday_style,
-                            font=("Microsoft YaHei", 11, "bold")).grid(row=1, column=col, padx=8, pady=8)
+                            font=cn_tkfont(11, bold=True)).grid(row=1, column=col, padx=8, pady=8)
                 
                 # 获取日历数据
                 cal = calendar.monthcalendar(year, month)
@@ -3253,7 +3277,7 @@ class MyWindow(QMainWindow):
                 
                 # 事件内容输入框
                 text = tk.Text(main_frame, width=45, height=6, 
-                            font=("Microsoft YaHei", 10),
+                            font=cn_tkfont(10),
                             bg="#ffffff",
                             fg="#333333",
                             bd=1,
@@ -3620,17 +3644,17 @@ class MyWindow(QMainWindow):
                 style.configure(".", 
                             background="#f5f7fa",
                             foreground="#333333",
-                            font=("Microsoft YaHei", 10))
+                            font=cn_tkfont(10))
                 
                 # 配置标题样式
                 style.configure("Title.TLabel", 
-                            font=("Microsoft YaHei", 14, "bold"),
+                            font=cn_tkfont(14, bold=True),
                             foreground="#409eff",
                             padding=10)
                 
                 # 配置按钮样式
                 style.configure("Modern.TButton",
-                            font=("Microsoft YaHei", 10),
+                            font=cn_tkfont(10),
                             padding=8,
                             background="#409eff",
                             foreground="#ffffff")
@@ -3640,7 +3664,7 @@ class MyWindow(QMainWindow):
                 
                 # 配置日历按钮样式
                 style.configure("Calendar.TButton",
-                            font=("Microsoft YaHei", 11),
+                            font=cn_tkfont(11),
                             padding=5,
                             width=4,
                             background="#ffffff",
@@ -3650,7 +3674,7 @@ class MyWindow(QMainWindow):
                 
                 # 配置输入框样式
                 style.configure("Modern.TEntry",
-                            font=("Microsoft YaHei", 10),
+                            font=cn_tkfont(10),
                             padding=8,
                             background="#ffffff",
                             foreground="#333333",
@@ -3658,7 +3682,7 @@ class MyWindow(QMainWindow):
                             relief="solid")
                 # 设置下拉框样式
                 style.configure("Modern.TCombobox",
-                            font=("Microsoft YaHei", 10),
+                            font=cn_tkfont(10),
                             padding=8,
                             background="#ffffff",
                             foreground="#333333",
@@ -3774,7 +3798,7 @@ class MyWindow(QMainWindow):
                             width=40, 
                             height=25, 
                             state=tk.DISABLED,
-                            font=("Microsoft YaHei", 10),
+                            font=cn_tkfont(10),
                             bg="#f5f7fa",
                             fg="#333333",
                             bd=0,
@@ -3793,9 +3817,9 @@ class MyWindow(QMainWindow):
             self.text.configure(yscrollcommand=scrollbar.set)
             
             # 配置文本框标签样式
-            self.text.tag_configure("header", font=("Microsoft YaHei", 12, "bold"), foreground="#409eff", spacing1=10, spacing3=5)
-            self.text.tag_configure("event", font=("Microsoft YaHei", 11), foreground="#606266", spacing3=5)
-            self.text.tag_configure("ai_answer", font=("Microsoft YaHei", 10, "italic"), foreground="#67c23a", spacing1=10, spacing3=5)
+            self.text.tag_configure("header", font=cn_tkfont(12, bold=True), foreground="#409eff", spacing1=10, spacing3=5)
+            self.text.tag_configure("event", font=cn_tkfont(11), foreground="#606266", spacing3=5)
+            self.text.tag_configure("ai_answer", font=cn_tkfont(10), foreground="#67c23a", spacing1=10, spacing3=5)
             
             # 添加Ctrl+F快捷键打开搜索对话框
             def on_ctrl_f(event):
@@ -3903,7 +3927,7 @@ class FloatingPanel(QWidget):
         header.setSpacing(6)
         title = QLabel('待办事项')
         title.setObjectName('title')
-        title.setFont(QFont('Microsoft YaHei', 12, QFont.Bold))
+        title.setFont(cn_font(12, bold=True))
         header.addWidget(title)
         header.addStretch()
         close_btn = QPushButton('×')
@@ -4058,7 +4082,7 @@ class FloatingPanel(QWidget):
             empty = QLabel('暂无待办事项\n请先从 Excel 导入事件')
             empty.setObjectName('empty')
             empty.setAlignment(Qt.AlignCenter)
-            empty.setFont(QFont('Microsoft YaHei', 11))
+            empty.setFont(cn_font(11))
             empty.setWordWrap(True)
             self.list_layout.insertWidget(0, empty)
             content_h = 120
@@ -4067,7 +4091,7 @@ class FloatingPanel(QWidget):
                 more = QLabel(f"还有 {len(future_items) - len(visible_future)} 个待办…")
                 more.setObjectName('moreLabel')
                 more.setAlignment(Qt.AlignCenter)
-                more.setFont(QFont('Microsoft YaHei', 9))
+                more.setFont(cn_font(9))
                 self.list_layout.insertWidget(self.list_layout.count() - 1, more)
             content_h = min(300, max(96, card_count * 56 + (24 if has_more else 0)))
 
@@ -4102,10 +4126,10 @@ class FloatingPanel(QWidget):
         title = QLabel(thing)
         title.setObjectName('rowTitleToday' if is_today else 'rowTitle')
         title.setWordWrap(True)
-        title.setFont(QFont('Microsoft YaHei', 10, QFont.Bold if is_today else QFont.Normal))
+        title.setFont(cn_font(10, bold=True))
         sub = QLabel()
         sub.setObjectName('rowSubToday' if is_today else 'rowSub')
-        sub.setFont(QFont('Microsoft YaHei', 9))
+        sub.setFont(cn_font(9))
         v.addWidget(title)
         v.addWidget(sub)
         row_layout.addLayout(v, 1)
