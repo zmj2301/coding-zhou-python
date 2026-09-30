@@ -3859,7 +3859,7 @@ class MyWindow(QMainWindow):
             self.menu.addAction('最小化', self.button_minimize)
             self.menu.addAction('退出', self.button_quit)
             
-            self.menu.exec(event.globalPos())
+            self.menu.exec_(event.globalPos())
                
     def mouseMoveEvent(self, event):
         if event.buttons() & Qt.LeftButton:
@@ -4308,7 +4308,7 @@ class FloatingBall(QWidget):
         menu.addAction('回到完整版', self.restore_full)
         menu.addSeparator()
         menu.addAction('退出', QApplication.instance().quit)
-        menu.exec(pos)
+        menu.exec_(pos)
 
     def restore_full(self):
         """收起悬浮球，回到完整版主窗口"""
