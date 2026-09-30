@@ -14,28 +14,32 @@ import time
 import json
 
 # ========== 中文字体 fallback ==========
-# Win7 默认没有 Microsoft YaHei，Win10 有。按优先级选第一个可用的。
-_QT_CN_FONT_CANDIDATES = ["Microsoft YaHei", "微软雅黑", "SimHei", "黑体", "Microsoft YaHei UI"]
+# Win7 默认没有 Microsoft YaHei，Win10/11 有。SimHei（黑体）Win7/10/11 全部自带。
+_QT_CN_FONT_CANDIDATES = ["Microsoft YaHei", "微软雅黑", "SimHei", "黑体"]
 
 def cn_font(size, bold=False):
-    """Qt 中文字体：自动在跨 Win7/Win10/Win11 的字体中选一个可用的"""
+    """Qt 中文字体：用 QFontDatabase 探测真正可用的中文字体，避免 exactMatch 对 .ttc 集合文件误判"""
     font = QFont()
     font.setStyleHint(QFont.SansSerif)
-    for name in _QT_CN_FONT_CANDIDATES:
-        font.setFamily(name)
-        if font.exactMatch():
-            break
+    try:
+        from PySide2.QtGui import QFontDatabase
+        families = set(QFontDatabase().families())
+        for name in _QT_CN_FONT_CANDIDATES:
+            if name in families:
+                font.setFamily(name)
+                break
+        else:
+            font.setFamily("SimHei")  # 万不得已的兜底
+    except Exception:
+        font.setFamily("SimHei")
     font.setPointSize(size)
     font.setBold(bold)
     return font
 
 def cn_tkfont(size, bold=False):
-    """tkinter 中文字体：跨 Win7/Win10 的安全字体"""
-    import tkinter as _tk
-    # tkinter 在某些环境下可能还没初始化，用 try 保护
-    fallback = ("Microsoft YaHei", "SimHei", _tk.font.nametofont("TkDefaultFont").cget("family"))
+    """tkinter 中文字体：直接用 SimHei——Win7/Win10/Win11 全部自带，零猜测"""
     weight = "bold" if bold else "normal"
-    return (fallback[0], size, weight)
+    return ("SimHei", size, weight)
 
 # ========== tkinter 替代层（PySide2 嵌入版不自带 tkinter） ==========
 # 提供 messagebox / filedialog / StringVar / BooleanVar 的兼容包装
@@ -2025,6 +2029,9 @@ class MyWindow(QMainWindow):
 
         # 程序启动时自动校验上次使用的 Excel 数据
         self.validate_and_load_data()
+        # 校验失败（self.events 为空）时立即显示提示，不等下一次 timer
+        if not self.events:
+            self.content_label.setText('请从 Excel 文件中导入事件数据')
 
         # ===== 系统托盘图标（右下角最小化） =====
         self._setup_tray()
@@ -3194,10 +3201,12 @@ class MyWindow(QMainWindow):
                     
                     messagebox.showinfo("成功", "事件数据导入成功！")
                 except Exception as e:
-                    messagebox.showerror("错误", f"分析Excel文件失败: {e}")
-                    print(f"分析Excel文件失败: {e}")
+                    self.events.clear()  # 失败回退，别留半解析数据
+                    self._clear_user_data_path()  # 清坏路径
+                    messagebox.showerror("错误", f"Excel 文件解析失败，已清空记录：\n{e}")
                     import traceback
                     traceback.print_exc()
+                    return
 
             def select_file():
                 from tkinter import filedialog
@@ -3475,7 +3484,11 @@ class MyWindow(QMainWindow):
                 try:
                     df = pd.read_excel(check_file_path)
                 except Exception as e:
+                    self.events.clear()
+                    self._clear_user_data_path()
                     messagebox.showerror("错误", f"读取文件失败: {e}")
+                    return
+
                     return
                 # 对比数据是否有差异
                 
