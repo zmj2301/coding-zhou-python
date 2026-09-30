@@ -855,17 +855,23 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     // 优先代理到 ECS 服务器（ECS 有实际文件系统，可以实时扫描项目结构）
     try {
       const ecsResp = await fetchFromEcs(`/api/projects/tree${url.search}`, env, request);
+      console.log('[projects/tree] projPath=', projPath, 'ecsStatus=', ecsResp.status, 'ecsOk=', ecsResp.ok);
       if (ecsResp.ok) {
         const treeData = await ecsResp.json();
         const resp = jsonResponse(treeData);
         addCacheHeader(resp.headers, 300);
         return resp;
       }
-    } catch {}
+    } catch (e: any) {
+      console.error('[projects/tree] ECS proxy exception for path=', projPath, e?.message || e);
+    }
     // ECS 失败时回退到 GitHub Assets（预生成的project-trees JSON）
     const safeName = projPath.replace(/\//g, '__').replace(/\\/g, '__');
     const treeResp = await fetchAsset(`/project-trees/${safeName}.json`, env);
-    if (!treeResp.ok) return errorResponse('项目文件树不存在', 404);
+    if (!treeResp.ok) {
+      console.error('[projects/tree] GitHub fallback also failed for path=', projPath, 'safeName=', safeName);
+      return errorResponse('项目文件树不存在', 404);
+    }
     const treeData = await treeResp.json();
     const resp = jsonResponse(treeData);
     addCacheHeader(resp.headers, 86400);
