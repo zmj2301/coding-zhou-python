@@ -2128,6 +2128,15 @@ class MyWindow(QMainWindow):
             return int_month, int_day
         return None
 
+    def _clear_user_data_path(self):
+        """清空 user_data.json 中记录的 Excel 路径（文件损坏/不存在/格式错误时调用）"""
+        user_data_file = os.path.join(self.dir_path, 'user_data.json')
+        try:
+            with open(user_data_file, 'w', encoding='utf-8') as f:
+                json.dump({'user_data': []}, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f'[_clear_user_data_path] 写入失败: {e}')
+
     def validate_and_load_data(self):
         """程序启动时自动校验上次使用的 Excel 数据：
         - 数据合法：直接加载到 self.events，不弹窗；
@@ -2146,23 +2155,27 @@ class MyWindow(QMainWindow):
                 return
             file_path = paths[0]
         except Exception as e:
-            QMessageBox.warning(self, '启动数据校验', f'读取 user_data.json 失败：\n{e}')
+            # json 本身坏了 → 清掉
+            self._clear_user_data_path()
+            QMessageBox.warning(self, '启动数据校验', f'user_data.json 损坏已自动清空：\n{e}\n\n请重新选择 Excel 文件。')
             return
 
         if not os.path.isabs(file_path):
             file_path = os.path.abspath(os.path.join(self.dir_path, file_path))
         if not os.path.exists(file_path):
+            self._clear_user_data_path()
             QMessageBox.warning(
                 self, '启动数据校验',
-                f'上次使用的 Excel 文件不存在：\n{file_path}\n\n请通过“打开日历”重新选择文件。')
+                f'上次使用的 Excel 文件已不存在，记录已清空：\n{file_path}\n\n请通过打开日历重新选择文件。')
             return
 
         try:
             df = pd.read_excel(file_path)
         except Exception as e:
+            self._clear_user_data_path()
             QMessageBox.critical(
                 self, '启动数据校验',
-                f'Excel 文件读取失败：\n{e}\n\n请检查文件是否损坏或正被其他程序占用。')
+                f'Excel 文件读取失败，记录已清空：\n{e}\n\n请检查文件是否损坏，或通过打开日历重新选择。')
             return
 
         # 列识别（与 analysis_excel 规则一致）
@@ -2183,10 +2196,11 @@ class MyWindow(QMainWindow):
                     break
 
         if time_column is None or things_column is None:
+            self._clear_user_data_path()
             QMessageBox.critical(
                 self, '启动数据校验',
-                'Excel 缺少必要的列：需要包含 time 和 things 两列。\n'
-                f'当前列名：{df.columns.tolist()}\n\n请通过“打开日历”修正文件。')
+                'Excel 缺少必要的列（需要包含 time 和 things 两列），记录已清空。\n'
+                f'当前列名：{df.columns.tolist()}\n\n请通过打开日历修正文件后重新选择。')
             return
 
         problems = []
@@ -2223,9 +2237,10 @@ class MyWindow(QMainWindow):
             return detail
 
         if not loaded:
+            self._clear_user_data_path()
             QMessageBox.critical(
                 self, '启动数据校验',
-                f'文件中没有可加载的有效待办数据，共发现 {len(problems)} 个问题：\n\n'
+                f'文件中没有可加载的有效待办数据，共发现 {len(problems)} 个问题，记录已清空：\n\n'
                 + problem_text(problems))
             return
 
