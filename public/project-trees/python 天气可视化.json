@@ -1,0 +1,51 @@
+[
+  {
+    "name": "html.html",
+    "type": "file",
+    "path": "html.html",
+    "ext": ".html",
+    "lastModified": 1785830343461
+  },
+  {
+    "name": "ico.svg",
+    "type": "file",
+    "path": "ico.svg",
+    "ext": ".svg",
+    "lastModified": 1785830343469
+  },
+  {
+    "name": "main.py",
+    "type": "file",
+    "path": "main.py",
+    "ext": ".py",
+    "lastModified": 1785830343470
+  },
+  {
+    "name": "place.txt",
+    "type": "file",
+    "path": "place.txt",
+    "ext": ".txt",
+    "lastModified": 1785830343471
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1785830343460
+  },
+  {
+    "name": "test.py",
+    "type": "file",
+    "path": "test.py",
+    "ext": ".py",
+    "lastModified": 1785830343472
+  },
+  {
+    "name": "weather.html",
+    "type": "file",
+    "path": "weather.html",
+    "ext": ".html",
+    "lastModified": 1785830343473
+  }
+]

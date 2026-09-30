@@ -308,7 +308,7 @@
             "type": "file",
             "path": "relax_exe/core/reporter.py",
             "ext": ".py",
-            "lastModified": 1788005199505
+            "lastModified": 1790430246331
           },
           {
             "name": "timer_manager.py",
@@ -1281,7 +1281,28 @@
             "type": "file",
             "path": "relax_exe/logs/app_20260925_154740.log",
             "ext": ".log",
-            "lastModified": 1790331017100
+            "lastModified": 1790336390122
+          },
+          {
+            "name": "app_20260926_162455.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260926_162455.log",
+            "ext": ".log",
+            "lastModified": 1790418968428
+          },
+          {
+            "name": "app_20260927_073550.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260927_073550.log",
+            "ext": ".log",
+            "lastModified": 1790474420634
+          },
+          {
+            "name": "app_20260930_173416.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260930_173416.log",
+            "ext": ".log",
+            "lastModified": 1790762770692
           }
         ]
       },
@@ -1432,7 +1453,7 @@
     "type": "file",
     "path": "config.json",
     "ext": ".json",
-    "lastModified": 1790249331336
+    "lastModified": 1790760885139
   },
   {
     "name": "flip_countdown_preview.html",
