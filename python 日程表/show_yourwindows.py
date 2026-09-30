@@ -1,4 +1,4 @@
-﻿﻿import sys
+import sys
 from typing import Any
 from PySide2.QtWidgets import (QApplication, QMainWindow, QMenu, QVBoxLayout, QHBoxLayout,
                                QWidget, QTextEdit, QLabel, QScrollArea, QFrame, QPushButton,
