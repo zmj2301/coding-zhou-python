@@ -1665,7 +1665,7 @@ async function loadPythonProjects() {
         .filter(c => c.type === 'directory' && !excludeSet.has(c.name))
         .forEach(c => dirs.push({
           ...c,
-          path: `Python/codinghou/${c.name}`,
+          path: `codinghou/${c.name}`,  // 不带 Python/ 前缀，ECS 和 GitHub fallback 都能正确处理
         }));
       // 把 codinghou 本身也保留作为可展开的项目
     }
@@ -1674,7 +1674,7 @@ async function loadPythonProjects() {
       const cat = classifyProject(node.name);
       return {
         name: node.name,
-        path: node.path,
+        path: node.path,    // 顶层项目 path=name，子项目 path=codinghou/name
         category: cat,
         desc: getDefaultDesc(node.name, cat),
         fileCount: countFiles(node),

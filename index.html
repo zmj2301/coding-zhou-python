@@ -457,6 +457,25 @@ body.filter-hidden .app-filter {
   font-family: var(--font-display);
   letter-spacing: -0.5px;
 }
+/* 面包屑（仅文件夹层级浏览时出现） */
+.main-head h1 a[data-breadcrumb] {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.main-head h1 a[data-breadcrumb]:hover {
+  color: var(--accent-blue);
+  text-decoration: underline;
+}
+.main-head h1 .crumb-sep {
+  margin: 0 8px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.main-head h1 .crumb-current {
+  color: var(--text-primary);
+  font-weight: 700;
+}
 .main-search {
   display: flex;
   align-items: center;
@@ -4987,7 +5006,7 @@ body.preview-active .app-preview { display: flex; }
   <!-- ====== 右侧主内容 ====== -->
   <main class="app-main" id="homePage">
     <header class="main-head" id="plazaHeader">
-      <h1>项目广场</h1>
+      <h1 id="plazaTitle">项目广场</h1>
       <div class="main-search" id="heroSearch">
         <input type="text" id="heroSearchInput" placeholder="输入项目名称或关键词搜索..." autocomplete="off">
         <kbd>Ctrl+P</kbd>
@@ -5629,6 +5648,9 @@ const state = {
   execReader: null,
   currentFilter: 'all',
   view: 'home',        // 当前视图: home | editor
+  // Python 文件夹层级浏览（仅首页 Python 卡片使用，不影响其他项目）
+  folderStack: [],          // 空=项目广场；['Python']=Python 子项目层
+  displayProjects: null,    // 非 null 时卡片网格展示这份子项目列表
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -6004,6 +6026,113 @@ function renderCategoryIndex(projects) {
   if (plazaCount) plazaCount.textContent = projects.length;
 }
 
+// ==================== PYTHON 文件夹层级浏览 ====================
+// 入口：首页点击 Python 卡片 → 同一个卡片网格里展示 Python 的子项目。
+// 不新增任何样式：子项目对象字段与 /api/projects/list 的项目完全一致，直接走 renderCards。
+function activeProjectList() { return state.displayProjects || state.projects; }
+
+// 面包屑：项目广场 > Python [ > codinghou > ... ]
+// 每一段可点击跳转到对应层级；最后一段为当前层，不可点击
+function renderBreadcrumb() {
+  const title = $('#plazaTitle');
+  if (!state.folderStack || state.folderStack.length === 0) {
+    title.textContent = '项目广场';
+    return;
+  }
+  const root = '<a href="#" data-breadcrumb="0">项目广场</a>';
+  const crumbs = state.folderStack.map((name, i) => {
+    const idx = i + 1;
+    const isLast = i === state.folderStack.length - 1;
+    if (isLast) {
+      return '<span class="crumb-current">' + esc(name) + '</span>';
+    }
+    return '<a href="#" data-breadcrumb="' + idx + '">' + esc(name) + '</a>';
+  });
+  title.innerHTML = [root].concat(crumbs).join('<span class="crumb-sep">›</span>');
+}
+
+// 跳转到面包屑指定层级（0=项目广场，1=Python，2=codinghou...）
+function goToBreadcrumbLevel(idx) {
+  if (idx <= 0) {
+    exitPythonFolder();
+    return;
+  }
+  // 截断到目标层级
+  const targetStack = state.folderStack.slice(0, idx);
+  state.folderStack = targetStack;
+  enterPythonFolder(targetStack);
+}
+
+async function enterPythonFolder(stack) {
+  // stack 不传时默认进入 Python 根层；传入时按指定层级加载
+  const folderStack = stack || ['Python'];
+  const folderPath = folderStack.join('/');
+  const grid = $('#cardsGrid');
+  grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div></div>';
+  try {
+    const tree = await fetchProjectTree(folderPath); // depth=1
+    const skip = new Set(['__pycache__', '.git', 'node_modules']);
+    const nodes = (Array.isArray(tree) ? tree : []).filter(n => n.type === 'directory' && !skip.has(n.name));
+    if (!nodes.length) { toast(folderStack[folderStack.length - 1] + ' 中没有子项目'); exitPythonFolder(); return; }
+
+    state.folderStack = folderStack;
+    state.displayProjects = nodes.map(n => {
+      const type = classifyProject(n.name);
+      const cfg = getProjectConfig(type);
+      return {
+        name: n.name,
+        path: n.path,
+        githubPath: folderPath + '/' + n.name,
+        type: type,
+        icon: getProjectIcon(n.name),
+        cardClass: cfg.cls,
+        label: cfg.label,
+        desc: getProjectDesc(n.name),
+        mainFile: projectMainFile(n),
+        fileCount: countFiles(n),
+        lastModified: n.lastModified ? formatDate(n.lastModified) : '',
+        treeNode: n,
+        themeColor: n.themeColor || 'hsl(210, 35%, 60%)',
+        cover: getProjectCover(n.name),
+      };
+    });
+
+    renderBreadcrumb();
+    $('#heroSearchInput').value = '';
+    renderCards(state.displayProjects, state.currentFilter || 'all', '');
+    updateStats(state.displayProjects);
+  } catch (err) {
+    toast('加载文件夹失败');
+    exitPythonFolder();
+  }
+}
+
+function exitPythonFolder() {
+  state.folderStack = [];
+  state.displayProjects = null;
+  renderBreadcrumb();
+  $('#heroSearchInput').value = '';
+  renderCards(state.projects, state.currentFilter || 'all', '');
+  updateStats(state.projects);
+}
+
+function handleProjectCardClick(projectPath) {
+  // 项目广场顶层点 Python 卡片 → 进入 Python 子项目层
+  if (state.folderStack.length === 0 && projectPath === 'Python') {
+    enterPythonFolder();
+    return;
+  }
+  // 已在层级模式下：检查该子项目是否还有子目录，有则继续下钻
+  if (state.folderStack.length > 0) {
+    const node = state.displayProjects?.find(p => p.path === projectPath)?.treeNode;
+    if (node && node.children && node.children.some(c => c.type === 'directory' && !['__pycache__','.git','node_modules'].includes(c.name))) {
+      enterPythonFolder(state.folderStack.concat([node.name]));
+      return;
+    }
+  }
+  openProjectReadme(projectPath);
+}
+
 function renderCards(projects, filter = 'all', searchQuery = '') {
   let filtered = projects;
   if (filter !== 'all') {
@@ -6101,14 +6230,14 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
       if (!path) return;
       if (action === 'like') likeProject(path);
       else if (action === 'comment') {
-        const project = state.projects.find(p => p.path === path);
+        const project = activeProjectList().find(p => p.path === path);
         openCommentModal(path, project?.name || '');
       }
       else if (action === 'bookmark') toggleBookmarkByPath(path);
       return;
     }
     const card = e.target.closest('.project-card');
-    if (card) openProjectReadme(card.dataset.project);
+    if (card) handleProjectCardClick(card.dataset.project);
   };
 }
 
@@ -6123,7 +6252,7 @@ function updateStats(projects) {
 
 // ==================== VIEW SWITCHING ====================
 async function openProject(projectPath) {
-  const project = state.projects.find(p => p.path === projectPath);
+  const project = activeProjectList().find(p => p.path === projectPath) || state.projects.find(p => p.path === projectPath);
   if (!project) return;
 
   if (project.type === 'system-file') {
@@ -6218,7 +6347,7 @@ function goHome() {
 let _drawerActiveProject = null;
 
 function openProjectReadme(projectPath) {
-  const project = state.projects.find(p => p.path === projectPath);
+  const project = activeProjectList().find(p => p.path === projectPath) || state.projects.find(p => p.path === projectPath);
   if (!project) return;
 
   // 系统文件禁止访问
@@ -6322,7 +6451,7 @@ function initReadmeDrawer() {
     if (!project) return;
     const repo = 'zmj2301/coding-zhou-python';
     const branch = 'main';
-    const cleanPath = project.path.replace(/^\/+/, '');
+    const cleanPath = (project.githubPath || project.path).replace(/^\/+/, '');
     const url = `https://download-directory.github.io/?url=https://github.com/${repo}/tree/${branch}/${cleanPath}`;
     window.open(url, '_blank');
   });
@@ -7287,14 +7416,22 @@ document.addEventListener('keydown', e => {
 
 // ==================== EVENT BINDINGS ====================
 $('#btnBack').addEventListener('click', goHome);
+// 面包屑点击委托：点击任意层级跳转到该层
+$('#plazaTitle').addEventListener('click', e => {
+  const a = e.target.closest('a[data-breadcrumb]');
+  if (!a) return;
+  e.preventDefault();
+  goToBreadcrumbLevel(parseInt(a.dataset.breadcrumb, 10));
+});
 $('#heroSearchInput').addEventListener('input', () => {
   const q = $('#heroSearchInput').value;
-  renderCards(state.projects, state.currentFilter || 'all', q);
+  renderCards(activeProjectList(), state.currentFilter || 'all', q);
 });
 $('#heroSearchInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && state.projects.length > 0) {
+  const list = activeProjectList();
+  if (e.key === 'Enter' && list.length > 0) {
     const q = $('#heroSearchInput').value.toLowerCase().trim();
-    const match = state.projects.find(p => p.name.toLowerCase().includes(q));
+    const match = list.find(p => p.name.toLowerCase().includes(q));
     if (match) openProject(match.path);
   }
 });
@@ -7316,7 +7453,7 @@ $('#filterTabs').addEventListener('click', e => {
   // 切换到项目广场视图
   switchSidebarView('plaza');
 
-  renderCards(state.projects, state.currentFilter, $('#heroSearchInput').value);
+  renderCards(activeProjectList(), state.currentFilter, $('#heroSearchInput').value);
 });
 
 if ($('#viewToggle')) {

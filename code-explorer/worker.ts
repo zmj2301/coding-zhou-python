@@ -855,7 +855,6 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     // 优先代理到 ECS 服务器（ECS 有实际文件系统，可以实时扫描项目结构）
     try {
       const ecsResp = await fetchFromEcs(`/api/projects/tree${url.search}`, env, request);
-      console.log('[projects/tree] projPath=', projPath, 'ecsStatus=', ecsResp.status, 'ecsOk=', ecsResp.ok);
       if (ecsResp.ok) {
         const treeData = await ecsResp.json();
         const resp = jsonResponse(treeData);
