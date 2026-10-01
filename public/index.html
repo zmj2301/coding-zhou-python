@@ -457,6 +457,25 @@ body.filter-hidden .app-filter {
   font-family: var(--font-display);
   letter-spacing: -0.5px;
 }
+/* 面包屑（仅文件夹层级浏览时出现） */
+.main-head h1 a[data-breadcrumb] {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.main-head h1 a[data-breadcrumb]:hover {
+  color: var(--accent-blue);
+  text-decoration: underline;
+}
+.main-head h1 .crumb-sep {
+  margin: 0 8px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.main-head h1 .crumb-current {
+  color: var(--text-primary);
+  font-weight: 700;
+}
 .main-search {
   display: flex;
   align-items: center;
@@ -1890,53 +1909,6 @@ body.filter-hidden .main-filter-toggle {
   color: #fff; border: none; cursor: pointer;
 }
 .upload-again-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px color-mix(in srgb, var(--accent-blue) 35%, transparent); }
-
-.upload-cancel-btn {
-  margin-top: 10px; padding: 6px 16px; border-radius: 8px; font-size: 13px;
-  background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);
-  cursor: pointer;
-}
-.upload-cancel-btn:hover { color: #ff5c5c; border-color: #ff5c5c; }
-
-/* 上传历史记录 */
-.upload-history { margin-top: 24px; }
-.upload-history-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.upload-history-head h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin: 0; }
-.upload-history-refresh {
-  padding: 5px 14px; border-radius: 8px; font-size: 12px;
-  background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color);
-  cursor: pointer;
-}
-.upload-history-refresh:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
-.upload-history-list { display: flex; flex-direction: column; gap: 10px; }
-.upload-history-empty { text-align: center; color: var(--text-secondary); font-size: 13px; padding: 24px; }
-.upload-history-item {
-  display: flex; align-items: center; gap: 14px; padding: 12px;
-  background: color-mix(in srgb, var(--bg-secondary) 60%, transparent);
-  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
-  border-radius: 12px;
-}
-.upload-history-thumb {
-  width: 56px; height: 56px; border-radius: 8px; flex-shrink: 0;
-  background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center;
-  overflow: hidden; font-size: 22px;
-}
-.upload-history-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.upload-history-info { flex: 1; min-width: 0; }
-.upload-history-name {
-  font-size: 14px; font-weight: 500; color: var(--text-primary);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.upload-history-meta { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-.upload-history-url { font-size: 12px; color: var(--accent-cyan); margin-top: 2px; text-decoration: none; word-break: break-all; }
-.upload-history-url:hover { text-decoration: underline; }
-.upload-history-actions { display: flex; gap: 8px; flex-shrink: 0; }
-.upload-history-btn {
-  padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; border: 1px solid var(--border-color);
-  background: var(--bg-secondary); color: var(--text-secondary);
-}
-.upload-history-btn:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
-.upload-history-btn.danger:hover { color: #ff5c5c; border-color: #ff5c5c; }
 
 /* API 密钥创建弹窗 */
 .apikey-modal-overlay {
@@ -4792,7 +4764,12 @@ body.preview-active .app-preview { display: flex; }
   </div>
   <div class="auth-right">
     <div class="auth-card">
-      <!-- 登录表单（注册功能已移除，用户由管理员创建） -->
+      <!-- 登录/注册切换标签 -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="authTabLogin" onclick="showAuthForm('login')">登录</button>
+        <button class="auth-tab" id="authTabRegister" onclick="showAuthForm('register')">注册</button>
+      </div>
+      <!-- 登录表单 -->
       <div id="userLoginForm">
         <h2>欢迎回来</h2>
         <p class="auth-subtitle">输入账号密码以继续</p>
@@ -4807,12 +4784,24 @@ body.preview-active .app-preview { display: flex; }
         <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
         <div class="auth-error" id="loginError"></div>
       </div>
-      <!-- 注册表单已移除 -->
+      <!-- 注册表单 -->
       <div id="registerForm" style="display:none">
-        <div style="text-align:center;padding:20px;color:var(--text-secondary)">
-          <p>自助注册功能已关闭</p>
-          <p style="font-size:12px;margin-top:8px">如需账号，请联系管理员创建</p>
+        <h2>创建账号</h2>
+        <p class="auth-subtitle">注册新账号以访问平台</p>
+        <div class="auth-field">
+          <label for="registerUsernameInput">用户名</label>
+          <input type="text" id="registerUsernameInput" placeholder="3-20位字母、数字或下划线" autocomplete="off">
         </div>
+        <div class="auth-field">
+          <label for="registerPasswordInput">密码</label>
+          <input type="password" id="registerPasswordInput" placeholder="至少6位密码" autocomplete="off">
+        </div>
+        <div class="auth-field">
+          <label for="registerConfirmInput">确认密码</label>
+          <input type="password" id="registerConfirmInput" placeholder="再次输入密码" autocomplete="off">
+        </div>
+        <button class="auth-btn-primary" id="registerSubmitBtn">注册</button>
+        <div class="auth-error" id="registerError"></div>
       </div>
     </div>
   </div>
@@ -4950,7 +4939,7 @@ body.preview-active .app-preview { display: flex; }
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </span>
-        <span class="sidebar-item-label" id="sidebarLoginLabel">登录</span>
+        <span class="sidebar-item-label" id="sidebarLoginLabel">登录/注册</span>
       </a>
       <a class="sidebar-item" data-view="apikey" id="navApikey">
         <span class="sidebar-item-icon">
@@ -5017,7 +5006,7 @@ body.preview-active .app-preview { display: flex; }
   <!-- ====== 右侧主内容 ====== -->
   <main class="app-main" id="homePage">
     <header class="main-head" id="plazaHeader">
-      <h1>项目广场</h1>
+      <h1 id="plazaTitle">项目广场</h1>
       <div class="main-search" id="heroSearch">
         <input type="text" id="heroSearchInput" placeholder="输入项目名称或关键词搜索..." autocomplete="off">
         <kbd>Ctrl+P</kbd>
@@ -5185,7 +5174,7 @@ body.preview-active .app-preview { display: flex; }
         <h1>文件上传</h1>
         <div class="main-head-right"></div>
       </header>
-      <div class="main-sub">上传图片、Markdown、TXT 等文件，生成专属访问链接，浏览器直接访问预览</div>
+      <div class="main-sub">上传图片、Markdown、TXT 等文件，生成专属子域名链接，浏览器直接访问预览</div>
       <div class="upload-area" id="uploadArea">
         <div class="upload-zone" id="uploadZone">
           <div class="upload-zone-icon">
@@ -5198,7 +5187,6 @@ body.preview-active .app-preview { display: flex; }
         <div class="upload-progress" id="uploadProgress" style="display:none">
           <div class="upload-progress-bar"><div class="upload-progress-fill" id="uploadProgressFill"></div></div>
           <div class="upload-progress-text" id="uploadProgressText">上传中...</div>
-          <button class="upload-cancel-btn" onclick="cancelUpload()">取消上传</button>
         </div>
         <div class="upload-result" id="uploadResult" style="display:none">
           <div class="upload-result-icon">✓</div>
@@ -5210,16 +5198,6 @@ body.preview-active .app-preview { display: flex; }
             <button class="upload-copy-btn" onclick="copyUploadUrl()">复制</button>
           </div>
           <button class="upload-again-btn" onclick="resetUpload()">再传一个</button>
-        </div>
-      </div>
-
-      <div class="upload-history" id="uploadHistory">
-        <div class="upload-history-head">
-          <h3>历史记录</h3>
-          <button class="upload-history-refresh" onclick="loadUploadHistory()">刷新</button>
-        </div>
-        <div class="upload-history-list" id="uploadHistoryList">
-          <div class="upload-history-empty">暂无上传记录</div>
         </div>
       </div>
     </div>
@@ -5670,6 +5648,9 @@ const state = {
   execReader: null,
   currentFilter: 'all',
   view: 'home',        // 当前视图: home | editor
+  // Python 文件夹层级浏览（仅首页 Python 卡片使用，不影响其他项目）
+  folderStack: [],          // 空=项目广场；['Python']=Python 子项目层
+  displayProjects: null,    // 非 null 时卡片网格展示这份子项目列表
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -5681,7 +5662,6 @@ async function api(url, opts = {}) {
     if (res.status === 401) {
       delCookie('wg_token');
       state.currentUser = null;
-      state.isAuthenticated = false;
       if (userMenuBtn) userMenuBtn.classList.add('hidden');
       if (userDropdown) userDropdown.classList.remove('show');
       hideAdminDashboard();
@@ -5691,12 +5671,7 @@ async function api(url, opts = {}) {
         const grid = document.getElementById('cardsGrid');
         if (grid) grid.innerHTML = '';
       } else {
-        // 弹窗提示登录
-        showAuthPromptModal('源代码');
-        const titleEl = document.getElementById('authPromptTitle');
-        const descEl = document.getElementById('authPromptDesc');
-        if (titleEl) titleEl.textContent = '需要登录';
-        if (descEl) descEl.textContent = '查看源代码和下载功能需要登录后才能使用。';
+        toast('请先登录后再操作');
       }
       throw new Error('请先登录');
     }
@@ -6051,6 +6026,113 @@ function renderCategoryIndex(projects) {
   if (plazaCount) plazaCount.textContent = projects.length;
 }
 
+// ==================== PYTHON 文件夹层级浏览 ====================
+// 入口：首页点击 Python 卡片 → 同一个卡片网格里展示 Python 的子项目。
+// 不新增任何样式：子项目对象字段与 /api/projects/list 的项目完全一致，直接走 renderCards。
+function activeProjectList() { return state.displayProjects || state.projects; }
+
+// 面包屑：项目广场 > Python [ > codinghou > ... ]
+// 每一段可点击跳转到对应层级；最后一段为当前层，不可点击
+function renderBreadcrumb() {
+  const title = $('#plazaTitle');
+  if (!state.folderStack || state.folderStack.length === 0) {
+    title.textContent = '项目广场';
+    return;
+  }
+  const root = '<a href="#" data-breadcrumb="0">项目广场</a>';
+  const crumbs = state.folderStack.map((name, i) => {
+    const idx = i + 1;
+    const isLast = i === state.folderStack.length - 1;
+    if (isLast) {
+      return '<span class="crumb-current">' + esc(name) + '</span>';
+    }
+    return '<a href="#" data-breadcrumb="' + idx + '">' + esc(name) + '</a>';
+  });
+  title.innerHTML = [root].concat(crumbs).join('<span class="crumb-sep">›</span>');
+}
+
+// 跳转到面包屑指定层级（0=项目广场，1=Python，2=codinghou...）
+function goToBreadcrumbLevel(idx) {
+  if (idx <= 0) {
+    exitPythonFolder();
+    return;
+  }
+  // 截断到目标层级
+  const targetStack = state.folderStack.slice(0, idx);
+  state.folderStack = targetStack;
+  enterPythonFolder(targetStack);
+}
+
+async function enterPythonFolder(stack) {
+  // stack 不传时默认进入 Python 根层；传入时按指定层级加载
+  const folderStack = stack || ['Python'];
+  const folderPath = folderStack.join('/');
+  const grid = $('#cardsGrid');
+  grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div></div>';
+  try {
+    const tree = await fetchProjectTree(folderPath); // depth=1
+    const skip = new Set(['__pycache__', '.git', 'node_modules']);
+    const nodes = (Array.isArray(tree) ? tree : []).filter(n => n.type === 'directory' && !skip.has(n.name));
+    if (!nodes.length) { toast(folderStack[folderStack.length - 1] + ' 中没有子项目'); exitPythonFolder(); return; }
+
+    state.folderStack = folderStack;
+    state.displayProjects = nodes.map(n => {
+      const type = classifyProject(n.name);
+      const cfg = getProjectConfig(type);
+      return {
+        name: n.name,
+        path: n.path,
+        githubPath: folderPath + '/' + n.name,
+        type: type,
+        icon: getProjectIcon(n.name),
+        cardClass: cfg.cls,
+        label: cfg.label,
+        desc: getProjectDesc(n.name),
+        mainFile: projectMainFile(n),
+        fileCount: countFiles(n),
+        lastModified: n.lastModified ? formatDate(n.lastModified) : '',
+        treeNode: n,
+        themeColor: n.themeColor || 'hsl(210, 35%, 60%)',
+        cover: getProjectCover(n.name),
+      };
+    });
+
+    renderBreadcrumb();
+    $('#heroSearchInput').value = '';
+    renderCards(state.displayProjects, state.currentFilter || 'all', '');
+    updateStats(state.displayProjects);
+  } catch (err) {
+    toast('加载文件夹失败');
+    exitPythonFolder();
+  }
+}
+
+function exitPythonFolder() {
+  state.folderStack = [];
+  state.displayProjects = null;
+  renderBreadcrumb();
+  $('#heroSearchInput').value = '';
+  renderCards(state.projects, state.currentFilter || 'all', '');
+  updateStats(state.projects);
+}
+
+function handleProjectCardClick(projectPath) {
+  // 项目广场顶层点 Python 卡片 → 进入 Python 子项目层
+  if (state.folderStack.length === 0 && projectPath === 'Python') {
+    enterPythonFolder();
+    return;
+  }
+  // 已在层级模式下：检查该子项目是否还有子目录，有则继续下钻
+  if (state.folderStack.length > 0) {
+    const node = state.displayProjects?.find(p => p.path === projectPath)?.treeNode;
+    if (node && node.children && node.children.some(c => c.type === 'directory' && !['__pycache__','.git','node_modules'].includes(c.name))) {
+      enterPythonFolder(state.folderStack.concat([node.name]));
+      return;
+    }
+  }
+  openProjectReadme(projectPath);
+}
+
 function renderCards(projects, filter = 'all', searchQuery = '') {
   let filtered = projects;
   if (filter !== 'all') {
@@ -6148,14 +6230,14 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
       if (!path) return;
       if (action === 'like') likeProject(path);
       else if (action === 'comment') {
-        const project = state.projects.find(p => p.path === path);
+        const project = activeProjectList().find(p => p.path === path);
         openCommentModal(path, project?.name || '');
       }
       else if (action === 'bookmark') toggleBookmarkByPath(path);
       return;
     }
     const card = e.target.closest('.project-card');
-    if (card) openProjectReadme(card.dataset.project);
+    if (card) handleProjectCardClick(card.dataset.project);
   };
 }
 
@@ -6170,7 +6252,7 @@ function updateStats(projects) {
 
 // ==================== VIEW SWITCHING ====================
 async function openProject(projectPath) {
-  const project = state.projects.find(p => p.path === projectPath);
+  const project = activeProjectList().find(p => p.path === projectPath) || state.projects.find(p => p.path === projectPath);
   if (!project) return;
 
   if (project.type === 'system-file') {
@@ -6265,7 +6347,7 @@ function goHome() {
 let _drawerActiveProject = null;
 
 function openProjectReadme(projectPath) {
-  const project = state.projects.find(p => p.path === projectPath);
+  const project = activeProjectList().find(p => p.path === projectPath) || state.projects.find(p => p.path === projectPath);
   if (!project) return;
 
   // 系统文件禁止访问
@@ -6369,7 +6451,7 @@ function initReadmeDrawer() {
     if (!project) return;
     const repo = 'zmj2301/coding-zhou-python';
     const branch = 'main';
-    const cleanPath = project.path.replace(/^\/+/, '');
+    const cleanPath = (project.githubPath || project.path).replace(/^\/+/, '');
     const url = `https://download-directory.github.io/?url=https://github.com/${repo}/tree/${branch}/${cleanPath}`;
     window.open(url, '_blank');
   });
@@ -7280,10 +7362,6 @@ async function copyCode() {
 
 async function downloadProject() {
   if (!state.currentProject) return;
-  if (!state.isAuthenticated) {
-    showAuthPromptModal(state.currentProject.name);
-    return;
-  }
   try {
     toast('正在打包下载...');
     const path = encodeURIComponent(state.currentProject.path);
@@ -7338,14 +7416,22 @@ document.addEventListener('keydown', e => {
 
 // ==================== EVENT BINDINGS ====================
 $('#btnBack').addEventListener('click', goHome);
+// 面包屑点击委托：点击任意层级跳转到该层
+$('#plazaTitle').addEventListener('click', e => {
+  const a = e.target.closest('a[data-breadcrumb]');
+  if (!a) return;
+  e.preventDefault();
+  goToBreadcrumbLevel(parseInt(a.dataset.breadcrumb, 10));
+});
 $('#heroSearchInput').addEventListener('input', () => {
   const q = $('#heroSearchInput').value;
-  renderCards(state.projects, state.currentFilter || 'all', q);
+  renderCards(activeProjectList(), state.currentFilter || 'all', q);
 });
 $('#heroSearchInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && state.projects.length > 0) {
+  const list = activeProjectList();
+  if (e.key === 'Enter' && list.length > 0) {
     const q = $('#heroSearchInput').value.toLowerCase().trim();
-    const match = state.projects.find(p => p.name.toLowerCase().includes(q));
+    const match = list.find(p => p.name.toLowerCase().includes(q));
     if (match) openProject(match.path);
   }
 });
@@ -7367,7 +7453,7 @@ $('#filterTabs').addEventListener('click', e => {
   // 切换到项目广场视图
   switchSidebarView('plaza');
 
-  renderCards(state.projects, state.currentFilter, $('#heroSearchInput').value);
+  renderCards(activeProjectList(), state.currentFilter, $('#heroSearchInput').value);
 });
 
 if ($('#viewToggle')) {
@@ -8606,14 +8692,25 @@ function delCookie(name) {
 }
 
 function showAuthForm(type) {
-  // 注册功能已移除，始终显示登录表单
-  if (userLoginForm) userLoginForm.style.display = 'block';
-  if (registerForm) registerForm.style.display = 'none';
-  if (loginError) {
+  const loginTab = document.getElementById('authTabLogin');
+  const regTab = document.getElementById('authTabRegister');
+  if (type === 'login') {
+    userLoginForm.style.display = 'block';
+    registerForm.style.display = 'none';
+    loginTab.classList.add('active');
+    regTab.classList.remove('active');
     loginError.classList.remove('show');
     loginError.textContent = '';
+    setTimeout(() => loginUsernameInput.focus(), 50);
+  } else {
+    userLoginForm.style.display = 'none';
+    registerForm.style.display = 'block';
+    loginTab.classList.remove('active');
+    regTab.classList.add('active');
+    registerError.classList.remove('show');
+    registerError.textContent = '';
+    setTimeout(() => registerUsernameInput.focus(), 50);
   }
-  setTimeout(() => { if (loginUsernameInput) loginUsernameInput.focus(); }, 50);
 }
 
 function showLoginPage() {
@@ -8681,8 +8778,38 @@ async function doUserLogin() {
   loginSubmitBtn.disabled = false; loginSubmitBtn.textContent = '登录';
 }
 
-// 注册功能已移除（用户由管理员在后台创建）
-// async function doRegister() { ... }
+async function doRegister() {
+  const username = registerUsernameInput.value.trim();
+  const pw = registerPasswordInput.value.trim();
+  const confirm = registerConfirmInput.value.trim();
+  if (!username || !pw || !confirm) { registerError.textContent = '请填写所有字段'; registerError.classList.add('show'); return; }
+  if (pw !== confirm) { registerError.textContent = '两次密码不一致'; registerError.classList.add('show'); return; }
+  if (pw.length < 6) { registerError.textContent = '密码长度至少6位'; registerError.classList.add('show'); return; }
+  registerSubmitBtn.disabled = true; registerSubmitBtn.textContent = '注册中...';
+  registerError.classList.remove('show'); registerError.textContent = '';
+  try {
+    const r = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
+    const d = await r.json();
+    if (r.ok) {
+      // 注册成功，自动登录
+      registerError.textContent = '注册成功，正在登录...';
+      registerError.classList.add('show');
+      registerError.style.color = 'var(--success, #22c55e)';
+      registerError.style.borderColor = 'var(--success, #22c55e)';
+      // 切换到登录表单并自动填充
+      showAuthForm('login');
+      loginUsernameInput.value = username;
+      loginPasswordInput.value = pw;
+      setTimeout(() => doUserLogin(), 300);
+    } else {
+      registerError.textContent = d.error || '注册失败';
+      registerError.classList.add('show');
+      registerError.style.color = '';
+      registerError.style.borderColor = '';
+    }
+  } catch(e) { registerError.textContent = '网络错误，请重试'; registerError.classList.add('show'); }
+  registerSubmitBtn.disabled = false; registerSubmitBtn.textContent = '注册';
+}
 
 function showAdminDashboard() {
   adminPage.classList.add('active');
@@ -8705,7 +8832,7 @@ async function doLogout() {
   userDropdown.classList.remove('show');
   // 恢复侧栏登录标签
   var sLabel = document.getElementById('sidebarLoginLabel');
-  if (sLabel) sLabel.textContent = '登录';
+  if (sLabel) sLabel.textContent = '登录/注册';
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
   document.getElementById('homePage').classList.add('active');
@@ -8894,19 +9021,6 @@ function renderDashboard(data) {
 
     <div class="admin-section">
       <div class="admin-section-title">用户管理</div>
-      <div style="background:var(--bg-secondary,#2a2a3e);border-radius:8px;padding:16px;margin-bottom:16px">
-        <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px">创建新用户</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <input id="newUserUsername" placeholder="用户名（3-20位字母数字下划线）" style="flex:1;min-width:180px;padding:8px 12px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-primary);color:var(--text-primary);font-size:13px">
-          <input id="newUserPassword" type="password" placeholder="密码（至少6位）" style="flex:1;min-width:150px;padding:8px 12px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-primary);color:var(--text-primary);font-size:13px">
-          <select id="newUserRole" style="padding:8px 12px;border-radius:6px;border:1px solid var(--border-color);background:var(--bg-primary);color:var(--text-primary);font-size:13px">
-            <option value="user">普通用户</option>
-            <option value="admin">管理员</option>
-          </select>
-          <button onclick="createNewUser()" style="padding:8px 18px;border-radius:6px;border:none;background:var(--accent-cyan);color:#fff;font-size:13px;cursor:pointer;font-weight:600">创建</button>
-        </div>
-        <div id="newUserMsg" style="margin-top:8px;font-size:12px;min-height:16px"></div>
-      </div>
       <div id="adminUserList" style="background:var(--bg-secondary,#2a2a3e);border-radius:8px;overflow:hidden">
         <div style="padding:16px;text-align:center;color:var(--text-secondary)">加载中...</div>
       </div>
@@ -8943,69 +9057,18 @@ async function loadAdminUsers() {
       return;
     }
     const escape = (s) => { const el=document.createElement('div'); el.textContent=s; return el.innerHTML; };
-    container.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--bg-primary,#1e1e2e)">' +
-      '<th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">用户名</th>' +
-      '<th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">角色</th>' +
-      '<th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">注册时间</th>' +
-      '<th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">最后登录</th>' +
-      '<th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">登录次数</th>' +
-      '<th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">操作</th>' +
-      '</tr></thead><tbody>' +
-      d.users.map(u => '<tr style="border-bottom:1px solid var(--border-color,#333)">' +
-        '<td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + escape(u.username) + '</td>' +
-        '<td style="padding:10px 12px;font-size:13px"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:' + (u.role === 'admin' ? 'var(--accent,#6366f1)' : 'var(--bg-tertiary,#3a3a4e)') + ';color:#fff">' + (u.role === 'admin' ? '管理员' : '用户') + '</span></td>' +
-        '<td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.created_at ? new Date(u.created_at * 1000).toLocaleString('zh-CN') : '-') + '</td>' +
-        '<td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.last_login ? new Date(u.last_login * 1000).toLocaleString('zh-CN') : '从未登录') + '</td>' +
-        '<td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + (u.login_count || 0) + '</td>' +
-        '<td style="padding:10px 12px">' +
-        (u.role !== 'admin' ? '<button onclick="deleteUser(\'' + escape(u.username) + '\')" style="padding:4px 10px;border:none;border-radius:4px;background:#ef4444;color:#fff;font-size:11px;cursor:pointer">删除</button>' : '<span style="font-size:11px;color:var(--text-tertiary)">-</span>') +
-        '</td></tr>').join('') +
+    container.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--bg-primary,#1e1e2e)"><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">ID</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">用户名</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">角色</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">注册时间</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">最后登录</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">操作</th></tr></thead><tbody>' +
+      d.users.map(u => '<tr style="border-bottom:1px solid var(--border-color,#333)"><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + u.id + '</td><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + escape(u.username) + '</td><td style="padding:10px 12px;font-size:13px"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:' + (u.role === 'admin' ? 'var(--accent,#6366f1)' : 'var(--bg-tertiary,#3a3a4e)') + ';color:#fff">' + (u.role === 'admin' ? '管理员' : '用户') + '</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.created_at ? new Date(u.created_at * 1000).toLocaleString('zh-CN') : '-') + '</td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.last_login ? new Date(u.last_login * 1000).toLocaleString('zh-CN') : '从未登录') + '</td><td style="padding:10px 12px">' +
+        (u.role !== 'admin' ? '<button onclick="deleteUser(' + u.id + ',\'' + escape(u.username) + '\')" style="padding:4px 10px;border:none;border-radius:4px;background:#ef4444;color:#fff;font-size:11px;cursor:pointer">删除</button>' : '<span style="font-size:11px;color:var(--text-tertiary)">-</span>') +
+      '</td></tr>').join('') +
       '</tbody></table>';
   } catch(e) {}
 }
 
-async function createNewUser() {
-  const username = (document.getElementById('newUserUsername')?.value || '').trim();
-  const password = (document.getElementById('newUserPassword')?.value || '').trim();
-  const role = document.getElementById('newUserRole')?.value || 'user';
-  const msgEl = document.getElementById('newUserMsg');
-  if (msgEl) msgEl.textContent = '';
-  if (!username || !password) {
-    if (msgEl) { msgEl.textContent = '请填写用户名和密码'; msgEl.style.color = '#ef4444'; }
-    return;
-  }
-  if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-    if (msgEl) { msgEl.textContent = '用户名需为3-20位字母、数字或下划线'; msgEl.style.color = '#ef4444'; }
-    return;
-  }
-  if (password.length < 6) {
-    if (msgEl) { msgEl.textContent = '密码长度至少6位'; msgEl.style.color = '#ef4444'; }
-    return;
-  }
+async function deleteUser(userId, username) {
+  if (!confirm('确定要删除用户 "' + username + '" 吗？\n此操作不可恢复，该用户的所有数据将被清除。')) return;
   try {
-    const r = await fetch('/api/admin/users/create', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({username, password, role})
-    });
-    const d = await r.json();
-    if (r.ok && d.success) {
-      if (msgEl) { msgEl.textContent = '用户 "' + username + '" 创建成功'; msgEl.style.color = '#22c55e'; }
-      document.getElementById('newUserUsername').value = '';
-      document.getElementById('newUserPassword').value = '';
-      loadAdminUsers();
-    } else {
-      if (msgEl) { msgEl.textContent = d.error || '创建失败'; msgEl.style.color = '#ef4444'; }
-    }
-  } catch(e) {
-    if (msgEl) { msgEl.textContent = '网络错误'; msgEl.style.color = '#ef4444'; }
-  }
-}
-
-async function deleteUser(username) {
-  if (!confirm('确定要删除用户 "' + username + '" 吗？\n此操作不可恢复。')) return;
-  try {
-    const r = await fetch('/api/admin/users/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username}) });
+    const r = await fetch('/api/admin/users/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({user_id: userId}) });
     const d = await r.json();
     if (r.ok) {
       toast('用户已删除');
@@ -9020,7 +9083,8 @@ async function deleteUser(username) {
 loginSubmitBtn.addEventListener('click', doUserLogin);
 loginPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
 loginUsernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
-// 注册相关事件已移除
+registerSubmitBtn.addEventListener('click', doRegister);
+registerConfirmInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doRegister(); });
 
 userMenuBtn.addEventListener('click', function(e) {
   e.stopPropagation();
@@ -9151,10 +9215,6 @@ async function loadResources() {
 }
 
 function downloadResource(path, name) {
-  if (!state.isAuthenticated) {
-    showAuthPromptModal(name || path);
-    return;
-  }
   const url = '/api/resources/download?path=' + encodeURIComponent(path);
   fetch(url)
     .then(async resp => {
@@ -9169,36 +9229,6 @@ function downloadResource(path, name) {
       const a = document.createElement('a');
       a.href = blobUrl;
       a.download = name || path;
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
-    })
-    .catch(() => alert('下载失败，请稍后重试'));
-}
-
-function downloadTextbook(subjectEncoded, name) {
-  if (!state.isAuthenticated) {
-    showAuthPromptModal(name);
-    return;
-  }
-  const subject = decodeURIComponent(subjectEncoded);
-  const url = '/api/textbook/download?subject=' + encodeURIComponent(subject);
-  fetch(url)
-    .then(async resp => {
-      if (!resp.ok) {
-        let msg = '下载失败';
-        try { const d = await resp.json(); msg = d.error || msg; } catch {}
-        if (resp.status === 401) { showAuthPromptModal(name); return; }
-        alert(msg);
-        return;
-      }
-      const blob = await resp.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = name || subject + '.pdf';
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
@@ -9250,7 +9280,7 @@ async function loadTextbooks() {
             <div class="card-meta">
               <span class="card-meta-item">📄 八年级上册</span>
             </div>
-            <a class="download-btn" href="javascript:void(0)" onclick="downloadTextbook('${encodeURIComponent(tb.subject)}', '${esc(tb.name)}')">
+            <a class="download-btn" href="${dlUrl}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               下载
             </a>
@@ -9437,8 +9467,6 @@ function apikeyCopyCreated() {
 
 // ===== 文件上传 =====
 let _lastUploadUrl = '';
-let _uploadAbortController = null;
-
 function initUploadPage() {
   const zone = $('#uploadZone');
   const input = $('#uploadFileInput');
@@ -9462,32 +9490,18 @@ function resetUpload() {
   $('#uploadFileInput').value = '';
   _lastUploadUrl = '';
 }
-function cancelUpload() {
-  if (_uploadAbortController) {
-    _uploadAbortController.abort();
-    _uploadAbortController = null;
-  }
-  $('#uploadProgress').style.display = 'none';
-  $('#uploadZone').style.display = '';
-  $('#uploadFileInput').value = '';
-}
 async function handleFileUpload(file) {
-  if (!state.isAuthenticated) { showAuthPromptModal('文件上传'); return; }
+  if (!state.isAuthenticated) { showLoginPage(); return; }
   if (file.size > 20 * 1024 * 1024) { alert('文件大小不能超过 20MB'); return; }
   $('#uploadZone').style.display = 'none';
   $('#uploadResult').style.display = 'none';
   $('#uploadProgress').style.display = 'block';
   $('#uploadProgressFill').style.width = '30%';
   $('#uploadProgressText').textContent = `正在上传 ${file.name}...`;
-  _uploadAbortController = new AbortController();
   try {
     const formData = new FormData();
     formData.append('file', file);
-    const r = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-      signal: _uploadAbortController.signal,
-    });
+    const r = await fetch('/api/upload', { method: 'POST', body: formData });
     const d = await r.json();
     if (r.ok && d.success) {
       $('#uploadProgressFill').style.width = '100%';
@@ -9500,20 +9514,14 @@ async function handleFileUpload(file) {
         urlEl.href = d.url;
         urlEl.textContent = d.url;
         _lastUploadUrl = d.url;
-        loadUploadHistory();
       }, 400);
     } else {
       throw new Error(d.error || '上传失败');
     }
   } catch (e) {
-    if (e.name === 'AbortError') {
-      return;
-    }
     $('#uploadProgress').style.display = 'none';
     $('#uploadZone').style.display = '';
     alert('上传失败: ' + (e.message || '未知错误'));
-  } finally {
-    _uploadAbortController = null;
   }
 }
 function copyUploadUrl() {
@@ -9524,95 +9532,6 @@ function copyUploadUrl() {
       btn.textContent = '已复制';
       setTimeout(() => btn.textContent = orig, 1500);
     }).catch(() => prompt('请手动复制', _lastUploadUrl));
-  }
-}
-
-function formatFileSize(bytes) {
-  if (!bytes) return '0 B';
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
-}
-function formatDate(ts) {
-  if (!ts) return '';
-  const d = new Date(ts * 1000);
-  const pad = n => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-async function loadUploadHistory() {
-  const listEl = $('#uploadHistoryList');
-  if (!listEl) return;
-  if (!state.isAuthenticated) {
-    listEl.innerHTML = '<div class="upload-history-empty">请先登录后查看上传记录</div>';
-    return;
-  }
-  listEl.innerHTML = '<div class="upload-history-empty">加载中...</div>';
-  try {
-    const r = await fetch('/api/upload/history', { credentials: 'include' });
-    if (r.status === 401) {
-      showAuthPromptModal('上传记录');
-      listEl.innerHTML = '<div class="upload-history-empty">请先登录后查看上传记录</div>';
-      return;
-    }
-    const d = await r.json();
-    if (r.ok && d.success) {
-      const files = d.files || [];
-      if (files.length === 0) {
-        listEl.innerHTML = '<div class="upload-history-empty">暂无上传记录</div>';
-        return;
-      }
-      listEl.innerHTML = files.map(f => {
-        const isImage = f.contentType && f.contentType.startsWith('image/');
-        const thumb = isImage
-          ? `<img src="${f.url}" alt="${f.filename}" loading="lazy">`
-          : `<span>📄</span>`;
-        return `
-          <div class="upload-history-item" data-id="${f.id}">
-            <div class="upload-history-thumb">${thumb}</div>
-            <div class="upload-history-info">
-              <div class="upload-history-name" title="${f.filename}">${f.filename}</div>
-              <div class="upload-history-meta">${formatFileSize(f.size)} · ${formatDate(f.created_at)}</div>
-              <a class="upload-history-url" href="${f.url}" target="_blank">${f.url}</a>
-            </div>
-            <div class="upload-history-actions">
-              <button class="upload-history-btn" onclick="copyHistoryUrl('${f.url}')">复制链接</button>
-              <button class="upload-history-btn danger" onclick="deleteUploadedFile('${f.id}')">删除</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    } else {
-      listEl.innerHTML = `<div class="upload-history-empty">${d.error || '加载失败'}</div>`;
-    }
-  } catch (e) {
-    listEl.innerHTML = `<div class="upload-history-empty">加载失败: ${e.message || '未知错误'}</div>`;
-  }
-}
-function copyHistoryUrl(url) {
-  navigator.clipboard.writeText(url).then(() => {
-    const btn = event.target;
-    const orig = btn.textContent;
-    btn.textContent = '已复制';
-    setTimeout(() => btn.textContent = orig, 1500);
-  }).catch(() => prompt('请手动复制', url));
-}
-async function deleteUploadedFile(id) {
-  if (!confirm('确定要删除该文件吗？删除后链接将失效。')) return;
-  try {
-    const r = await fetch('/api/upload/delete', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-      credentials: 'include',
-    });
-    const d = await r.json();
-    if (r.ok && d.success) {
-      loadUploadHistory();
-    } else {
-      alert('删除失败: ' + (d.error || '未知错误'));
-    }
-  } catch (e) {
-    alert('删除失败: ' + (e.message || '未知错误'));
   }
 }
 
@@ -9677,7 +9596,6 @@ function switchSidebarView(view) {
     const uploadPage = $('#uploadPage');
     if (uploadPage) uploadPage.style.display = 'flex';
     resetUpload();
-    loadUploadHistory();
   } else if (view === 'resources') {
     // 资源下载页面
     if (extras) extras.hidden = true;
@@ -9788,14 +9706,8 @@ if (sidebarLogin) {
     const userMenuBtn = document.getElementById('userMenuBtn');
     const isLoggedIn = userMenuBtn && !userMenuBtn.classList.contains('hidden') && state.currentUser;
     if (isLoggedIn) {
-      const isAdmin = state.currentUser && state.currentUser.role === 'admin';
-      if (isAdmin) {
-        // 管理员点击用户名直接进入管理员后台
-        showAdminDashboard();
-      } else {
-        // 普通用户打开用户菜单
-        document.getElementById('userDropdown').classList.toggle('show');
-      }
+      // 已登录，打开用户菜单
+      document.getElementById('userDropdown').classList.toggle('show');
     } else {
       // 未登录，打开登录页
       showLoginPage();
@@ -10304,6 +10216,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a43a36765ce8c542',t:'MTc5MDg0NDU1Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
 <!-- force-refresh: 1785070272 -->

@@ -1,0 +1,569 @@
+[
+  {
+    "name": "ai_records",
+    "type": "directory",
+    "path": "ai_records",
+    "children": [
+      {
+        "name": "game_20260501_211142.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_211142.json",
+        "ext": ".json",
+        "lastModified": 1785830339338
+      },
+      {
+        "name": "game_20260501_211754.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_211754.json",
+        "ext": ".json",
+        "lastModified": 1785830339339
+      },
+      {
+        "name": "game_20260501_212826.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_212826.json",
+        "ext": ".json",
+        "lastModified": 1785830339340
+      },
+      {
+        "name": "game_20260501_213625.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_213625.json",
+        "ext": ".json",
+        "lastModified": 1785830339341
+      },
+      {
+        "name": "game_20260501_214313.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_214313.json",
+        "ext": ".json",
+        "lastModified": 1785830339342
+      },
+      {
+        "name": "game_20260501_214354.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_214354.json",
+        "ext": ".json",
+        "lastModified": 1785830339343
+      },
+      {
+        "name": "game_20260501_215047.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_215047.json",
+        "ext": ".json",
+        "lastModified": 1785830339344
+      },
+      {
+        "name": "game_20260501_215837.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_215837.json",
+        "ext": ".json",
+        "lastModified": 1785830339345
+      },
+      {
+        "name": "game_20260501_220600.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_220600.json",
+        "ext": ".json",
+        "lastModified": 1785830339345
+      },
+      {
+        "name": "game_20260501_221338.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_221338.json",
+        "ext": ".json",
+        "lastModified": 1785830339346
+      },
+      {
+        "name": "game_20260501_221939.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_221939.json",
+        "ext": ".json",
+        "lastModified": 1785830339347
+      },
+      {
+        "name": "game_20260501_222537.json",
+        "type": "file",
+        "path": "ai_records/game_20260501_222537.json",
+        "ext": ".json",
+        "lastModified": 1785830339348
+      },
+      {
+        "name": "game_20260502_072535.json",
+        "type": "file",
+        "path": "ai_records/game_20260502_072535.json",
+        "ext": ".json",
+        "lastModified": 1785830339349
+      },
+      {
+        "name": "game_20260502_163819.json",
+        "type": "file",
+        "path": "ai_records/game_20260502_163819.json",
+        "ext": ".json",
+        "lastModified": 1785830339350
+      }
+    ]
+  },
+  {
+    "name": "img",
+    "type": "directory",
+    "path": "img",
+    "children": [
+      {
+        "name": "test.py",
+        "type": "file",
+        "path": "img/test.py",
+        "ext": ".py",
+        "lastModified": 1785830339410
+      },
+      {
+        "name": "棋盘.png",
+        "type": "file",
+        "path": "img/棋盘.png",
+        "ext": ".png",
+        "lastModified": 1785656161508
+      },
+      {
+        "name": "红_仕.png",
+        "type": "file",
+        "path": "img/红_仕.png",
+        "ext": ".png",
+        "lastModified": 1785656161510
+      },
+      {
+        "name": "红_兵.png",
+        "type": "file",
+        "path": "img/红_兵.png",
+        "ext": ".png",
+        "lastModified": 1785656161511
+      },
+      {
+        "name": "红_帥.png",
+        "type": "file",
+        "path": "img/红_帥.png",
+        "ext": ".png",
+        "lastModified": 1785656161513
+      },
+      {
+        "name": "红_炮.png",
+        "type": "file",
+        "path": "img/红_炮.png",
+        "ext": ".png",
+        "lastModified": 1785656161516
+      },
+      {
+        "name": "红_相.png",
+        "type": "file",
+        "path": "img/红_相.png",
+        "ext": ".png",
+        "lastModified": 1785656161518
+      },
+      {
+        "name": "红_車.png",
+        "type": "file",
+        "path": "img/红_車.png",
+        "ext": ".png",
+        "lastModified": 1785656161520
+      },
+      {
+        "name": "红_馬.png",
+        "type": "file",
+        "path": "img/红_馬.png",
+        "ext": ".png",
+        "lastModified": 1785656161521
+      },
+      {
+        "name": "黑_卒.png",
+        "type": "file",
+        "path": "img/黑_卒.png",
+        "ext": ".png",
+        "lastModified": 1785656161522
+      },
+      {
+        "name": "黑_士.png",
+        "type": "file",
+        "path": "img/黑_士.png",
+        "ext": ".png",
+        "lastModified": 1785656161524
+      },
+      {
+        "name": "黑_将.png",
+        "type": "file",
+        "path": "img/黑_将.png",
+        "ext": ".png",
+        "lastModified": 1785656161525
+      },
+      {
+        "name": "黑_炮.png",
+        "type": "file",
+        "path": "img/黑_炮.png",
+        "ext": ".png",
+        "lastModified": 1785656161526
+      },
+      {
+        "name": "黑_象.png",
+        "type": "file",
+        "path": "img/黑_象.png",
+        "ext": ".png",
+        "lastModified": 1785656161528
+      },
+      {
+        "name": "黑_車.png",
+        "type": "file",
+        "path": "img/黑_車.png",
+        "ext": ".png",
+        "lastModified": 1785656161529
+      },
+      {
+        "name": "黑_馬.png",
+        "type": "file",
+        "path": "img/黑_馬.png",
+        "ext": ".png",
+        "lastModified": 1785656161531
+      }
+    ]
+  },
+  {
+    "name": "Python ai模型训练",
+    "type": "directory",
+    "path": "Python ai模型训练",
+    "children": [
+      {
+        "name": "api",
+        "type": "directory",
+        "path": "Python ai模型训练/api",
+        "children": [
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "Python ai模型训练/api/__init__.py",
+            "ext": ".py",
+            "lastModified": 1785830339314
+          },
+          {
+            "name": "async_api.py",
+            "type": "file",
+            "path": "Python ai模型训练/api/async_api.py",
+            "ext": ".py",
+            "lastModified": 1785830339314
+          },
+          {
+            "name": "chess_ai_api.py",
+            "type": "file",
+            "path": "Python ai模型训练/api/chess_ai_api.py",
+            "ext": ".py",
+            "lastModified": 1785830339315
+          }
+        ]
+      },
+      {
+        "name": "core",
+        "type": "directory",
+        "path": "Python ai模型训练/core",
+        "children": [
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "Python ai模型训练/core/__init__.py",
+            "ext": ".py",
+            "lastModified": 1785830339316
+          },
+          {
+            "name": "board.py",
+            "type": "file",
+            "path": "Python ai模型训练/core/board.py",
+            "ext": ".py",
+            "lastModified": 1785830339317
+          },
+          {
+            "name": "chess_engine.py",
+            "type": "file",
+            "path": "Python ai模型训练/core/chess_engine.py",
+            "ext": ".py",
+            "lastModified": 1785830339318
+          },
+          {
+            "name": "move.py",
+            "type": "file",
+            "path": "Python ai模型训练/core/move.py",
+            "ext": ".py",
+            "lastModified": 1785830339318
+          },
+          {
+            "name": "rules.py",
+            "type": "file",
+            "path": "Python ai模型训练/core/rules.py",
+            "ext": ".py",
+            "lastModified": 1785830339320
+          }
+        ]
+      },
+      {
+        "name": "examples",
+        "type": "directory",
+        "path": "Python ai模型训练/examples",
+        "children": [
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "Python ai模型训练/examples/__init__.py",
+            "ext": ".py",
+            "lastModified": 1785830339321
+          },
+          {
+            "name": "api_usage.py",
+            "type": "file",
+            "path": "Python ai模型训练/examples/api_usage.py",
+            "ext": ".py",
+            "lastModified": 1785830339322
+          }
+        ]
+      },
+      {
+        "name": "model",
+        "type": "directory",
+        "path": "Python ai模型训练/model",
+        "children": [
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "Python ai模型训练/model/__init__.py",
+            "ext": ".py",
+            "lastModified": 1785830339323
+          },
+          {
+            "name": "agent.py",
+            "type": "file",
+            "path": "Python ai模型训练/model/agent.py",
+            "ext": ".py",
+            "lastModified": 1785830339323
+          },
+          {
+            "name": "dcnn_model.py",
+            "type": "file",
+            "path": "Python ai模型训练/model/dcnn_model.py",
+            "ext": ".py",
+            "lastModified": 1785830339324
+          },
+          {
+            "name": "mcts.py",
+            "type": "file",
+            "path": "Python ai模型训练/model/mcts.py",
+            "ext": ".py",
+            "lastModified": 1785830339325
+          }
+        ]
+      },
+      {
+        "name": "replay",
+        "type": "directory",
+        "path": "Python ai模型训练/replay",
+        "children": [
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "Python ai模型训练/replay/__init__.py",
+            "ext": ".py",
+            "lastModified": 1785830339325
+          },
+          {
+            "name": "analyzer.py",
+            "type": "file",
+            "path": "Python ai模型训练/replay/analyzer.py",
+            "ext": ".py",
+            "lastModified": 1785830339326
+          },
+          {
+            "name": "recorder.py",
+            "type": "file",
+            "path": "Python ai模型训练/replay/recorder.py",
+            "ext": ".py",
+            "lastModified": 1785830339327
+          },
+          {
+            "name": "visualizer.py",
+            "type": "file",
+            "path": "Python ai模型训练/replay/visualizer.py",
+            "ext": ".py",
+            "lastModified": 1785830339327
+          }
+        ]
+      },
+      {
+        "name": "training",
+        "type": "directory",
+        "path": "Python ai模型训练/training",
+        "children": [
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "Python ai模型训练/training/__init__.py",
+            "ext": ".py",
+            "lastModified": 1785830339329
+          },
+          {
+            "name": "data_preprocessor.py",
+            "type": "file",
+            "path": "Python ai模型训练/training/data_preprocessor.py",
+            "ext": ".py",
+            "lastModified": 1785830339330
+          },
+          {
+            "name": "data_scraper.py",
+            "type": "file",
+            "path": "Python ai模型训练/training/data_scraper.py",
+            "ext": ".py",
+            "lastModified": 1785830339331
+          },
+          {
+            "name": "reward.py",
+            "type": "file",
+            "path": "Python ai模型训练/training/reward.py",
+            "ext": ".py",
+            "lastModified": 1785830339332
+          },
+          {
+            "name": "train_rl.py",
+            "type": "file",
+            "path": "Python ai模型训练/training/train_rl.py",
+            "ext": ".py",
+            "lastModified": 1785830339333
+          },
+          {
+            "name": "train_supervised.py",
+            "type": "file",
+            "path": "Python ai模型训练/training/train_supervised.py",
+            "ext": ".py",
+            "lastModified": 1785830339334
+          }
+        ]
+      },
+      {
+        "name": "utils",
+        "type": "directory",
+        "path": "Python ai模型训练/utils",
+        "children": [
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "Python ai模型训练/utils/__init__.py",
+            "ext": ".py",
+            "lastModified": 1785830339335
+          },
+          {
+            "name": "checkpoint.py",
+            "type": "file",
+            "path": "Python ai模型训练/utils/checkpoint.py",
+            "ext": ".py",
+            "lastModified": 1785830339335
+          },
+          {
+            "name": "config.py",
+            "type": "file",
+            "path": "Python ai模型训练/utils/config.py",
+            "ext": ".py",
+            "lastModified": 1785830339336
+          }
+        ]
+      },
+      {
+        "name": "__init__.py",
+        "type": "file",
+        "path": "Python ai模型训练/__init__.py",
+        "ext": ".py",
+        "lastModified": 1785830339313
+      },
+      {
+        "name": "demo.py",
+        "type": "file",
+        "path": "Python ai模型训练/demo.py",
+        "ext": ".py",
+        "lastModified": 1785830339321
+      },
+      {
+        "name": "PROJECT_STRUCTURE.md",
+        "type": "file",
+        "path": "Python ai模型训练/PROJECT_STRUCTURE.md",
+        "ext": ".md",
+        "lastModified": 1785830339311
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "Python ai模型训练/README.md",
+        "ext": ".md",
+        "lastModified": 1785830339312
+      },
+      {
+        "name": "requirements.txt",
+        "type": "file",
+        "path": "Python ai模型训练/requirements.txt",
+        "ext": ".txt",
+        "lastModified": 1785830339328
+      },
+      {
+        "name": "test.py",
+        "type": "file",
+        "path": "Python ai模型训练/test.py",
+        "ext": ".py",
+        "lastModified": 1785830339329
+      }
+    ]
+  },
+  {
+    "name": "ai_player.py",
+    "type": "file",
+    "path": "ai_player.py",
+    "ext": ".py",
+    "lastModified": 1785830339337
+  },
+  {
+    "name": "chess_model.pth",
+    "type": "file",
+    "path": "chess_model.pth",
+    "ext": ".pth",
+    "lastModified": 1785830339368
+  },
+  {
+    "name": "chess_model_450.pth",
+    "type": "file",
+    "path": "chess_model_450.pth",
+    "ext": ".pth",
+    "lastModified": 1785830339388
+  },
+  {
+    "name": "chess_model_500.pth",
+    "type": "file",
+    "path": "chess_model_500.pth",
+    "ext": ".pth",
+    "lastModified": 1785830339408
+  },
+  {
+    "name": "Chinese_chess.py",
+    "type": "file",
+    "path": "Chinese_chess.py",
+    "ext": ".py",
+    "lastModified": 1785830339311
+  },
+  {
+    "name": "generate_imgs.py",
+    "type": "file",
+    "path": "generate_imgs.py",
+    "ext": ".py",
+    "lastModified": 1785830339410
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1785830339337
+  },
+  {
+    "name": "user.json",
+    "type": "file",
+    "path": "user.json",
+    "ext": ".json",
+    "lastModified": 1785830339411
+  }
+]

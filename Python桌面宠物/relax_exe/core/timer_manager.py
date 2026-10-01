@@ -55,11 +55,25 @@ class TimerManager(QObject):
     def work_duration(self, seconds: int) -> None:
         """
         设置工作时长
-        
+
         Args:
             seconds: 工作时长（秒）
         """
         self._work_duration = max(1, seconds)
+
+    def set_work_duration(self, seconds: int) -> None:
+        """
+        设置工作时长并立即生效：若正在工作计时中，按差值同步调整剩余时间
+
+        Args:
+            seconds: 工作时长（秒）
+        """
+        old = self._work_duration
+        self.work_duration = seconds
+        delta = self._work_duration - old
+        if delta != 0 and self._state == TimerState.WORKING:
+            self._remaining = max(1, min(self._remaining + delta, self._work_duration))
+            self._emit_time()
 
     @property
     def break_duration(self) -> int:
@@ -70,11 +84,25 @@ class TimerManager(QObject):
     def break_duration(self, seconds: int) -> None:
         """
         设置休息时长
-        
+
         Args:
             seconds: 休息时长（秒）
         """
         self._break_duration = max(1, seconds)
+
+    def set_break_duration(self, seconds: int) -> None:
+        """
+        设置休息时长并立即生效：若正在休息计时（锁屏）中，按差值同步调整剩余时间
+
+        Args:
+            seconds: 休息时长（秒）
+        """
+        old = self._break_duration
+        self.break_duration = seconds
+        delta = self._break_duration - old
+        if delta != 0 and self._state == TimerState.LOCKED:
+            self._remaining = max(1, min(self._remaining + delta, self._break_duration))
+            self._emit_time()
 
     @property
     def remaining(self) -> int:

@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Python 在线编程 - CodingZhou</title>
+<!-- Markdown renderer -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- Monaco Editor loader -->
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
 <script>
 require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' } });
 </script>
 <style>
-/* ========== CSS Variables (复用 Code Explorer 主题) ========== */
+/* ========== CSS Variables (复用主站主题) ========== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root {
   --bg-primary: #0d1117;
@@ -40,29 +43,32 @@ require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2
   --term-border: #313244;
   --font-mono: 'JetBrains Mono','Cascadia Code','Fira Code','Consolas','Monaco',monospace;
   --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-display: 'Outfit','DM Sans',sans-serif;
   --transition: 150ms ease;
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
 }
 [data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f6f8fa;
-  --bg-tertiary: #eaeef2;
-  --bg-overlay: #d0d7de;
-  --border-color: #d0d7de;
-  --border-light: #eaeef2;
-  --text-primary: #24292f;
-  --text-secondary: #57606a;
-  --text-tertiary: #8c959f;
-  --accent-blue: #0969da;
-  --accent-green: #1a7f37;
-  --accent-yellow: #bf8700;
-  --accent-red: #cf222e;
-  --accent-purple: #8250df;
-  --accent-orange: #bf5612;
-  --accent-pink: #bf3c5b;
-  --accent-cyan: #1a7f37;
+  --bg-primary: #faf9f6;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f0ede8;
+  --bg-overlay: #e6e2db;
+  --border-color: #e2ddd5;
+  --border-light: #f0ede8;
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a68;
+  --text-tertiary: #8a8a9a;
+  --accent-blue: #0284c7;
+  --accent-green: #059669;
+  --accent-yellow: #d97706;
+  --accent-red: #e11d48;
+  --accent-purple: #7c3aed;
+  --accent-orange: #ea580c;
+  --accent-pink: #db2777;
+  --accent-cyan: #0891b2;
   --term-bg: #eff1f5;
   --term-header-bg: #e6e9ef;
   --term-text: #4c4f69;
@@ -72,13 +78,15 @@ require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2
   --term-success: #40a02b;
   --term-error: #d20f39;
   --term-border: #bcc0cc;
+  --glass-bg: rgba(255,255,255,0.7);
+  --glass-border: rgba(0,0,0,0.08);
 }
 [data-theme="light"] body::before {
-  background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background: radial-gradient(ellipse at 20% 0%, rgba(2,132,199,0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(124,58,237,0.03) 0%, transparent 50%);
 }
-::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px}
+::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:4px}
 ::-webkit-scrollbar-thumb:hover{background:#484f58}
 
 body {
@@ -95,10 +103,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background: radial-gradient(ellipse at 20% 0%, rgba(88,166,255,0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(163,113,247,0.04) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -106,29 +111,33 @@ body::before {
 /* ========== 顶部导航栏 ========== */
 .top-nav {
   position: sticky; top: 0; z-index: 9998;
-  height: 56px; background: var(--bg-secondary);
+  height: 56px; background: color-mix(in srgb, var(--bg-secondary) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
   display: flex; align-items: center;
   padding: 0 24px; gap: 8px;
   flex-shrink: 0;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2);
 }
 .top-nav-brand {
   display: flex; align-items: center; gap: 10px;
   font-size: 15px; font-weight: 700; color: var(--text-primary);
   margin-right: 24px; white-space: nowrap;
+  font-family: var(--font-display);
 }
 .top-nav-brand-logo {
-  width: 24px; height: 24px; border-radius: 6px;
-  background: linear-gradient(135deg, #6366f1, #a855f7);
+  width: 28px; height: 28px; border-radius: 7px;
+  background: linear-gradient(135deg, #306998, #FFD43B);
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-size: 12px; font-weight: 700;
+  box-shadow: 0 2px 8px rgba(48,105,152,0.35);
 }
-.top-nav-brand-logo.py-logo { background: linear-gradient(135deg, #306998, #FFD43B); }
 .top-nav-links {
   display: flex; align-items: center; gap: 2px; flex: 1;
 }
 .top-nav-link {
-  padding: 8px 16px; border-radius: 8px;
+  padding: 8px 14px; border-radius: 8px;
   font-size: 13px; font-weight: 500;
   color: var(--text-secondary); text-decoration: none;
   transition: all 0.15s; cursor: pointer;
@@ -138,8 +147,8 @@ body::before {
 .top-nav-link.active { color: var(--accent-blue); background: rgba(88,166,255,0.1); }
 .theme-toggle-btn {
   width: 36px; height: 36px;
-  border-radius: 50%;
-  background: var(--bg-secondary);
+  border-radius: 8px;
+  background: transparent;
   border: 1px solid var(--border-color);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
@@ -147,21 +156,330 @@ body::before {
   transition: all 0.15s;
   flex-shrink: 0;
 }
-.theme-toggle-btn:hover { background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--accent-blue); }
+.theme-toggle-btn:hover { background: var(--bg-tertiary); color: var(--text-primary); }
 .theme-toggle-btn svg { width: 18px; height: 18px; }
 .theme-toggle-btn .sun-icon { display: block; }
 .theme-toggle-btn .moon-icon { display: none; }
 [data-theme="light"] .theme-toggle-btn .sun-icon { display: none; }
 [data-theme="light"] .theme-toggle-btn .moon-icon { display: block; }
 
-/* ========== 编辑器主体 ========== */
-.editor-page {
+/* 返回按钮 */
+.back-btn {
+  display: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  gap: 6px;
+  align-items: center;
+  transition: all .15s;
+}
+.back-btn:hover { background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--accent-blue); }
+.back-btn svg { width: 14px; height: 14px; }
+body.view-editor .back-btn { display: inline-flex; }
+body.view-editor .top-nav-links .top-nav-link:not(.active) { opacity: 0.4; }
+
+/* ========== 视图容器 ========== */
+.view { display: none; flex: 1; overflow: hidden; position: relative; z-index: 1; }
+.view.active { display: flex; flex-direction: column; }
+
+/* ========== Grid 首页 ========== */
+.grid-view {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding: 28px 32px;
+  gap: 20px;
+}
+.grid-hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+.grid-hero h1 {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: var(--font-display);
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+.grid-hero p {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.7;
+}
+.grid-search-bar {
+  display: flex;
+  gap: 12px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+.grid-search-bar input {
+  flex: 1;
+  padding: 10px 16px;
+  background: color-mix(in srgb, var(--bg-secondary) 85%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: all .15s;
+  font-family: var(--font-sans);
+}
+.grid-search-bar input:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(88,166,255,0.15);
+}
+.grid-search-bar input::placeholder { color: var(--text-tertiary); }
+
+.grid-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+.grid-filter {
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all .15s;
+}
+.grid-filter:hover { color: var(--text-primary); border-color: var(--border-color); }
+.grid-filter.active {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(88,166,255,0.25);
+}
+
+.grid-stats {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-align: right;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.grid-cards {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.project-card {
+  background: color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+  opacity: 0.85;
+}
+.project-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-blue);
+  box-shadow: 0 10px 30px rgba(88,166,255,0.15);
+}
+.project-card-icon {
+  width: 44px; height: 44px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, rgba(48,105,152,0.85), rgba(255,212,59,0.7));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(48,105,152,0.2);
+}
+.project-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.project-card-desc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 36px;
+}
+.project-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.project-card-files {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+.project-card-arrow {
+  font-size: 11px;
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+.project-card:hover .project-card-arrow { transform: translateX(3px); }
+
+.grid-loading, .grid-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-tertiary);
+}
+.grid-empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+
+/* ========== 编辑器视图 ========== */
+.editor-shell {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 左栏：文件树 */
+.file-tree-panel {
+  width: 240px;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--bg-secondary) 85%, transparent);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.file-tree-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.file-tree-header .project-name {
+  color: var(--text-primary);
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-tree-search {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+.file-tree-search input {
+  width: 100%;
+  padding: 5px 10px;
+  background: var(--bg-tertiary);
+  border: none;
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 12px;
+  outline: none;
+}
+.file-tree-search input::placeholder { color: var(--text-tertiary); }
+.file-tree-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+/* 文件树节点 */
+.ft-node { user-select: none; }
+.ft-node-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px 4px 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .1s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ft-node-row:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+.ft-node-row.active { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
+.ft-caret {
+  width: 14px; height: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  transition: transform .15s;
+}
+.ft-caret.collapsed { transform: rotate(-90deg); }
+.ft-icon {
+  width: 14px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 11px;
+}
+.ft-icon.py { color: var(--accent-blue); }
+.ft-icon.folder { color: var(--accent-yellow); }
+.ft-icon.unknown { color: var(--text-tertiary); }
+.ft-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ft-children { overflow: hidden; }
+
+/* 中栏：编辑器 */
+.editor-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: relative;
-  z-index: 1;
+  min-width: 0;
 }
 
 /* 工具栏 */
@@ -169,7 +487,7 @@ body::before {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 10px;
+  padding: 0 14px;
   height: 44px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
@@ -178,12 +496,14 @@ body::before {
 .toolbar-title {
   font-size: 13px; font-weight: 600; color: var(--text-primary);
   white-space: nowrap; flex-shrink: 0;
+  max-width: 220px;
+  overflow: hidden; text-overflow: ellipsis;
 }
 .toolbar-divider { width: 1px; height: 20px; background: var(--border-color); flex-shrink: 0; }
 .toolbar-hint { font-size: 12px; color: var(--text-tertiary); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .toolbar-action {
   display: flex; align-items: center; gap: 4px;
-  padding: 4px 10px;
+  padding: 5px 12px;
   background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
@@ -197,32 +517,13 @@ body::before {
 .toolbar-action:hover { background: var(--bg-tertiary); color: var(--text-primary); }
 .toolbar-action svg { width: 14px; height: 14px; }
 .toolbar-action.btn-run { color: var(--accent-green); border-color: rgba(63,185,80,0.4); }
-.toolbar-action.btn-run:hover { background: rgba(63,185,80,0.12); color: var(--accent-green); }
+.toolbar-action.btn-run:hover { background: rgba(63,185,80,0.12); }
 .toolbar-action.btn-stop { color: var(--accent-red); border-color: rgba(248,81,73,0.4); }
-.toolbar-action.btn-stop:hover { background: rgba(248,81,73,0.12); color: var(--accent-red); }
+.toolbar-action.btn-stop:hover { background: rgba(248,81,73,0.12); }
 
-/* 运行模式切换 */
-.run-mode-group {
-  display: flex; align-items: center; gap: 2px;
-  background: var(--bg-tertiary);
-  border-radius: var(--radius-sm);
-  padding: 2px;
-  flex-shrink: 0;
-}
-.run-mode-btn {
-  padding: 3px 10px;
-  font-size: 12px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  transition: all var(--transition);
-  white-space: nowrap;
-}
-.run-mode-btn:hover { color: var(--text-primary); }
-.run-mode-btn.active { background: var(--accent-blue); color: #fff; }
+/* 编辑器主体 */
+.editor-body { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+#editorHost { flex: 1; min-height: 0; }
 
 /* 多文件标签栏 */
 .file-tabs {
@@ -232,13 +533,13 @@ body::before {
   padding: 0 8px;
   overflow-x: auto;
   flex-shrink: 0;
-  height: 34px;
-  min-height: 34px;
+  height: 32px;
+  min-height: 32px;
 }
 .file-tab {
   display: flex; align-items: center; gap: 6px;
-  padding: 5px 10px;
-  font-size: 12px;
+  padding: 4px 10px;
+  font-size: 11px;
   color: var(--text-secondary);
   border: 1px solid transparent;
   border-bottom: none;
@@ -257,67 +558,10 @@ body::before {
   border-bottom: 1px solid var(--bg-primary);
 }
 .file-tab.active::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); flex-shrink: 0; }
-.file-tab .tab-close {
-  width: 14px; height: 14px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 3px;
-  color: var(--text-tertiary);
-  font-size: 12px;
-  font-style: normal;
-  opacity: 0;
-  transition: opacity var(--transition);
-}
-.file-tab:hover .tab-close { opacity: 0.8; }
-.file-tab .tab-close:hover { background: rgba(248,81,73,0.25); color: var(--accent-red); }
-.file-tabs-actions {
-  display: flex; align-items: center; gap: 2px;
-  padding-left: 8px;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-.file-tab-add, .file-tab-rename {
-  width: 22px; height: 22px;
-  display: flex; align-items: center; justify-content: center;
-  border: 1px solid var(--border-color);
-  background: transparent;
-  color: var(--text-secondary);
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all var(--transition);
-  flex-shrink: 0;
-}
-.file-tab-add:hover, .file-tab-rename:hover { color: var(--text-primary); background: var(--bg-tertiary); border-color: var(--accent-blue); }
-.entry-file-label {
-  font-size: 11px; color: var(--text-tertiary);
-  margin-left: 6px; white-space: nowrap;
-}
-#entryFileSelect {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: var(--font-mono);
-  padding: 3px 6px;
-  max-width: 180px;
-  flex-shrink: 0;
-}
-#entryFileSelect:focus { outline: none; border-color: var(--accent-blue); }
-
-/* 编辑器与终端容器 */
-.workspace {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.editor-body { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-#editorHost { flex: 1; min-height: 0; }
 
 /* 终端 */
 .terminal-panel {
-  height: 220px;
+  height: 200px;
   display: flex;
   flex-direction: column;
   background: var(--term-bg);
@@ -329,7 +573,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
+  padding: 5px 12px;
   background: var(--term-header-bg);
   border-bottom: 1px solid var(--term-border);
   font-size: 11px;
@@ -355,7 +599,7 @@ body::before {
 .terminal-close-btn svg { width: 14px; height: 14px; }
 .deps-progress {
   display: flex; align-items: center; gap: 8px;
-  background: var(--bg-secondary); padding: 6px 12px; font-size: 11px;
+  background: var(--bg-secondary); padding: 5px 12px; font-size: 11px;
   border-bottom: 1px solid var(--border-color);
 }
 .deps-progress-bar {
@@ -365,13 +609,10 @@ body::before {
 .deps-progress-text { color: var(--text-secondary); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .terminal-body {
   flex: 1; padding: 10px 12px;
-  font-family: var(--font-mono); font-size: 13px; line-height: 1.5;
+  font-family: var(--font-mono); font-size: 12px; line-height: 1.5;
   color: var(--term-text); overflow-y: auto; background: var(--term-bg);
 }
 .terminal-body::-webkit-scrollbar { width: 8px; }
-.terminal-body::-webkit-scrollbar-track { background: transparent; }
-.terminal-body::-webkit-scrollbar-thumb { background: var(--term-border); border-radius: 4px; }
-.terminal-body::-webkit-scrollbar-thumb:hover { background: var(--bg-overlay); }
 .terminal-output { white-space: pre-wrap; word-break: break-all; }
 .terminal-output .stdout { color: var(--term-stdout); }
 .terminal-output .stderr { color: var(--term-stderr); }
@@ -379,8 +620,136 @@ body::before {
 .terminal-output .info { color: var(--term-info); }
 .terminal-output .success { color: var(--term-success); }
 
-/* 欢迎/起始画面 */
-.welcome {
+/* README 右栏 */
+.readme-panel {
+  width: 380px;
+  min-width: 300px;
+  max-width: 520px;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--bg-secondary) 85%, transparent);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width .2s, min-width .2s, opacity .2s;
+}
+.readme-panel.collapsed {
+  width: 0;
+  min-width: 0;
+  border-left: none;
+  overflow: hidden;
+}
+.readme-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.readme-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.readme-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+.readme-toggle:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+.readme-toggle svg { width: 14px; height: 14px; }
+.readme-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+.readme-body h1, .readme-body h2, .readme-body h3, .readme-body h4 {
+  color: var(--text-primary);
+  margin: 18px 0 8px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.readme-body h1 { font-size: 20px; }
+.readme-body h2 { font-size: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+.readme-body h3 { font-size: 14px; }
+.readme-body p { margin: 8px 0; }
+.readme-body ul, .readme-body ol { padding-left: 20px; margin: 8px 0; }
+.readme-body li { margin: 3px 0; }
+.readme-body code {
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--accent-blue);
+}
+.readme-body pre {
+  background: var(--bg-tertiary);
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 10px 0;
+  border: 1px solid var(--border-color);
+}
+.readme-body pre code {
+  background: transparent;
+  padding: 0;
+  color: var(--text-primary);
+}
+.readme-body blockquote {
+  border-left: 3px solid var(--accent-blue);
+  padding-left: 12px;
+  margin: 10px 0;
+  color: var(--text-tertiary);
+}
+.readme-body a { color: var(--accent-blue); text-decoration: none; }
+.readme-body a:hover { text-decoration: underline; }
+.readme-body hr { border: none; border-top: 1px solid var(--border-color); margin: 16px 0; }
+.readme-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 12px;
+}
+.readme-body th, .readme-body td {
+  border: 1px solid var(--border-color);
+  padding: 6px 10px;
+  text-align: left;
+}
+.readme-body th { background: var(--bg-tertiary); }
+
+.readme-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-tertiary);
+}
+.readme-empty-icon { font-size: 36px; margin-bottom: 10px; opacity: 0.4; }
+.readme-empty p { font-size: 12px; }
+.readme-empty button {
+  margin-top: 12px;
+  padding: 5px 14px;
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+}
+.readme-empty button:hover { background: var(--border-color); color: var(--text-primary); }
+
+/* 编辑器空状态 */
+.editor-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -391,34 +760,22 @@ body::before {
   text-align: center;
   color: var(--text-tertiary);
 }
-.welcome-icon { font-size: 56px; }
-.welcome h2 { font-size: 20px; color: var(--text-primary); }
-.welcome p { font-size: 13px; line-height: 1.7; max-width: 480px; }
-.welcome-tips {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px;
-  width: 100%;
-  max-width: 640px;
-}
-.welcome-tip {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
-  font-size: 12px;
-  text-align: left;
-}
-.welcome-tip b { color: var(--accent-blue); }
+.editor-empty-icon { font-size: 48px; opacity: 0.5; }
+.editor-empty h2 { font-size: 18px; color: var(--text-primary); }
+.editor-empty p { font-size: 13px; line-height: 1.7; max-width: 400px; }
 
+@media (max-width: 1024px) {
+  .readme-panel { width: 300px; min-width: 240px; }
+}
 @media (max-width: 768px) {
   .top-nav { padding: 0 12px; }
   .top-nav-brand { margin-right: 8px; }
   .top-nav-brand span { display: none; }
-  .top-nav-link { padding: 8px 10px; font-size: 12px; }
-  .toolbar-hint { display: none; }
-  .terminal-panel { height: 180px; }
-  .welcome-tips { grid-template-columns: 1fr; }
+  .top-nav-link { padding: 6px 10px; font-size: 12px; }
+  .grid-view { padding: 20px 16px; }
+  .grid-cards { grid-template-columns: 1fr; }
+  .readme-panel { display: none; }
+  .file-tree-panel { width: 180px; }
 }
 </style>
 </head>
@@ -426,15 +783,18 @@ body::before {
 
 <!-- 顶部导航栏 -->
 <div class="top-nav">
+  <button class="back-btn" id="backToGrid">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    返回
+  </button>
   <div class="top-nav-brand">
-    <div class="top-nav-brand-logo py-logo">◈</div>
+    <div class="top-nav-brand-logo">◈</div>
     <span>CodingZhou</span>
   </div>
   <div class="top-nav-links">
     <a class="top-nav-link active" href="/python/">Python 编程</a>
-    <a class="top-nav-link" href="/">Code Explorer</a>
+    <a class="top-nav-link" href="/">项目广场</a>
     <a class="top-nav-link" href="/web-games/">网页游戏</a>
-    <a class="top-nav-link" href="/console">API Key</a>
   </div>
   <button class="theme-toggle-btn" id="themeToggle" title="切换主题">
     <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -442,95 +802,135 @@ body::before {
   </button>
 </div>
 
-<!-- 编辑器主体 -->
-<div class="editor-page">
-  <div class="toolbar">
-    <span class="toolbar-title">🐍 Python 在线编程</span>
-    <div class="toolbar-divider"></div>
-    <div class="run-mode-group" id="runModeGroup">
-      <button class="run-mode-btn active" data-mode="single" id="modeSingle">单文件</button>
-      <button class="run-mode-btn" data-mode="multi" id="modeMulti">多文件</button>
+<!-- Grid 视图（项目广场首页） -->
+<div class="view active" id="gridView">
+  <div class="grid-view">
+    <div class="grid-hero">
+      <h1>🐍 Python 编程</h1>
+      <p>浏览所有 Python 项目，点击卡片即可进入带文件树的在线编辑器，支持真实运行代码、安装依赖、多文件协作。</p>
     </div>
-    <span class="toolbar-hint" id="fileName">script.py</span>
-    <button class="toolbar-action" id="btnCopy" title="复制代码">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      复制
-    </button>
-    <button class="toolbar-action btn-stop" id="btnStop" title="停止运行" style="display:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
-      停止
-    </button>
-    <button class="toolbar-action btn-run" id="btnRun" title="运行 Python 代码 (Ctrl+Enter)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      <span id="btnRunLabel">运行</span>
-    </button>
-  </div>
-
-  <div class="file-tabs" id="fileTabs" style="display:none">
-    <div class="file-tabs-actions">
-      <button class="file-tab-rename" id="btnRenameFile" title="重命名当前文件" style="display:none">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-      </button>
-      <button class="file-tab-add" id="btnAddFile" title="新建文件">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-      <span class="entry-file-label">入口文件</span>
-      <select id="entryFileSelect"></select>
+    <div class="grid-search-bar">
+      <input type="text" id="gridSearch" placeholder="搜索项目名称、类型...">
+    </div>
+    <div class="grid-filters" id="gridFilters">
+      <button class="grid-filter active" data-filter="all">全部</button>
+      <button class="grid-filter" data-filter="game">🎮 游戏</button>
+      <button class="grid-filter" data-filter="ai">🤖 AI</button>
+      <button class="grid-filter" data-filter="tool">🛠 工具</button>
+      <button class="grid-filter" data-filter="other">📦 其他</button>
+    </div>
+    <div class="grid-stats" id="gridStats">加载中...</div>
+    <div class="grid-cards" id="gridCards">
+      <div class="grid-loading">正在加载项目列表...</div>
     </div>
   </div>
+</div>
 
-  <div class="workspace">
-    <div class="editor-body" id="editorBody">
-      <div class="welcome" id="welcomeBox">
-        <span class="welcome-icon">🐍</span>
-        <h2>开始你的 Python 编程之旅</h2>
-        <p>这是一个在线 Python 编程环境，支持真实运行代码。点击「开始编程」加载示例代码，或直接开始编写你的代码。</p>
-        <button class="toolbar-action btn-run" id="btnLoadExample" style="padding:8px 24px;font-size:13px">
+<!-- Editor 视图（编辑器） -->
+<div class="view" id="editorView">
+  <div class="editor-shell">
+    <!-- 左栏：文件树 -->
+    <aside class="file-tree-panel">
+      <div class="file-tree-header">
+        <span>文件</span>
+        <span class="project-name" id="ftProjectName"></span>
+      </div>
+      <div class="file-tree-search">
+        <input type="text" id="ftSearch" placeholder="搜索文件...">
+      </div>
+      <div class="file-tree-body" id="ftBody">
+        <div class="grid-loading">加载中...</div>
+      </div>
+    </aside>
+
+    <!-- 中栏：编辑器 + 终端 -->
+    <div class="editor-main">
+      <div class="toolbar">
+        <span class="toolbar-title" id="toolbarTitle">编辑器</span>
+        <div class="toolbar-divider"></div>
+        <span class="toolbar-hint" id="toolbarHint">选择左侧文件开始编辑</span>
+        <button class="toolbar-action" id="btnCopy" title="复制代码">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          复制
+        </button>
+        <button class="toolbar-action btn-stop" id="btnStop" title="停止运行" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+          停止
+        </button>
+        <button class="toolbar-action btn-run" id="btnRun" title="运行 Python 代码 (Ctrl+Enter)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          开始编程
+          <span id="btnRunLabel">运行项目</span>
         </button>
-        <div class="welcome-tips">
-          <div class="welcome-tip"><b>▶ 运行</b>：点击「运行」或按 <b>Ctrl+Enter</b></div>
-          <div class="welcome-tip"><b>⏹ 停止</b>：程序运行中可随时停止</div>
-          <div class="welcome-tip"><b>📦 依赖</b>：自动检测并安装缺失的 pip 包</div>
-          <div class="welcome-tip"><b>🖥 终端</b>：底部终端实时显示运行输出</div>
+      </div>
+
+      <div class="file-tabs" id="fileTabs" style="display:none"></div>
+
+      <div class="editor-body" id="editorBody">
+        <div class="editor-empty" id="editorEmpty">
+          <div class="editor-empty-icon">🐍</div>
+          <h2>选择一个文件开始编辑</h2>
+          <p>从左侧文件树选择一个 Python 文件 (.py)，点击即可加载到编辑器中。修改后点击「运行项目」执行。</p>
+        </div>
+        <div id="editorHost" style="display:none"></div>
+      </div>
+
+      <div class="terminal-panel" id="terminalPanel" style="display:none">
+        <div class="terminal-header">
+          <div class="terminal-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <span>Python 终端</span>
+            <span id="runStatus" class="run-status" style="display:none"></span>
+          </div>
+          <button class="terminal-close-btn" id="btnTerminalClose" title="关闭终端">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div id="depsProgress" class="deps-progress" style="display:none">
+          <div class="deps-progress-bar" id="depsProgressBar"></div>
+          <span class="deps-progress-text" id="depsProgressText">准备中...</span>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <div class="terminal-output" id="terminalOutput"></div>
         </div>
       </div>
-      <div id="editorHost" style="display:none"></div>
     </div>
 
-    <div class="terminal-panel" id="terminalPanel" style="display:none">
-      <div class="terminal-header">
-        <div class="terminal-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-          <span>Python 终端</span>
-          <span id="runStatus" class="run-status" style="display:none"></span>
-        </div>
-        <button class="terminal-close-btn" id="btnTerminalClose" title="关闭终端">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <!-- 右栏：README -->
+    <aside class="readme-panel" id="readmePanel">
+      <div class="readme-header">
+        <span class="readme-title">README</span>
+        <button class="readme-toggle" id="btnReadmeToggle" title="隐藏">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
       </div>
-      <div id="depsProgress" class="deps-progress" style="display:none">
-        <div class="deps-progress-bar" id="depsProgressBar"></div>
-        <span class="deps-progress-text" id="depsProgressText">准备中...</span>
+      <div class="readme-body" id="readmeBody">
+        <div class="grid-loading">加载中...</div>
       </div>
-      <div class="terminal-body" id="terminalBody">
-        <div class="terminal-output" id="terminalOutput"></div>
-      </div>
-    </div>
+    </aside>
   </div>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
 let monacoEditor = null;
-let isRunning = false;
 let runAbortController = null;
 let currentRunId = null;
-let runMode = 'single';
-let multiFiles = {};
-let activeFile = 'main.py';
-let singleCodeBackup = null;
+
+// 全局状态
+const state = {
+  view: 'grid',           // 'grid' | 'editor'
+  treeData: null,         // 根目录完整文件树
+  pythonProjects: [],     // 筛选出的 Python 项目
+  currentProject: null,   // { name, path, treeNode, ... }
+  projectFileTree: null,  // 当前项目的文件树
+  openTabs: [],           // [{ name, path, content }]
+  activeTabIdx: -1,
+  isRunning: false,
+  searchQuery: '',
+  activeFilter: 'all',
+  ftExpanded: new Set(),  // 文件树展开的目录
+  ftFilter: '',
+};
 
 // ==================== 主题切换 ====================
 (function(){
@@ -548,254 +948,371 @@ let singleCodeBackup = null;
       monacoEditor.updateOptions({ theme: next ? 'vs' : 'vs-dark' });
     }
   });
+
+  $('btnReadmeToggle').addEventListener('click', () => {
+    $('readmePanel').classList.toggle('collapsed');
+  });
 })();
 
-// ==================== 示例代码 ====================
-const DEFAULT_CODE = `# =============================================
-# Python 在线编程 - 示例代码
-# 点击「运行」或按 Ctrl+Enter 执行
-# =============================================
+// ==================== API ====================
+async function api(url, opts = {}) {
+  const res = await fetch(url, opts);
+  return res;
+}
+async function fetchTree() { return (await api('/api/files/tree')).json(); }
+async function fetchProjectTree(path) {
+  try {
+    const res = await fetch(`/api/projects/tree?path=${encodeURIComponent(path)}&depth=2`);
+    if (res.ok) return await res.json();
+  } catch {}
+  return null;
+}
+async function fetchContent(path) {
+  const res = await fetch(`/api/files/content?path=${encodeURIComponent(path)}&_t=${Date.now()}`);
+  if (res.ok) return await res.json();
+  return null;
+}
+async function fetchReadme(path) {
+  const res = await fetch(`/api/projects/readme?path=${encodeURIComponent(path)}`);
+  if (res.ok) return await res.json();
+  return { found: false };
+}
 
-def fibonacci(n):
-    """计算斐波那契数列前 n 项"""
-    seq = []
-    a, b = 0, 1
-    for _ in range(n):
-        seq.append(a)
-        a, b = b, a + b
-    return seq
-
-def main():
-    print("Hello, Python World! 🐍")
-    print()
-    print("=== 斐波那契数列前 10 项 ===")
-    result = fibonacci(10)
-    for i, num in enumerate(result, 1):
-        print(f"第 {i:2d} 项: {num}")
-    print()
-    print("=== 数据类型演示 ===")
-    name = "CodingZhou"
-    version = 3.12
-    is_awesome = True
-    skills = ["Python", "Web", "AI"]
-    print(f"项目: {name}  版本: {version}  是否有趣: {is_awesome}")
-    print(f"技能列表: {', '.join(skills)}")
-
-if __name__ == "__main__":
-    main()
-`;
-
-// ==================== 多文件示例 ====================
-const DEFAULT_MULTI_FILES = {
-  'main.py': `# =============================================
-# 多文件项目 - 入口文件 (main.py)
-# 点击「运行」或按 Ctrl+Enter 执行
-# =============================================
-
-from utils import fibonacci, greet
-from data_store import build_store, get
-
-def main():
-    print("=== 多文件项目示例 ===")
-    print(greet("CodingZhou"))
-    print()
-    print("斐波那契数列前 10 项:", fibonacci(10))
-    print()
-    store = build_store()
-    get(store, "name", "CodingZhou")
-    get(store, "lang", "Python")
-
-if __name__ == "__main__":
-    main()
-`,
-  'utils.py': `# 工具模块 - utils.py
-def fibonacci(n):
-    """计算斐波那契数列前 n 项"""
-    seq = []
-    a, b = 0, 1
-    for _ in range(n):
-        seq.append(a)
-        a, b = b, a + b
-    return seq
-
-def greet(name):
-    return f"Hello, {name}! 🐍"
-`,
-  'data_store.py': `# 数据模块 - data_store.py
-def build_store():
-    return {}
-
-def get(store, key, value):
-    store[key] = value
-    print(f"[store] {key} = {value}")
-    return store
-`,
+// ==================== 项目分类 ====================
+const EXCLUDE_DIRS = ['code-explorer','public','images','functions','converter','portfolio',
+  'deepseek_v3_tokenizer','workbody','web-games','fathers-day','output','02 侯老师编程网站相关素材',
+  'learning-materials','02 侯老师编程网站相关素材'];
+const CATEGORY_KEYWORDS = {
+  game: ['游戏','对战','大战','塔防','射击','五子棋','消消乐','飞机大战','俄罗斯方块','跑酷','赛车','模拟','mc','Minecraft','我的世界','水果忍者','象棋','海龟汤','坦克'],
+  ai: ['AI','ai','智能','机器人','对话','聊天','语音','视觉','图像识别','手写识别','深度学习','神经网络'],
+  tool: ['工具','查询','管理','计算','转码','转换','压缩','日历','日历','桌面','宠物','自动','查询','天气','文字转语音','TTS','二维码','加密'],
 };
-const DEFAULT_SINGLE_CODE = DEFAULT_CODE;
 
-// ==================== 编辑器初始化 ====================
-function loadExample() {
-  $('welcomeBox').style.display = 'none';
-  $('editorHost').style.display = 'block';
-  initEditor();
-}
-
-function getCurrentFileContent() {
-  if (runMode === 'multi') {
-    return multiFiles[activeFile] || '';
-  }
-  return monacoEditor ? monacoEditor.getValue() : DEFAULT_SINGLE_CODE;
-}
-
-function switchMode(mode) {
-  if (mode === runMode) return;
-  saveActiveEditorContent();
-  if (runMode === 'single' && monacoEditor) {
-    singleCodeBackup = monacoEditor.getValue();
-  }
-  runMode = mode;
-
-  $('modeSingle').classList.toggle('active', mode === 'single');
-  $('modeMulti').classList.toggle('active', mode === 'multi');
-  $('fileTabs').style.display = mode === 'multi' ? 'flex' : 'none';
-  $('btnRenameFile').style.display = mode === 'multi' ? '' : 'none';
-  $('entryFileSelect').style.display = mode === 'multi' ? '' : 'none';
-
-  if (mode === 'multi') {
-    if (!Object.keys(multiFiles).length) {
-      multiFiles = JSON.parse(JSON.stringify(DEFAULT_MULTI_FILES));
-      activeFile = 'main.py';
-    }
-    if (!multiFiles[activeFile]) activeFile = Object.keys(multiFiles)[0];
-    if (monacoEditor) {
-      monacoEditor.setValue(multiFiles[activeFile] || '');
-      monacoEditor.setModelLanguage(monacoEditor.getModel(), 'python');
-    }
-  } else {
-    if (monacoEditor) {
-      monacoEditor.setValue(singleCodeBackup || DEFAULT_SINGLE_CODE);
-      monacoEditor.setModelLanguage(monacoEditor.getModel(), 'python');
+function classifyProject(name) {
+  for (const cat of Object.keys(CATEGORY_KEYWORDS)) {
+    for (const kw of CATEGORY_KEYWORDS[cat]) {
+      if (name.includes(kw)) return cat;
     }
   }
-  renderFileTabs();
-  $('fileName').textContent = mode === 'multi' ? '多文件项目' : 'script.py';
+  return 'other';
 }
 
-function renderFileTabs() {
-  const container = $('fileTabs');
-  container.querySelectorAll('.file-tab').forEach(el => el.remove());
-  if (runMode !== 'multi') return;
-  const order = Object.keys(multiFiles);
-  for (const path of order) {
-    const tab = document.createElement('div');
-    tab.className = 'file-tab' + (path === activeFile ? ' active' : '');
-    tab.dataset.path = path;
-    const name = document.createElement('span');
-    name.textContent = path;
-    name.style.flex = '1';
-    const close = document.createElement('i');
-    close.className = 'tab-close';
-    close.textContent = '×';
-    close.title = '删除文件';
-    tab.appendChild(name);
-    tab.appendChild(close);
-    tab.addEventListener('click', (e) => {
-      if (e.target.classList.contains('tab-close')) {
-        deleteFile(path);
-      } else {
-        openFile(path);
-      }
-    });
-    const entrySelect = $('entryFileSelect');
-    container.insertBefore(tab, entrySelect.closest('.file-tabs-actions') || container.firstChild);
+function countFiles(node) {
+  let n = 0;
+  if (node.type === 'file') return 1;
+  if (node.children) for (const c of node.children) n += countFiles(c);
+  return n;
+}
+
+function getDefaultDesc(name, cat) {
+  const descs = {
+    game: '一个有趣的 Python 游戏项目',
+    ai: '一个使用 AI 技术的 Python 应用',
+    tool: '一个实用的 Python 工具',
+    other: '一个 Python 编程项目',
+  };
+  return descs[cat] || descs.other;
+}
+
+// ==================== Grid 渲染 ====================
+function renderGrid() {
+  const cards = $('gridCards');
+  let projects = state.pythonProjects;
+
+  // 搜索过滤
+  if (state.searchQuery) {
+    const q = state.searchQuery.toLowerCase();
+    projects = projects.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      (p.desc && p.desc.toLowerCase().includes(q)) ||
+      (p.category && p.category.toLowerCase().includes(q))
+    );
   }
-  populateEntryFileSelect();
-}
-
-function openFile(path) {
-  saveActiveEditorContent();
-  activeFile = path;
-  if (monacoEditor) {
-    monacoEditor.setValue(multiFiles[path] || '');
+  // 分类过滤
+  if (state.activeFilter !== 'all') {
+    projects = projects.filter(p => p.category === state.activeFilter);
   }
-  renderFileTabs();
-}
 
-function saveActiveEditorContent() {
-  if (runMode === 'multi' && monacoEditor) {
-    multiFiles[activeFile] = monacoEditor.getValue();
-  }
-}
+  $('gridStats').textContent = `共 ${state.pythonProjects.length} 个项目 · 显示 ${projects.length} 个`;
 
-function populateEntryFileSelect() {
-  const sel = $('entryFileSelect');
-  const prev = sel.value;
-  sel.innerHTML = '';
-  for (const path of Object.keys(multiFiles)) {
-    const opt = document.createElement('option');
-    opt.value = path;
-    opt.textContent = path;
-    sel.appendChild(opt);
-  }
-  if (prev && multiFiles[prev]) sel.value = prev;
-  else sel.value = multiFiles['main.py'] ? 'main.py' : Object.keys(multiFiles)[0];
-}
-
-function addFile() {
-  const used = new Set(Object.keys(multiFiles));
-  let i = 1;
-  let name = `file_${i}.py`;
-  while (used.has(name)) { i++; name = `file_${i}.py`; }
-  const custom = prompt('新文件名:', name);
-  if (!custom) return;
-  let newName = custom.trim();
-  if (!newName) return;
-  if (!newName.endsWith('.py')) newName += '.py';
-  if (newName.includes('/') || newName.includes('\\')) {
-    alert('文件名不能包含路径分隔符');
+  if (!projects.length) {
+    cards.innerHTML = `<div class="grid-empty">
+      <div class="grid-empty-icon">🔍</div>
+      <div>没有找到匹配的项目</div>
+    </div>`;
     return;
   }
-  if (multiFiles[newName]) { alert('文件已存在'); return; }
-  multiFiles[newName] = '# ' + newName + '\n\n';
-  openFile(newName);
+
+  const iconMap = {
+    game: '🎮', ai: '🤖', tool: '🛠', other: '📦'
+  };
+
+  cards.innerHTML = projects.map(p => {
+    const icon = iconMap[p.category] || '📦';
+    return `
+      <div class="project-card" data-path="${p.path}">
+        <div class="project-card-icon">${icon}</div>
+        <div class="project-card-name">${escapeHtml(p.name)}</div>
+        <div class="project-card-desc">${escapeHtml(p.desc)}</div>
+        <div class="project-card-meta">
+          <span class="project-card-files">${p.fileCount} 个文件</span>
+          <span class="project-card-arrow">进入 →</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  cards.querySelectorAll('.project-card').forEach(el => {
+    el.addEventListener('click', () => openProject(el.dataset.path));
+  });
 }
 
-function renameFile() {
-  if (runMode !== 'multi') return;
-  saveActiveEditorContent();
-  const old = activeFile;
-  const custom = prompt('重命名文件:', old);
-  if (!custom) return;
-  let newName = custom.trim();
-  if (!newName || newName === old) return;
-  if (!newName.endsWith('.py')) newName += '.py';
-  if (multiFiles[newName]) { alert('文件已存在'); return; }
-  const content = multiFiles[old];
-  delete multiFiles[old];
-  multiFiles[newName] = content;
-  activeFile = newName;
-  renderFileTabs();
-}
-
-function deleteFile(path) {
-  if (runMode !== 'multi') return;
-  if (Object.keys(multiFiles).length <= 1) { alert('至少保留一个文件'); return; }
-  if (!confirm('删除文件 ' + path + ' ？')) return;
-  delete multiFiles[path];
-  if (activeFile === path) {
-    activeFile = Object.keys(multiFiles)[0];
-    if (monacoEditor) monacoEditor.setValue(multiFiles[activeFile] || '');
+// ==================== 视图切换 ====================
+function switchView(view) {
+  state.view = view;
+  document.body.className = 'view-' + view;
+  $('gridView').classList.toggle('active', view === 'grid');
+  $('editorView').classList.toggle('active', view === 'editor');
+  if (view === 'editor') {
+    // 延迟初始化 Monaco，等容器可见
+    setTimeout(() => {
+      if (!monacoEditor && $('editorHost')) initMonaco();
+    }, 50);
   }
-  renderFileTabs();
 }
 
-function initEditor() {
+// ==================== 打开项目 ====================
+async function openProject(projectPath) {
+  const project = state.pythonProjects.find(p => p.path === projectPath);
+  if (!project) return;
+
+  state.currentProject = project;
+  state.openTabs = [];
+  state.activeTabIdx = -1;
+  state.projectFileTree = null;
+  state.ftExpanded.clear();
+
+  $('toolbarTitle').textContent = project.name;
+  $('ftProjectName').textContent = project.name;
+  $('editorEmpty').style.display = 'flex';
+  $('editorHost').style.display = 'none';
+  $('fileTabs').style.display = 'none';
+
+  // 先切到编辑器视图
+  switchView('editor');
+
+  // 并行加载：项目文件树 + README
+  $('ftBody').innerHTML = '<div class="grid-loading">加载中...</div>';
+  $('readmeBody').innerHTML = '<div class="grid-loading">加载中...</div>';
+
+  const [tree, readme] = await Promise.all([
+    fetchProjectTree(projectPath),
+    fetchReadme(projectPath),
+  ]);
+
+  state.projectFileTree = tree;
+  renderFileTree(tree);
+
+  if (readme && readme.found && readme.content) {
+    try {
+      $('readmeBody').innerHTML = marked.parse(readme.content);
+    } catch {
+      $('readmeBody').innerHTML = `<pre style="white-space:pre-wrap">${escapeHtml(readme.content)}</pre>`;
+    }
+  } else {
+    $('readmeBody').innerHTML = `
+      <div class="readme-empty">
+        <div class="readme-empty-icon">📄</div>
+        <p>此项目没有 README 文件</p>
+      </div>`;
+  }
+}
+
+// ==================== 文件树渲染 ====================
+function renderFileTree(tree) {
+  const body = $('ftBody');
+  if (!tree || !tree.children || !tree.children.length) {
+    body.innerHTML = '<div class="grid-empty"><div class="grid-empty-icon">📁</div><div>项目为空</div></div>';
+    return;
+  }
+  body.innerHTML = buildFileTreeHTML(tree.children, 0);
+  bindFileTreeEvents();
+}
+
+function buildFileTreeHTML(nodes, depth) {
+  let html = '';
+  for (const node of nodes) {
+    if (state.ftFilter) {
+      const search = state.ftFilter.toLowerCase();
+      if (!node.name.toLowerCase().includes(search) && !matchesFilter(node, search)) continue;
+    }
+    const indent = depth * 12;
+    if (node.type === 'directory') {
+      const isOpen = state.ftExpanded.has(node.path);
+      const hasContent = node.children && node.children.length > 0;
+      html += `<div class="ft-node" data-path="${escapeAttr(node.path)}" data-type="directory">
+        <div class="ft-node-row" style="padding-left:${indent + 6}px" data-path="${escapeAttr(node.path)}">
+          <span class="ft-caret ${isOpen ? '' : 'collapsed'}">▼</span>
+          <span class="ft-icon folder">📁</span>
+          <span class="ft-label">${escapeHtml(node.name)}</span>
+        </div>
+        ${hasContent ? `<div class="ft-children" style="display:${isOpen ? 'block' : 'none'}">${buildFileTreeHTML(node.children, depth + 1)}</div>` : ''}
+      </div>`;
+    } else {
+      const ext = (node.name.split('.').pop() || '').toLowerCase();
+      const icon = getFileIcon(ext);
+      const row = `data-path="${escapeAttr(node.path)}"`;
+      html += `<div class="ft-node" ${row} data-type="file">
+        <div class="ft-node-row" style="padding-left:${indent + 20}px" ${row}>
+          <span class="ft-icon ${icon.cls}">${icon.emoji}</span>
+          <span class="ft-label">${escapeHtml(node.name)}</span>
+        </div>
+      </div>`;
+    }
+  }
+  return html;
+}
+
+function matchesFilter(node, search) {
+  if (node.children) return node.children.some(c => matchesFilter(c, search));
+  return node.name.toLowerCase().includes(search);
+}
+
+function getFileIcon(ext) {
+  if (ext === 'py') return { emoji: '🐍', cls: 'py' };
+  if (['js','ts','jsx','tsx'].includes(ext)) return { emoji: '📜', cls: 'py' };
+  if (['html','htm'].includes(ext)) return { emoji: '🌐', cls: 'py' };
+  if (ext === 'css') return { emoji: '🎨', cls: 'py' };
+  if (['json'].includes(ext)) return { emoji: '📋', cls: 'py' };
+  if (['md','markdown'].includes(ext)) return { emoji: '📖', cls: 'py' };
+  if (['png','jpg','jpeg','gif','svg','webp'].includes(ext)) return { emoji: '🖼', cls: 'unknown' };
+  if (['txt'].includes(ext)) return { emoji: '📝', cls: 'unknown' };
+  if (['cpp','c','h','hpp'].includes(ext)) return { emoji: '💻', cls: 'py' };
+  return { emoji: '📄', cls: 'unknown' };
+}
+
+function bindFileTreeEvents() {
+  const body = $('ftBody');
+  body.querySelectorAll('.ft-node-row').forEach(row => {
+    row.addEventListener('click', e => {
+      const node = e.currentTarget.closest('.ft-node');
+      if (!node) return;
+      const path = node.dataset.path;
+      const type = node.dataset.type;
+      if (type === 'directory') {
+        // 展开/折叠
+        const caret = row.querySelector('.ft-caret');
+        const childrenDiv = node.querySelector(':scope > .ft-children');
+        if (state.ftExpanded.has(path)) {
+          state.ftExpanded.delete(path);
+          caret && caret.classList.add('collapsed');
+          if (childrenDiv) childrenDiv.style.display = 'none';
+        } else {
+          state.ftExpanded.add(path);
+          caret && caret.classList.remove('collapsed');
+          if (childrenDiv) childrenDiv.style.display = 'block';
+        }
+      } else {
+        openFileInEditor(path);
+      }
+    });
+  });
+}
+
+// 文件树搜索
+$('ftSearch').addEventListener('input', e => {
+  state.ftFilter = e.target.value.trim();
+  // 展开所有目录
+  if (state.projectFileTree && state.projectFileTree.children) {
+    state.projectFileTree.children.forEach(c => expandAllDirs(c));
+  }
+  renderFileTree(state.projectFileTree);
+});
+
+function expandAllDirs(node) {
+  if (node.type === 'directory') {
+    state.ftExpanded.add(node.path);
+    if (node.children) node.children.forEach(expandAllDirs);
+  }
+}
+
+// ==================== 打开文件到编辑器 ====================
+async function openFileInEditor(filePath) {
+  // 查找或创建 tab
+  let tabIdx = state.openTabs.findIndex(t => t.path === filePath);
+  if (tabIdx < 0) {
+    const fileName = filePath.split('/').pop();
+    $('toolbarHint').textContent = `加载 ${fileName}...`;
+    const data = await fetchContent(filePath);
+    const content = data && data.content ? data.content : '';
+    state.openTabs.push({ name: fileName, path: filePath, content });
+    tabIdx = state.openTabs.length - 1;
+  }
+  state.activeTabIdx = tabIdx;
+  renderTabs();
+  renderCode();
+  $('editorEmpty').style.display = 'none';
+  $('editorHost').style.display = 'block';
+  $('toolbarHint').textContent = filePath.split('/').pop();
+
+  // 高亮当前文件在文件树中的位置
+  document.querySelectorAll('.ft-node-row.active').forEach(r => r.classList.remove('active'));
+  const row = document.querySelector(`.ft-node-row[data-path="${CSS.escape(filePath)}"]`);
+  if (row) row.classList.add('active');
+}
+
+function renderTabs() {
+  const tabs = $('fileTabs');
+  if (!state.openTabs.length) {
+    tabs.style.display = 'none';
+    return;
+  }
+  tabs.style.display = 'flex';
+  tabs.innerHTML = state.openTabs.map((tab, i) => {
+    const active = i === state.activeTabIdx ? ' active' : '';
+    return `<div class="file-tab${active}" data-idx="${i}">${escapeHtml(tab.name)}</div>`;
+  }).join('');
+  tabs.querySelectorAll('.file-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      saveCurrentTab();
+      state.activeTabIdx = parseInt(tab.dataset.idx);
+      renderTabs();
+      renderCode();
+    });
+  });
+}
+
+function saveCurrentTab() {
+  if (state.activeTabIdx >= 0 && state.activeTabIdx < state.openTabs.length && monacoEditor) {
+    state.openTabs[state.activeTabIdx].content = monacoEditor.getValue();
+  }
+}
+
+function renderCode() {
+  if (state.activeTabIdx < 0) return;
+  const tab = state.openTabs[state.activeTabIdx];
+  if (!monacoEditor) return;
+  saveCurrentTab();
+  monacoEditor.setValue(tab.content || '');
+  // 设置语言
+  const ext = (tab.name.split('.').pop() || '').toLowerCase();
+  const lang = {
+    py: 'python', js: 'javascript', ts: 'typescript',
+    html: 'html', htm: 'html', css: 'css', json: 'json',
+    md: 'markdown', markdown: 'markdown',
+    cpp: 'cpp', c: 'c', h: 'cpp', hpp: 'cpp'
+  }[ext] || 'plaintext';
+  monacoEditor.setModelLanguage(monacoEditor.getModel(), lang);
+}
+
+// ==================== Monaco 初始化 ====================
+function initMonaco() {
   if (monacoEditor) return;
   const root = document.documentElement;
   const isLight = root.getAttribute('data-theme') === 'light';
   require(['vs/editor/editor.main'], function () {
     monacoEditor = monaco.editor.create($('editorHost'), {
-      value: DEFAULT_SINGLE_CODE,
+      value: '',
       language: 'python',
       theme: isLight ? 'vs' : 'vs-dark',
       fontSize: 14,
@@ -812,11 +1329,10 @@ function initEditor() {
       smoothScrolling: true,
     });
     monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runPythonCode);
-    $('btnRunLabel').textContent = '运行';
   });
 }
 
-// ==================== 终端操作 ====================
+// ==================== 终端 ====================
 function showTerminal() { $('terminalPanel').style.display = 'flex'; }
 function hideTerminal() { $('terminalPanel').style.display = 'none'; }
 function appendToTerminal(text, className = 'stdout') {
@@ -836,17 +1352,18 @@ function setRunStatus(status, text) {
     el.style.display = 'none';
     btnRun.style.display = '';
     btnStop.style.display = 'none';
-    $('btnRunLabel').textContent = '运行';
+    $('btnRunLabel').textContent = '运行项目';
     return;
   }
   el.style.display = '';
   el.className = 'run-status ' + status;
   el.textContent = text;
-  if (status === 'running' || status === 'preparing' || status === 'installing' || status === 'copying' || status === 'venv' || status === 'analyzing') {
+  if (status === 'running' || status === 'preparing' || status === 'installing' ||
+      status === 'copying' || status === 'venv' || status === 'analyzing') {
     $('btnRunLabel').textContent = '运行中...';
     btnStop.style.display = '';
   } else {
-    $('btnRunLabel').textContent = '运行';
+    $('btnRunLabel').textContent = '运行项目';
     btnStop.style.display = 'none';
   }
 }
@@ -863,56 +1380,119 @@ function hideDepsProgress() {
   $('depsProgressBar').style.width = '0%';
 }
 
+// ==================== 收集项目 .py 文件 ====================
+function collectProjectPyFiles(nodes, prefix = '') {
+  const files = {};
+  if (!nodes) return files;
+  for (const node of nodes) {
+    const relPath = prefix ? `${prefix}/${node.name}` : node.name;
+    if (node.type === 'directory' && node.children) {
+      Object.assign(files, collectProjectPyFiles(node.children, relPath));
+    } else if (node.type === 'file') {
+      const ext = (node.name.split('.').pop() || '').toLowerCase();
+      if (ext === 'py') {
+        // 检查是否已在 openTabs 中有内容（编辑过）
+        const tab = state.openTabs.find(t => t.path === `${state.currentProject.path}/${relPath}`);
+        files[relPath] = tab ? tab.content : null; // null 表示需要从服务器获取
+      }
+    }
+  }
+  return files;
+}
+
+async function loadMissingFileContents(files) {
+  const entries = Object.entries(files);
+  const results = {};
+  await Promise.all(entries.map(async ([relPath, content]) => {
+    if (content !== null) {
+      results[relPath] = content;
+      return;
+    }
+    const fullPath = `${state.currentProject.path}/${relPath}`;
+    const data = await fetchContent(fullPath);
+    results[relPath] = data && data.content ? data.content : `# ${relPath}\n`;
+  }));
+  return results;
+}
+
 // ==================== 运行代码 (SSE) ====================
 async function runPythonCode() {
-  if (isRunning) return;
+  if (state.isRunning) return;
   if (!monacoEditor) return;
+  if (!state.currentProject) {
+    toast('请先选择一个项目');
+    return;
+  }
 
   showTerminal();
   const output = $('terminalOutput');
   output.innerHTML = '';
   hideDepsProgress();
+  saveCurrentTab();
 
-  let body;
-  if (runMode === 'multi') {
-    saveActiveEditorContent();
-    const files = {};
-    for (const path of Object.keys(multiFiles)) {
-      files[path] = multiFiles[path];
+  // 收集所有 .py 文件
+  const pyFiles = collectProjectPyFiles(state.projectFileTree ? state.projectFileTree.children : []);
+  if (!Object.keys(pyFiles).length) {
+    // 没有 .py 文件，直接发送当前单文件
+    if (state.activeTabIdx >= 0) {
+      const tab = state.openTabs[state.activeTabIdx];
+      const code = monacoEditor.getValue();
+      const body = { mode: 'single', timeout: 120, code, fileName: tab.name };
+      await doRun(body, '单文件运行');
+    } else {
+      toast('项目中没有可运行的 Python 文件');
     }
-    body = {
-      mode: 'multi',
-      timeout: 120,
-      entryFile: $('entryFileSelect').value || 'main.py',
-      venvKey: 'multi_workspace_v1',
-      files: files,
-    };
-    appendToTerminal('========== 多文件运行 ==========', 'info');
-  } else {
-    const code = monacoEditor ? monacoEditor.getValue() : '';
-    body = { mode: 'single', timeout: 120, code: code, fileName: 'script.py' };
-    appendToTerminal('========== 单文件运行 ==========', 'info');
+    return;
   }
 
+  // 批量加载缺失内容
+  appendToTerminal('========== 收集项目文件 ==========', 'info');
+  const filledFiles = await loadMissingFileContents(pyFiles);
+  appendToTerminal(`共 ${Object.keys(filledFiles).length} 个 Python 文件`, 'info');
+
+  // 找入口文件（优先 main.py，或第一个 py 文件）
+  let entryFile = null;
+  if (filledFiles['main.py']) entryFile = 'main.py';
+  else if (filledFiles['__main__.py']) entryFile = '__main__.py';
+  else if (state.activeTabIdx >= 0) {
+    const tab = state.openTabs[state.activeTabIdx];
+    const relPath = tab.path.startsWith(state.currentProject.path + '/')
+      ? tab.path.substring(state.currentProject.path.length + 1)
+      : tab.path;
+    if (filledFiles[relPath]) entryFile = relPath;
+  }
+  if (!entryFile) entryFile = Object.keys(filledFiles)[0];
+
+  const body = {
+    mode: 'multi',
+    timeout: 120,
+    projectPath: state.currentProject.path,
+    entryFile,
+    files: filledFiles,
+    venvKey: 'project_' + btoa(encodeURIComponent(state.currentProject.path)).slice(0, 32),
+  };
+  await doRun(body, `项目运行 (入口: ${entryFile})`);
+}
+
+async function doRun(body, headerText) {
+  appendToTerminal(`========== ${headerText} ==========`, 'info');
   setRunStatus('preparing', '准备中...');
-  isRunning = true;
+  state.isRunning = true;
   runAbortController = new AbortController();
   currentRunId = null;
 
   try {
-    const res = await fetch('/api/run/start', {
+    const res = await fetch('/api/code/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       signal: runAbortController.signal,
     });
     if (!res.ok) {
-      let errMsg = 'HTTP ' + res.status;
+      let errMsg = `HTTP ${res.status}`;
       let isAuth = false;
-      try { const j = await res.json(); errMsg = j.error || errMsg; isAuth = (res.status === 401); } catch (e) {}
-      if (isAuth) {
-        throw new Error('请先登录（返回首页登录后即可运行代码）');
-      }
+      try { const j = await res.json(); errMsg = j.error || errMsg; isAuth = (res.status === 401); } catch {}
+      if (isAuth) throw new Error('请先登录');
       throw new Error(errMsg);
     }
     const reader = res.body.getReader();
@@ -943,28 +1523,7 @@ async function runPythonCode() {
               break;
             case 'deps':
               setRunStatus('installing', '安装依赖...');
-              if (data.phase === 'installing' || data.phase === 'requirements_found') {
-                showDepsProgress(data.message || '安装依赖中...', 5);
-                appendToTerminal('[依赖] ' + data.message, 'info');
-              } else if (data.phase === 'installing_package') {
-                const idx = data.index || 0;
-                const total = data.total || 1;
-                const pct = 10 + Math.round((idx / total) * 80);
-                showDepsProgress(data.message || '安装中...', pct);
-                appendToTerminal('[依赖] ' + data.message, 'info');
-              } else if (data.phase === 'package_installed') {
-                // 已安装，不重复打印
-              } else if (data.phase === 'installed') {
-                showDepsProgress(data.message || '依赖安装完成', 100);
-                appendToTerminal('[依赖] ' + data.message, 'info');
-                setTimeout(() => hideDepsProgress(), 1500);
-              } else if (data.phase === 'pip_output') {
-                if (data.line) appendToTerminal('  ' + data.line, 'stdout');
-              } else {
-                showDepsProgress(data.message || '安装依赖中...');
-                appendToTerminal('[依赖] ' + data.message, 'info');
-              }
-              if (data.error) appendToTerminal('[依赖警告] ' + data.error, 'stderr');
+              handleDepsEvent(data);
               break;
             case 'stdout':
               appendToTerminal(data.text, 'stdout');
@@ -973,29 +1532,17 @@ async function runPythonCode() {
               appendToTerminal(data.text, 'stderr');
               break;
             case 'exit':
-              hideDepsProgress();
-              appendToTerminal('', 'stdout');
-              if (data.code === 0) {
-                appendToTerminal('========== ' + data.message + ' ==========', 'success');
-                setRunStatus(null);
-              } else if (data.timedOut) {
-                appendToTerminal('========== ' + data.message + ' ==========', 'error');
-                setRunStatus('error', '超时');
-              } else {
-                appendToTerminal('========== ' + data.message + ' ==========', 'error');
-                setRunStatus('error', '出错');
-              }
-              isRunning = false;
+              handleExitEvent(data);
               break;
             case 'error':
               hideDepsProgress();
               appendToTerminal('[错误] ' + data.message, 'error');
               setRunStatus('error', '失败');
-              isRunning = false;
+              state.isRunning = false;
               break;
           }
-        } catch (parseErr) {
-          console.error('SSE parse error:', parseErr, dataStr);
+        } catch (e) {
+          console.error('SSE parse error:', e, dataStr);
         }
       }
     }
@@ -1008,24 +1555,63 @@ async function runPythonCode() {
       appendToTerminal('错误: ' + (e.message || e), 'error');
       setRunStatus('error', '失败');
     }
-    isRunning = false;
+    state.isRunning = false;
   }
 }
 
+function handleDepsEvent(data) {
+  if (data.phase === 'installing' || data.phase === 'requirements_found') {
+    showDepsProgress(data.message || '安装依赖中...', 5);
+    appendToTerminal('[依赖] ' + data.message, 'info');
+  } else if (data.phase === 'installing_package') {
+    const idx = data.index || 0;
+    const total = data.total || 1;
+    const pct = 10 + Math.round((idx / total) * 80);
+    showDepsProgress(data.message || '安装中...', pct);
+    appendToTerminal('[依赖] ' + data.message, 'info');
+  } else if (data.phase === 'installed') {
+    showDepsProgress(data.message || '依赖安装完成', 100);
+    appendToTerminal('[依赖] ' + data.message, 'info');
+    setTimeout(() => hideDepsProgress(), 1500);
+  } else if (data.phase === 'pip_output') {
+    if (data.line) appendToTerminal('  ' + data.line, 'stdout');
+  } else {
+    showDepsProgress(data.message || '安装依赖中...');
+    appendToTerminal('[依赖] ' + data.message, 'info');
+  }
+  if (data.error) appendToTerminal('[依赖警告] ' + data.error, 'stderr');
+}
+
+function handleExitEvent(data) {
+  hideDepsProgress();
+  appendToTerminal('', 'stdout');
+  if (data.code === 0) {
+    appendToTerminal('========== ' + data.message + ' ==========', 'success');
+    setRunStatus(null);
+  } else if (data.timedOut) {
+    appendToTerminal('========== ' + data.message + ' ==========', 'error');
+    setRunStatus('error', '超时');
+  } else {
+    appendToTerminal('========== ' + data.message + ' ==========', 'error');
+    setRunStatus('error', '出错');
+  }
+  state.isRunning = false;
+}
+
 async function stopPythonCode() {
-  if (!isRunning) return;
+  if (!state.isRunning) return;
   if (runAbortController) runAbortController.abort();
   if (currentRunId) {
     try {
-      await fetch('/api/run/stop', {
+      await fetch('/api/code/stop', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ runId: currentRunId }),
       });
-    } catch (e) {}
+    } catch {}
   }
   setRunStatus(null);
-  isRunning = false;
+  state.isRunning = false;
   hideDepsProgress();
 }
 
@@ -1043,30 +1629,104 @@ async function copyCode() {
   }
 }
 
+function toast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);padding:8px 16px;background:rgba(248,81,73,0.9);color:#fff;border-radius:8px;font-size:13px;z-index:99999;backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+
+function escapeHtml(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function escapeAttr(s) { return escapeHtml(String(s)).replace(/"/g, '&quot;'); }
+
+// ==================== 加载 Python 项目列表 ====================
+async function loadPythonProjects() {
+  try {
+    // 使用公开的 /api/projects/tree?path=Python（无需登录）获取 Python 目录下的子节点
+    const res = await fetch('/api/projects/tree?path=Python&depth=2');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('文件树为空');
+
+    // 筛选目录节点，排除非项目目录
+    const excludeSet = new Set(EXCLUDE_DIRS);
+    let dirs = data.filter(n =>
+      n.type === 'directory' &&
+      n.path &&
+      !excludeSet.has(n.name) &&
+      !excludeSet.has(n.path)
+    );
+
+    // 把 codinghou 里的子项目也加进来（作为独立项目卡片展示）
+    const codinghou = data.find(n => n.name === 'codinghou' && n.children);
+    if (codinghou) {
+      codinghou.children
+        .filter(c => c.type === 'directory' && !excludeSet.has(c.name))
+        .forEach(c => dirs.push({
+          ...c,
+          path: `codinghou/${c.name}`,  // 不带 Python/ 前缀，ECS 和 GitHub fallback 都能正确处理
+        }));
+      // 把 codinghou 本身也保留作为可展开的项目
+    }
+
+    state.pythonProjects = dirs.map(node => {
+      const cat = classifyProject(node.name);
+      return {
+        name: node.name,
+        path: node.path,    // 顶层项目 path=name，子项目 path=codinghou/name
+        category: cat,
+        desc: getDefaultDesc(node.name, cat),
+        fileCount: countFiles(node),
+        treeNode: node,
+      };
+    }).sort((a, b) => a.name.localeCompare(b.name, 'zh'));
+
+    renderGrid();
+  } catch (e) {
+    console.error('加载项目列表失败:', e);
+    $('gridCards').innerHTML = `<div class="grid-empty">
+      <div class="grid-empty-icon">😵</div>
+      <div>加载失败: ${escapeHtml(e.message || '网络错误')}</div>
+      <button onclick="location.reload()" style="margin-top:12px;padding:6px 14px;border-radius:6px;background:var(--bg-tertiary);border:1px solid var(--border-color);color:var(--text-secondary);cursor:pointer">重新加载</button>
+    </div>`;
+  }
+}
+
 // ==================== 事件绑定 ====================
+$('gridSearch').addEventListener('input', e => {
+  state.searchQuery = e.target.value.trim();
+  renderGrid();
+});
+
+$('gridFilters').addEventListener('click', e => {
+  const btn = e.target.closest('.grid-filter');
+  if (!btn) return;
+  $('gridFilters').querySelectorAll('.grid-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  state.activeFilter = btn.dataset.filter;
+  renderGrid();
+});
+
 $('btnRun').addEventListener('click', runPythonCode);
 $('btnStop').addEventListener('click', stopPythonCode);
 $('btnCopy').addEventListener('click', copyCode);
-$('btnLoadExample').addEventListener('click', loadExample);
 $('btnTerminalClose').addEventListener('click', hideTerminal);
-$('modeSingle').addEventListener('click', () => switchMode('single'));
-$('modeMulti').addEventListener('click', () => switchMode('multi'));
-$('btnAddFile').addEventListener('click', addFile);
-$('btnRenameFile').addEventListener('click', renameFile);
-$('entryFileSelect').addEventListener('change', (e) => {
-  // 仅更新入口文件选择，不改变编辑器内容
-});
-
-window.addEventListener('beforeunload', () => {
-  saveActiveEditorContent();
-});
+$('backToGrid').addEventListener('click', () => switchView('grid'));
 
 document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-    e.preventDefault();
-    runPythonCode();
+    if (state.view === 'editor') {
+      e.preventDefault();
+      runPythonCode();
+    }
   }
 });
+
+// ==================== 启动 ====================
+document.addEventListener('DOMContentLoaded', () => {
+  loadPythonProjects();
+});
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a43a3685aa27e839',t:'MTc5MDg0NDU1NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
