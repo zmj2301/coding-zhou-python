@@ -5013,6 +5013,16 @@ body.preview-active .app-preview { display: flex; }
         <span class="sidebar-item-label">技术文章</span>
       </a>
 
+      <!-- 本机 -->
+      <div class="sidebar-group-label">本机</div>
+      <a class="sidebar-item" href="http://127.0.0.1:8765/" target="_blank" rel="noopener" id="navLauncher" title="打开本机本地启动器（需本机运行 launcher.py）">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </span>
+        <span class="sidebar-item-label">本地启动器</span>
+        <span class="sidebar-badge" id="launcherStatus" title="检测中…">…</span>
+      </a>
+
       <!-- 账户 -->
       <div class="sidebar-group-label">账户</div>
       <a class="sidebar-item" id="sidebarLogin">
@@ -10329,6 +10339,27 @@ document.querySelectorAll('.sidebar-item[data-view]').forEach(item => {
     }
   });
 });
+
+// 本地启动器状态检测：从云端页探测本机 127.0.0.1:8765 是否运行
+(function () {
+  var badge = document.getElementById('launcherStatus');
+  if (!badge) return;
+  var LAUNCHER = 'http://127.0.0.1:8765/api/projects';
+  function setStatus(on) {
+    badge.textContent = on ? '●' : '○';
+    badge.title = on ? '本地启动器运行中' : '本地启动器未启动';
+    badge.style.color = on ? '#3ddc84' : '';
+    badge.style.background = on ? 'rgba(61,220,132,0.16)' : '';
+  }
+  function probe() {
+    if (!('fetch' in window)) { setStatus(false); return; }
+    fetch(LAUNCHER, { mode: 'no-cors', cache: 'no-store' })
+      .then(function () { setStatus(true); })
+      .catch(function () { setStatus(false); });
+  }
+  probe();
+  setInterval(probe, 15000);
+})();
 
 // 侧栏折叠
 const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');

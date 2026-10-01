@@ -318,8 +318,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "ai.py",
-    "fileCount": 83,
-    "lastModified": 1790849985962,
+    "fileCount": 101,
+    "lastModified": 1790860927708,
     "themeColor": "hsl(105, 37%, 60%)",
     "popupUrl": null
   },
@@ -720,8 +720,8 @@
     "label": "其他",
     "desc": "",
     "mainFile": "Python子项目集成问题排查.md",
-    "fileCount": 1,
-    "lastModified": 1790845628899,
+    "fileCount": 3,
+    "lastModified": 1790854835043,
     "themeColor": "hsl(241, 33%, 66%)",
     "popupUrl": null
   },

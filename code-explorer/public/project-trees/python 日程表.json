@@ -12,11 +12,25 @@
         "lastModified": 1790429638079
       },
       {
+        "name": "show_yourwindows.cpython-312.pyc",
+        "type": "file",
+        "path": "__pycache__/show_yourwindows.cpython-312.pyc",
+        "ext": ".pyc",
+        "lastModified": 1790856300608
+      },
+      {
+        "name": "show_yourwindows.cpython-313.pyc",
+        "type": "file",
+        "path": "__pycache__/show_yourwindows.cpython-313.pyc",
+        "ext": ".pyc",
+        "lastModified": 1790850699765
+      },
+      {
         "name": "show_yourwindows.cpython-38.pyc",
         "type": "file",
         "path": "__pycache__/show_yourwindows.cpython-38.pyc",
         "ext": ".pyc",
-        "lastModified": 1790772384094
+        "lastModified": 1790860779584
       }
     ]
   },
@@ -355,35 +369,35 @@
                 "type": "file",
                 "path": "win7_build/日程表_Win7/localpycs/pyimod01_archive.pyc",
                 "ext": ".pyc",
-                "lastModified": 1790772433697
+                "lastModified": 1790860897918
               },
               {
                 "name": "pyimod02_importers.pyc",
                 "type": "file",
                 "path": "win7_build/日程表_Win7/localpycs/pyimod02_importers.pyc",
                 "ext": ".pyc",
-                "lastModified": 1790772433701
+                "lastModified": 1790860897928
               },
               {
                 "name": "pyimod03_ctypes.pyc",
                 "type": "file",
                 "path": "win7_build/日程表_Win7/localpycs/pyimod03_ctypes.pyc",
                 "ext": ".pyc",
-                "lastModified": 1790772433703
+                "lastModified": 1790860897936
               },
               {
                 "name": "pyimod04_pywin32.pyc",
                 "type": "file",
                 "path": "win7_build/日程表_Win7/localpycs/pyimod04_pywin32.pyc",
                 "ext": ".pyc",
-                "lastModified": 1790772433705
+                "lastModified": 1790860897943
               },
               {
                 "name": "struct.pyc",
                 "type": "file",
                 "path": "win7_build/日程表_Win7/localpycs/struct.pyc",
                 "ext": ".pyc",
-                "lastModified": 1790772433694
+                "lastModified": 1790860897910
               }
             ]
           },
@@ -392,84 +406,84 @@
             "type": "file",
             "path": "win7_build/日程表_Win7/Analysis-00.toc",
             "ext": ".toc",
-            "lastModified": 1790849887404
+            "lastModified": 1790860897905
           },
           {
             "name": "base_library.zip",
             "type": "file",
             "path": "win7_build/日程表_Win7/base_library.zip",
             "ext": ".zip",
-            "lastModified": 1790849861047
+            "lastModified": 1790860851387
           },
           {
             "name": "EXE-00.toc",
             "type": "file",
             "path": "win7_build/日程表_Win7/EXE-00.toc",
             "ext": ".toc",
-            "lastModified": 1790849896814
+            "lastModified": 1790860917081
           },
           {
             "name": "PKG-00.toc",
             "type": "file",
             "path": "win7_build/日程表_Win7/PKG-00.toc",
             "ext": ".toc",
-            "lastModified": 1790849896376
+            "lastModified": 1790860916521
           },
           {
             "name": "PYZ-00.pyz",
             "type": "file",
             "path": "win7_build/日程表_Win7/PYZ-00.pyz",
             "ext": ".pyz",
-            "lastModified": 1790849888131
+            "lastModified": 1790860898677
           },
           {
             "name": "PYZ-00.toc",
             "type": "file",
             "path": "win7_build/日程表_Win7/PYZ-00.toc",
             "ext": ".toc",
-            "lastModified": 1790849888140
+            "lastModified": 1790860898688
           },
           {
             "name": "Tree-00.toc",
             "type": "file",
             "path": "win7_build/日程表_Win7/Tree-00.toc",
             "ext": ".toc",
-            "lastModified": 1790849879373
+            "lastModified": 1790860883548
           },
           {
             "name": "Tree-01.toc",
             "type": "file",
             "path": "win7_build/日程表_Win7/Tree-01.toc",
             "ext": ".toc",
-            "lastModified": 1790849879379
+            "lastModified": 1790860883561
           },
           {
             "name": "warn-日程表_Win7.txt",
             "type": "file",
             "path": "win7_build/日程表_Win7/warn-日程表_Win7.txt",
             "ext": ".txt",
-            "lastModified": 1790849887290
+            "lastModified": 1790860897786
           },
           {
             "name": "xref-日程表_Win7.html",
             "type": "file",
             "path": "win7_build/日程表_Win7/xref-日程表_Win7.html",
             "ext": ".html",
-            "lastModified": 1790849887376
+            "lastModified": 1790860897875
           },
           {
             "name": "日程表_Win7.exe.manifest",
             "type": "file",
             "path": "win7_build/日程表_Win7/日程表_Win7.exe.manifest",
             "ext": ".manifest",
-            "lastModified": 1790849888144
+            "lastModified": 1790860898691
           },
           {
             "name": "日程表_Win7.pkg",
             "type": "file",
             "path": "win7_build/日程表_Win7/日程表_Win7.pkg",
             "ext": ".pkg",
-            "lastModified": 1790849896359
+            "lastModified": 1790860916503
           }
         ]
       }
@@ -481,11 +495,25 @@
     "path": "win7_dist",
     "children": [
       {
+        "name": "shot_calendar.png",
+        "type": "file",
+        "path": "win7_dist/shot_calendar.png",
+        "ext": ".png",
+        "lastModified": 1790852024980
+      },
+      {
+        "name": "shot_settings.png",
+        "type": "file",
+        "path": "win7_dist/shot_settings.png",
+        "ext": ".png",
+        "lastModified": 1790852215188
+      },
+      {
         "name": "日程表_Win7.exe",
         "type": "file",
         "path": "win7_dist/日程表_Win7.exe",
         "ext": ".exe",
-        "lastModified": 1790849896791
+        "lastModified": 1790860917047
       }
     ]
   },
@@ -539,11 +567,67 @@
     "lastModified": 1785829305812
   },
   {
+    "name": "fix_tk.py",
+    "type": "file",
+    "path": "fix_tk.py",
+    "ext": ".py",
+    "lastModified": 1790851316286
+  },
+  {
     "name": "font_test.png",
     "type": "file",
     "path": "font_test.png",
     "ext": ".png",
     "lastModified": 1790769264427
+  },
+  {
+    "name": "inspect_exe.py",
+    "type": "file",
+    "path": "inspect_exe.py",
+    "ext": ".py",
+    "lastModified": 1790850921255
+  },
+  {
+    "name": "inspect_src_binding.py",
+    "type": "file",
+    "path": "inspect_src_binding.py",
+    "ext": ".py",
+    "lastModified": 1790850948929
+  },
+  {
+    "name": "list_windows.py",
+    "type": "file",
+    "path": "list_windows.py",
+    "ext": ".py",
+    "lastModified": 1790851563068
+  },
+  {
+    "name": "make_delivery.py",
+    "type": "file",
+    "path": "make_delivery.py",
+    "ext": ".py",
+    "lastModified": 1790860847192
+  },
+  {
+    "name": "poke_calendar.py",
+    "type": "file",
+    "path": "poke_calendar.py",
+    "ext": ".py",
+    "lastModified": 1790851612886
+  },
+  {
+    "name": "poke_calendar2.py",
+    "type": "file",
+    "path": "poke_calendar2.py",
+    "ext": ".py",
+    "lastModified": 1790854074552
+  },
+  {
+    "name": "probe_opacity.py",
+    "type": "file",
+    "path": "probe_opacity.py",
+    "ext": ".py",
+    "lastModified": 1790855442186
   },
   {
     "name": "python-3.8.10-amd64.exe",
@@ -574,11 +658,25 @@
     "lastModified": 1785830343529
   },
   {
+    "name": "screenshot_run.py",
+    "type": "file",
+    "path": "screenshot_run.py",
+    "ext": ".py",
+    "lastModified": 1790851698877
+  },
+  {
+    "name": "screenshot_settings.py",
+    "type": "file",
+    "path": "screenshot_settings.py",
+    "ext": ".py",
+    "lastModified": 1790852206991
+  },
+  {
     "name": "show_yourwindows.py",
     "type": "file",
     "path": "show_yourwindows.py",
     "ext": ".py",
-    "lastModified": 1790843926454
+    "lastModified": 1790860768580
   },
   {
     "name": "test.py",
@@ -606,7 +704,21 @@
     "type": "file",
     "path": "user_data.json",
     "ext": ".json",
-    "lastModified": 1790843926455
+    "lastModified": 1790859060312
+  },
+  {
+    "name": "verify_expiry.py",
+    "type": "file",
+    "path": "verify_expiry.py",
+    "ext": ".py",
+    "lastModified": 1790855924473
+  },
+  {
+    "name": "verify_fixes.py",
+    "type": "file",
+    "path": "verify_fixes.py",
+    "ext": ".py",
+    "lastModified": 1790858174398
   },
   {
     "name": "verify_hover.png",
@@ -614,6 +726,20 @@
     "path": "verify_hover.png",
     "ext": ".png",
     "lastModified": 1790467067536
+  },
+  {
+    "name": "verify_iconsize.py",
+    "type": "file",
+    "path": "verify_iconsize.py",
+    "ext": ".py",
+    "lastModified": 1790858993674
+  },
+  {
+    "name": "verify_mainwindow_expired.py",
+    "type": "file",
+    "path": "verify_mainwindow_expired.py",
+    "ext": ".py",
+    "lastModified": 1790860815810
   },
   {
     "name": "verify_panel.png",
@@ -630,6 +756,13 @@
     "lastModified": 1790466766022
   },
   {
+    "name": "verify_textsize_isolated.py",
+    "type": "file",
+    "path": "verify_textsize_isolated.py",
+    "ext": ".py",
+    "lastModified": 1790858985241
+  },
+  {
     "name": "verify_window.png",
     "type": "file",
     "path": "verify_window.png",
@@ -641,7 +774,7 @@
     "type": "file",
     "path": "win7_build_log.txt",
     "ext": ".txt",
-    "lastModified": 1790849896814
+    "lastModified": 1790856464875
   },
   {
     "name": "window_icon.png",
@@ -676,7 +809,7 @@
     "type": "file",
     "path": "日程表_Win7.spec",
     "ext": ".spec",
-    "lastModified": 1790849620401
+    "lastModified": 1790856048998
   },
   {
     "name": "日程表_Win7.spec.bak",
@@ -684,6 +817,13 @@
     "path": "日程表_Win7.spec.bak",
     "ext": ".bak",
     "lastModified": 1790849607577
+  },
+  {
+    "name": "日程表_Win7_20261001.zip",
+    "type": "file",
+    "path": "日程表_Win7_20261001.zip",
+    "ext": ".zip",
+    "lastModified": 1790860927661
   },
   {
     "name": "测试待办数据.xlsx",
