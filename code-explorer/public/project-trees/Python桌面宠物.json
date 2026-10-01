@@ -72,14 +72,14 @@
         "type": "file",
         "path": "deskpet/config.py",
         "ext": ".py",
-        "lastModified": 1785830339983
+        "lastModified": 1790845481441
       },
       {
         "name": "pet_window.py",
         "type": "file",
         "path": "deskpet/pet_window.py",
         "ext": ".py",
-        "lastModified": 1785830339985
+        "lastModified": 1790845508722
       },
       {
         "name": "size_settings_dialog.py",
@@ -253,6 +253,125 @@
                 "lastModified": 1790844690278
               }
             ]
+          },
+          {
+            "name": "定时休息_完整版",
+            "type": "directory",
+            "path": "relax_exe/build/定时休息_完整版",
+            "children": [
+              {
+                "name": "localpycs",
+                "type": "directory",
+                "path": "relax_exe/build/定时休息_完整版/localpycs",
+                "children": [
+                  {
+                    "name": "pyimod01_archive.pyc",
+                    "type": "file",
+                    "path": "relax_exe/build/定时休息_完整版/localpycs/pyimod01_archive.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790845662136
+                  },
+                  {
+                    "name": "pyimod02_importers.pyc",
+                    "type": "file",
+                    "path": "relax_exe/build/定时休息_完整版/localpycs/pyimod02_importers.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790845662140
+                  },
+                  {
+                    "name": "pyimod03_ctypes.pyc",
+                    "type": "file",
+                    "path": "relax_exe/build/定时休息_完整版/localpycs/pyimod03_ctypes.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790845662142
+                  },
+                  {
+                    "name": "pyimod04_pywin32.pyc",
+                    "type": "file",
+                    "path": "relax_exe/build/定时休息_完整版/localpycs/pyimod04_pywin32.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790845662144
+                  },
+                  {
+                    "name": "struct.pyc",
+                    "type": "file",
+                    "path": "relax_exe/build/定时休息_完整版/localpycs/struct.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790845662133
+                  }
+                ]
+              },
+              {
+                "name": "Analysis-00.toc",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/Analysis-00.toc",
+                "ext": ".toc",
+                "lastModified": 1790845662131
+              },
+              {
+                "name": "base_library.zip",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/base_library.zip",
+                "ext": ".zip",
+                "lastModified": 1790845655353
+              },
+              {
+                "name": "EXE-00.toc",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/EXE-00.toc",
+                "ext": ".toc",
+                "lastModified": 1790845711339
+              },
+              {
+                "name": "PKG-00.toc",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/PKG-00.toc",
+                "ext": ".toc",
+                "lastModified": 1790845709116
+              },
+              {
+                "name": "PYZ-00.pyz",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/PYZ-00.pyz",
+                "ext": ".pyz",
+                "lastModified": 1790845662268
+              },
+              {
+                "name": "PYZ-00.toc",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/PYZ-00.toc",
+                "ext": ".toc",
+                "lastModified": 1790845662270
+              },
+              {
+                "name": "qt.conf",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/qt.conf",
+                "ext": ".conf",
+                "lastModified": 1790845625723
+              },
+              {
+                "name": "warn-定时休息_完整版.txt",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/warn-定时休息_完整版.txt",
+                "ext": ".txt",
+                "lastModified": 1790845662061
+              },
+              {
+                "name": "xref-定时休息_完整版.html",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/xref-定时休息_完整版.html",
+                "ext": ".html",
+                "lastModified": 1790845662074
+              },
+              {
+                "name": "定时休息.pkg",
+                "type": "file",
+                "path": "relax_exe/build/定时休息_完整版/定时休息.pkg",
+                "ext": ".pkg",
+                "lastModified": 1790845709051
+              }
+            ]
           }
         ]
       },
@@ -315,7 +434,7 @@
             "type": "file",
             "path": "relax_exe/core/logger.py",
             "ext": ".py",
-            "lastModified": 1785830340001
+            "lastModified": 1790845489218
           },
           {
             "name": "reporter.py",
@@ -339,11 +458,46 @@
         "path": "relax_exe/dist",
         "children": [
           {
+            "name": "logs",
+            "type": "directory",
+            "path": "relax_exe/dist/logs",
+            "children": [
+              {
+                "name": "app_20261001_170913.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261001_170913.log",
+                "ext": ".log",
+                "lastModified": 1790845754974
+              },
+              {
+                "name": "app_20261001_171148.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261001_171148.log",
+                "ext": ".log",
+                "lastModified": 1790850082392
+              }
+            ]
+          },
+          {
+            "name": "config.json",
+            "type": "file",
+            "path": "relax_exe/dist/config.json",
+            "ext": ".json",
+            "lastModified": 1790845925758
+          },
+          {
+            "name": "main_log.log",
+            "type": "file",
+            "path": "relax_exe/dist/main_log.log",
+            "ext": ".log",
+            "lastModified": 1790850082392
+          },
+          {
             "name": "定时休息.exe",
             "type": "file",
             "path": "relax_exe/dist/定时休息.exe",
             "ext": ".exe",
-            "lastModified": 1790844692231
+            "lastModified": 1790845711245
           }
         ]
       },
@@ -1444,7 +1598,7 @@
         "type": "file",
         "path": "relax_exe/app.py",
         "ext": ".py",
-        "lastModified": 1790844146936
+        "lastModified": 1790845502960
       },
       {
         "name": "main.py",
@@ -1552,5 +1706,12 @@
     "path": "test_flip_clock.py",
     "ext": ".py",
     "lastModified": 1785830340017
+  },
+  {
+    "name": "定时休息_完整版.spec",
+    "type": "file",
+    "path": "定时休息_完整版.spec",
+    "ext": ".spec",
+    "lastModified": 1790845527931
   }
 ]

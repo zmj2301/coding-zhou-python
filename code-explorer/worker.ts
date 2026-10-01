@@ -1707,6 +1707,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
             size: meta.size,
             uploader: meta.uploader,
             created_at: meta.created_at,
+            disabled: !!meta.disabled,
             url: `https://codingzhou.top/f/${meta.id || k.name.replace('upload:file:', '')}`,
           };
         })
@@ -1746,6 +1747,40 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       return jsonResponse({ success: true, message: '已删除' }, 200);
     } catch (e: any) {
       return errorResponse('删除失败: ' + (e.message || '未知错误'), 500);
+    }
+  }
+
+  // ---- 停用/启用已上传文件 ----
+  if (path === '/api/upload/toggle') {
+    if (request.method !== 'POST') return errorResponse('方法不允许', 405);
+    try {
+      const token = getTokenFromRequest(request);
+      if (!token) return errorResponse('请先登录', 401);
+      const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+      if (!payload) return errorResponse('请先登录', 401);
+      const username = payload.sub || payload.username || 'unknown';
+
+      const data = await request.json();
+      const id = (data.id || '').trim();
+      const disabled = !!data.disabled;
+      if (!id) return errorResponse('缺少文件 ID', 400);
+
+      const key = `upload:file:${id}`;
+      const obj = await env.CODE_EXPLORER_KV.getWithMetadata(key, { type: 'arrayBuffer' });
+      if (!obj || !obj.value) return errorResponse('文件不存在', 404);
+
+      const meta = (obj.metadata as any) || {};
+      if (meta.uploader && meta.uploader !== username) {
+        return errorResponse('无权操作该文件', 403);
+      }
+
+      // KV metadata 不可原地修改，需连同 value 重新写入
+      await env.CODE_EXPLORER_KV.put(key, obj.value, {
+        metadata: { ...meta, disabled },
+      });
+      return jsonResponse({ success: true, id, disabled }, 200);
+    } catch (e: any) {
+      return errorResponse('操作失败: ' + (e.message || '未知错误'), 500);
     }
   }
 
@@ -2225,6 +2260,18 @@ async function serveUploadedFile(request: Request, env: Env, id: string): Promis
   if (!obj || !obj.value) return errorResponse('文件不存在或已过期', 404);
 
   const meta = (obj.metadata as any) || {};
+
+  // 已停用的文件直接拒绝访问（no-store 防止 410 被缓存，重新启用后可立即恢复）
+  if (meta.disabled) {
+    return new Response('文件已被上传者停用', {
+      status: 410,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-store',
+      },
+    });
+  }
+
   const headers = new Headers();
   headers.set('Content-Type', meta.contentType || 'application/octet-stream');
   headers.set('Cache-Control', 'public, max-age=31536000');
