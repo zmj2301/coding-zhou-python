@@ -68,7 +68,23 @@ def main():
 
     print()
     print('步骤 2: 复制首页 index.html...')
-    copy_file(CODE_EXPLORER_DIR / 'index.html', PUBLIC_DIR / 'index.html')
+    # 单一事实源: code-explorer/index.html。
+    # 根目录 index.html 只是副本；两份不一致时中止构建，防止部署旧版首页（v2.6.8 教训）。
+    canonical_index = CODE_EXPLORER_DIR / 'code-explorer' / 'index.html'
+    root_index = CODE_EXPLORER_DIR / 'index.html'
+    if canonical_index.exists():
+        if root_index.exists():
+            import filecmp
+            if not filecmp.cmp(canonical_index, root_index, shallow=False):
+                print('  ✗ 构建中止: 根目录 index.html 与 code-explorer/index.html 内容不一致！')
+                print(f'    根目录版:   {root_index} ({root_index.stat().st_size} 字节, 修改于 {os.path.getmtime(root_index)})')
+                print(f'    规范版:     {canonical_index} ({canonical_index.stat().st_size} 字节, 修改于 {os.path.getmtime(canonical_index)})')
+                print('    处理: 确认哪份是最新后，用最新版覆盖另一份（两份必须完全一致），再重新构建。')
+                sys.exit(1)
+        copy_file(canonical_index, PUBLIC_DIR / 'index.html')
+    else:
+        print('  ⚠ code-explorer/index.html 不存在，退回复制根目录 index.html（请尽快补齐规范源）')
+        copy_file(root_index, PUBLIC_DIR / 'index.html')
 
     print()
     print('步骤 2.1: 复制控制台 console.html...')

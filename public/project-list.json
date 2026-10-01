@@ -318,8 +318,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 3778,
-    "lastModified": 1790483087805,
+    "fileCount": 3799,
+    "lastModified": 1790772510904,
     "themeColor": "hsl(105, 37%, 60%)",
     "popupUrl": null
   },
@@ -533,9 +533,9 @@
     "type": "other",
     "label": "其他",
     "desc": "",
-    "mainFile": "日程表_Win7.exe",
-    "fileCount": 1,
-    "lastModified": 1790761488497,
+    "mainFile": "user_data.json",
+    "fileCount": 3,
+    "lastModified": 1790769148510,
     "themeColor": "hsl(236, 35%, 63%)",
     "popupUrl": null
   },

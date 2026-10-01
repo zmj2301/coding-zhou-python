@@ -1,5 +1,17 @@
 [
     {
+        "date": "2026-10-01",
+        "title": "v2.6.7 收尾：移除调试日志 + 根治 build.py 双 index.html 隐患",
+        "version": "2.6.8",
+        "changes": [
+            "移除 /api/projects/tree 路由中排查时遗留的调试 console.log（保留正常错误日志）",
+            "首页 index.html 单一事实源：规范源改为 code-explorer/index.html，根目录只是副本",
+            "build.py 构建时校验两份 index.html 一致性，不一致直接中止构建（防止再次部署旧版首页）",
+            "AGENTS.md 新增 3.6 节记录单一事实源规则与同步命令",
+            "同步 code-explorer/index.html 为线上最新版（第三轮 enterPythonFolder 层级浏览实现）"
+        ]
+    },
+    {
         "date": "2026-09-30",
         "title": "Python 页面改造为项目广场 + 在线编辑器",
         "version": "2.6.7",

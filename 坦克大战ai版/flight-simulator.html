@@ -644,8 +644,9 @@ function colorForHeight(h, x, z, weights) {
 // 机场位置（提前声明，供 buildChunk 压平机场周围地形）
 const AIRPORT_FLAT_RADIUS = 4500;  // 机场平坦区半径 m（确保有足够降落空间）
 const AIRPORT_POSITIONS = [
-  { x: 3000, z: 3000, name: '东方国际空港', heading: 0 },
-  { x: -4000, z: -3000, name: '西域国际空港', heading: Math.PI },
+  { x: 3000, z: 3000, name: '东方国际空港', heading: 0, type: 'standard' },
+  { x: -4000, z: -3000, name: '西域国际空港', heading: Math.PI, type: 'standard' },
+  { x: 5500, z: -5500, name: '启德国际机场', heading: Math.PI * 0.35, type: 'kaitak' },
 ];
 // 预计算机场地面高度（避免每次 buildChunk 重复计算）
 const AIRPORT_GROUND_Y = AIRPORT_POSITIONS.map(ap => terrainHeight(ap.x, ap.z));
@@ -1244,7 +1245,155 @@ function createAirport(def, groundY) {
   const matWhite = new THREE.MeshBasicMaterial({ color: 0xffffff });
   const matYellow = new THREE.MeshBasicMaterial({ color: 0xffdd00 });
   const matRoad = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.9 });
+  const matBldg = [
+    new THREE.MeshStandardMaterial({ color: 0x8899aa, roughness: 0.5, metalness: 0.3 }),
+    new THREE.MeshStandardMaterial({ color: 0x99aabb, roughness: 0.4, metalness: 0.4 }),
+    new THREE.MeshStandardMaterial({ color: 0x778899, roughness: 0.6, metalness: 0.2 }),
+    new THREE.MeshStandardMaterial({ color: 0xaa9988, roughness: 0.5, metalness: 0.3 }),
+    new THREE.MeshStandardMaterial({ color: 0x667788, roughness: 0.5, metalness: 0.3 }),
+  ];
+  const matBldgGlass = new THREE.MeshStandardMaterial({ color: 0x5577aa, roughness: 0.1, metalness: 0.7, transparent: true, opacity: 0.5 });
+  const matCheckerboard = new THREE.MeshBasicMaterial({ color: 0xcc3333 });
 
+  // —— 启德机场：单条短跑道 + 城市高楼环绕 + 棋盘格山 ——
+  if (def.type === 'kaitak') {
+    const RWY_LEN = 2500, RWY_W = 45;
+    grp.userData.rwyHalfLen = RWY_LEN / 2;  // 1250m
+
+    // 主跑道（较短）
+    const rwy = new THREE.Mesh(new THREE.PlaneGeometry(RWY_LEN, RWY_W), matRunway);
+    rwy.rotation.x = -Math.PI / 2;
+    rwy.position.set(0, 0.3, 0);
+    rwy.receiveShadow = true;
+    grp.add(rwy);
+    // 跑道边线
+    for (const side of [-1, 1]) {
+      const edge = new THREE.Mesh(new THREE.PlaneGeometry(RWY_LEN, 1.2), matWhite);
+      edge.rotation.x = -Math.PI / 2;
+      edge.position.set(0, 0.45, side * (RWY_W / 2 - 1));
+      grp.add(edge);
+    }
+    // 中线虚线
+    for (let m = -1150; m <= 1150; m += 70) {
+      const dash = new THREE.Mesh(new THREE.PlaneGeometry(30, 2.5), matWhite);
+      dash.rotation.x = -Math.PI / 2;
+      dash.position.set(m, 0.45, 0);
+      grp.add(dash);
+    }
+    // 入口斑马线
+    for (const end of [-1, 1]) {
+      for (let b = 0; b < 5; b++) {
+        const bar = new THREE.Mesh(new THREE.PlaneGeometry(38, 5), matWhite);
+        bar.rotation.x = -Math.PI / 2;
+        bar.position.set(end * (1150 - b * 10), 0.45, 0);
+        grp.add(bar);
+      }
+    }
+
+    // 滑行道（跑道旁一条）
+    const taxi = new THREE.Mesh(new THREE.PlaneGeometry(RWY_LEN, 18), matTaxiway);
+    taxi.rotation.x = -Math.PI / 2;
+    taxi.position.set(0, 0.3, 80);
+    taxi.receiveShadow = true;
+    grp.add(taxi);
+    // 连接道
+    for (let m = -900; m <= 900; m += 300) {
+      const link = new THREE.Mesh(new THREE.PlaneGeometry(18, 80), matTaxiway);
+      link.rotation.x = -Math.PI / 2;
+      link.position.set(m, 0.3, 40);
+      grp.add(link);
+    }
+
+    // 停机坪（小型）
+    const apron = new THREE.Mesh(new THREE.PlaneGeometry(600, 250), matApron);
+    apron.rotation.x = -Math.PI / 2;
+    apron.position.set(800, 0.3, 180);
+    apron.receiveShadow = true;
+    grp.add(apron);
+
+    // 航站楼（小）
+    const term = new THREE.Mesh(new THREE.BoxGeometry(400, 25, 80), matTerminal);
+    term.position.set(800, 12.5, 320);
+    term.castShadow = true;
+    grp.add(term);
+
+    // 塔台
+    const tw = new THREE.Group();
+    const twBase = new THREE.Mesh(new THREE.CylinderGeometry(6, 9, 40, 12), matTower);
+    twBase.position.set(-1100, 20, 100);
+    tw.add(twBase);
+    const twTop = new THREE.Mesh(new THREE.CylinderGeometry(10, 7, 8, 12), matGlass);
+    twTop.position.set(-1100, 44, 100);
+    tw.add(twTop);
+    grp.add(tw);
+
+    // —— 启德特色：跑道两侧密集高楼（模拟九龙城区）——
+    const bldgColors = matBldg;
+    // 跑道南侧高楼群（z 正方向）
+    for (let bx = -1200; bx <= 1200; bx += 60 + Math.random() * 40) {
+      for (let bz = 160; bz <= 600; bz += 55 + Math.random() * 35) {
+        const h = 40 + Math.random() * 180;
+        const w = 25 + Math.random() * 35;
+        const d = 25 + Math.random() * 35;
+        const bldg = new THREE.Mesh(
+          new THREE.BoxGeometry(w, h, d),
+          bldgColors[Math.floor(Math.random() * bldgColors.length)]
+        );
+        bldg.position.set(bx + (Math.random() - 0.5) * 20, h / 2, bz + (Math.random() - 0.5) * 20);
+        bldg.castShadow = true;
+        grp.add(bldg);
+        // 玻璃幕墙
+        if (Math.random() > 0.4) {
+          const glass = new THREE.Mesh(new THREE.BoxGeometry(w + 0.5, h - 5, d + 0.5), matBldgGlass);
+          glass.position.copy(bldg.position);
+          grp.add(glass);
+        }
+      }
+    }
+    // 跑道北侧高楼群（z 负方向）
+    for (let bx = -1200; bx <= 1200; bx += 60 + Math.random() * 40) {
+      for (let bz = -160; bz >= -500; bz -= 55 + Math.random() * 35) {
+        const h = 30 + Math.random() * 150;
+        const w = 25 + Math.random() * 30;
+        const d = 25 + Math.random() * 30;
+        const bldg = new THREE.Mesh(
+          new THREE.BoxGeometry(w, h, d),
+          bldgColors[Math.floor(Math.random() * bldgColors.length)]
+        );
+        bldg.position.set(bx + (Math.random() - 0.5) * 20, h / 2, bz + (Math.random() - 0.5) * 20);
+        bldg.castShadow = true;
+        grp.add(bldg);
+        if (Math.random() > 0.4) {
+          const glass = new THREE.Mesh(new THREE.BoxGeometry(w + 0.5, h - 5, d + 0.5), matBldgGlass);
+          glass.position.copy(bldg.position);
+          grp.add(glass);
+        }
+      }
+    }
+
+    // —— 启德特色：棋盘格山（13跑道进近参考点，模拟狮子山）——
+    // 在跑道 13 入口（x=-1250）外侧远处建一座带红白棋盘格的山
+    const checkerHill = new THREE.Group();
+    const hillGeo = new THREE.ConeGeometry(400, 350, 8);
+    const hill = new THREE.Mesh(hillGeo, new THREE.MeshStandardMaterial({ color: 0x4a5d3a, roughness: 0.9 }));
+    hill.position.set(-2200, 175, 0);
+    checkerHill.add(hill);
+    // 棋盘格红白条纹（启德著名的 checkerboard）
+    for (let r = 0; r < 16; r++) {
+      const ring = new THREE.Mesh(
+        new THREE.CylinderGeometry(400 - r * 24, 400 - r * 24, 4, 8, 1, true),
+        r % 2 === 0 ? matCheckerboard : new THREE.MeshBasicMaterial({ color: 0xffffff })
+      );
+      ring.position.set(-2200, 350 - r * 22, 0);
+      checkerHill.add(ring);
+    }
+    grp.add(checkerHill);
+
+    return grp;
+  }
+
+  // —— 标准国际机场 ——
+  grp.userData.rwyHalfLen = 1500;  // 跑道半长 1500m
   const RWY_Z = [-200, 200];     // 跑道 z 坐标
   const RWY_LEN = 3000, RWY_W = 60;
   const TAXI_Z = [-400, 400];    // 滑行道 z 坐标
@@ -1429,8 +1578,9 @@ function checkLanding(planePos, speed) {
     // 旋转：x' = dx*cos + dz*sin, z' = -dx*sin + dz*cos
     const localX = dx * cosH + dz * sinH;   // 跑道长度方向
     const localZ = -dx * sinH + dz * cosH;  // 跑道宽度方向
-    // 跑道范围：长度 ±1500m，宽度 ±80m
-    if (Math.abs(localX) < 1500 && Math.abs(localZ) < 80) {
+    // 跑道范围：长度 ±半长，宽度 ±80m
+    const rwyHalf = ap.userData.rwyHalfLen || 1500;
+    if (Math.abs(localX) < rwyHalf && Math.abs(localZ) < 80) {
       const altAbove = planePos.y - ap.position.y;
       if (altAbove < 50 && altAbove > -5 && speed < 300) {
         // 着陆成功！
@@ -2630,22 +2780,35 @@ function animate() {
   const takeoffSpeed = AC.stallSpeed * 1.5;  // 起飞速度
   // 起落架高度（飞机中心到轮子底部）
   const gearHeight = currentAC === 'airliner' ? 2.2 : 1.4;
+  // 玩家是否在拉杆（尝试起飞抬头）
+  const pullingUp = keys['ArrowUp'];
 
-  if (canLand && plane.position.y <= groundY + gearHeight + 1.0 && speed < takeoffSpeed) {
-    // 已触地且速度未达起飞速度：贴地滑行
-    plane.position.y = groundY + gearHeight;
-    if (throttle > 5) {
-      // 玩家推油门 → 加速
-      speed += (throttle / 100) * 120 * dt;
-    } else {
-      // 自动刹车：速度越高刹车越强（比例+线性混合）
-      speed -= (20 + speed * 0.3) * dt;
+  if (canLand) {
+    const onGround = plane.position.y <= groundY + gearHeight + 1.0;
+    // 满足起飞条件：速度足够 + 玩家拉杆 → 离地
+    const canTakeoff = speed >= takeoffSpeed && pullingUp;
+
+    if (onGround && !canTakeoff) {
+      // 接地滑行阶段（无论速度高低，都施加刹车或推力）
+      plane.position.y = groundY + gearHeight;
+      if (throttle > 5) {
+        // 推油门 → 加速准备起飞
+        speed += (throttle / 100) * 150 * dt;
+      } else {
+        // 自动刹车：线性 + 比例（比例为主，保证高速有足够滑行距离）
+        // 500 m/s 滑行约 2km，300 m/s 约 1.2km，100 m/s 约 400m
+        speed -= (5 + speed * 0.25) * dt;
+      }
+      if (speed < 0.5) speed = 0;
+      checkLanding(plane.position, speed);
+    } else if (onGround && canTakeoff) {
+      // 起飞：速度足够 + 拉杆 → 离地，不再钳制 y
+      // 给一个初始爬升率
+      plane.position.y += speed * 0.15 * dt;
+    } else if (plane.position.y < groundY + gearHeight) {
+      // 起落架放下 + 在机场 + 接近地面：防穿模，不坠毁
+      plane.position.y = groundY + gearHeight;
     }
-    if (speed < 2) speed = 0;
-    checkLanding(plane.position, speed);
-  } else if (canLand && plane.position.y < groundY + gearHeight) {
-    // 起落架放下 + 在机场 + 接近地面：防穿模，不坠毁
-    plane.position.y = groundY + gearHeight;
   } else if (plane.position.y < groundY + crashThreshold) {
     // 重置到高空（避开所有地形）
     plane.position.set(
@@ -2777,14 +2940,14 @@ function animate() {
   if (nearestAp && nearestDist < 20000) {
     const ap = nearestAp;
     const hdg = ap.rotation.y;  // 机场朝向
-    // 跑道在局部坐标沿 X 轴延伸（长 3000m），入口在 x=±1500
+    const rwyHalf = ap.userData.rwyHalfLen || 1500;  // 跑道半长（启德1250，标准1500）
     // 旋转后世界坐标方向向量
     const cosH = Math.cos(hdg), sinH = Math.sin(hdg);
     // 跑道方向（从入口1到入口2的世界向量）
     const rwyDirX = cosH, rwyDirZ = -sinH;
     // 两个入口的世界坐标
-    const entry1 = { x: ap.position.x + 1500 * cosH, z: ap.position.z - 1500 * sinH };
-    const entry2 = { x: ap.position.x - 1500 * cosH, z: ap.position.z + 1500 * sinH };
+    const entry1 = { x: ap.position.x + rwyHalf * cosH, z: ap.position.z - rwyHalf * sinH };
+    const entry2 = { x: ap.position.x - rwyHalf * cosH, z: ap.position.z + rwyHalf * sinH };
     // 选离飞机较近的入口
     const d1 = Math.hypot(plane.position.x - entry1.x, plane.position.z - entry1.z);
     const d2 = Math.hypot(plane.position.x - entry2.x, plane.position.z - entry2.z);
