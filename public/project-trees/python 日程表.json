@@ -388,11 +388,88 @@
             ]
           },
           {
+            "name": "Analysis-00.toc",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/Analysis-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790849887404
+          },
+          {
             "name": "base_library.zip",
             "type": "file",
             "path": "win7_build/日程表_Win7/base_library.zip",
             "ext": ".zip",
-            "lastModified": 1790772408138
+            "lastModified": 1790849861047
+          },
+          {
+            "name": "EXE-00.toc",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/EXE-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790849896814
+          },
+          {
+            "name": "PKG-00.toc",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/PKG-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790849896376
+          },
+          {
+            "name": "PYZ-00.pyz",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/PYZ-00.pyz",
+            "ext": ".pyz",
+            "lastModified": 1790849888131
+          },
+          {
+            "name": "PYZ-00.toc",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/PYZ-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790849888140
+          },
+          {
+            "name": "Tree-00.toc",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/Tree-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790849879373
+          },
+          {
+            "name": "Tree-01.toc",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/Tree-01.toc",
+            "ext": ".toc",
+            "lastModified": 1790849879379
+          },
+          {
+            "name": "warn-日程表_Win7.txt",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/warn-日程表_Win7.txt",
+            "ext": ".txt",
+            "lastModified": 1790849887290
+          },
+          {
+            "name": "xref-日程表_Win7.html",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/xref-日程表_Win7.html",
+            "ext": ".html",
+            "lastModified": 1790849887376
+          },
+          {
+            "name": "日程表_Win7.exe.manifest",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/日程表_Win7.exe.manifest",
+            "ext": ".manifest",
+            "lastModified": 1790849888144
+          },
+          {
+            "name": "日程表_Win7.pkg",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/日程表_Win7.pkg",
+            "ext": ".pkg",
+            "lastModified": 1790849896359
           }
         ]
       }
@@ -408,7 +485,7 @@
         "type": "file",
         "path": "win7_dist/日程表_Win7.exe",
         "ext": ".exe",
-        "lastModified": 1790772451668
+        "lastModified": 1790849896791
       }
     ]
   },
@@ -560,6 +637,13 @@
     "lastModified": 1790466805918
   },
   {
+    "name": "win7_build_log.txt",
+    "type": "file",
+    "path": "win7_build_log.txt",
+    "ext": ".txt",
+    "lastModified": 1790849896814
+  },
+  {
     "name": "window_icon.png",
     "type": "file",
     "path": "window_icon.png",
@@ -592,7 +676,14 @@
     "type": "file",
     "path": "日程表_Win7.spec",
     "ext": ".spec",
-    "lastModified": 1790772405370
+    "lastModified": 1790849620401
+  },
+  {
+    "name": "日程表_Win7.spec.bak",
+    "type": "file",
+    "path": "日程表_Win7.spec.bak",
+    "ext": ".bak",
+    "lastModified": 1790849607577
   },
   {
     "name": "测试待办数据.xlsx",

@@ -1909,6 +1909,36 @@ body.filter-hidden .main-filter-toggle {
   color: #fff; border: none; cursor: pointer;
 }
 .upload-again-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px color-mix(in srgb, var(--accent-blue) 35%, transparent); }
+/* ===== 上传历史 ===== */
+.upload-history { margin-top: 28px; }
+.upload-history-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.upload-history-head h2 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin: 0; }
+.upload-history-refresh { border: none; background: transparent; color: var(--accent-blue); font-size: 13px; cursor: pointer; padding: 4px 10px; border-radius: 6px; }
+.upload-history-refresh:hover { background: var(--bg-secondary); }
+.uh-empty { text-align: center; color: var(--text-tertiary); font-size: 13px; padding: 26px 0; }
+.uh-list { display: flex; flex-direction: column; gap: 8px; }
+.uh-item { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--glass-bg, transparent); border: 1px solid var(--border-color); border-radius: 12px; transition: border-color .15s, box-shadow .15s; }
+.uh-item:hover { border-color: color-mix(in srgb, var(--accent-blue) 45%, var(--border-color)); box-shadow: 0 2px 12px color-mix(in srgb, var(--accent-blue) 12%, transparent); }
+.uh-item.uh-disabled { opacity: .55; }
+.uh-item.uh-disabled .uh-url a { text-decoration: line-through; }
+.uh-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.uh-info { flex: 1; min-width: 0; }
+.uh-name { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uh-url { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uh-url a { color: var(--accent-blue); text-decoration: none; }
+.uh-url a:hover { text-decoration: underline; }
+.uh-meta { font-size: 12px; color: var(--text-tertiary); text-align: right; line-height: 1.5; flex-shrink: 0; }
+.uh-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.uh-btn { border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); font-size: 12px; padding: 5px 11px; border-radius: 7px; cursor: pointer; transition: all .15s; }
+.uh-btn:hover { color: var(--text-primary); background: var(--bg-secondary); }
+.uh-btn:disabled { opacity: .5; cursor: wait; }
+.uh-btn.uh-btn-danger:hover { color: var(--accent-red); border-color: color-mix(in srgb, var(--accent-red) 45%, var(--border-color)); background: color-mix(in srgb, var(--accent-red) 8%, transparent); }
+/* 悬停缩略图（默认隐藏，悬停条目时弹出） */
+.uh-thumb { position: absolute; right: 210px; top: calc(100% + 8px); z-index: 60; display: none; padding: 8px; background: var(--glass-bg, #fff); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 28px rgba(0,0,0,.16); }
+.uh-item:hover .uh-thumb { display: block; }
+.uh-thumb img { display: block; max-width: 260px; max-height: 170px; border-radius: 8px; }
+.uh-thumb-file { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 200px; padding: 16px 0; color: var(--text-secondary); font-size: 12px; word-break: break-all; text-align: center; }
+.uh-thumb-icon { font-size: 36px; line-height: 1; }
 
 /* API 密钥创建弹窗 */
 .apikey-modal-overlay {
@@ -5199,6 +5229,13 @@ body.preview-active .app-preview { display: flex; }
           </div>
           <button class="upload-again-btn" onclick="resetUpload()">再传一个</button>
         </div>
+      </div>
+      <div class="upload-history" id="uploadHistory">
+        <div class="upload-history-head">
+          <h2>上传历史</h2>
+          <button class="upload-history-refresh" onclick="loadUploadHistory()">刷新</button>
+        </div>
+        <div id="uploadHistoryBody"><div class="uh-empty">加载中...</div></div>
       </div>
     </div>
 
@@ -9514,6 +9551,7 @@ async function handleFileUpload(file) {
         urlEl.href = d.url;
         urlEl.textContent = d.url;
         _lastUploadUrl = d.url;
+        loadUploadHistory();
       }, 400);
     } else {
       throw new Error(d.error || '上传失败');
@@ -9532,6 +9570,113 @@ function copyUploadUrl() {
       btn.textContent = '已复制';
       setTimeout(() => btn.textContent = orig, 1500);
     }).catch(() => prompt('请手动复制', _lastUploadUrl));
+  }
+}
+
+// ===== 上传历史 =====
+function uhEscape(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function uhFormatSize(n) {
+  if (n == null) return '';
+  if (n < 1024) return n + ' B';
+  if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+  return (n / 1024 / 1024).toFixed(2) + ' MB';
+}
+function uhFormatDate(ts) {
+  if (!ts) return '';
+  const d = new Date(ts * 1000);
+  const p = x => String(x).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function uhTypeIcon(ct, filename) {
+  const s = (ct || '') + ' ' + (filename || '');
+  if (/^image\//.test(ct || '')) return '🖼️';
+  if (/^video\//.test(ct || '')) return '🎬';
+  if (/^audio\//.test(ct || '')) return '🎵';
+  if (/pdf/i.test(s)) return '📕';
+  if (/markdown|\.md/i.test(s)) return '📝';
+  if (/^text\/|\.txt/i.test(s)) return '📄';
+  if (/zip|compressed|\.rar|\.7z/i.test(s)) return '🗜️';
+  return '📦';
+}
+async function loadUploadHistory() {
+  const body = $('#uploadHistoryBody');
+  if (!body) return;
+  if (!state.isAuthenticated) {
+    body.innerHTML = '<div class="uh-empty">登录后可查看上传历史</div>';
+    return;
+  }
+  body.innerHTML = '<div class="uh-empty">加载中...</div>';
+  try {
+    const r = await fetch('/api/upload/history');
+    const d = await r.json();
+    if (!r.ok || !d.success) throw new Error(d.error || '加载失败');
+    const files = d.files || [];
+    if (!files.length) { body.innerHTML = '<div class="uh-empty">还没有上传过文件</div>'; return; }
+    body.innerHTML = '<div class="uh-list">' + files.map(f => {
+      const isImg = /^image\//.test(f.contentType || '');
+      const thumb = isImg
+        ? `<img src="${uhEscape(f.url)}" alt="${uhEscape(f.filename || '')}">`
+        : `<div class="uh-thumb-file"><div class="uh-thumb-icon">${uhTypeIcon(f.contentType, f.filename)}</div><div>${uhEscape(f.contentType || '未知类型')}</div></div>`;
+      return `
+      <div class="uh-item${f.disabled ? ' uh-disabled' : ''}" data-id="${uhEscape(f.id)}">
+        <div class="uh-icon">${uhTypeIcon(f.contentType, f.filename)}</div>
+        <div class="uh-info">
+          <div class="uh-name" title="${uhEscape(f.filename)}">${uhEscape(f.filename || f.id)}</div>
+          <div class="uh-url"><a href="${uhEscape(f.url)}" target="_blank" rel="noopener">${uhEscape(f.url)}</a></div>
+        </div>
+        <div class="uh-meta">${uhFormatSize(f.size)}<br>${uhFormatDate(f.created_at)}</div>
+        <div class="uh-actions">
+          <button class="uh-btn" onclick="copyHistoryUrl('${uhEscape(f.url)}', this)">复制</button>
+          <button class="uh-btn" onclick="toggleHistoryFile('${uhEscape(f.id)}', ${f.disabled ? 'false' : 'true'}, this)">${f.disabled ? '启用' : '停用'}</button>
+          <button class="uh-btn uh-btn-danger" onclick="deleteHistoryFile('${uhEscape(f.id)}', this)">删除</button>
+        </div>
+        <div class="uh-thumb">${thumb}</div>
+      </div>`;
+    }).join('') + '</div>';
+  } catch (e) {
+    body.innerHTML = '<div class="uh-empty">加载失败: ' + uhEscape(e.message) + '</div>';
+  }
+}
+function copyHistoryUrl(url, btn) {
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '已复制';
+    setTimeout(() => btn.textContent = orig, 1500);
+  }).catch(() => prompt('请手动复制', url));
+}
+async function toggleHistoryFile(id, disabled, btn) {
+  btn.disabled = true;
+  try {
+    const r = await fetch('/api/upload/toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, disabled })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.success) throw new Error(d.error || '操作失败');
+    loadUploadHistory();
+  } catch (e) {
+    alert('操作失败: ' + (e.message || '未知错误'));
+    btn.disabled = false;
+  }
+}
+async function deleteHistoryFile(id, btn) {
+  if (!confirm('确定删除该文件吗？删除后链接立即失效，不可恢复。')) return;
+  btn.disabled = true;
+  try {
+    const r = await fetch('/api/upload/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.success) throw new Error(d.error || '删除失败');
+    loadUploadHistory();
+  } catch (e) {
+    alert('删除失败: ' + (e.message || '未知错误'));
+    btn.disabled = false;
   }
 }
 
@@ -9596,6 +9741,7 @@ function switchSidebarView(view) {
     const uploadPage = $('#uploadPage');
     if (uploadPage) uploadPage.style.display = 'flex';
     resetUpload();
+    loadUploadHistory();
   } else if (view === 'resources') {
     // 资源下载页面
     if (extras) extras.hidden = true;
