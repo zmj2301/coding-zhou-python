@@ -410,13 +410,26 @@ class App(QApplication):
             self._countdown_widget.set_running_state(True)
 
     def _on_pause_clicked(self) -> None:
-        """暂停按钮点击事件"""
+        """暂停按钮点击事件（最后一分钟内禁止暂停，防止借此中断计时）"""
+        if self._is_last_minute():
+            logger.info("最后一分钟内尝试暂停，已拦截")
+            _show_balloon_notification("定时休息", "剩余不足 1 分钟，即将自动锁屏休息，无法暂停", NIIF_WARNING)
+            return
         logger.info("用户点击暂停")
         self._timer_mgr.pause()
         self._countdown_widget.set_running_state(False)
 
+    def _is_last_minute(self) -> bool:
+        """判断是否处于工作计时最后一分钟（弹出1分钟提醒后）"""
+        return (self._timer_mgr.state == TimerState.WORKING
+                and 0 < self._timer_mgr.remaining <= 60)
+
     def _on_stop_clicked(self) -> None:
-        """停止按钮点击事件"""
+        """停止按钮点击事件（最后一分钟内禁止停止）"""
+        if self._is_last_minute():
+            logger.info("最后一分钟内尝试停止，已拦截")
+            _show_balloon_notification("定时休息", "剩余不足 1 分钟，即将自动锁屏休息，无法停止", NIIF_WARNING)
+            return
         logger.info("用户点击停止")
         self._timer_mgr.stop()
         self._pending_auto_start = False
@@ -441,8 +454,11 @@ class App(QApplication):
         dlg = SettingsDialog(work_min, break_min, self._countdown_widget)
         if dlg.exec() == QDialog.DialogCode.Accepted:
             logger.debug("设置被用户接受")
-            self._timer_mgr.work_duration = dlg.work_minutes * 60
-            self._timer_mgr.break_duration = dlg.break_minutes * 60
+            # 立即生效：计时中按差值同步调整剩余时间，待机时马上刷新显示
+            self._timer_mgr.set_work_duration(dlg.work_minutes * 60)
+            self._timer_mgr.set_break_duration(dlg.break_minutes * 60)
+            if self._timer_mgr.state == TimerState.IDLE:
+                self._countdown_widget.set_idle_state(dlg.work_minutes)
             self._save_settings(dlg.work_minutes, dlg.break_minutes)
             
             # 同步保存到 config.json

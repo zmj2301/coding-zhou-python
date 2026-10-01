@@ -1,0 +1,604 @@
+[
+  {
+    "name": "__pycache__",
+    "type": "directory",
+    "path": "__pycache__",
+    "children": [
+      {
+        "name": "show_yourwindows.cpython-310.pyc",
+        "type": "file",
+        "path": "__pycache__/show_yourwindows.cpython-310.pyc",
+        "ext": ".pyc",
+        "lastModified": 1790429638079
+      },
+      {
+        "name": "show_yourwindows.cpython-38.pyc",
+        "type": "file",
+        "path": "__pycache__/show_yourwindows.cpython-38.pyc",
+        "ext": ".pyc",
+        "lastModified": 1790772384094
+      }
+    ]
+  },
+  {
+    "name": "_src",
+    "type": "directory",
+    "path": "_src",
+    "children": [
+      {
+        "name": "shots",
+        "type": "directory",
+        "path": "_src/shots",
+        "children": [
+          {
+            "name": "00-dashboard-top.png",
+            "type": "file",
+            "path": "_src/shots/00-dashboard-top.png",
+            "ext": ".png",
+            "lastModified": 1790476215414
+          },
+          {
+            "name": "00-kanban-light.png",
+            "type": "file",
+            "path": "_src/shots/00-kanban-light.png",
+            "ext": ".png",
+            "lastModified": 1790476214914
+          },
+          {
+            "name": "00-settings-light.png",
+            "type": "file",
+            "path": "_src/shots/00-settings-light.png",
+            "ext": ".png",
+            "lastModified": 1790476215920
+          },
+          {
+            "name": "01-dashboard-light.png",
+            "type": "file",
+            "path": "_src/shots/01-dashboard-light.png",
+            "ext": ".png",
+            "lastModified": 1790476204565
+          },
+          {
+            "name": "02-kanban-dark.png",
+            "type": "file",
+            "path": "_src/shots/02-kanban-dark.png",
+            "ext": ".png",
+            "lastModified": 1790476187772
+          },
+          {
+            "name": "03-import-modal.png",
+            "type": "file",
+            "path": "_src/shots/03-import-modal.png",
+            "ext": ".png",
+            "lastModified": 1790476194898
+          },
+          {
+            "name": "04-dashboard-1024.png",
+            "type": "file",
+            "path": "_src/shots/04-dashboard-1024.png",
+            "ext": ".png",
+            "lastModified": 1790476212478
+          },
+          {
+            "name": "05-kanban-3cols.png",
+            "type": "file",
+            "path": "_src/shots/05-kanban-3cols.png",
+            "ext": ".png",
+            "lastModified": 1790476201620
+          },
+          {
+            "name": "06-dashboard-empty.png",
+            "type": "file",
+            "path": "_src/shots/06-dashboard-empty.png",
+            "ext": ".png",
+            "lastModified": 1790476207503
+          },
+          {
+            "name": "07-mobile-768.png",
+            "type": "file",
+            "path": "_src/shots/07-mobile-768.png",
+            "ext": ".png",
+            "lastModified": 1790476213052
+          },
+          {
+            "name": "08-mobile-390.png",
+            "type": "file",
+            "path": "_src/shots/08-mobile-390.png",
+            "ext": ".png",
+            "lastModified": 1790476213900
+          },
+          {
+            "name": "10-calendar-week.png",
+            "type": "file",
+            "path": "_src/shots/10-calendar-week.png",
+            "ext": ".png",
+            "lastModified": 1790475718440
+          },
+          {
+            "name": "11-calendar-month.png",
+            "type": "file",
+            "path": "_src/shots/11-calendar-month.png",
+            "ext": ".png",
+            "lastModified": 1790475723986
+          },
+          {
+            "name": "12-calendar-dark.png",
+            "type": "file",
+            "path": "_src/shots/12-calendar-dark.png",
+            "ext": ".png",
+            "lastModified": 1790475729534
+          },
+          {
+            "name": "13-calendar-mobile.png",
+            "type": "file",
+            "path": "_src/shots/13-calendar-mobile.png",
+            "ext": ".png",
+            "lastModified": 1790475736836
+          },
+          {
+            "name": "14-tooltip.png",
+            "type": "file",
+            "path": "_src/shots/14-tooltip.png",
+            "ext": ".png",
+            "lastModified": 1790475733737
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "build",
+    "type": "directory",
+    "path": "build",
+    "children": [
+      {
+        "name": "日程表",
+        "type": "directory",
+        "path": "build/日程表",
+        "children": [
+          {
+            "name": "localpycs",
+            "type": "directory",
+            "path": "build/日程表/localpycs",
+            "children": [
+              {
+                "name": "pyimod01_archive.pyc",
+                "type": "file",
+                "path": "build/日程表/localpycs/pyimod01_archive.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790466393684
+              },
+              {
+                "name": "pyimod02_importers.pyc",
+                "type": "file",
+                "path": "build/日程表/localpycs/pyimod02_importers.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790466393690
+              },
+              {
+                "name": "pyimod03_ctypes.pyc",
+                "type": "file",
+                "path": "build/日程表/localpycs/pyimod03_ctypes.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790466393693
+              },
+              {
+                "name": "pyimod04_pywin32.pyc",
+                "type": "file",
+                "path": "build/日程表/localpycs/pyimod04_pywin32.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790466393695
+              },
+              {
+                "name": "struct.pyc",
+                "type": "file",
+                "path": "build/日程表/localpycs/struct.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790466393681
+              }
+            ]
+          },
+          {
+            "name": "Analysis-00.toc",
+            "type": "file",
+            "path": "build/日程表/Analysis-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790466393678
+          },
+          {
+            "name": "base_library.zip",
+            "type": "file",
+            "path": "build/日程表/base_library.zip",
+            "ext": ".zip",
+            "lastModified": 1790466158278
+          },
+          {
+            "name": "EXE-00.toc",
+            "type": "file",
+            "path": "build/日程表/EXE-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790466417962
+          },
+          {
+            "name": "PKG-00.toc",
+            "type": "file",
+            "path": "build/日程表/PKG-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790466417388
+          },
+          {
+            "name": "PYZ-00.pyz",
+            "type": "file",
+            "path": "build/日程表/PYZ-00.pyz",
+            "ext": ".pyz",
+            "lastModified": 1790466396287
+          },
+          {
+            "name": "PYZ-00.toc",
+            "type": "file",
+            "path": "build/日程表/PYZ-00.toc",
+            "ext": ".toc",
+            "lastModified": 1790466396311
+          },
+          {
+            "name": "warn-日程表.txt",
+            "type": "file",
+            "path": "build/日程表/warn-日程表.txt",
+            "ext": ".txt",
+            "lastModified": 1790466393460
+          },
+          {
+            "name": "xref-日程表.html",
+            "type": "file",
+            "path": "build/日程表/xref-日程表.html",
+            "ext": ".html",
+            "lastModified": 1790466393636
+          },
+          {
+            "name": "日程表.pkg",
+            "type": "file",
+            "path": "build/日程表/日程表.pkg",
+            "ext": ".pkg",
+            "lastModified": 1790466417367
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "dist",
+    "type": "directory",
+    "path": "dist",
+    "children": [
+      {
+        "name": "codingzhou-日程表",
+        "type": "directory",
+        "path": "dist/codingzhou-日程表",
+        "children": [
+          {
+            "name": "user_data.json",
+            "type": "file",
+            "path": "dist/codingzhou-日程表/user_data.json",
+            "ext": ".json",
+            "lastModified": 1790466643422
+          },
+          {
+            "name": "日程表.exe",
+            "type": "file",
+            "path": "dist/codingzhou-日程表/日程表.exe",
+            "ext": ".exe",
+            "lastModified": 1790466417932
+          }
+        ]
+      },
+      {
+        "name": "codingzhou-日程表.zip",
+        "type": "file",
+        "path": "dist/codingzhou-日程表.zip",
+        "ext": ".zip",
+        "lastModified": 1790467646756
+      },
+      {
+        "name": "日程表_Win7.exe",
+        "type": "file",
+        "path": "dist/日程表_Win7.exe",
+        "ext": ".exe",
+        "lastModified": 1790482860355
+      }
+    ]
+  },
+  {
+    "name": "img",
+    "type": "directory",
+    "path": "img",
+    "children": [
+      {
+        "name": "icon.png",
+        "type": "file",
+        "path": "img/icon.png",
+        "ext": ".png",
+        "lastModified": 1785829305577
+      }
+    ]
+  },
+  {
+    "name": "output",
+    "type": "directory",
+    "path": "output",
+    "children": [
+      {
+        "name": "待办中心.html",
+        "type": "file",
+        "path": "output/待办中心.html",
+        "ext": ".html",
+        "lastModified": 1790475444201
+      }
+    ]
+  },
+  {
+    "name": "win7_build",
+    "type": "directory",
+    "path": "win7_build",
+    "children": [
+      {
+        "name": "日程表_Win7",
+        "type": "directory",
+        "path": "win7_build/日程表_Win7",
+        "children": [
+          {
+            "name": "localpycs",
+            "type": "directory",
+            "path": "win7_build/日程表_Win7/localpycs",
+            "children": [
+              {
+                "name": "pyimod01_archive.pyc",
+                "type": "file",
+                "path": "win7_build/日程表_Win7/localpycs/pyimod01_archive.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790772433697
+              },
+              {
+                "name": "pyimod02_importers.pyc",
+                "type": "file",
+                "path": "win7_build/日程表_Win7/localpycs/pyimod02_importers.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790772433701
+              },
+              {
+                "name": "pyimod03_ctypes.pyc",
+                "type": "file",
+                "path": "win7_build/日程表_Win7/localpycs/pyimod03_ctypes.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790772433703
+              },
+              {
+                "name": "pyimod04_pywin32.pyc",
+                "type": "file",
+                "path": "win7_build/日程表_Win7/localpycs/pyimod04_pywin32.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790772433705
+              },
+              {
+                "name": "struct.pyc",
+                "type": "file",
+                "path": "win7_build/日程表_Win7/localpycs/struct.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790772433694
+              }
+            ]
+          },
+          {
+            "name": "base_library.zip",
+            "type": "file",
+            "path": "win7_build/日程表_Win7/base_library.zip",
+            "ext": ".zip",
+            "lastModified": 1790772408138
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "win7_dist",
+    "type": "directory",
+    "path": "win7_dist",
+    "children": [
+      {
+        "name": "日程表_Win7.exe",
+        "type": "file",
+        "path": "win7_dist/日程表_Win7.exe",
+        "ext": ".exe",
+        "lastModified": 1790772451668
+      }
+    ]
+  },
+  {
+    "name": "456.xlsx",
+    "type": "file",
+    "path": "456.xlsx",
+    "ext": ".xlsx",
+    "lastModified": 1785830343520
+  },
+  {
+    "name": "7777777.xlsx",
+    "type": "file",
+    "path": "7777777.xlsx",
+    "ext": ".xlsx",
+    "lastModified": 1790843926452
+  },
+  {
+    "name": "ai.py",
+    "type": "file",
+    "path": "ai.py",
+    "ext": ".py",
+    "lastModified": 1785830343524
+  },
+  {
+    "name": "ai_awswers.json",
+    "type": "file",
+    "path": "ai_awswers.json",
+    "ext": ".json",
+    "lastModified": 1790430247767
+  },
+  {
+    "name": "build_exe.py",
+    "type": "file",
+    "path": "build_exe.py",
+    "ext": ".py",
+    "lastModified": 1785830343526
+  },
+  {
+    "name": "build_log.txt",
+    "type": "file",
+    "path": "build_log.txt",
+    "ext": ".txt",
+    "lastModified": 1790466417944
+  },
+  {
+    "name": "combined.ico",
+    "type": "file",
+    "path": "combined.ico",
+    "ext": ".ico",
+    "lastModified": 1785829305812
+  },
+  {
+    "name": "font_test.png",
+    "type": "file",
+    "path": "font_test.png",
+    "ext": ".png",
+    "lastModified": 1790769264427
+  },
+  {
+    "name": "python-3.8.10-amd64.exe",
+    "type": "file",
+    "path": "python-3.8.10-amd64.exe",
+    "ext": ".exe",
+    "lastModified": 1790481864259
+  },
+  {
+    "name": "python3.8.10-nuget.zip",
+    "type": "file",
+    "path": "python3.8.10-nuget.zip",
+    "ext": ".zip",
+    "lastModified": 1790481779619
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1785830343523
+  },
+  {
+    "name": "requirements.txt",
+    "type": "file",
+    "path": "requirements.txt",
+    "ext": ".txt",
+    "lastModified": 1785830343529
+  },
+  {
+    "name": "show_yourwindows.py",
+    "type": "file",
+    "path": "show_yourwindows.py",
+    "ext": ".py",
+    "lastModified": 1790843926454
+  },
+  {
+    "name": "test.py",
+    "type": "file",
+    "path": "test.py",
+    "ext": ".py",
+    "lastModified": 1785830343531
+  },
+  {
+    "name": "text.xlsx",
+    "type": "file",
+    "path": "text.xlsx",
+    "ext": ".xlsx",
+    "lastModified": 1790430247770
+  },
+  {
+    "name": "user.json",
+    "type": "file",
+    "path": "user.json",
+    "ext": ".json",
+    "lastModified": 1785830343533
+  },
+  {
+    "name": "user_data.json",
+    "type": "file",
+    "path": "user_data.json",
+    "ext": ".json",
+    "lastModified": 1790843926455
+  },
+  {
+    "name": "verify_hover.png",
+    "type": "file",
+    "path": "verify_hover.png",
+    "ext": ".png",
+    "lastModified": 1790467067536
+  },
+  {
+    "name": "verify_panel.png",
+    "type": "file",
+    "path": "verify_panel.png",
+    "ext": ".png",
+    "lastModified": 1790467130174
+  },
+  {
+    "name": "verify_screenshot.png",
+    "type": "file",
+    "path": "verify_screenshot.png",
+    "ext": ".png",
+    "lastModified": 1790466766022
+  },
+  {
+    "name": "verify_window.png",
+    "type": "file",
+    "path": "verify_window.png",
+    "ext": ".png",
+    "lastModified": 1790466805918
+  },
+  {
+    "name": "window_icon.png",
+    "type": "file",
+    "path": "window_icon.png",
+    "ext": ".png",
+    "lastModified": 1785829305581
+  },
+  {
+    "name": "work.xlsx",
+    "type": "file",
+    "path": "work.xlsx",
+    "ext": ".xlsx",
+    "lastModified": 1785830343535
+  },
+  {
+    "name": "安装指南.md",
+    "type": "file",
+    "path": "安装指南.md",
+    "ext": ".md",
+    "lastModified": 1785830343536
+  },
+  {
+    "name": "日程表.spec",
+    "type": "file",
+    "path": "日程表.spec",
+    "ext": ".spec",
+    "lastModified": 1790466151051
+  },
+  {
+    "name": "日程表_Win7.spec",
+    "type": "file",
+    "path": "日程表_Win7.spec",
+    "ext": ".spec",
+    "lastModified": 1790772405370
+  },
+  {
+    "name": "测试待办数据.xlsx",
+    "type": "file",
+    "path": "测试待办数据.xlsx",
+    "ext": ".xlsx",
+    "lastModified": 1790466706013
+  }
+]

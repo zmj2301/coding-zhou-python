@@ -1,5 +1,30 @@
 ﻿[
     {
+        "date": "2026-10-01",
+        "title": "v2.6.7 收尾：移除调试日志 + 根治 build.py 双 index.html 隐患",
+        "version": "2.6.8",
+        "changes": [
+            "移除 /api/projects/tree 路由中排查时遗留的调试 console.log（保留正常错误日志）",
+            "首页 index.html 单一事实源：规范源为 code-explorer/index.html，根目录只是副本",
+            "build.py 构建时校验两份 index.html 一致性，不一致直接中止构建（防止再次部署旧版首页）",
+            "AGENTS.md 新增 3.6 节记录单一事实源规则与同步命令",
+            "从线上站点恢复被意外回退的 v2.6.7 未提交改动（index.html / python 页 / changelog）"
+        ]
+    },
+    {
+        "date": "2026-09-30",
+        "title": "Python 页面改造为项目广场 + 在线编辑器",
+        "version": "2.6.7",
+        "changes": [
+            "Python 页面 (/python/) 从空白编辑器改造为项目广场样式，支持公开访问无需登录",
+            "项目卡片网格展示（55+ 个 Python 项目），带分类筛选（游戏/AI/工具/其他）",
+            "点击项目卡片直接进入集成 Monaco 编辑器 + 文件树 + 终端 + README 预览",
+            "项目列表改用公开的 /api/projects/tree?path=Python 接口（替代需要登录的 /api/files/tree）",
+            "修复 Worker /api/projects/tree 带斜杠 path 的 ECS 代理问题（添加调试日志）",
+            "更新文件列表排序：codinghou 子项目独立展示为卡片"
+        ]
+    },
+    {
         "date": "2026-09-25",
         "title": "API 密钥管理页改版为卡片式 SPA 视图",
         "version": "2.6.6",

@@ -171,6 +171,18 @@ nohup python3 ecs-server.py > /tmp/ecs.log 2>&1 &
 ⑤ 清除所有 KV 缓存（cache: 前缀）
 ```
 
+### 3.6 ⚠ 首页 index.html 单一事实源规则（v2.6.8 起）
+
+**规范源是 `code-explorer/index.html`**，根目录 `index.html` 只是它的副本。build.py 以 `code-explorer/index.html` 为准构建，且**两份不一致会直接中止构建**（v2.6.7 曾因构建复制了根目录旧副本，连续 3 次部署的都是旧代码）。
+
+修改首页时只改 `code-explorer/index.html`，然后同步根目录副本：
+
+```bash
+cp code-explorer/index.html index.html
+```
+
+console.html / feedback.html 目前只在根目录存在，无此问题。
+
 ---
 
 ## 4. 版本号与 changelog.json 规范

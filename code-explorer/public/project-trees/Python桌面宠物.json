@@ -120,6 +120,13 @@
             "path": "relax_exe/__pycache__/app.cpython-312.pyc",
             "ext": ".pyc",
             "lastModified": 1788055737491
+          },
+          {
+            "name": "app.cpython-313.pyc",
+            "type": "file",
+            "path": "relax_exe/__pycache__/app.cpython-313.pyc",
+            "ext": ".pyc",
+            "lastModified": 1790844155664
           }
         ]
       },
@@ -180,70 +187,70 @@
                 "type": "file",
                 "path": "relax_exe/build/定时休息/Analysis-00.toc",
                 "ext": ".toc",
-                "lastModified": 1788004789328
+                "lastModified": 1790844639132
               },
               {
                 "name": "base_library.zip",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/base_library.zip",
                 "ext": ".zip",
-                "lastModified": 1788004778040
+                "lastModified": 1790844631919
               },
               {
                 "name": "EXE-00.toc",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/EXE-00.toc",
                 "ext": ".toc",
-                "lastModified": 1788004841783
+                "lastModified": 1790844692388
               },
               {
                 "name": "PKG-00.toc",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/PKG-00.toc",
                 "ext": ".toc",
-                "lastModified": 1788004840716
+                "lastModified": 1790844690342
               },
               {
                 "name": "PYZ-00.pyz",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/PYZ-00.pyz",
                 "ext": ".pyz",
-                "lastModified": 1788004789452
+                "lastModified": 1790844639269
               },
               {
                 "name": "PYZ-00.toc",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/PYZ-00.toc",
                 "ext": ".toc",
-                "lastModified": 1788004789454
+                "lastModified": 1790844639274
               },
               {
                 "name": "qt.conf",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/qt.conf",
                 "ext": ".conf",
-                "lastModified": 1788004745460
+                "lastModified": 1790844600977
               },
               {
                 "name": "warn-定时休息.txt",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/warn-定时休息.txt",
                 "ext": ".txt",
-                "lastModified": 1788004789256
+                "lastModified": 1790844639047
               },
               {
                 "name": "xref-定时休息.html",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/xref-定时休息.html",
                 "ext": ".html",
-                "lastModified": 1788004789269
+                "lastModified": 1790844639064
               },
               {
                 "name": "定时休息.pkg",
                 "type": "file",
                 "path": "relax_exe/build/定时休息/定时休息.pkg",
                 "ext": ".pkg",
-                "lastModified": 1788004840657
+                "lastModified": 1790844690278
               }
             ]
           }
@@ -286,6 +293,13 @@
                 "path": "relax_exe/core/__pycache__/timer_manager.cpython-312.pyc",
                 "ext": ".pyc",
                 "lastModified": 1787993389360
+              },
+              {
+                "name": "timer_manager.cpython-313.pyc",
+                "type": "file",
+                "path": "relax_exe/core/__pycache__/timer_manager.cpython-313.pyc",
+                "ext": ".pyc",
+                "lastModified": 1790844155668
               }
             ]
           },
@@ -308,14 +322,28 @@
             "type": "file",
             "path": "relax_exe/core/reporter.py",
             "ext": ".py",
-            "lastModified": 1788005199505
+            "lastModified": 1790430246331
           },
           {
             "name": "timer_manager.py",
             "type": "file",
             "path": "relax_exe/core/timer_manager.py",
             "ext": ".py",
-            "lastModified": 1785830340002
+            "lastModified": 1790844122288
+          }
+        ]
+      },
+      {
+        "name": "dist",
+        "type": "directory",
+        "path": "relax_exe/dist",
+        "children": [
+          {
+            "name": "定时休息.exe",
+            "type": "file",
+            "path": "relax_exe/dist/定时休息.exe",
+            "ext": ".exe",
+            "lastModified": 1790844692231
           }
         ]
       },
@@ -1281,7 +1309,42 @@
             "type": "file",
             "path": "relax_exe/logs/app_20260925_154740.log",
             "ext": ".log",
-            "lastModified": 1790331017100
+            "lastModified": 1790336390122
+          },
+          {
+            "name": "app_20260926_162455.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260926_162455.log",
+            "ext": ".log",
+            "lastModified": 1790418968428
+          },
+          {
+            "name": "app_20260927_073550.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260927_073550.log",
+            "ext": ".log",
+            "lastModified": 1790474420634
+          },
+          {
+            "name": "app_20260930_173416.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20260930_173416.log",
+            "ext": ".log",
+            "lastModified": 1790768249881
+          },
+          {
+            "name": "app_20261001_131022.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20261001_131022.log",
+            "ext": ".log",
+            "lastModified": 1790843399482
+          },
+          {
+            "name": "app_20261001_163257.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20261001_163257.log",
+            "ext": ".log",
+            "lastModified": 1790844211379
           }
         ]
       },
@@ -1381,7 +1444,7 @@
         "type": "file",
         "path": "relax_exe/app.py",
         "ext": ".py",
-        "lastModified": 1788005438453
+        "lastModified": 1790844146936
       },
       {
         "name": "main.py",
@@ -1432,7 +1495,7 @@
     "type": "file",
     "path": "config.json",
     "ext": ".json",
-    "lastModified": 1790249331336
+    "lastModified": 1790843926272
   },
   {
     "name": "flip_countdown_preview.html",

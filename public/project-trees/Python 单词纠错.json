@@ -1,0 +1,142 @@
+[
+  {
+    "name": "english-words-master",
+    "type": "directory",
+    "path": "english-words-master",
+    "children": [
+      {
+        "name": "scripts",
+        "type": "directory",
+        "path": "english-words-master/scripts",
+        "children": [
+          {
+            "name": "create_json.py",
+            "type": "file",
+            "path": "english-words-master/scripts/create_json.py",
+            "ext": ".py",
+            "lastModified": 1785830339449
+          },
+          {
+            "name": "gen.sh",
+            "type": "file",
+            "path": "english-words-master/scripts/gen.sh",
+            "ext": ".sh",
+            "lastModified": 1785830339449
+          }
+        ]
+      },
+      {
+        "name": "CONTRIBUTING.md",
+        "type": "file",
+        "path": "english-words-master/CONTRIBUTING.md",
+        "ext": ".md",
+        "lastModified": 1785830339446
+      },
+      {
+        "name": "LICENSE.md",
+        "type": "file",
+        "path": "english-words-master/LICENSE.md",
+        "ext": ".md",
+        "lastModified": 1785830339447
+      },
+      {
+        "name": "read_english_dictionary.py",
+        "type": "file",
+        "path": "english-words-master/read_english_dictionary.py",
+        "ext": ".py",
+        "lastModified": 1785830339449
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "english-words-master/README.md",
+        "ext": ".md",
+        "lastModified": 1785830339448
+      },
+      {
+        "name": "uk-us-dict.txt",
+        "type": "file",
+        "path": "english-words-master/uk-us-dict.txt",
+        "ext": ".txt",
+        "lastModified": 1785830339450
+      },
+      {
+        "name": "word_list_moby_all_moby_words.icss.yaml",
+        "type": "file",
+        "path": "english-words-master/word_list_moby_all_moby_words.icss.yaml",
+        "ext": ".yaml",
+        "lastModified": 1785830339452
+      },
+      {
+        "name": "word_list_moby_credits.txt",
+        "type": "file",
+        "path": "english-words-master/word_list_moby_credits.txt",
+        "ext": ".txt",
+        "lastModified": 1785830339452
+      },
+      {
+        "name": "word_list_moby_README.txt",
+        "type": "file",
+        "path": "english-words-master/word_list_moby_README.txt",
+        "ext": ".txt",
+        "lastModified": 1785830339451
+      },
+      {
+        "name": "words.txt",
+        "type": "file",
+        "path": "english-words-master/words.txt",
+        "ext": ".txt",
+        "lastModified": 1785830339478
+      },
+      {
+        "name": "words_dictionary.json",
+        "type": "file",
+        "path": "english-words-master/words_dictionary.json",
+        "ext": ".json",
+        "lastModified": 1785830339503
+      }
+    ]
+  },
+  {
+    "name": "main.py",
+    "type": "file",
+    "path": "main.py",
+    "ext": ".py",
+    "lastModified": 1785830339505
+  },
+  {
+    "name": "README.md",
+    "type": "file",
+    "path": "README.md",
+    "ext": ".md",
+    "lastModified": 1785830339446
+  },
+  {
+    "name": "test_performance.py",
+    "type": "file",
+    "path": "test_performance.py",
+    "ext": ".py",
+    "lastModified": 1785830339506
+  },
+  {
+    "name": "text.txt",
+    "type": "file",
+    "path": "text.txt",
+    "ext": ".txt",
+    "lastModified": 1785830339507
+  },
+  {
+    "name": "words.txt",
+    "type": "file",
+    "path": "words.txt",
+    "ext": ".txt",
+    "lastModified": 1785830339535
+  },
+  {
+    "name": "words_alpha.txt",
+    "type": "file",
+    "path": "words_alpha.txt",
+    "ext": ".txt",
+    "lastModified": 1785830339554
+  }
+]
