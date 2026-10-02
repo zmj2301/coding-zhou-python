@@ -1,5 +1,17 @@
 ﻿[
     {
+        "date": "2026-10-03",
+        "title": "修复上传文件打开链接直接下载：按扩展名推断 MIME + Office 文档在线预览",
+        "version": "2.7.2",
+        "changes": [
+            "根因：上传时 file.type 为空（Windows 上 .md/.csv 等未注册 MIME）会存成 application/octet-stream，浏览器不认识只能下载",
+            "新增按扩展名推断 MIME（覆盖 md/txt/csv/pdf/图片/音视频/Office 等 30+ 种），上传与访问双端生效，历史文件无需重传",
+            "文本类自动补 charset=utf-8，避免中文乱码",
+            "Office 文档（doc/docx/xls/xlsx/ppt/pptx）返回内嵌 Office Online 的在线预览页，?raw=1 获取原文件，页面提供「下载原文件」兜底",
+            "上传历史列表补充 Word/Excel/PPT 类型图标"
+        ]
+    },
+    {
         "date": "2026-10-01",
         "title": "左侧导航新增「本地启动器」入口：一键打开本机 launcher",
         "version": "2.7.1",

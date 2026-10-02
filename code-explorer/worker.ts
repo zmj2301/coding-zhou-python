@@ -1659,7 +1659,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       // 生成 8 位随机子域名标识
       const id = Math.random().toString(36).slice(2, 10);
       const filename = file.name;
-      const contentType = file.type || 'application/octet-stream';
+      // 浏览器 file.type 常为空（如 .md/.csv 在未注册 MIME 的系统上），需按扩展名兜底推断
+      const contentType = detectContentType(file.name, file.type);
 
       // 文件内容存 KV（ArrayBuffer），元数据通过 metadata 附加
       const buf = await file.arrayBuffer();
@@ -2249,6 +2250,75 @@ async function handleFileSubdomain(request: Request, env: Env, hostname: string)
   return serveUploadedFile(request, env, id);
 }
 
+// ------------------------------------------------------------
+// 上传文件 MIME 推断 + Office 在线预览
+// ------------------------------------------------------------
+
+const EXT_MIME: Record<string, string> = {
+  md: 'text/markdown', markdown: 'text/markdown',
+  txt: 'text/plain', log: 'text/plain',
+  csv: 'text/csv',
+  json: 'application/json',
+  xml: 'application/xml',
+  html: 'text/html', htm: 'text/html',
+  css: 'text/css', js: 'text/javascript', ts: 'text/plain', py: 'text/plain',
+  pdf: 'application/pdf',
+  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif',
+  webp: 'image/webp', svg: 'image/svg+xml', bmp: 'image/bmp', ico: 'image/x-icon',
+  mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg',
+  mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ppt: 'application/vnd.ms-powerpoint',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  zip: 'application/zip', rar: 'application/vnd.rar', '7z': 'application/x-7z-compressed',
+};
+
+// 浏览器无法原生渲染、只能下载的格式 → 走在线预览页
+const OFFICE_PREVIEW_EXT = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+
+function fileExt(filename: string): string {
+  const name = (filename || '').toLowerCase();
+  return name.includes('.') ? (name.split('.').pop() || '') : '';
+}
+
+// declared（浏览器给的 file.type）为空或 octet-stream 时，按扩展名兜底
+function detectContentType(filename: string, declared?: string): string {
+  const t = (declared || '').trim();
+  if (t && t !== 'application/octet-stream') return t;
+  return EXT_MIME[fileExt(filename)] || (t || 'application/octet-stream');
+}
+
+function htmlEscape(s: string): string {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Office 文档：返回内嵌 Office Online 预览的页面（原文件用 ?raw=1 获取）
+function officePreviewPage(rawUrl: string, filename: string): Response {
+  const src = encodeURIComponent(rawUrl);
+  const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${htmlEscape(filename)} - 在线预览</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;background:#f5f6f8;color:#222;height:100vh;display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e6e8eb}
+.name{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl{font-size:13px;color:#0060df;text-decoration:none;border:1px solid #d7dbe0;padding:5px 12px;border-radius:7px;white-space:nowrap}
+.dl:hover{background:#f0f4ff}
+iframe{flex:1;width:100%;border:0;background:#fff}
+.tip{padding:8px 16px;font-size:12px;color:#888;background:#fff;border-top:1px solid #e6e8eb}
+</style></head><body>
+<div class="bar"><span class="name">${htmlEscape(filename)}</span><a class="dl" href="${htmlEscape(rawUrl)}" download>下载原文件</a></div>
+<iframe src="https://view.officeapps.live.com/op/view.aspx?src=${src}" allowfullscreen></iframe>
+<div class="tip">预览由 Office Online 提供；若加载不出来（网络受限），点右上角「下载原文件」。</div>
+</body></html>`;
+  return new Response(html, {
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
+  });
+}
+
 async function handleFileById(request: Request, env: Env, id: string): Promise<Response> {
   return serveUploadedFile(request, env, id);
 }
@@ -2272,10 +2342,27 @@ async function serveUploadedFile(request: Request, env: Env, id: string): Promis
     });
   }
 
+  const filename = meta.filename || id;
+  // 已上传的历史文件同理支持：存的类型不可用时按文件名重新推断
+  let contentType = detectContentType(filename, meta.contentType);
+
+  // Office 文档：浏览器无法原生渲染，默认返回在线预览页（?raw=1 获取原文件）
+  const wantRaw = ['1', 'true', 'yes'].includes(
+    (new URL(request.url).searchParams.get('raw') || '').toLowerCase()
+  );
+  if (!wantRaw && OFFICE_PREVIEW_EXT.includes(fileExt(filename))) {
+    return officePreviewPage(`https://codingzhou.top/f/${id}?raw=1`, filename);
+  }
+
+  // 文本类补 charset，避免中文乱码
+  if (/^(text\/|application\/(json|xml)|image\/svg\+xml)/.test(contentType) && !/charset=/i.test(contentType)) {
+    contentType += '; charset=utf-8';
+  }
+
   const headers = new Headers();
-  headers.set('Content-Type', meta.contentType || 'application/octet-stream');
+  headers.set('Content-Type', contentType);
   headers.set('Cache-Control', 'public, max-age=31536000');
-  headers.set('Content-Disposition', `inline; filename="${encodeURIComponent(meta.filename || id)}"`);
+  headers.set('Content-Disposition', `inline; filename="${encodeURIComponent(filename)}"`);
   headers.set('Access-Control-Allow-Origin', '*');
 
   return new Response(obj.value, { headers });
