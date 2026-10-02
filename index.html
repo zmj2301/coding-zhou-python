@@ -10133,6 +10133,9 @@ function uhTypeIcon(ct, filename) {
   if (/^image\//.test(ct || '')) return '🖼️';
   if (/^video\//.test(ct || '')) return '🎬';
   if (/^audio\//.test(ct || '')) return '🎵';
+  if (/word|\.docx?$/i.test(s)) return '📄';
+  if (/excel|sheet|\.xlsx?$/i.test(s)) return '📊';
+  if (/powerpoint|presentation|\.pptx?$/i.test(s)) return '📽️';
   if (/pdf/i.test(s)) return '📕';
   if (/markdown|\.md/i.test(s)) return '📝';
   if (/^text\/|\.txt/i.test(s)) return '📄';

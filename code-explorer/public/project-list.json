@@ -318,8 +318,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "ai.py",
-    "fileCount": 101,
-    "lastModified": 1790860927708,
+    "fileCount": 131,
+    "lastModified": 1790933342353,
     "themeColor": "hsl(105, 37%, 60%)",
     "popupUrl": null
   },
@@ -450,7 +450,7 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 210,
+    "fileCount": 217,
     "lastModified": 1790845527931,
     "themeColor": "hsl(202, 42%, 65%)",
     "popupUrl": null

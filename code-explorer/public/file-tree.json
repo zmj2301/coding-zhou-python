@@ -40738,13 +40738,20 @@
     "type": "directory",
     "path": "python 日程表",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1790860927708,
+    "lastModified": 1790933342353,
     "children": [
       {
         "name": "__pycache__",
         "type": "directory",
         "path": "python 日程表/__pycache__",
         "children": [
+          {
+            "name": "make_delivery.cpython-313.pyc",
+            "type": "file",
+            "path": "python 日程表/__pycache__/make_delivery.cpython-313.pyc",
+            "ext": ".pyc",
+            "lastModified": 1790905486893
+          },
           {
             "name": "show_yourwindows.cpython-310.pyc",
             "type": "file",
@@ -40764,7 +40771,7 @@
             "type": "file",
             "path": "python 日程表/__pycache__/show_yourwindows.cpython-313.pyc",
             "ext": ".pyc",
-            "lastModified": 1790850699765
+            "lastModified": 1790929637106
           },
           {
             "name": "show_yourwindows.cpython-38.pyc",
@@ -40772,6 +40779,13 @@
             "path": "python 日程表/__pycache__/show_yourwindows.cpython-38.pyc",
             "ext": ".pyc",
             "lastModified": 1790860779584
+          },
+          {
+            "name": "verify_resize_grip.cpython-313.pyc",
+            "type": "file",
+            "path": "python 日程表/__pycache__/verify_resize_grip.cpython-313.pyc",
+            "ext": ".pyc",
+            "lastModified": 1790929079603
           }
         ]
       },
@@ -41021,6 +41035,146 @@
         ]
       },
       {
+        "name": "diag_build",
+        "type": "directory",
+        "path": "python 日程表/diag_build",
+        "children": [
+          {
+            "name": "诊断工具",
+            "type": "directory",
+            "path": "python 日程表/diag_build/诊断工具",
+            "children": [
+              {
+                "name": "localpycs",
+                "type": "directory",
+                "path": "python 日程表/diag_build/诊断工具/localpycs",
+                "children": [
+                  {
+                    "name": "pyimod01_archive.pyc",
+                    "type": "file",
+                    "path": "python 日程表/diag_build/诊断工具/localpycs/pyimod01_archive.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790933161250
+                  },
+                  {
+                    "name": "pyimod02_importers.pyc",
+                    "type": "file",
+                    "path": "python 日程表/diag_build/诊断工具/localpycs/pyimod02_importers.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790933161265
+                  },
+                  {
+                    "name": "pyimod03_ctypes.pyc",
+                    "type": "file",
+                    "path": "python 日程表/diag_build/诊断工具/localpycs/pyimod03_ctypes.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790933161278
+                  },
+                  {
+                    "name": "pyimod04_pywin32.pyc",
+                    "type": "file",
+                    "path": "python 日程表/diag_build/诊断工具/localpycs/pyimod04_pywin32.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790933161290
+                  },
+                  {
+                    "name": "struct.pyc",
+                    "type": "file",
+                    "path": "python 日程表/diag_build/诊断工具/localpycs/struct.pyc",
+                    "ext": ".pyc",
+                    "lastModified": 1790933161236
+                  }
+                ]
+              },
+              {
+                "name": "Analysis-00.toc",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/Analysis-00.toc",
+                "ext": ".toc",
+                "lastModified": 1790933161229
+              },
+              {
+                "name": "base_library.zip",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/base_library.zip",
+                "ext": ".zip",
+                "lastModified": 1790933156253
+              },
+              {
+                "name": "EXE-00.toc",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/EXE-00.toc",
+                "ext": ".toc",
+                "lastModified": 1790933163247
+              },
+              {
+                "name": "PKG-00.toc",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/PKG-00.toc",
+                "ext": ".toc",
+                "lastModified": 1790933163097
+              },
+              {
+                "name": "PYZ-00.pyz",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/PYZ-00.pyz",
+                "ext": ".pyz",
+                "lastModified": 1790933161371
+              },
+              {
+                "name": "PYZ-00.toc",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/PYZ-00.toc",
+                "ext": ".toc",
+                "lastModified": 1790933161376
+              },
+              {
+                "name": "warn-诊断工具.txt",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/warn-诊断工具.txt",
+                "ext": ".txt",
+                "lastModified": 1790933161207
+              },
+              {
+                "name": "xref-诊断工具.html",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/xref-诊断工具.html",
+                "ext": ".html",
+                "lastModified": 1790933161225
+              },
+              {
+                "name": "日程表_诊断工具.pkg",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/日程表_诊断工具.pkg",
+                "ext": ".pkg",
+                "lastModified": 1790933163094
+              },
+              {
+                "name": "诊断工具.exe.manifest",
+                "type": "file",
+                "path": "python 日程表/diag_build/诊断工具/诊断工具.exe.manifest",
+                "ext": ".manifest",
+                "lastModified": 1790933161385
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "diag_dist",
+        "type": "directory",
+        "path": "python 日程表/diag_dist",
+        "children": [
+          {
+            "name": "日程表_诊断工具.exe",
+            "type": "file",
+            "path": "python 日程表/diag_dist/日程表_诊断工具.exe",
+            "ext": ".exe",
+            "lastModified": 1790933163241
+          }
+        ]
+      },
+      {
         "name": "dist",
         "type": "directory",
         "path": "python 日程表/dist",
@@ -41147,28 +41301,28 @@
                 "type": "file",
                 "path": "python 日程表/win7_build/日程表_Win7/Analysis-00.toc",
                 "ext": ".toc",
-                "lastModified": 1790860897905
+                "lastModified": 1790933314894
               },
               {
                 "name": "base_library.zip",
                 "type": "file",
                 "path": "python 日程表/win7_build/日程表_Win7/base_library.zip",
                 "ext": ".zip",
-                "lastModified": 1790860851387
+                "lastModified": 1790933274733
               },
               {
                 "name": "EXE-00.toc",
                 "type": "file",
                 "path": "python 日程表/win7_build/日程表_Win7/EXE-00.toc",
                 "ext": ".toc",
-                "lastModified": 1790860917081
+                "lastModified": 1790933334399
               },
               {
                 "name": "PKG-00.toc",
                 "type": "file",
                 "path": "python 日程表/win7_build/日程表_Win7/PKG-00.toc",
                 "ext": ".toc",
-                "lastModified": 1790860916521
+                "lastModified": 1790933333854
               },
               {
                 "name": "PYZ-00.pyz",
@@ -41203,28 +41357,28 @@
                 "type": "file",
                 "path": "python 日程表/win7_build/日程表_Win7/warn-日程表_Win7.txt",
                 "ext": ".txt",
-                "lastModified": 1790860897786
+                "lastModified": 1790933314762
               },
               {
                 "name": "xref-日程表_Win7.html",
                 "type": "file",
                 "path": "python 日程表/win7_build/日程表_Win7/xref-日程表_Win7.html",
                 "ext": ".html",
-                "lastModified": 1790860897875
+                "lastModified": 1790933314861
               },
               {
                 "name": "日程表_Win7.exe.manifest",
                 "type": "file",
                 "path": "python 日程表/win7_build/日程表_Win7/日程表_Win7.exe.manifest",
                 "ext": ".manifest",
-                "lastModified": 1790860898691
+                "lastModified": 1790933314954
               },
               {
                 "name": "日程表_Win7.pkg",
                 "type": "file",
                 "path": "python 日程表/win7_build/日程表_Win7/日程表_Win7.pkg",
                 "ext": ".pkg",
-                "lastModified": 1790860916503
+                "lastModified": 1790933333832
               }
             ]
           }
@@ -41254,7 +41408,7 @@
             "type": "file",
             "path": "python 日程表/win7_dist/日程表_Win7.exe",
             "ext": ".exe",
-            "lastModified": 1790860917047
+            "lastModified": 1790933334368
           }
         ]
       },
@@ -41322,6 +41476,13 @@
         "lastModified": 1790769264427
       },
       {
+        "name": "frames_extract.py",
+        "type": "file",
+        "path": "python 日程表/frames_extract.py",
+        "ext": ".py",
+        "lastModified": 1790901789890
+      },
+      {
         "name": "inspect_exe.py",
         "type": "file",
         "path": "python 日程表/inspect_exe.py",
@@ -41347,7 +41508,7 @@
         "type": "file",
         "path": "python 日程表/make_delivery.py",
         "ext": ".py",
-        "lastModified": 1790860847192
+        "lastModified": 1790932345957
       },
       {
         "name": "poke_calendar.py",
@@ -41417,7 +41578,7 @@
         "type": "file",
         "path": "python 日程表/show_yourwindows.py",
         "ext": ".py",
-        "lastModified": 1790860768580
+        "lastModified": 1790932784748
       },
       {
         "name": "test.py",
@@ -41445,7 +41606,21 @@
         "type": "file",
         "path": "python 日程表/user_data.json",
         "ext": ".json",
-        "lastModified": 1790859060312
+        "lastModified": 1790933210684
+      },
+      {
+        "name": "verify_diag_tool.py",
+        "type": "file",
+        "path": "python 日程表/verify_diag_tool.py",
+        "ext": ".py",
+        "lastModified": 1790933092422
+      },
+      {
+        "name": "verify_events_full.py",
+        "type": "file",
+        "path": "python 日程表/verify_events_full.py",
+        "ext": ".py",
+        "lastModified": 1790928880310
       },
       {
         "name": "verify_expiry.py",
@@ -41473,7 +41648,7 @@
         "type": "file",
         "path": "python 日程表/verify_iconsize.py",
         "ext": ".py",
-        "lastModified": 1790858993674
+        "lastModified": 1790902829190
       },
       {
         "name": "verify_mainwindow_expired.py",
@@ -41483,11 +41658,32 @@
         "lastModified": 1790860815810
       },
       {
+        "name": "verify_manual_priority.py",
+        "type": "file",
+        "path": "python 日程表/verify_manual_priority.py",
+        "ext": ".py",
+        "lastModified": 1790932650565
+      },
+      {
         "name": "verify_panel.png",
         "type": "file",
         "path": "python 日程表/verify_panel.png",
         "ext": ".png",
         "lastModified": 1790467130174
+      },
+      {
+        "name": "verify_quit_flow.py",
+        "type": "file",
+        "path": "python 日程表/verify_quit_flow.py",
+        "ext": ".py",
+        "lastModified": 1790930181385
+      },
+      {
+        "name": "verify_resize_grip.py",
+        "type": "file",
+        "path": "python 日程表/verify_resize_grip.py",
+        "ext": ".py",
+        "lastModified": 1790929856888
       },
       {
         "name": "verify_screenshot.png",
@@ -41497,11 +41693,25 @@
         "lastModified": 1790466766022
       },
       {
+        "name": "verify_settings_location.py",
+        "type": "file",
+        "path": "python 日程表/verify_settings_location.py",
+        "ext": ".py",
+        "lastModified": 1790928920361
+      },
+      {
+        "name": "verify_settings_preserve.py",
+        "type": "file",
+        "path": "python 日程表/verify_settings_preserve.py",
+        "ext": ".py",
+        "lastModified": 1790928880309
+      },
+      {
         "name": "verify_textsize_isolated.py",
         "type": "file",
         "path": "python 日程表/verify_textsize_isolated.py",
         "ext": ".py",
-        "lastModified": 1790858985241
+        "lastModified": 1790902839434
       },
       {
         "name": "verify_window.png",
@@ -41567,11 +41777,53 @@
         "lastModified": 1790860927661
       },
       {
+        "name": "日程表_Win7_20261002.zip",
+        "type": "file",
+        "path": "python 日程表/日程表_Win7_20261002.zip",
+        "ext": ".zip",
+        "lastModified": 1790930343942
+      },
+      {
+        "name": "日程表_Win7_20261002_1729.zip",
+        "type": "file",
+        "path": "python 日程表/日程表_Win7_20261002_1729.zip",
+        "ext": ".zip",
+        "lastModified": 1790933342302
+      },
+      {
         "name": "测试待办数据.xlsx",
         "type": "file",
         "path": "python 日程表/测试待办数据.xlsx",
         "ext": ".xlsx",
         "lastModified": 1790466706013
+      },
+      {
+        "name": "诊断工具.py",
+        "type": "file",
+        "path": "python 日程表/诊断工具.py",
+        "ext": ".py",
+        "lastModified": 1790933043999
+      },
+      {
+        "name": "诊断工具.spec",
+        "type": "file",
+        "path": "python 日程表/诊断工具.spec",
+        "ext": ".spec",
+        "lastModified": 1790933134771
+      },
+      {
+        "name": "诊断报告_20261002_171050.txt",
+        "type": "file",
+        "path": "python 日程表/诊断报告_20261002_171050.txt",
+        "ext": ".txt",
+        "lastModified": 1790932250190
+      },
+      {
+        "name": "诊断报告_20261002_172239.txt",
+        "type": "file",
+        "path": "python 日程表/诊断报告_20261002_172239.txt",
+        "ext": ".txt",
+        "lastModified": 1790932959969
       }
     ]
   },
@@ -43199,14 +43451,14 @@
                 "type": "file",
                 "path": "Python桌面宠物/deskpet/__pycache__/config.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1787993389147
+                "lastModified": 1790901325542
               },
               {
                 "name": "pet_window.cpython-312.pyc",
                 "type": "file",
                 "path": "Python桌面宠物/deskpet/__pycache__/pet_window.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1787993389168
+                "lastModified": 1790901325563
               },
               {
                 "name": "size_settings_dialog.cpython-312.pyc",
@@ -43290,7 +43542,7 @@
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/__pycache__/app.cpython-312.pyc",
                 "ext": ".pyc",
-                "lastModified": 1788055737491
+                "lastModified": 1790901325678
               },
               {
                 "name": "app.cpython-313.pyc",
@@ -43568,7 +43820,7 @@
                     "type": "file",
                     "path": "Python桌面宠物/relax_exe/core/__pycache__/logger.cpython-312.pyc",
                     "ext": ".pyc",
-                    "lastModified": 1787993389347
+                    "lastModified": 1790901325689
                   },
                   {
                     "name": "reporter.cpython-310.pyc",
@@ -43582,7 +43834,7 @@
                     "type": "file",
                     "path": "Python桌面宠物/relax_exe/core/__pycache__/timer_manager.cpython-312.pyc",
                     "ext": ".pyc",
-                    "lastModified": 1787993389360
+                    "lastModified": 1790901325699
                   },
                   {
                     "name": "timer_manager.cpython-313.pyc",
@@ -43646,6 +43898,41 @@
                     "path": "Python桌面宠物/relax_exe/dist/logs/app_20261001_171148.log",
                     "ext": ".log",
                     "lastModified": 1790861113341
+                  },
+                  {
+                    "name": "app_20261002_083550.log",
+                    "type": "file",
+                    "path": "Python桌面宠物/relax_exe/dist/logs/app_20261002_083550.log",
+                    "ext": ".log",
+                    "lastModified": 1790914310305
+                  },
+                  {
+                    "name": "app_20261002_083824.log",
+                    "type": "file",
+                    "path": "Python桌面宠物/relax_exe/dist/logs/app_20261002_083824.log",
+                    "ext": ".log",
+                    "lastModified": 1790901505593
+                  },
+                  {
+                    "name": "app_20261002_153356.log",
+                    "type": "file",
+                    "path": "Python桌面宠物/relax_exe/dist/logs/app_20261002_153356.log",
+                    "ext": ".log",
+                    "lastModified": 1790939319958
+                  },
+                  {
+                    "name": "app_20261002_164609.log",
+                    "type": "file",
+                    "path": "Python桌面宠物/relax_exe/dist/logs/app_20261002_164609.log",
+                    "ext": ".log",
+                    "lastModified": 1790939859722
+                  },
+                  {
+                    "name": "app_20261003_071128.log",
+                    "type": "file",
+                    "path": "Python桌面宠物/relax_exe/dist/logs/app_20261003_071128.log",
+                    "ext": ".log",
+                    "lastModified": 1790984491532
                   }
                 ]
               },
@@ -43661,7 +43948,7 @@
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/dist/main_log.log",
                 "ext": ".log",
-                "lastModified": 1790861113341
+                "lastModified": 1790984491532
               },
               {
                 "name": "定时休息.exe",
@@ -44670,6 +44957,20 @@
                 "path": "Python桌面宠物/relax_exe/logs/app_20261001_163257.log",
                 "ext": ".log",
                 "lastModified": 1790844211379
+              },
+              {
+                "name": "app_20261002_083525.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20261002_083525.log",
+                "ext": ".log",
+                "lastModified": 1790901337016
+              },
+              {
+                "name": "app_20261003_071110.log",
+                "type": "file",
+                "path": "Python桌面宠物/relax_exe/logs/app_20261003_071110.log",
+                "ext": ".log",
+                "lastModified": 1790982791233
               }
             ]
           },
