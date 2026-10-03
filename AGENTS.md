@@ -183,6 +183,31 @@ cp code-explorer/index.html index.html
 
 console.html / feedback.html 目前只在根目录存在，无此问题。
 
+### 3.7 部署备用通道：从 ECS 服务器执行（v2.7.2 起）
+
+**适用场景**：本机 `wrangler deploy` 连续失败且错误为 `fetch failed` / `API timed out`，而 `codingzhou.top` 与 github.com 都可达 —— 这是**本机代理到 api.cloudflare.com 的链路故障**，不是代码问题，改代理节点前不要反复重试。
+
+ECS（39.107.96.165）出网正常，把构建+部署整体搬到服务器执行：
+
+```bash
+python _deploy_from_ecs.py          # 完整流程：上传凭据 → clone → 构建 → 部署 → 清 KV
+python _deploy_from_ecs.py --keep   # 复用已克隆目录，只 git pull
+```
+
+**脚本做的事**（源码见 `_deploy_from_ecs.py`，用 paramiko SSH）：
+1. 把本机 `%APPDATA%/xdg.config/.wrangler/config/default.toml` 上传到 ECS 的 `/root/.config/.wrangler/config/`；token 过期时 `wrangler whoami` 会用 refresh_token 自动续期，无需人工干预
+2. `git clone --depth 1` 最新 main 到 **`/root/cf-deploy/repo`**（与线上业务目录 `/home/code-explorer` 隔离，不影响运行中的 ecs-server.py）
+3. 校验代码标记（`officePreviewPage`、`api/upload/toggle`、两份 index.html 是否一致）——防止把旧版本推上线
+4. `python3 build.py` → `diff public/index.html index.html` 校验产物
+5. `CI=1 wrangler deploy`
+6. 清KV `cache:` 前缀缓存
+
+**环境事实**：ECS 已装 node v22.23.2 + wrangler 4.12.0（`/usr/bin/wrangler`）。
+
+**部署成功判据**：输出 `✨ Success!` + `Current Version ID: <uuid>`。
+
+**注意**：无 `User-Agent` 的请求会被 Cloudflare 拦成 `error code: 1010`；带 UA 的请求才能验证 API。上传/历史类接口需要登录态，未登录返回 `401 {"error":"请先登录"}` —— 这是正常鉴权，不是部署失败。
+
 ---
 
 ## 4. 版本号与 changelog.json 规范
