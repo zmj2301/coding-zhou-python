@@ -195,6 +195,13 @@ async function fetchFromGitHub(path: string, env: Env): Promise<Response> {
   return fetch(url);
 }
 
+// 从指定仓库读取原始文件（用于 Windows 专区等独立公开仓库）
+async function fetchFromRepo(repo: string, branch: string, path: string): Promise<Response> {
+  const cleanPath = path.replace(/^\/+/, '');
+  const url = `https://raw.githubusercontent.com/${repo}/${branch}/${encodeURI(cleanPath)}`;
+  return fetch(url);
+}
+
 // ------------------------------------------------------------
 // 工具：ECS 服务器代理
 // ------------------------------------------------------------
@@ -1416,6 +1423,52 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     } catch {}
 
     return errorResponse('资源不存在', 404);
+  }
+
+  // ===== Windows 专区（独立公开仓库 zmj2301/windows-zone） =====
+  const WINDOWS_REPO = 'zmj2301/windows-zone';
+  const WINDOWS_BRANCH = 'main';
+
+  if (path === '/api/windows/list') {
+    try {
+      const resp = await fetchFromRepo(WINDOWS_REPO, WINDOWS_BRANCH, 'manifest.json');
+      if (resp.ok) {
+        const data = await resp.json() as any;
+        const result = jsonResponse({ zone: data.zone || 'Windows 专区', updated: data.updated || '', files: data.files || [] });
+        addCacheHeader(result.headers, 300);
+        return result;
+      }
+    } catch {}
+    return jsonResponse({ zone: 'Windows 专区', updated: '', files: [] });
+  }
+
+  if (path === '/api/windows/download') {
+    const file = url.searchParams.get('file') || '';
+    if (!file) return errorResponse('缺少 file 参数', 400);
+    if (file.includes('..') || file.includes('/') || file.includes('\\')) return errorResponse('访问被拒绝', 403);
+
+    try {
+      // 用清单做白名单校验，避免任意文件被代理下载
+      const mResp = await fetchFromRepo(WINDOWS_REPO, WINDOWS_BRANCH, 'manifest.json');
+      if (!mResp.ok) return errorResponse('无法读取文件清单', 502);
+      const mData = await mResp.json() as any;
+      const entry = (mData.files || []).find((f: any) => f.file === file);
+      if (!entry) return errorResponse('文件不存在', 404);
+
+      const fResp = await fetchFromRepo(WINDOWS_REPO, WINDOWS_BRANCH, entry.file);
+      if (!fResp.ok) return errorResponse(`下载失败 (${fResp.status})`, 502);
+
+      const headers = new Headers();
+      headers.set('Content-Type', 'application/zip');
+      const contentLength = fResp.headers.get('Content-Length');
+      if (contentLength) headers.set('Content-Length', contentLength);
+      const encodedName = encodeURIComponent(entry.file);
+      headers.set('Content-Disposition', `attachment; filename="${encodedName}"; filename*=UTF-8''${encodedName}`);
+      addCacheHeader(headers, 3600);
+      return new Response(fResp.body, { status: 200, headers });
+    } catch (e: any) {
+      return errorResponse('下载失败: ' + (e.message || String(e)), 500);
+    }
   }
 
   // ===== 教材下载（私有仓库代理） =====
