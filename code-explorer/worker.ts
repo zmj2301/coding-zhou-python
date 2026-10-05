@@ -203,6 +203,82 @@ async function fetchFromRepo(repo: string, branch: string, path: string): Promis
 }
 
 // ------------------------------------------------------------
+// 工具：上传文件同步到 GitHub（windows-zone 仓库的 Windows/ 目录）
+// 与 Windows 专区的 ZIP + manifest.json 同仓库不同目录，互不影响
+// ------------------------------------------------------------
+
+const UPLOAD_GH_REPO = 'zmj2301/windows-zone';
+const UPLOAD_GH_BRANCH = 'main';
+const UPLOAD_GH_DIR = 'Windows';
+// GitHub Contents API 走 JSON+base64，过大文件容易超 Worker 内存上限，超过则跳过同步
+const UPLOAD_GH_MAX_BYTES = 10 * 1024 * 1024;
+
+// 生成 GitHub 双通道预览链接
+function uploadGithubLinks(path: string) {
+  const raw = `https://raw.githubusercontent.com/${UPLOAD_GH_REPO}/${UPLOAD_GH_BRANCH}/${encodeURI(path)}`;
+  return {
+    raw,
+    blob: `https://github.com/${UPLOAD_GH_REPO}/blob/${UPLOAD_GH_BRANCH}/${encodeURI(path)}`,
+    preview: `https://htmlpreview.github.io/?${raw}`,
+  };
+}
+
+function arrayBufferToBase64(buf: ArrayBuffer): string {
+  const bytes = new Uint8Array(buf);
+  let binary = '';
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunk)) as any);
+  }
+  return btoa(binary);
+}
+
+// 尽力而为地把上传文件写入 GitHub；失败只记录原因，不影响上传主流程
+async function syncUploadToGitHub(
+  env: Env, id: string, filename: string, buf: ArrayBuffer
+): Promise<{ ok: boolean; path?: string; error?: string }> {
+  if (!env.GITHUB_TOKEN) return { ok: false, error: '未配置 GITHUB_TOKEN' };
+  if (buf.byteLength > UPLOAD_GH_MAX_BYTES) {
+    return { ok: false, error: `文件超过 ${UPLOAD_GH_MAX_BYTES / 1024 / 1024}MB，已跳过 GitHub 同步` };
+  }
+  const safeName = (filename || id).replace(/[\\/:*?"<>|#&%\s]+/g, '_');
+  const path = `${UPLOAD_GH_DIR}/${id}-${safeName}`;
+  try {
+    const apiUrl = `https://api.github.com/repos/${UPLOAD_GH_REPO}/contents/${encodeURI(path)}`;
+    const headers = {
+      Authorization: `token ${env.GITHUB_TOKEN}`,
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'coding-zhou-worker',
+      'Content-Type': 'application/json',
+    };
+    // 同名文件已存在时需带 sha 覆盖
+    let sha: string | undefined;
+    const headResp = await fetch(`${apiUrl}?ref=${UPLOAD_GH_BRANCH}`, { headers });
+    if (headResp.ok) {
+      const j = await headResp.json() as any;
+      sha = j && j.sha;
+    }
+    const putResp = await fetch(apiUrl, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        message: `上传文件: ${filename}`,
+        content: arrayBufferToBase64(buf),
+        branch: UPLOAD_GH_BRANCH,
+        ...(sha ? { sha } : {}),
+      }),
+    });
+    if (!putResp.ok) {
+      const t = await putResp.text().catch(() => '');
+      return { ok: false, error: `GitHub ${putResp.status}: ${t.slice(0, 180)}` };
+    }
+    return { ok: true, path };
+  } catch (e: any) {
+    return { ok: false, error: e.message || String(e) };
+  }
+}
+
+// ------------------------------------------------------------
 // 工具：ECS 服务器代理
 // ------------------------------------------------------------
 
@@ -448,6 +524,82 @@ async function getFileTree(env: Env): Promise<any[]> {
     }
   } catch {}
   return [];
+}
+
+// ------------------------------------------------------------
+// 工具：上传文件索引
+// KV 的 list() 结果在边缘有约 60 秒缓存，刚上传的文件可能一时查不到，
+// 因此上传/删除/停用时同步维护一份索引，历史查询优先读索引，list() 仅用于补齐旧数据。
+// ------------------------------------------------------------
+
+const UPLOAD_INDEX_KEY = 'upload:index';
+
+interface UploadIndexItem {
+  id: string;
+  filename: string;
+  contentType?: string;
+  size?: number;
+  uploader?: string;
+  created_at?: number;
+  disabled?: boolean;
+  githubPath?: string;
+}
+
+async function readUploadIndex(env: Env): Promise<UploadIndexItem[]> {
+  try {
+    const raw = await env.CODE_EXPLORER_KV.get(UPLOAD_INDEX_KEY);
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) return arr as UploadIndexItem[];
+    }
+  } catch {}
+  return [];
+}
+
+async function writeUploadIndex(env: Env, items: UploadIndexItem[]): Promise<void> {
+  try {
+    await env.CODE_EXPLORER_KV.put(UPLOAD_INDEX_KEY, JSON.stringify(items));
+  } catch {}
+}
+
+async function upsertUploadIndex(env: Env, item: UploadIndexItem): Promise<void> {
+  const items = await readUploadIndex(env);
+  const rest = items.filter(it => it.id !== item.id);
+  rest.unshift(item);
+  await writeUploadIndex(env, rest);
+}
+
+async function removeUploadIndex(env: Env, id: string): Promise<void> {
+  const items = await readUploadIndex(env);
+  await writeUploadIndex(env, items.filter(it => it.id !== id));
+}
+
+// 索引 + KV list 合并（list 有缓存，仅用于补充索引中缺失的旧文件）
+async function collectUploadIndex(env: Env): Promise<UploadIndexItem[]> {
+  const items = await readUploadIndex(env);
+  const known = new Set(items.map(it => it.id));
+  let changed = false;
+  try {
+    const list = await env.CODE_EXPLORER_KV.list({ prefix: 'upload:file:' });
+    for (const k of list.keys) {
+      const meta = (k.metadata as any) || {};
+      const id = meta.id || k.name.replace('upload:file:', '');
+      if (known.has(id)) continue;
+      items.push({
+        id,
+        filename: meta.filename || id,
+        contentType: meta.contentType,
+        size: meta.size,
+        uploader: meta.uploader,
+        created_at: meta.created_at,
+        disabled: !!meta.disabled,
+      });
+      known.add(id);
+      changed = true;
+    }
+  } catch {}
+  if (changed) await writeUploadIndex(env, items);
+  return items;
 }
 
 // ------------------------------------------------------------
@@ -1726,7 +1878,23 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         },
       });
 
+      // 同步到 GitHub（windows-zone 仓库 Windows/ 目录）：尽力而为，失败不影响上传
+      const gh = await syncUploadToGitHub(env, id, filename, buf);
+
+      // 写入索引，保证历史记录立即可见（不受 KV list 缓存影响）
+      await upsertUploadIndex(env, {
+        id,
+        filename,
+        contentType,
+        size: file.size,
+        uploader: payload.sub || payload.username || 'unknown',
+        created_at: Math.floor(Date.now() / 1000),
+        disabled: false,
+        githubPath: gh.ok ? gh.path : undefined,
+      });
+
       const subdomainUrl = `https://codingzhou.top/f/${id}`;
+      const ghLinks = gh.ok && gh.path ? uploadGithubLinks(gh.path) : null;
       return jsonResponse({
         success: true,
         id,
@@ -1734,6 +1902,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         url: subdomainUrl,
         size: file.size,
         contentType,
+        githubSynced: gh.ok,
+        githubError: gh.ok ? undefined : gh.error,
+        githubRaw: ghLinks ? ghLinks.raw : undefined,
+        githubPreview: ghLinks ? ghLinks.preview : undefined,
       }, 200);
     } catch (e: any) {
       return errorResponse('上传失败: ' + (e.message || '未知错误'), 500);
@@ -1754,12 +1926,12 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       const q = (histUrl.searchParams.get('q') || '').trim().toLowerCase();
       const cat = (histUrl.searchParams.get('cat') || '').trim();
 
-      const list = await env.CODE_EXPLORER_KV.list({ prefix: 'upload:file:' });
-      const all = list.keys
-        .map(k => {
-          const meta = (k.metadata as any) || {};
-          const id = meta.id || k.name.replace('upload:file:', '');
+      const list = await collectUploadIndex(env);
+      const all = list
+        .map(meta => {
+          const id = meta.id;
           const filename = meta.filename || id;
+          const gh = meta.githubPath ? uploadGithubLinks(meta.githubPath) : null;
           return {
             id,
             filename,
@@ -1771,6 +1943,9 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
             ext: fileExt(filename),
             category: fileCategory(filename, meta.contentType),
             url: `https://codingzhou.top/f/${id}`,
+            githubSynced: !!gh,
+            githubRaw: gh ? gh.raw : undefined,
+            githubPreview: gh ? gh.preview : undefined,
           };
         })
         .filter(f => f.uploader === username)
@@ -1817,6 +1992,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       }
 
       await env.CODE_EXPLORER_KV.delete(key);
+      await removeUploadIndex(env, id);
       return jsonResponse({ success: true, message: '已删除' }, 200);
     } catch (e: any) {
       return errorResponse('删除失败: ' + (e.message || '未知错误'), 500);
@@ -1851,6 +2027,10 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       await env.CODE_EXPLORER_KV.put(key, obj.value, {
         metadata: { ...meta, disabled },
       });
+      // 同步索引中的停用状态
+      const indexItems = await readUploadIndex(env);
+      const target = indexItems.find(it => it.id === id);
+      if (target) { target.disabled = disabled; await writeUploadIndex(env, indexItems); }
       return jsonResponse({ success: true, id, disabled }, 200);
     } catch (e: any) {
       return errorResponse('操作失败: ' + (e.message || '未知错误'), 500);

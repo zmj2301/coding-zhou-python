@@ -1,0 +1,202 @@
+869 INFO: PyInstaller: 5.13.2
+870 INFO: Python: 3.8.10
+1102 INFO: Platform: Windows-10-10.0.19041-SP0
+1130 INFO: Removing temporary files and cleaning cache in C:\Users\Administrator\AppData\Local\pyinstaller
+4484 INFO: Extending PYTHONPATH with paths
+['E:\\coding-zhou\\Python\\python 日程表']
+5667 INFO: Appending 'datas' from .spec
+5668 INFO: checking Analysis
+5668 INFO: Building Analysis because Analysis-00.toc is non existent
+5668 INFO: Initializing module dependency graph...
+5669 INFO: Caching module graph hooks...
+5690 INFO: Analyzing base_library.zip ...
+9016 INFO: Loading module hook 'hook-heapq.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+9044 INFO: Loading module hook 'hook-encodings.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+10343 INFO: Loading module hook 'hook-pickle.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+10666 INFO: Caching module dependency graph...
+10710 INFO: running Analysis Analysis-00.toc
+10714 INFO: Adding Microsoft.Windows.Common-Controls to dependent assemblies of final executable
+  required by C:\py38\python.exe
+11814 INFO: Analyzing E:\coding-zhou\Python\python 日程表\show_yourwindows.py
+11891 INFO: Loading module hook 'hook-PySide2.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+13499 INFO: Loading module hook 'hook-pandas.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+16316 INFO: Loading module hook 'hook-platform.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+16335 INFO: Loading module hook 'hook-numpy.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+16700 INFO: Loading module hook 'hook-multiprocessing.util.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+16773 INFO: Loading module hook 'hook-xml.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+16932 INFO: Loading module hook 'hook-difflib.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+17058 INFO: Loading module hook 'hook-sysconfig.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+17731 INFO: Loading module hook 'hook-pytz.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+18001 INFO: Loading module hook 'hook-pkg_resources.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+20359 INFO: Loading module hook 'hook-packaging.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+20506 INFO: Loading module hook 'hook-jaraco.text.py' from 'C:\\py38\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'...
+21036 INFO: Loading module hook 'hook-importlib_resources.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+21249 INFO: Loading module hook 'hook-backports.py' from 'C:\\py38\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'...
+21277 INFO: Loading module hook 'hook-platformdirs.py' from 'C:\\py38\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'...
+22304 INFO: Loading module hook 'hook-dateutil.py' from 'C:\\py38\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'...
+22399 INFO: Processing pre-safe import module hook six.moves from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module\\hook-six.moves.py'.
+23393 INFO: Loading module hook 'hook-pandas.plotting.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+23755 INFO: Loading module hook 'hook-pandas.io.formats.style.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+26427 INFO: Loading module hook 'hook-openpyxl.py' from 'C:\\py38\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'...
+26918 INFO: Loading module hook 'hook-xml.etree.cElementTree.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+28205 INFO: Loading module hook 'hook-xml.dom.domreg.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+28749 INFO: Loading module hook 'hook-sqlite3.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+30400 INFO: Analyzing hidden import 'tkinter.__main__'
+30402 INFO: Analyzing hidden import 'tkinter.colorchooser'
+30405 INFO: Analyzing hidden import 'tkinter.dnd'
+30412 INFO: Analyzing hidden import 'tkinter.font'
+30419 INFO: Analyzing hidden import 'tkinter.scrolledtext'
+30424 INFO: Analyzing hidden import 'tkinter.test___init__'
+30425 INFO: Analyzing hidden import 'tkinter.test_runtktests'
+30429 INFO: Analyzing hidden import 'tkinter.test_support'
+30435 INFO: Analyzing hidden import 'tkinter.test_test_tkinter___init__'
+30436 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_colorchooser'
+30439 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_font'
+30445 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_geometry_managers'
+30479 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_images'
+30494 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_loadtk'
+30497 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_misc'
+30508 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_simpledialog'
+30511 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_text'
+30515 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_variables'
+30526 INFO: Analyzing hidden import 'tkinter.test_test_tkinter_test_widgets'
+30565 INFO: Analyzing hidden import 'tkinter.test_test_ttk___init__'
+30566 INFO: Analyzing hidden import 'tkinter.test_test_ttk_test_extensions'
+30576 INFO: Analyzing hidden import 'tkinter.test_test_ttk_test_functions'
+30610 INFO: Analyzing hidden import 'tkinter.test_test_ttk_test_style'
+30617 INFO: Analyzing hidden import 'tkinter.test_test_ttk_test_widgets'
+30671 INFO: Analyzing hidden import 'tkinter.test_widget_tests'
+30687 INFO: Analyzing hidden import 'tkinter.tix'
+30733 INFO: Analyzing hidden import 'idlelib'
+30754 INFO: Analyzing hidden import 'idlelib.__main__'
+30758 INFO: Loading module hook 'hook-idlelib.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+31410 INFO: Analyzing hidden import 'idlelib.idle'
+31412 INFO: Analyzing hidden import 'idlelib.idle_test___init__'
+31414 INFO: Analyzing hidden import 'idlelib.idle_test_htest'
+31420 INFO: Analyzing hidden import 'idlelib.idle_test_mock_idle'
+31423 INFO: Analyzing hidden import 'idlelib.idle_test_mock_tk'
+31429 INFO: Analyzing hidden import 'idlelib.idle_test_template'
+31435 INFO: Analyzing hidden import 'idlelib.idle_test_test_autocomplete'
+31466 INFO: Analyzing hidden import 'idlelib.idle_test_test_autocomplete_w'
+31469 INFO: Analyzing hidden import 'idlelib.idle_test_test_autoexpand'
+31474 INFO: Analyzing hidden import 'idlelib.idle_test_test_browser'
+31483 INFO: Analyzing hidden import 'idlelib.idle_test_test_calltip'
+31495 INFO: Analyzing hidden import 'idlelib.idle_test_test_calltip_w'
+31497 INFO: Analyzing hidden import 'idlelib.idle_test_test_codecontext'
+31510 INFO: Analyzing hidden import 'idlelib.idle_test_test_colorizer'
+31522 INFO: Analyzing hidden import 'idlelib.idle_test_test_config'
+31542 INFO: Analyzing hidden import 'idlelib.idle_test_test_config_key'
+31553 INFO: Analyzing hidden import 'idlelib.idle_test_test_configdialog'
+31592 INFO: Analyzing hidden import 'idlelib.idle_test_test_debugger'
+31594 INFO: Analyzing hidden import 'idlelib.idle_test_test_debugger_r'
+31597 INFO: Analyzing hidden import 'idlelib.idle_test_test_debugobj'
+31600 INFO: Analyzing hidden import 'idlelib.idle_test_test_debugobj_r'
+31602 INFO: Analyzing hidden import 'idlelib.idle_test_test_delegator'
+31604 INFO: Analyzing hidden import 'idlelib.idle_test_test_editmenu'
+31608 INFO: Analyzing hidden import 'idlelib.idle_test_test_editor'
+31615 INFO: Analyzing hidden import 'idlelib.idle_test_test_filelist'
+31617 INFO: Analyzing hidden import 'idlelib.idle_test_test_format'
+31632 INFO: Analyzing hidden import 'idlelib.idle_test_test_grep'
+31638 INFO: Analyzing hidden import 'idlelib.idle_test_test_help'
+31641 INFO: Analyzing hidden import 'idlelib.idle_test_test_help_about'
+31648 INFO: Analyzing hidden import 'idlelib.idle_test_test_history'
+31655 INFO: Analyzing hidden import 'idlelib.idle_test_test_hyperparser'
+31663 INFO: Analyzing hidden import 'idlelib.idle_test_test_iomenu'
+31667 INFO: Analyzing hidden import 'idlelib.idle_test_test_macosx'
+31671 INFO: Analyzing hidden import 'idlelib.idle_test_test_mainmenu'
+31674 INFO: Analyzing hidden import 'idlelib.idle_test_test_multicall'
+31677 INFO: Analyzing hidden import 'idlelib.idle_test_test_outwin'
+31684 INFO: Analyzing hidden import 'idlelib.idle_test_test_parenmatch'
+31688 INFO: Analyzing hidden import 'idlelib.idle_test_test_pathbrowser'
+31693 INFO: Analyzing hidden import 'idlelib.idle_test_test_percolator'
+31720 INFO: Analyzing hidden import 'idlelib.idle_test_test_pyparse'
+31732 INFO: Analyzing hidden import 'idlelib.idle_test_test_pyshell'
+31735 INFO: Analyzing hidden import 'idlelib.idle_test_test_query'
+31750 INFO: Analyzing hidden import 'idlelib.idle_test_test_redirector'
+31756 INFO: Analyzing hidden import 'idlelib.idle_test_test_replace'
+31764 INFO: Analyzing hidden import 'idlelib.idle_test_test_rpc'
+31767 INFO: Analyzing hidden import 'idlelib.idle_test_test_run'
+31780 INFO: Analyzing hidden import 'idlelib.idle_test_test_runscript'
+31783 INFO: Analyzing hidden import 'idlelib.idle_test_test_scrolledlist'
+31786 INFO: Analyzing hidden import 'idlelib.idle_test_test_search'
+31790 INFO: Analyzing hidden import 'idlelib.idle_test_test_searchbase'
+31796 INFO: Analyzing hidden import 'idlelib.idle_test_test_searchengine'
+31807 INFO: Analyzing hidden import 'idlelib.idle_test_test_sidebar'
+31817 INFO: Analyzing hidden import 'idlelib.idle_test_test_squeezer'
+31830 INFO: Analyzing hidden import 'idlelib.idle_test_test_stackviewer'
+31833 INFO: Analyzing hidden import 'idlelib.idle_test_test_statusbar'
+31836 INFO: Analyzing hidden import 'idlelib.idle_test_test_text'
+31844 INFO: Analyzing hidden import 'idlelib.idle_test_test_textview'
+31853 INFO: Analyzing hidden import 'idlelib.idle_test_test_tooltip'
+31859 INFO: Analyzing hidden import 'idlelib.idle_test_test_tree'
+31864 INFO: Analyzing hidden import 'idlelib.idle_test_test_undo'
+31868 INFO: Analyzing hidden import 'idlelib.idle_test_test_warning'
+31871 INFO: Analyzing hidden import 'idlelib.idle_test_test_window'
+31874 INFO: Analyzing hidden import 'idlelib.idle_test_test_zoomheight'
+31877 INFO: Analyzing hidden import 'idlelib.idle_test_test_zzdummy'
+31883 INFO: Processing module hooks...
+31888 WARNING: Hidden import "importlib_resources.trees" not found!
+31889 WARNING: Hidden import "jinja2" not found!
+31998 WARNING: Hidden import "pkg_resources._vendor.jaraco.functools" not found!
+31998 WARNING: Hidden import "pkg_resources._vendor.jaraco.context" not found!
+31998 WARNING: Hidden import "pkg_resources._vendor.jaraco.text" not found!
+31998 INFO: Loading module hook 'hook-PySide2.QtCore.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+33851 INFO: Loading module hook 'hook-PySide2.QtGui.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+35283 INFO: Loading module hook 'hook-PySide2.QtNetwork.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+37440 INFO: Loading module hook 'hook-PySide2.QtWidgets.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+38772 INFO: Loading module hook 'hook-_tkinter.py' from 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks'...
+38774 INFO: checking Tree
+38774 INFO: Building Tree because Tree-00.toc is non existent
+38775 INFO: Building Tree Tree-00.toc
+38885 INFO: checking Tree
+38885 INFO: Building Tree because Tree-01.toc is non existent
+38885 INFO: Building Tree Tree-01.toc
+38898 WARNING: Tcl modules directory C:\py38\tcl\tcl8.6\..\tcl8 does not exist.
+38948 INFO: Looking for ctypes DLLs
+38983 INFO: Analyzing run-time hooks ...
+38990 INFO: Including run-time hook 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_inspect.py'
+38993 INFO: Including run-time hook 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgutil.py'
+38996 INFO: Including run-time hook 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_multiprocessing.py'
+39000 INFO: Including run-time hook 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth__tkinter.py'
+39003 INFO: Including run-time hook 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgres.py'
+39008 INFO: Including run-time hook 'C:\\py38\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pyside2.py'
+39087 INFO: Looking for dynamic libraries
+53221 INFO: Looking for eggs
+53244 INFO: Using Python library C:\py38\python38.dll
+53244 INFO: Found binding redirects: 
+[]
+53255 INFO: Warnings written to E:\coding-zhou\Python\python 日程表\win7_build\日程表_Win7\warn-日程表_Win7.txt
+53406 INFO: Graph cross-reference written to E:\coding-zhou\Python\python 日程表\win7_build\日程表_Win7\xref-日程表_Win7.html
+53513 INFO: checking PYZ
+53514 INFO: Building PYZ because PYZ-00.toc is non existent
+53514 INFO: Building PYZ (ZlibArchive) E:\coding-zhou\Python\python 日程表\win7_build\日程表_Win7\PYZ-00.pyz
+54533 INFO: Building PYZ (ZlibArchive) E:\coding-zhou\Python\python 日程表\win7_build\日程表_Win7\PYZ-00.pyz completed successfully.
+54595 INFO: checking PKG
+54595 INFO: Building PKG because PKG-00.toc is non existent
+54595 INFO: Building PKG (CArchive) 日程表_Win7.pkg
+79683 INFO: Building PKG (CArchive) 日程表_Win7.pkg completed successfully.
+79713 INFO: Bootloader C:\py38\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+79713 INFO: checking EXE
+79713 INFO: Building EXE because EXE-00.toc is non existent
+79713 INFO: Building EXE from EXE-00.toc
+79833 INFO: Copying bootloader EXE to E:\coding-zhou\Python\python 日程表\win7_dist\日程表_Win7.exe.notanexecutable
+79856 INFO: Copying icon to EXE
+79857 INFO: Copying icons from ['E:\\coding-zhou\\Python\\python 日程表\\combined.ico']
+79858 INFO: Writing RT_GROUP_ICON 0 resource with 104 bytes
+79858 INFO: Writing RT_ICON 1 resource with 736 bytes
+79858 INFO: Writing RT_ICON 2 resource with 1269 bytes
+79858 INFO: Writing RT_ICON 3 resource with 1790 bytes
+79858 INFO: Writing RT_ICON 4 resource with 2864 bytes
+79858 INFO: Writing RT_ICON 5 resource with 3418 bytes
+79858 INFO: Writing RT_ICON 6 resource with 7286 bytes
+79858 INFO: Writing RT_ICON 7 resource with 14653 bytes
+79877 INFO: Copying 0 resources to EXE
+79877 INFO: Embedding manifest in EXE
+79878 INFO: Updating manifest in E:\coding-zhou\Python\python 日程表\win7_dist\日程表_Win7.exe.notanexecutable
+79879 INFO: Updating resource type 24 name 1 language 0
+79891 INFO: Appending PKG archive to EXE
+79954 INFO: Fixing EXE headers
+80344 INFO: Building EXE from EXE-00.toc completed successfully.
+[spec] 剔除 API set DLL 29 个：api-ms-win-core-console-l1-1-0.dll, api-ms-win-core-datetime-l1-1-0.dll, api-ms-win-core-debug-l1-1-0.dll, api-ms-win-core-errorhandling-l1-1-0.dll, api-ms-win-core-fibers-l1-1-0.dll, api-ms-win-core-fibers-l1-1-1.dll, api-ms-win-core-file-l1-1-0.dll, api-ms-win-core-file-l1-2-0.dll, api-ms-win-core-file-l2-1-0.dll, api-ms-win-core-handle-l1-1-0.dll, api-ms-win-core-heap-l1-1-0.dll, api-ms-win-core-interlocked-l1-1-0.dll, api-ms-win-core-kernel32-legacy-l1-1-1.dll, api-ms-win-core-libraryloader-l1-1-0.dll, api-ms-win-core-localization-l1-2-0.dll, api-ms-win-core-memory-l1-1-0.dll, api-ms-win-core-namedpipe-l1-1-0.dll, api-ms-win-core-processenvironment-l1-1-0.dll, api-ms-win-core-processthreads-l1-1-0.dll, api-ms-win-core-processthreads-l1-1-1.dll, api-ms-win-core-profile-l1-1-0.dll, api-ms-win-core-rtlsupport-l1-1-0.dll, api-ms-win-core-string-l1-1-0.dll, api-ms-win-core-synch-l1-1-0.dll, api-ms-win-core-synch-l1-2-0.dll, api-ms-win-core-sysinfo-l1-1-0.dll, api-ms-win-core-sysinfo-l1-2-0.dll, api-ms-win-core-timezone-l1-1-0.dll, api-ms-win-core-util-l1-1-0.dll
+[spec] 保留 Win7 UCRT 14 个：api-ms-win-crt-conio-l1-1-0.dll, api-ms-win-crt-convert-l1-1-0.dll, api-ms-win-crt-environment-l1-1-0.dll, api-ms-win-crt-filesystem-l1-1-0.dll, api-ms-win-crt-heap-l1-1-0.dll, api-ms-win-crt-locale-l1-1-0.dll, api-ms-win-crt-math-l1-1-0.dll, api-ms-win-crt-process-l1-1-0.dll, api-ms-win-crt-runtime-l1-1-0.dll, api-ms-win-crt-stdio-l1-1-0.dll, api-ms-win-crt-string-l1-1-0.dll, api-ms-win-crt-time-l1-1-0.dll, api-ms-win-crt-utility-l1-1-0.dll, ucrtbase.dll
+[spec] 不压缩的微软 DLL 18 个
