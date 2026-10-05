@@ -1504,6 +1504,8 @@ body.filter-hidden .main-filter-toggle {
   gap: 16px;
   flex: 1;
   min-width: 0;
+  align-content: start;
+  align-items: stretch;
 }
 .cards-grid.list-view {
   grid-template-columns: 1fr;
@@ -2039,6 +2041,28 @@ body.filter-hidden .main-filter-toggle {
 .accent-orange { --card-accent: var(--accent-orange); }
 .accent-pink { --card-accent: var(--accent-pink); }
 .accent-cyan { --card-accent: var(--accent-cyan); }
+
+/* Windows 专区：同一应用的多版本用时间轴展示 */
+#windowsGrid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+.card-head-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.card-sub { font-size: 12px; color: var(--text-tertiary); }
+.win-card .card-desc { flex: 0 0 auto; }
+.win-timeline { position: relative; margin-top: 2px; }
+.win-timeline::before {
+  content: ''; position: absolute; left: 3px; top: 18px; bottom: 18px; width: 1px;
+  background: color-mix(in srgb, var(--border-color) 90%, transparent);
+}
+.win-tl-item { position: relative; display: flex; align-items: center; gap: 12px; padding: 9px 0; }
+.win-tl-item + .win-tl-item { border-top: 1px dashed color-mix(in srgb, var(--border-color) 55%, transparent); }
+.win-tl-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; position: relative; z-index: 1;
+  background: var(--card-accent, var(--accent-blue));
+}
+.win-tl-item.is-latest .win-tl-dot { box-shadow: 0 0 0 4px color-mix(in srgb, var(--card-accent, var(--accent-blue)) 20%, transparent); }
+.win-tl-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.win-tl-ver { font-size: 13px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.win-tl-size { font-size: 12px; color: var(--text-tertiary); }
+.win-tl-btn { padding: 6px 14px; font-size: 12px; flex-shrink: 0; }
 
 /* 教材下载区域 */
 .textbook-section { margin-top: 32px; }
@@ -9844,36 +9868,43 @@ async function loadWindows() {
     const r = await fetch('/api/windows/list');
     const d = await r.json();
     const files = d.files || [];
-    if (stats) stats.textContent = `共 ${files.length} 个安装包`;
     if (badge) badge.textContent = String(files.length);
     if (files.length === 0) {
       grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--text-secondary)">暂无安装包</div>';
       return;
     }
-    grid.innerHTML = files.map(f => `
-      <div class="resource-card accent-blue">
-        <div class="card-header">
-          <div class="card-icon">🪟</div>
-          <div class="card-title">${esc(f.name || '')}</div>
-        </div>
-        <div class="card-desc">${esc(f.desc || '')}</div>
-        <div class="card-tags">
-          ${f.latest ? '<span class="card-tag format">最新</span>' : ''}
-          <span class="card-tag format">ZIP</span>
-          <span class="card-tag size">${esc(formatSize(f.size))}</span>
-          <span class="card-tag">${esc(f.label || f.version || '')}</span>
-        </div>
-        <div class="card-footer">
-          <div class="card-meta">
-            <span class="card-meta-item">🕐 ${esc(f.date || '')}</span>
+    // 按应用名分组：同一应用的多个版本合并为一张卡片，内部用时间轴展示
+    const groups = {};
+    files.forEach(f => { const k = f.name || '未命名'; (groups[k] = groups[k] || []).push(f); });
+    const groupKeys = Object.keys(groups);
+    if (stats) stats.textContent = `共 ${groupKeys.length} 个应用 · ${files.length} 个版本`;
+    grid.innerHTML = groupKeys.map(name => {
+      const arr = groups[name].slice().sort((a, b) => String(b.version || '').localeCompare(String(a.version || '')));
+      const latest = arr.find(f => f.latest) || arr[0];
+      const rows = arr.map(f => `
+        <div class="win-tl-item${f.latest ? ' is-latest' : ''}">
+          <span class="win-tl-dot"></span>
+          <div class="win-tl-info">
+            <div class="win-tl-ver">${esc(f.label || f.version || '')}${f.latest ? '<span class="card-tag format">最新</span>' : ''}</div>
+            <div class="win-tl-size">${esc(formatSize(f.size))} · ZIP</div>
           </div>
-          <button class="download-btn" onclick="downloadWindows('${esc(f.file)}','${esc(f.name || '')}_${esc(f.version || '')}.zip')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            下载
-          </button>
+          <button class="download-btn win-tl-btn" onclick="downloadWindows('${esc(f.file)}','${esc(name)}_${esc(f.version || '')}.zip')">下载</button>
         </div>
-      </div>
-    `).join('');
+      `).join('');
+      return `
+        <div class="resource-card accent-blue win-card">
+          <div class="card-header">
+            <div class="card-icon">🪟</div>
+            <div class="card-head-text">
+              <div class="card-title">${esc(name)}</div>
+              <div class="card-sub">${arr.length} 个版本 · 最新 ${esc(latest.label || latest.version || '')}</div>
+            </div>
+          </div>
+          <div class="card-desc">${esc(latest.desc || '')}</div>
+          <div class="win-timeline">${rows}</div>
+        </div>
+      `;
+    }).join('');
   } catch (e) {
     grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--accent-red)">加载失败</div>';
   }
