@@ -48,6 +48,66 @@ def copy_dir(src: Path, dst: Path, exclude_dirs=None, exclude_exts=None):
             copy_file(item, dst / item.name)
 
 
+# 技术文章源文件 → 生成的静态页 slug
+ARTICLES = [
+    ('python-subproject-fix', '文章/Python子项目集成问题排查.md'),
+    ('branch-switch-incident', '文章/分支切换回退事故复盘.md'),
+    ('v2.6.9-upload-history', '文章/v2.6.9文件上传历史记录.md'),
+    ('agents-manual', 'AGENTS.md'),
+]
+
+ARTICLE_TEMPLATE = """<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__TITLE__ · Code Explorer</title>
+<meta name="description" content="__TITLE__">
+<style>
+:root{--bg:#ffffff;--fg:#1f2328;--muted:#656d76;--border:#d8dee4;--code:#f6f8fa;--link:#0550ae}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#8b949e;--border:#30363d;--code:#161b22;--link:#6cb6ff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;line-height:1.75}
+.wrap{max-width:820px;margin:0 auto;padding:40px 20px 80px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:28px}
+.top a{color:var(--muted);text-decoration:none;font-size:14px}
+.top a:hover{color:var(--fg)}
+h1,h2,h3,h4{line-height:1.3;margin:1.6em 0 .6em}
+h1{font-size:28px;margin-top:0}
+h2{font-size:22px;border-bottom:1px solid var(--border);padding-bottom:.3em}
+h3{font-size:18px}
+a{color:var(--link)}
+code{background:var(--code);padding:.15em .4em;font-size:.9em;font-family:ui-monospace,Consolas,monospace}
+pre{background:var(--code);padding:14px 16px;overflow:auto;border:1px solid var(--border)}
+pre code{background:none;padding:0}
+blockquote{margin:1em 0;padding:.2em 1em;border-left:3px solid var(--border);color:var(--muted)}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:14px}
+td,th{border:1px solid var(--border);padding:6px 10px;text-align:left}
+hr{border:none;border-top:1px solid var(--border);margin:2em 0}
+img{max-width:100%}
+.art-index{list-style:none;padding:0}
+.art-index li{padding:12px 0;border-bottom:1px solid var(--border)}
+.art-index a{text-decoration:none;font-size:17px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><a href="/">← Code Explorer</a><a href="__MD_HREF__">Markdown 原文</a></div>
+__BODY__
+</div>
+</body>
+</html>
+"""
+
+
+def article_html(title: str, body: str, slug: str) -> str:
+    md_href = '/articles/' if slug == 'index' else f'/articles/{slug}.md'
+    return (ARTICLE_TEMPLATE
+            .replace('__TITLE__', title)
+            .replace('__BODY__', body)
+            .replace('__MD_HREF__', md_href))
+
+
 def main():
     print('=' * 50)
     print('  构建 Cloudflare Pages 项目')
@@ -140,6 +200,49 @@ def main():
         copy_dir(project_trees_src, PUBLIC_DIR / 'project-trees')
     else:
         print('  跳过: project-trees 目录不存在')
+
+    print()
+    print('步骤 2.8: 生成技术文章静态页（public/articles/）...')
+    try:
+        import markdown as md_lib
+    except ImportError:
+        md_lib = None
+        print('  ⚠ 未安装 markdown 库，跳过 HTML 生成（仅复制 .md 原文）')
+
+    art_dir = PUBLIC_DIR / 'articles'
+    art_dir.mkdir(parents=True, exist_ok=True)
+    index_items = []
+    for slug, rel in ARTICLES:
+        src = CODE_EXPLORER_DIR / rel
+        if not src.exists():
+            print(f'  跳过（源文件不存在）: {rel}')
+            continue
+        text = src.read_text(encoding='utf-8')
+        (art_dir / f'{slug}.md').write_text(text, encoding='utf-8')
+        title = slug
+        for line in text.splitlines():
+            if line.startswith('# '):
+                title = line[2:].strip()
+                break
+        if md_lib:
+            body = md_lib.markdown(text, extensions=['tables', 'fenced_code', 'sane_lists'])
+            (art_dir / f'{slug}.html').write_text(article_html(title, body, slug), encoding='utf-8')
+        index_items.append((slug, title))
+        print(f'  生成: articles/{slug}.md' + (' + .html' if md_lib else ''))
+
+    if md_lib and index_items:
+        links = ''.join(f'<li><a href="/articles/{s}">{t}</a></li>' for s, t in index_items)
+        (art_dir / 'index.html').write_text(
+            article_html('技术文章', f'<ul class="art-index">{links}</ul>', 'index'), encoding='utf-8')
+        print('  生成: articles/index.html')
+
+    print()
+    print('步骤 2.9: 复制 AGENTS.md 到 public/share/agents.md...')
+    agents_src = CODE_EXPLORER_DIR / 'AGENTS.md'
+    if agents_src.exists():
+        copy_file(agents_src, PUBLIC_DIR / 'share' / 'agents.md')
+    else:
+        print('  跳过: AGENTS.md 不存在')
 
     print()
     print('步骤 3: 复制 web-games 目录...')

@@ -1,6 +1,18 @@
 [
     {
         "date": "2026-10-05",
+        "title": "AI 面板风格统一 + 文档预览多样化 + 技术文章静态链接 + 上传分类搜索",
+        "version": "2.8.2",
+        "changes": [
+            "AI 助手面板改为直角、去掉彩色渐变与光晕，统一使用站点中性色变量，与 AGENTS 手册风格一致",
+            "文档在线预览多样化：docx 用 mammoth.js、xls/xlsx/csv 用 SheetJS 在浏览器本地渲染，doc/ppt/pptx 回退 Office Online，均提供「下载原文件」",
+            "新增静态技术文章页：build.py 生成 /articles/{slug}.html 与 /articles/{slug}.md（纯网页链接、便于 AI 爬取），并恢复 /share/agents.md",
+            "技术文章模块新增《AI 代理操作手册（AGENTS.md）》，每篇文章提供「复制 AI 链接 / 打开网页 / .md 原文」",
+            "上传历史支持按后缀分类（图片/文档/表格/演示/压缩包/文本/音视频/其他）与文件名搜索，筛选与分类统计均由后端 /api/upload/history 完成"
+        ]
+    },
+    {
+        "date": "2026-10-05",
         "title": "优化「Windows 专区」：同应用多版本合并为时间轴卡片，修复卡片被拉伸过高",
         "version": "2.8.1",
         "changes": [

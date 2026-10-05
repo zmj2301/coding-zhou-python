@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>一次分支切换引发的代码"集体消失"事故：取证、恢复与版本疑云 · Code Explorer</title>
+<meta name="description" content="一次分支切换引发的代码"集体消失"事故：取证、恢复与版本疑云">
+<style>
+:root{--bg:#ffffff;--fg:#1f2328;--muted:#656d76;--border:#d8dee4;--code:#f6f8fa;--link:#0550ae}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#8b949e;--border:#30363d;--code:#161b22;--link:#6cb6ff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;line-height:1.75}
+.wrap{max-width:820px;margin:0 auto;padding:40px 20px 80px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:28px}
+.top a{color:var(--muted);text-decoration:none;font-size:14px}
+.top a:hover{color:var(--fg)}
+h1,h2,h3,h4{line-height:1.3;margin:1.6em 0 .6em}
+h1{font-size:28px;margin-top:0}
+h2{font-size:22px;border-bottom:1px solid var(--border);padding-bottom:.3em}
+h3{font-size:18px}
+a{color:var(--link)}
+code{background:var(--code);padding:.15em .4em;font-size:.9em;font-family:ui-monospace,Consolas,monospace}
+pre{background:var(--code);padding:14px 16px;overflow:auto;border:1px solid var(--border)}
+pre code{background:none;padding:0}
+blockquote{margin:1em 0;padding:.2em 1em;border-left:3px solid var(--border);color:var(--muted)}
+table{border-collapse:collapse;width:100%;margin:1em 0;font-size:14px}
+td,th{border:1px solid var(--border);padding:6px 10px;text-align:left}
+hr{border:none;border-top:1px solid var(--border);margin:2em 0}
+img{max-width:100%}
+.art-index{list-style:none;padding:0}
+.art-index li{padding:12px 0;border-bottom:1px solid var(--border)}
+.art-index a{text-decoration:none;font-size:17px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><a href="/">← Code Explorer</a><a href="/articles/branch-switch-incident.md">Markdown 原文</a></div>
+<h1>一次分支切换引发的代码"集体消失"事故：取证、恢复与版本疑云</h1>
+<blockquote>
+<p>项目：Code Explorer（codingzhou.top）
+时间：2026-10-01
+版本：v2.6.8 收尾期间
+关键词：Checkout-checkpoint、分支切换、工作区回退、线上恢复、证据链</p>
+</blockquote>
+<hr />
+<h2>一、事故是怎么被发现的</h2>
+<p>10-01 下午，按计划清理前一天的遗留待办：移除 <code>worker.ts</code> 里的调试日志、根治 build.py 双 index.html 问题。第一处编辑（worker.ts）顺利落盘，但从第二处开始，情况不对了——</p>
+<ul>
+<li>build.py 的编辑工具<strong>报成功</strong>，磁盘上却是旧内容，mtime 变了、内容没变；</li>
+<li>changelog 的新条目"写进去了"，重新读取却还是 2.6.6；</li>
+<li>更糟的是：根目录 <code>index.html</code> 从 419222 字节变成 413883，首页的层级浏览特征函数 <code>enterPythonFolder</code> <strong>消失了</strong>。</li>
+</ul>
+<p>连续多份文件集体"回到过去"，这不是单个编辑失败，是工作区被整体回退了。</p>
+<h2>二、取证：git 历史里的真相</h2>
+<p>盘点损害范围后查 git log，一条提交说明了一切：</p>
+<pre><code>55b6840 [Checkout-checkpoint] from win7-compat to main (16:38:44)
+</code></pre>
+<p>16:38 有一次 IDE 的<strong>分支切换检查点</strong>：从 <code>win7-compat</code> 分支切回 <code>main</code> 时，IDE 自动创建了一个 checkpoint 提交，把 <code>main</code> 上所有<strong>未提交</strong>的工作区改动直接覆盖掉了。v2.6.7 的全部未提交改动（首页层级浏览、python 页重写、changelog 条目）加上前一天写的文章，一夜清零。</p>
+<p>这也解释了为什么编辑"报成功却不落盘"——编辑与回退发生了竞争，看到的磁盘状态已经是回退后的了。</p>
+<h2>三、恢复：线上站点就是备份</h2>
+<p>幸运的是，<strong>线上站点还保有全部最新版本</strong>（昨晚 21:32 部署的 bfb96717）。恢复思路很简单：部署产物写回源码。</p>
+<ol>
+<li>从 <code>https://codingzhou.top/</code>、<code>/python/</code>、<code>/changelog.json</code> 下载三份线上文件；</li>
+<li>检查 Worker 注入：逐处核对后发现，Worker 对首页的注入只发生在特定路由下的 <code>window.__INITIAL_PROJECTS__</code> 赋值，静态资源本身是干净的，可以原样写回；</li>
+<li>写回时逐一 <code>grep</code> 特征函数（<code>enterPythonFolder</code>、<code>projects/tree</code>）验证，changelog 首版本断言为 2.6.7——确认恢复的是最新版；</li>
+<li>细节：changelog.json 保留原有的 BOM（utf-8-sig 习惯）；index.html 写回时 <code>newline=''</code> 防止换行符被改。</li>
+</ol>
+<p>恢复完成后，再用 Python 脚本（绕开编辑工具落盘异常）重新应用 v2.6.8 的三处修改，每处改完立即验证落盘，然后走标准五步流程：changelog v2.6.8 → git commit（<code>972e2e8</code>）→ build → <code>wrangler deploy</code>（Version ID <code>f9d03fdd</code>）→ 清 KV 缓存。</p>
+<p><strong>结论：部署出去的版本就是一份天然备份——前提是它确实是最新版。</strong></p>
+<h2>四、两个非交互环境的坑</h2>
+<ol>
+<li><strong><code>wrangler kv key delete</code> 在 Windows 非交互环境下静默失败</strong>——退出码正常但 key 还在。最后改用 wrangler 的 OAuth 凭据直接走 Cloudflare REST API 逐个删除，成功。</li>
+<li><strong>git-bash 的 curl 不解压 gzip</strong>——验证线上 HTML 时 <code>curl -s | grep</code> 匹配不到内容，误以为功能没上线。加 <code>--compressed</code> 或改用 Python urllib 才准确。这两个坑都差点把排查带进沟里。</li>
+</ol>
+<h2>五、版本疑云："你是不是上传错了版本？"</h2>
+<p>部署后用户质疑上线的可能是旧版。这个怀疑必须用证据回应，而不是嘴上保证。三方取证：</p>
+<table>
+<thead>
+<tr>
+<th>核对项</th>
+<th>方法</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cloudflare 部署历史</td>
+<td>API 直查</td>
+<td>昨晚 21:32（bfb96717）之后今天<strong>零部署</strong>，直到 16:58 的 f9d03fdd——不存在"今天早些时候有另一个版本在线上"</td>
+</tr>
+<tr>
+<td>16:38 检查点快照</td>
+<td><code>git show 55b6840</code> 与线上部署逐一 diff</td>
+<td><strong>逐字节一致</strong>（唯一差异是 Cloudflare 自家的 <code>__CF$cv$params</code> 防机器人脚本）</td>
+</tr>
+<tr>
+<td>项目列表 JSON</td>
+<td>昨晚部署版 vs 现在版</td>
+<td>63 个项目，零增减</td>
+</tr>
+</tbody>
+</table>
+<p>结论：<strong>没有"更晚的版本"存在过，"今天早些时候的版本"和线上就是同一个</strong>。用户看到旧样子的真正原因是浏览器缓存——<code>Ctrl+F5</code> 强刷即可。另外 GitHub 的 <code>origin/main</code> 在 17:05 之前确实还是 9/27 的旧代码（v2.6.7 改动一直没推送成功），看仓库也会产生"旧版"错觉。</p>
+<h2>六、备份兜底</h2>
+<p>今早的分支状态（<code>win7-compat</code>，含检查点 55b6840）完整包含所有工作。推送 GitHub 做异地备份时网络极不稳定，放后台自动重试（每分钟一次），第 4 次成功：<code>* [new branch] win7-compat -&gt; win7-compat</code>。至此 main 与 win7-compat 双分支、本地与 GitHub 双备份。</p>
+<h2>七、复盘：三条教训</h2>
+<ol>
+<li><strong>未提交的工作区状态是最脆弱的。</strong> 一次分支切换就能全部抹掉。改完尽快 commit，多分支并行开发时尤其如此——这次事故的直接起因就是另一个会话在 <code>win7-compat</code> 上工作。</li>
+<li><strong>部署产物是天然备份，但要用特征函数验证。</strong> 恢复时不能只看文件大小（419222 vs 420160 只差注入），必须 grep 特征函数、断言版本号，确认"恢复的确实是最新版"。</li>
+<li><strong>质疑版本错乱时，用部署历史 + 快照 diff + 数据对比的三方证据链说话。</strong> 三份证据都指向同一结论时，才能安心说"没有版本可回滚"，并给出用户可自行验证的方案（带缓存穿透参数的 URL + 强刷指引）。</li>
+</ol>
+<hr />
+<p><em>本文基于 2026-10-01 的事故处理会话整理，事件覆盖 v2.6.8 收尾全过程与版本疑云取证。</em></p>
+</div>
+</body>
+</html>
