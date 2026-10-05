@@ -5367,7 +5367,7 @@ body.preview-active .app-preview { display: flex; }
         <h1>文件上传</h1>
         <div class="main-head-right"></div>
       </header>
-      <div class="main-sub">上传图片、Markdown、HTML、Office 文档等文件：生成网站访问链接（浏览器直接预览），同时同步一份到 GitHub 的 windows-zone/Windows 目录，可用 GitHub 预览或 raw 直链访问</div>
+      <div class="main-sub">上传图片、Markdown、HTML、Office 文档等文件：生成网站访问链接（浏览器直接预览），同时同步一份到 GitHub 的 windows-zone/Windows 目录。GitHub 直连不通时，可用「网站镜像」经本站读取 GitHub 副本</div>
       <div class="upload-area" id="uploadArea">
         <div class="upload-zone" id="uploadZone">
           <div class="upload-zone-icon">
@@ -5391,9 +5391,10 @@ body.preview-active .app-preview { display: flex; }
             <button class="upload-copy-btn" onclick="copyUploadUrl()">复制</button>
           </div>
           <div class="upload-result-link" id="uploadResultGh" style="display:none">
-            <span>GitHub 预览：</span>
-            <a id="uploadResultGhPreview" href="#" target="_blank"></a>
-            <button class="upload-copy-btn" onclick="copyUploadGh('preview')">复制预览</button>
+            <span>GitHub 副本：</span>
+            <a id="uploadResultGhMirror" href="#" target="_blank">网站镜像（推荐）</a>
+            <button class="upload-copy-btn" onclick="copyUploadGh('mirror')">复制镜像</button>
+            <a id="uploadResultGhPreview" href="#" target="_blank">GitHub 预览</a>
             <button class="upload-copy-btn" onclick="copyUploadGh('raw')">复制 raw</button>
           </div>
           <div class="upload-result-file" id="uploadResultGhWarn" style="display:none"></div>
@@ -10269,6 +10270,7 @@ function apikeyCopyCreated() {
 let _lastUploadUrl = '';
 let _lastGhPreview = '';
 let _lastGhRaw = '';
+let _lastGhMirror = '';
 function initUploadPage() {
   const zone = $('#uploadZone');
   const input = $('#uploadFileInput');
@@ -10293,6 +10295,7 @@ function resetUpload() {
   _lastUploadUrl = '';
   _lastGhPreview = '';
   _lastGhRaw = '';
+  _lastGhMirror = '';
 }
 async function handleFileUpload(file) {
   if (!state.isAuthenticated) { showLoginPage(); return; }
@@ -10319,15 +10322,18 @@ async function handleFileUpload(file) {
         urlEl.textContent = d.url;
         _lastUploadUrl = d.url;
 
-        // GitHub 同步结果：成功则给出 htmlpreview 预览 + raw 直链，失败则提示原因
+        // GitHub 同步结果：成功则给出网站镜像（国内可用）+ GitHub 预览 + raw 直链，失败则提示原因
         _lastGhPreview = d.githubPreview || '';
         _lastGhRaw = d.githubRaw || '';
+        _lastGhMirror = d.githubMirror || '';
         const ghBox = $('#uploadResultGh');
         const ghWarn = $('#uploadResultGhWarn');
-        if (d.githubSynced && _lastGhPreview) {
-          const ghLink = $('#uploadResultGhPreview');
-          ghLink.href = _lastGhPreview;
-          ghLink.textContent = '打开 GitHub 预览';
+        if (d.githubSynced && _lastGhMirror) {
+          const mirrorEl = $('#uploadResultGhMirror');
+          mirrorEl.href = _lastGhMirror;
+          mirrorEl.textContent = '网站镜像（推荐）';
+          const ghPreviewEl = $('#uploadResultGhPreview');
+          ghPreviewEl.href = _lastGhPreview;
           ghBox.style.display = '';
           ghWarn.style.display = 'none';
         } else {
@@ -10358,7 +10364,7 @@ function copyUploadUrl() {
   }
 }
 function copyUploadGh(kind) {
-  const url = kind === 'raw' ? _lastGhRaw : _lastGhPreview;
+  const url = kind === 'raw' ? _lastGhRaw : (kind === 'mirror' ? _lastGhMirror : _lastGhPreview);
   if (!url) return;
   navigator.clipboard.writeText(url).then(() => {
     const btn = event.target;
@@ -10457,7 +10463,7 @@ async function loadUploadHistory() {
         <div class="uh-info">
           <div class="uh-name" title="${uhEscape(f.filename)}">${uhEscape(f.filename || f.id)}</div>
           <div class="uh-url"><a href="${uhEscape(f.url)}" target="_blank" rel="noopener">${uhEscape(f.url)}</a></div>
-          ${f.githubPreview ? `<div class="uh-url">GitHub：<a href="${uhEscape(f.githubPreview)}" target="_blank" rel="noopener">预览</a> · <a href="${uhEscape(f.githubRaw)}" target="_blank" rel="noopener">raw 直链</a></div>` : ''}
+          ${f.githubPreview ? `<div class="uh-url">GitHub 副本：<a href="${uhEscape(f.githubMirror || f.githubPreview)}" target="_blank" rel="noopener">网站镜像</a> · <a href="${uhEscape(f.githubPreview)}" target="_blank" rel="noopener">预览</a> · <a href="${uhEscape(f.githubRaw)}" target="_blank" rel="noopener">raw 直链</a></div>` : ''}
         </div>
         <div class="uh-meta">${uhFormatSize(f.size)}<br>${uhFormatDate(f.created_at)}</div>
         <div class="uh-actions">

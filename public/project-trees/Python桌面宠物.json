@@ -544,7 +544,7 @@
                 "type": "file",
                 "path": "relax_exe/dist/logs/app_20261005_120135.log",
                 "ext": ".log",
-                "lastModified": 1791172904100
+                "lastModified": 1791178881141
               }
             ]
           },
@@ -560,7 +560,7 @@
             "type": "file",
             "path": "relax_exe/dist/main_log.log",
             "ext": ".log",
-            "lastModified": 1791172904100
+            "lastModified": 1791178881141
           },
           {
             "name": "定时休息.exe",

@@ -220,6 +220,8 @@ function uploadGithubLinks(path: string) {
     raw,
     blob: `https://github.com/${UPLOAD_GH_REPO}/blob/${UPLOAD_GH_BRANCH}/${encodeURI(path)}`,
     preview: `https://htmlpreview.github.io/?${raw}`,
+    // 站点镜像：Worker 服务端读取 GitHub，国内直连 raw / htmlpreview 不通时的备用通道
+    mirror: `https://codingzhou.top/gh/${encodeURI(path)}`,
   };
 }
 
@@ -1906,6 +1908,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         githubError: gh.ok ? undefined : gh.error,
         githubRaw: ghLinks ? ghLinks.raw : undefined,
         githubPreview: ghLinks ? ghLinks.preview : undefined,
+        githubMirror: ghLinks ? ghLinks.mirror : undefined,
       }, 200);
     } catch (e: any) {
       return errorResponse('上传失败: ' + (e.message || '未知错误'), 500);
@@ -1946,6 +1949,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
             githubSynced: !!gh,
             githubRaw: gh ? gh.raw : undefined,
             githubPreview: gh ? gh.preview : undefined,
+            githubMirror: gh ? gh.mirror : undefined,
           };
         })
         .filter(f => f.uploader === username)
@@ -2692,6 +2696,50 @@ async function serveUploadedFile(request: Request, env: Env, id: string): Promis
 }
 
 // ------------------------------------------------------------
+// GitHub 镜像：/gh/{path} → 服务端代理 windows-zone 仓库内容
+// 用于 raw.githubusercontent.com / htmlpreview.github.io 在国内被墙或超时时的备用访问。
+// 只允许读取仓库内文件（禁止 .. 穿越），按扩展名返回可预览的 MIME。
+// ------------------------------------------------------------
+async function handleGithubMirror(request: Request, env: Env, rawPath: string): Promise<Response> {
+  let cleanPath = '';
+  try {
+    cleanPath = decodeURIComponent(rawPath || '').replace(/^\/+/, '');
+  } catch {
+    cleanPath = (rawPath || '').replace(/^\/+/, '');
+  }
+  if (!cleanPath) {
+    return new Response('缺少文件路径', { status: 400, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+  if (cleanPath.includes('..') || cleanPath.includes('\\')) {
+    return new Response('访问被拒绝', { status: 403, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  }
+
+  const upstream = await fetch(
+    `https://raw.githubusercontent.com/${UPLOAD_GH_REPO}/${UPLOAD_GH_BRANCH}/${encodeURI(cleanPath)}`,
+    { headers: { 'User-Agent': 'coding-zhou-worker' } }
+  );
+  if (!upstream.ok) {
+    return new Response(`镜像读取失败 (${upstream.status})`, {
+      status: upstream.status === 404 ? 404 : 502,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
+  }
+
+  const name = cleanPath.split('/').pop() || cleanPath;
+  let contentType = detectContentType(name, upstream.headers.get('Content-Type') || undefined);
+  if (/^(text\/|application\/(json|xml)|image\/svg\+xml)/.test(contentType) && !/charset=/i.test(contentType)) {
+    contentType += '; charset=utf-8';
+  }
+
+  const headers = new Headers();
+  headers.set('Content-Type', contentType);
+  headers.set('Content-Disposition', `inline; filename="${encodeURIComponent(name)}"`);
+  headers.set('Access-Control-Allow-Origin', '*');
+  headers.set('Cache-Control', 'public, max-age=600');
+  return new Response(upstream.body, { status: 200, headers });
+}
+
+// ------------------------------------------------------------
 // 技术文章静态页（构建时由 build.py 生成到 public/articles/）
 //   /articles             → 文章索引页
 //   /articles/{slug}      → {slug}.html（含正文，便于 AI 直接抓取）
@@ -2749,6 +2797,12 @@ export default {
     // 技术文章静态页：/articles/{slug} → {slug}.html，/articles/{slug}.md 直出 Markdown
     if (path === '/articles' || path.startsWith('/articles/')) {
       return handleArticles(request, env, path);
+    }
+
+    // GitHub 镜像：/gh/{path} 由 Worker 服务端代理 windows-zone 仓库内容，
+    // 供 raw.githubusercontent.com 被墙/超时时的备用访问（raw 会被浏览器拦，Worker 出网正常）
+    if (path.startsWith('/gh/')) {
+      return handleGithubMirror(request, env, path.substring(4));
     }
 
     // API 请求
