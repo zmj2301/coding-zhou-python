@@ -1,6 +1,16 @@
 [
     {
         "date": "2026-10-05",
+        "title": "新增 GitHub 副本网站镜像：国内直连 raw.githubusercontent.com 不通时的备用通道",
+        "version": "2.8.4",
+        "changes": [
+            "新增 /gh/{path} 路由：由 Worker 服务端读取 zmj2301/windows-zone 仓库内容并回传（禁止 .. 穿越），本机浏览器访问 raw.githubusercontent.com 出现 ERR_CONNECTION_RESET 时可用",
+            "上传成功卡片与上传历史新增「网站镜像」链接，与 GitHub 预览、raw 直链并列，构成三种访问通道",
+            "镜像按扩展名返回可预览 MIME（HTML 直接渲染、文本补 charset、图片内联显示），并带 600 秒缓存与 CORS"
+        ]
+    },
+    {
+        "date": "2026-10-05",
         "title": "上传文件同步到 GitHub Windows 目录 + 上传历史不再受 KV 缓存影响 + 双通道预览链接",
         "version": "2.8.3",
         "changes": [

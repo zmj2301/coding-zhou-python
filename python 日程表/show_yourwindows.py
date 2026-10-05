@@ -275,6 +275,10 @@ DEFAULT_USER_SETTINGS = {
     # 用户手动拖小蓝块/拖滑块调小框高后，会自动切成 False（手动优先），
     # 避免「刚调小、正文一变（倒计时每秒变）框又自己弹高到显示全部」。
     'auto_fit_box': True,
+    # 事件框滚动条开关（True=内容多时出滚动条；False=隐藏，内容多时截断）
+    'scrollbar_enabled': True,
+    # 完全隐藏窗口开关（True=setWindowOpacity(0.0)，让整个窗口消失；托盘右键可恢复）
+    'hide_whole_window': False,
     # 开机自启位置（屏幕相对坐标，0.0 ~ 1.0）。None 表示没保存过 —— 启动时
     # Qt 会用默认位置；保存后下次启动按此相对位置恢复（跨分辨率仍可按比例定位）。
     'pos_rel_x': None,
@@ -392,6 +396,17 @@ def _apply_settings_styles(style):
               background=[("active", c['accent_active']),
                           ("pressed", '#2d4bcf')])
 
+    # 危险/恢复按钮（红底白字，醒目提醒）
+    style.configure("Danger.TButton",
+                    background='#e74c3c',
+                    foreground='#ffffff',
+                    font=f['btn'],
+                    padding=s['btn_pad'],
+                    borderwidth=0)
+    style.map("Danger.TButton",
+              background=[("active", '#c0392b'),
+                          ("pressed", '#922b21')])
+
 
 def _clamp_text_size(value):
     """把文字大小限制在允许区间内，非法值（None/字符串/超范围）一律回落默认值。"""
@@ -488,6 +503,17 @@ def _apply_calendar_styles(style):
     style.map("Primary.TButton",
               background=[("active", c['accent_active']),
                           ("pressed", '#2d4bcf')])
+
+    # 危险按钮（红底白字，供恢复默认等破坏性操作使用）
+    style.configure("Danger.TButton",
+                    background='#e74c3c',
+                    foreground='#ffffff',
+                    font=f['btn'],
+                    padding=(12, 5),
+                    borderwidth=0)
+    style.map("Danger.TButton",
+              background=[("active", '#c0392b'),
+                          ("pressed", '#922b21')])
 
     # 次按钮（白底蓝描边）
     style.configure("Secondary.TButton",
@@ -714,11 +740,41 @@ def check_update_available(timeout=8):
         with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
             body = resp.read().decode("utf-8")
     except urllib.error.URLError as e:
-        return False, "", None, "网络连接失败: %s" % e.reason
+        reason = str(e.reason)
+        low = reason.lower()
+        if 'name or service not known' in low or 'getaddrinfo' in low:
+            hint = "DNS 解析失败 —— 检查是否连了 WiFi / 网线，或试试刷新"
+        elif 'timed out' in low or 'timeout' in low:
+            hint = "请求超时 —— 网络慢或服务器暂时不可用，稍后再试"
+        elif 'connection refused' in low:
+            hint = "连接被拒绝 —— 目标服务器没启动或端口被防火墙挡了"
+        elif 'ssl' in low or 'certificate' in low or 'handshake' in low:
+            hint = "SSL 证书问题 —— 系统时间是否正确？或网络有中间人代理"
+        elif 'winerror' in low and ('10061' in low or '10013' in low):
+            hint = "网络不通 —— 检查防火墙/杀毒软件是否拦截"
+        else:
+            hint = "网络错误 —— " + reason
+        return False, "", None, hint
     except urllib.error.HTTPError as e:
-        return False, "", None, "服务器返回 %d: %s" % (e.code, e.reason)
+        if e.code == 404:
+            hint = "服务器上没找到版本文件 (HTTP 404)"
+        elif e.code == 403:
+            hint = "服务器拒绝访问 (HTTP 403)"
+        elif e.code == 429:
+            hint = "请求太频繁被限流 (HTTP 429) —— 稍后再试"
+        elif 500 <= e.code < 600:
+            hint = "服务器出错 (HTTP %d) —— 服务器可能在维护，稍后再试" % e.code
+        else:
+            hint = "服务器返回 HTTP %d —— %s" % (e.code, e.reason)
+        return False, "", None, hint
+    except ssl.SSLError as e:
+        return False, "", None, "SSL 握手失败 —— 检查系统时间是否正确：" + str(e)
     except Exception as e:
-        return False, "", None, "请求异常: %s" % e
+        # socket.timeout 也会走到这里
+        low = str(e).lower()
+        if 'timed out' in low or 'timeout' in low:
+            return False, "", None, "请求超时 —— 网络慢或服务器暂时不可用"
+        return False, "", None, "请求异常 —— " + str(e)
 
     # 2. 解析 manifest.json
     try:
@@ -1132,6 +1188,10 @@ class MyWindow(QMainWindow):
         # 白框是否随内容自动加高。手动调小框高后会切成 False（手动优先），
         # 这样「刚调小就被内容变化顶回去」的循环才断得掉。
         self.auto_fit_box = bool(self.user_settings.get('auto_fit_box', True))
+        # 滚动条开关（True=内容多时出滚动条；False=隐藏）
+        self.scrollbar_enabled = bool(self.user_settings.get('scrollbar_enabled', True))
+        # 完全隐藏窗口开关（True=整个窗口 setWindowOpacity(0)，托盘可恢复）
+        self.hide_whole_window = bool(self.user_settings.get('hide_whole_window', False))
 
         # 初始化事件数据
         self.events = []
@@ -3093,6 +3153,11 @@ class MyWindow(QMainWindow):
         # 应用用户设置的文字大小（initUI 里字号是写死的默认值，这里按设置覆盖）
         self.apply_text_size()
 
+        # 应用滚动条开关
+        self._apply_scrollbar_style()
+        # 应用「完全隐藏窗口」开关（启动时就隐藏也能从托盘恢复）
+        self._apply_hide_window()
+
         self.drag_positon = QPoint()
         self.menu = QMenu(self)
 
@@ -3216,6 +3281,62 @@ class MyWindow(QMainWindow):
             self.image_label.setStyleSheet(
                 "border-radius: 10px; background-color: rgba(255, 255, 255, %.3f); "
                 "padding: 5px;" % a)
+
+    def _apply_scrollbar_style(self):
+        """根据 scrollbar_enabled 设置 content_label 的滚动条策略。
+
+        True → Qt.ScrollBarAsNeeded（内容多时自动出）
+        False → Qt.ScrollBarAlwaysOff（隐藏，内容多时截断）
+        """
+        if getattr(self, 'content_label', None) is None:
+            return
+        try:
+            from PySide6.QtCore import Qt
+        except Exception:
+            from PySide2.QtCore import Qt
+        if getattr(self, 'scrollbar_enabled', True):
+            self.content_label.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+            self.content_label.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        else:
+            self.content_label.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.content_label.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+    def _apply_hide_window(self):
+        """根据 hide_whole_window 决定是否把整个窗口设为完全透明（= 视觉消失）。
+
+        True → setWindowOpacity(0.0)，窗口在屏幕上看不见，但悬浮球右键可以恢复。
+        False → setWindowOpacity(1.0)，正常显示。
+
+        注意：这和 apply_window_opacity 是两层不同的东西 —— 那是只改底色 alpha，
+        文字保持不透明；这个是整个窗口包括文字一起消失。
+        """
+        if getattr(self, 'hide_whole_window', False):
+            self.setWindowOpacity(0.0)
+        else:
+            # 恢复显示时把窗口 opacity 拉回 1.0（底色透明度由 apply_window_opacity 单独管）
+            self.setWindowOpacity(1.0)
+
+    def _restore_hidden_window(self):
+        """从悬浮球右键菜单恢复被完全隐藏的主窗口。
+
+        只做两件事：
+        1. setWindowOpacity(1.0) —— 让窗口重新可见
+        2. 顺便把设置里的 hide_whole_window 也翻回 False —— 下次启动不再自动隐藏
+        """
+        self.setWindowOpacity(1.0)
+        self.hide_whole_window = False
+        # 写回配置 —— 避免下次启动又自动藏起来
+        save_user_settings(get_settings_dir(), {'hide_whole_window': False})
+        # 如果设置窗口开着，也同步 checkbox
+        if hasattr(self, 'bool_hide_window'):
+            try:
+                self.bool_hide_window.set(False)
+            except Exception:
+                pass
+        # 顺便确保窗口是可见状态（如果之前还被 minimize 了）
+        self.showNormal()
+        self.raise_()
+        self.activateWindow()
 
     def _other_widgets_height(self):
         """主布局里除白框以外，其它控件 + 间距 + 边距一共占多少高度。
@@ -5261,6 +5382,84 @@ class MyWindow(QMainWindow):
                             messagebox.showerror("保存失败",
                                 "无法保存位置，请稍后重试。")
 
+                    elif type_name == "scrollbar":
+                        # 滚动条开关：True=内容多时出滚动条；False=隐藏
+                        self.scrollbar_enabled = bool(self.bool_scrollbar.get())
+                        self._apply_scrollbar_style()
+                        save_user_settings(get_settings_dir(),
+                                           {'scrollbar_enabled': self.scrollbar_enabled})
+
+                    elif type_name == "hide_window":
+                        # 完全隐藏窗口开关：True=整个窗口消失（托盘右键可恢复）
+                        # 要确保至少有一个恢复通道 —— 如果托盘图标不存在，就不允许开启
+                        val = bool(self.bool_hide_window.get())
+                        if val and not getattr(self, '_has_tray', True):
+                            messagebox.showwarning("无法隐藏",
+                                "当前托盘图标不可用，开启隐藏后窗口将无法找回。\n"
+                                "请先确保托盘图标存在再试。")
+                            self.bool_hide_window.set(False)
+                            return
+                        self.hide_whole_window = val
+                        self._apply_hide_window()
+                        save_user_settings(get_settings_dir(),
+                                           {'hide_whole_window': self.hide_whole_window})
+
+                    elif type_name == "reset":
+                        # 恢复初始设置 —— 把 DEFAULT_USER_SETTINGS 全部写回文件，
+                        # 然后所有滑块/开关/主窗口状态回到出厂值。
+                        if not messagebox.askyesno("确认恢复",
+                            "确定恢复初始设置吗？\n\n"
+                            "将重置：事件框高度、透明度、字号、图标大小、滚动条开关等全部项目。\n"
+                            "（Excel 里的事件数据不会受影响）"):
+                            return
+                        # 1. 写回默认值（覆盖 user_data.json）
+                        save_user_settings(get_settings_dir(),
+                                           dict(DEFAULT_USER_SETTINGS))
+                        # 2. 把主窗口内存态也刷回默认
+                        d = DEFAULT_USER_SETTINGS
+                        self.event_length = d['event_length']
+                        self.text_size = d['text_size']
+                        self.icon_size = d['icon_size']
+                        self.window_opacity = d['window_opacity']
+                        self.icon_opacity = d['icon_opacity']
+                        self.auto_fit_box = d.get('auto_fit_box', True)
+                        # 把新增的滚动条开关也恢复（如果 DEFAULT 里还没有，就给 True）
+                        self.scrollbar_enabled = d.get('scrollbar_enabled', True)
+                        # 3. 立即应用到主窗口（不等重启）
+                        self.content_label.setMaximumHeight(self.event_length)
+                        self._apply_text_size()
+                        self.apply_window_opacity()
+                        if getattr(self, 'icon_opacity_effect', None) is not None:
+                            self.icon_opacity_effect.setOpacity(self.icon_opacity)
+                        self._apply_scrollbar_style()
+                        self._fit_content_height(allow_grow=True)
+                        # 4. 把设置窗口里的滑块也同步回去
+                        self._settings_init = True   # 初始化期间禁止触发 update_e
+                        self.event_length_slider.set(self.event_length)
+                        self.text_size_slider.set(self.text_size)
+                        self.text_size_hint.set("%d px" % self.text_size)
+                        self.icon_size_slider.set(self.icon_size)
+                        self.icon_size_hint.set("%d px" % self.icon_size)
+                        self.window_opacity_slider.set(self.window_opacity * 100)
+                        self.window_opacity_hint.set("%d%%" % round(self.window_opacity * 100))
+                        self.icon_opacity_slider.set(self.icon_opacity * 100)
+                        self.icon_opacity_hint.set("%d%%" % round(self.icon_opacity * 100))
+                        try:
+                            self.bool_auto_fit.set(self.auto_fit_box)
+                            self.auto_fit_check.config(
+                                text="内容多时自动加高白框" if self.auto_fit_box
+                                     else "内容多时自动加高白框（当前按你设的高度显示）")
+                        except Exception:
+                            pass
+                        # 新增开关也要重置
+                        if hasattr(self, 'bool_scrollbar'):
+                            self.bool_scrollbar.set(self.scrollbar_enabled)
+                        if hasattr(self, 'bool_hide_window'):
+                            self.bool_hide_window.set(False)
+                        self._settings_init = False
+                        messagebox.showinfo("已恢复",
+                            "所有设置已恢复为初始默认值。")
+
                     else:
                         messagebox.showerror("错误", "未知的设置类型")
                 
@@ -5348,6 +5547,13 @@ class MyWindow(QMainWindow):
                     "内容多时自动加高白框（推荐）", self.bool_auto_fit,
                     pady=(4, 0))
 
+                self.bool_scrollbar = tk.BooleanVar(value=True)
+                scrollbar_check = _add_checkbox(
+                    card1, r1 + 2,
+                    "内容多时显示滚动条（关闭后内容多了会截断）",
+                    self.bool_scrollbar, pady=(2, 0))
+                scrollbar_check.configure(command=lambda: update_e("scrollbar"))
+
                 # ══ 卡片 2：文字与图标 ══
                 card2, r2 = _make_card("文字与图标", 1)
 
@@ -5384,6 +5590,13 @@ class MyWindow(QMainWindow):
                     from_=0, to=100, variable=self.icon_opacity_var,
                     command=lambda e: update_e("icon_opacity"))
 
+                self.bool_hide_window = tk.BooleanVar(value=False)
+                hide_check = _add_checkbox(
+                    card3, r3 + 2,
+                    "完全隐藏整个窗口（托盘右键可恢复）",
+                    self.bool_hide_window, pady=(4, 0))
+                hide_check.configure(command=lambda: update_e("hide_window"))
+
                 # ══ 卡片 4：启动行为 ══
                 card4, r4 = _make_card("启动行为", 3)
 
@@ -5406,6 +5619,15 @@ class MyWindow(QMainWindow):
                     command=lambda: update_e("save_pos"))
                 self.save_pos_btn.grid(row=r4 + 2, column=0, columnspan=3,
                                        sticky="ew", pady=(2, 0))
+
+                # ── 恢复初始设置按钮（放在启动行为卡片下面，独立一行，红色显眼）──
+                reset_bar = ttk.Frame(set_window, style="Card.TFrame")
+                reset_bar.pack(fill="x", padx=12, pady=(10, 0))
+                self.reset_btn = ttk.Button(
+                    reset_bar, text="🔄 恢复初始设置（会重置全部项目）",
+                    style="Danger.TButton",
+                    command=lambda: update_e("reset"))
+                self.reset_btn.pack(fill="x", pady=8, padx=10)
 
                 # ── 底部提示 ──
                 tk.Label(set_window,
@@ -5451,6 +5673,14 @@ class MyWindow(QMainWindow):
                 # 手动优先时给一句提示，避免用户以为勾选项坏了
                 if not self.auto_fit_box:
                     self.auto_fit_check.config(text="内容多时自动加高白框（当前按你设的高度显示）")
+
+                # 滚动条开关
+                self.scrollbar_enabled = bool(getattr(self, 'scrollbar_enabled', True))
+                self.bool_scrollbar.set(self.scrollbar_enabled)
+
+                # 完全隐藏窗口开关
+                self.hide_whole_window = bool(getattr(self, 'hide_whole_window', False))
+                self.bool_hide_window.set(self.hide_whole_window)
 
                 # 开机自启动：以注册表实际状态为准，而不是本地 json
                 self.bool_get_autostart.set(bool(is_autostart_enabled()))
@@ -5793,6 +6023,10 @@ class MyWindow(QMainWindow):
 
             # 绘制横杠
             self.menu.addSeparator()
+            # 如果主窗口当前被完全隐藏（setWindowOpacity(0)），给一个恢复入口
+            if self.windowOpacity() < 0.01:
+                self.menu.addAction('🔓 显示主窗口', self._restore_hidden_window)
+                self.menu.addSeparator()
             # 最小化
             self.menu.addAction('缩小为桌面悬浮球', self.button_maximize_to_desktop)
             self.menu.addAction('最小化', self.button_minimize)
