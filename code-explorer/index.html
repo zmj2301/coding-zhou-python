@@ -1917,6 +1917,13 @@ body.filter-hidden .main-filter-toggle {
 .upload-history-head h2 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin: 0; }
 .upload-history-refresh { border: none; background: transparent; color: var(--accent-blue); font-size: 13px; cursor: pointer; padding: 4px 10px; border-radius: 6px; }
 .upload-history-refresh:hover { background: var(--bg-secondary); }
+.uh-toolbar { display: flex; align-items: center; gap: 8px; }
+.uh-search { border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); font-size: 13px; padding: 6px 10px; outline: none; min-width: 180px; }
+.uh-search:focus { border-color: var(--text-secondary); }
+.uh-cats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.uh-cat { font-size: 12px; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 3px 10px; cursor: pointer; transition: all .15s; }
+.uh-cat:hover { color: var(--text-primary); }
+.uh-cat.active { color: var(--text-primary); background: var(--bg-tertiary); border-color: var(--text-secondary); }
 .uh-empty { text-align: center; color: var(--text-tertiary); font-size: 13px; padding: 26px 0; }
 .uh-list { display: flex; flex-direction: column; gap: 8px; }
 .uh-item { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--glass-bg, transparent); border: 1px solid var(--border-color); border-radius: 12px; transition: border-color .15s, box-shadow .15s; }
@@ -1953,6 +1960,12 @@ body.filter-hidden .main-filter-toggle {
 .art-card-kw { display: inline-block; font-size: 11px; color: var(--text-secondary); background: var(--bg-tertiary); border-radius: 6px; padding: 2px 8px; margin: 8px 6px 0 0; }
 .art-card-excerpt { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-top: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .art-card-more { font-size: 12.5px; color: var(--accent-blue); margin-top: 10px; }
+.art-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+.art-card-foot .art-card-more { margin-top: 0; }
+.art-copy-link { font-size: 12px; color: var(--text-secondary); border: 1px solid var(--border-color); background: transparent; padding: 4px 10px; cursor: pointer; transition: all .15s; }
+.art-copy-link:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+.art-link-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 22px; }
+.art-link-bar code { font-size: 12.5px; color: var(--text-secondary); background: var(--bg-tertiary); padding: 5px 10px; border: 1px solid var(--border-color); word-break: break-all; }
 .art-reader { display: none; padding: 8px 24px 60px; max-width: 920px; }
 .art-back { border: 1px solid var(--border-color); background: var(--glass-bg); color: var(--text-secondary); font-size: 13px; padding: 7px 16px; border-radius: 8px; cursor: pointer; margin: 8px 0 18px; transition: all .15s; }
 .art-back:hover { color: var(--accent-blue); border-color: color-mix(in srgb, var(--accent-blue) 45%, var(--border-color)); }
@@ -4822,6 +4835,65 @@ body.preview-active .app-preview { display: flex; }
     border-color: var(--accent-green);
     color: white;
   }
+
+/* ===== AI 助手：统一为直角 + 中性色（与 AGENTS 手册风格一致） ===== */
+.ai-asst-page,
+.ai-asst-page *,
+.ai-asst-page *::before,
+.ai-asst-page *::after { border-radius: 0 !important; }
+
+/* 外壳：去掉彩色描边与光晕 */
+.ai-asst-page { background: var(--bg-primary); border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0,0,0,0.16); }
+.ai-asst-page::before { display: none !important; }
+.ai-asst-header::after,
+.ai-asst-input-area::before { display: none !important; }
+.ai-asst-header { background: var(--bg-secondary); box-shadow: none; }
+
+/* 标题与徽标：取消渐变文字与彩色 */
+.ai-asst-title,
+.ai-asst-welcome h2 { background: none; color: var(--text-primary); -webkit-text-fill-color: currentColor; }
+.ai-asst-quota { background: var(--bg-tertiary); border-color: var(--border-color); }
+
+/* 按钮 */
+.ai-asst-btn:hover { border-color: var(--border-color); color: var(--text-primary); box-shadow: none; }
+.ai-asst-close:hover { background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-color); box-shadow: none; }
+.ai-asst-new-chat,
+.ai-asst-send { background: var(--text-primary); border-color: var(--text-primary); color: var(--bg-primary); box-shadow: none; }
+.ai-asst-new-chat:hover,
+.ai-asst-send:hover { transform: none; box-shadow: none; opacity: 0.9; }
+
+/* 左侧会话列表 */
+.ai-asst-conversations { background: var(--bg-secondary); box-shadow: none; }
+.ai-asst-conv-item.active { background: var(--bg-tertiary); border-left-color: var(--text-primary); box-shadow: none; }
+.ai-asst-conv-del:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+
+/* 聊天区 */
+.ai-asst-chat::before { display: none !important; }
+.ai-asst-chat-inner { background: var(--bg-secondary); }
+
+/* 欢迎页卡片与建议 */
+.ai-asst-feature-card:hover { border-color: var(--border-color); box-shadow: none; }
+.ai-asst-feature-icon { background: var(--bg-tertiary); border-color: var(--border-color); }
+.ai-asst-suggestion:hover { border-color: var(--border-color); color: var(--text-primary); box-shadow: none; }
+
+/* 消息气泡 */
+.ai-asst-msg.user .ai-asst-msg-avatar { background: var(--bg-tertiary); color: var(--text-primary); box-shadow: none; }
+.ai-asst-msg.user .ai-asst-msg-bubble { background: var(--bg-tertiary); color: var(--text-primary); border-color: var(--border-color); box-shadow: none; }
+.ai-asst-msg-bubble code { color: var(--text-primary); background: var(--bg-tertiary); }
+.ai-asst-msg.user .ai-asst-msg-bubble code { background: var(--bg-secondary); color: var(--text-primary); }
+.ai-asst-msg-bubble pre { border-color: var(--border-color); }
+.ai-asst-msg-rec-btn { color: var(--text-secondary); border-color: var(--border-color); }
+.ai-asst-msg-rec-btn:hover { background: var(--bg-tertiary); }
+.ai-asst-msg-card:hover { border-color: var(--border-color); box-shadow: none; transform: none; }
+.ai-asst-msg-card-type { background: var(--bg-tertiary); color: var(--text-secondary); border-color: var(--border-color); }
+.ai-asst-typing span { background: var(--text-tertiary); box-shadow: none; }
+
+/* 底部输入区 */
+.ai-asst-input-area { background: var(--bg-secondary); box-shadow: none; }
+.ai-asst-model-select:hover,
+.ai-asst-model-select:focus,
+.ai-asst-input:focus { border-color: var(--text-secondary); box-shadow: none; }
+.ai-asst-icon-btn:hover { background: var(--bg-tertiary); color: var(--text-primary); }
 </style>
 </head>
 <body>
@@ -5324,8 +5396,12 @@ body.preview-active .app-preview { display: flex; }
       <div class="upload-history" id="uploadHistory">
         <div class="upload-history-head">
           <h2>上传历史</h2>
-          <button class="upload-history-refresh" onclick="loadUploadHistory()">刷新</button>
+          <div class="uh-toolbar">
+            <input type="text" class="uh-search" id="uhSearch" placeholder="按文件名搜索..." oninput="uhOnSearch()" />
+            <button class="upload-history-refresh" onclick="loadUploadHistory()">刷新</button>
+          </div>
         </div>
+        <div class="uh-cats" id="uhCats"></div>
         <div id="uploadHistoryBody"><div class="uh-empty">加载中...</div></div>
       </div>
     </div>
@@ -5342,6 +5418,7 @@ body.preview-active .app-preview { display: flex; }
         <button class="art-back" onclick="artShowList()">← 返回文章列表</button>
         <h2 class="art-reader-title" id="artReaderTitle"></h2>
         <div class="art-reader-meta" id="artReaderMeta"></div>
+        <div class="art-link-bar" id="artReaderLinkBar" style="display:none"></div>
         <div class="art-content" id="artReaderContent"></div>
       </div>
     </div>
@@ -5691,16 +5768,20 @@ history 端点也顺手补上 `disabled` 字段和 `url`，让前端一次拿到
     <script>
     // ===== 技术文章组件 =====
     var ARTICLES_DATA = [
-      { title: 'v2.6.9 文件上传历史记录：从三条需求到上线', date: '2026-10-01', version: 'v2.6.9', mdId: 'art-md-3',
+      { title: 'Code Explorer AI 代理操作手册（AGENTS.md）', date: '2026-10-05', version: 'v2.8.2', mdId: null, slug: 'agents-manual',
+        keywords: ['AGENTS.md', '部署流程', '故障排查', 'AI 代理'],
+        excerpt: '供 AI 代理接手的独立部署与故障排查手册：混合架构、五步部署流程、KV 缓存清理、ECS 排障与常见问题速查。' },
+      { title: 'v2.6.9 文件上传历史记录：从三条需求到上线', date: '2026-10-01', version: 'v2.6.9', mdId: 'art-md-3', slug: 'v2.6.9-upload-history',
         keywords: ['文件上传', 'KV 元数据', '410 拦截', '悬停缩略图'],
         excerpt: '后端已有 history 端点但前端没接；停用功能前后端从零做。KV 元数据不可原地修改、410 响应要 no-store，从需求到上线的完整记录。' },
-      { title: '一次分支切换引发的代码"集体消失"事故：取证、恢复与版本疑云', date: '2026-10-01', version: 'v2.6.8', mdId: 'art-md-2',
+      { title: '一次分支切换引发的代码"集体消失"事故：取证、恢复与版本疑云', date: '2026-10-01', version: 'v2.6.8', mdId: 'art-md-2', slug: 'branch-switch-incident',
         keywords: ['Checkout-checkpoint', '分支切换', '线上恢复', '证据链'],
         excerpt: '16:38 一次 IDE 分支切换检查点把 main 上所有未提交改动抹掉。从线上站点恢复源码、三方证据链澄清"你是不是上传错了版本"的完整过程。' },
-      { title: 'Python 子项目集成问题排查：一次"改了却没生效"的完整复盘', date: '2026-09-30', version: 'v2.6.7 / v2.6.8', mdId: 'art-md-1',
+      { title: 'Python 子项目集成问题排查：一次"改了却没生效"的完整复盘', date: '2026-09-30', version: 'v2.6.7 / v2.6.8', mdId: 'art-md-1', slug: 'python-subproject-fix',
         keywords: ['Cloudflare Worker', 'build.py', '双文件陷阱', '层级浏览'],
         excerpt: '改了代码、部署成功、线上却没变化？复盘 v2.6.7 三轮迭代：Python 独立页改造 → 首页层级浏览 → build.py 双 index.html 陷阱的根因排查。' }
     ];
+    function artAbsLink(slug) { return location.origin + '/articles/' + slug; }
     function artEscapeHtml(s) {
       return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
@@ -5785,22 +5866,51 @@ history 端点也顺手补上 `disabled` 字段和 `url`，让前端一次拿到
           + '<div class="art-card-meta">📅 ' + a.date + ' · Code Explorer 开发日志</div>'
           + '<div class="art-card-excerpt">' + artEscapeHtml(a.excerpt) + '</div>'
           + '<div>' + a.keywords.map(function (k) { return '<span class="art-card-kw">' + artEscapeHtml(k) + '</span>'; }).join('') + '</div>'
-          + '<div class="art-card-more">阅读全文 →</div>'
+          + '<div class="art-card-foot"><span class="art-card-more">阅读全文 →</span>'
+          + '<button class="art-copy-link" onclick="event.stopPropagation();artCopyLink(\'' + a.slug + '\',this)">复制 AI 链接</button></div>'
           + '</div>';
       }).join('');
     }
-    function artShowArticle(idx) {
-      var a = ARTICLES_DATA[idx];
-      if (!a) return;
-      var mdEl = document.getElementById(a.mdId);
-      var md = mdEl ? mdEl.textContent : '';
+    function artCopyLink(slug, btn) {
+      var url = artAbsLink(slug);
+      navigator.clipboard.writeText(url).then(function () {
+        if (btn) { var o = btn.textContent; btn.textContent = '已复制'; setTimeout(function () { btn.textContent = o; }, 1500); }
+      }).catch(function () { prompt('请手动复制链接', url); });
+    }
+    function artRenderInto(a, md) {
+      var url = artAbsLink(a.slug);
+      var bar = document.getElementById('artReaderLinkBar');
+      bar.innerHTML = '<span style="font-size:12.5px;color:var(--text-tertiary)">静态链接（可发给 AI 抓取）：</span>'
+        + '<code>' + artEscapeHtml(url) + '</code>'
+        + '<a class="art-copy-link" href="' + url + '" target="_blank" rel="noopener" style="text-decoration:none">打开网页</a>'
+        + '<a class="art-copy-link" href="/articles/' + a.slug + '.md" target="_blank" rel="noopener" style="text-decoration:none">.md 原文</a>'
+        + '<button class="art-copy-link" onclick="artCopyLink(\'' + a.slug + '\',this)">复制链接</button>';
+      bar.style.display = 'flex';
       md = md.replace(/^\s*# [^\n]*\n+/, '');  // 剥离正文 H1（阅读器头部已展示标题）
-      document.getElementById('artReaderTitle').textContent = a.title;
-      document.getElementById('artReaderMeta').textContent = '📅 ' + a.date + '　·　版本 ' + a.version + '　·　关键词：' + a.keywords.join(' / ');
       document.getElementById('artReaderContent').innerHTML = artRenderMd(md.replace(/^\n+/, ''));
       document.getElementById('articlesListView').style.display = 'none';
       document.getElementById('articlesReaderView').style.display = 'block';
       window.scrollTo(0, 0);
+    }
+    function artShowArticle(idx) {
+      var a = ARTICLES_DATA[idx];
+      if (!a) return;
+      document.getElementById('artReaderTitle').textContent = a.title;
+      document.getElementById('artReaderMeta').textContent = '📅 ' + a.date + '　·　版本 ' + a.version + '　·　关键词：' + a.keywords.join(' / ');
+      var mdEl = a.mdId ? document.getElementById(a.mdId) : null;
+      if (mdEl) { artRenderInto(a, mdEl.textContent || ''); return; }
+      // 无内嵌正文（如 AGENTS 手册）：从静态 /articles/{slug}.md 拉取
+      document.getElementById('artReaderLinkBar').style.display = 'none';
+      document.getElementById('artReaderContent').innerHTML = '<div class="art-p">加载中…</div>';
+      document.getElementById('articlesListView').style.display = 'none';
+      document.getElementById('articlesReaderView').style.display = 'block';
+      window.scrollTo(0, 0);
+      fetch('/articles/' + a.slug + '.md')
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+        .then(function (t) { artRenderInto(a, t); })
+        .catch(function (e) {
+          document.getElementById('artReaderContent').innerHTML = '<div class="art-p">文章加载失败：' + artEscapeHtml(e.message) + '</div>';
+        });
     }
     function artShowList() {
       document.getElementById('articlesListView').style.display = 'flex';
@@ -10249,20 +10359,54 @@ function uhTypeIcon(ct, filename) {
   if (/zip|compressed|\.rar|\.7z/i.test(s)) return '🗜️';
   return '📦';
 }
+// ===== 上传历史：分类 + 搜索（走后端接口） =====
+var _uhCat = 'all';
+var _uhQuery = '';
+var _uhTimer = null;
+function uhOnSearch() {
+  clearTimeout(_uhTimer);
+  _uhTimer = setTimeout(function () {
+    var el = $('#uhSearch');
+    _uhQuery = el ? el.value.trim() : '';
+    loadUploadHistory();
+  }, 250);
+}
+function uhSetCat(cat) {
+  _uhCat = cat;
+  loadUploadHistory();
+}
+function uhRenderCats(categories, labels) {
+  var box = $('#uhCats');
+  if (!box) return;
+  var cats = categories || {};
+  var order = ['all', 'image', 'doc', 'sheet', 'slides', 'archive', 'text', 'media', 'other'];
+  var keys = order.filter(function (k) { return k === 'all' || cats[k]; });
+  box.innerHTML = keys.map(function (k) {
+    var label = k === 'all' ? '全部' : ((labels && labels[k]) || k);
+    return '<span class="uh-cat' + (_uhCat === k ? ' active' : '') + '" onclick="uhSetCat(\'' + k + '\')">'
+      + uhEscape(label) + ' ' + (cats[k] || 0) + '</span>';
+  }).join('');
+}
 async function loadUploadHistory() {
   const body = $('#uploadHistoryBody');
   if (!body) return;
   if (!state.isAuthenticated) {
     body.innerHTML = '<div class="uh-empty">登录后可查看上传历史</div>';
+    var catsBox = $('#uhCats'); if (catsBox) catsBox.innerHTML = '';
     return;
   }
   body.innerHTML = '<div class="uh-empty">加载中...</div>';
   try {
-    const r = await fetch('/api/upload/history');
+    const params = new URLSearchParams();
+    if (_uhCat && _uhCat !== 'all') params.set('cat', _uhCat);
+    if (_uhQuery) params.set('q', _uhQuery);
+    const qs = params.toString();
+    const r = await fetch('/api/upload/history' + (qs ? '?' + qs : ''));
     const d = await r.json();
     if (!r.ok || !d.success) throw new Error(d.error || '加载失败');
+    uhRenderCats(d.categories, d.labels);
     const files = d.files || [];
-    if (!files.length) { body.innerHTML = '<div class="uh-empty">还没有上传过文件</div>'; return; }
+    if (!files.length) { body.innerHTML = '<div class="uh-empty">没有匹配的文件</div>'; return; }
     body.innerHTML = '<div class="uh-list">' + files.map(f => {
       const isImg = /^image\//.test(f.contentType || '');
       const thumb = isImg

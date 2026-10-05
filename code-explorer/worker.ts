@@ -1740,7 +1740,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     }
   }
 
-  // ---- 获取上传历史记录 ----
+  // ---- 获取上传历史记录（支持按后缀分类 + 名称搜索，均在后端完成） ----
   if (path === '/api/upload/history') {
     if (request.method !== 'GET') return errorResponse('方法不允许', 405);
     try {
@@ -1750,25 +1750,44 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!payload) return errorResponse('请先登录', 401);
       const username = payload.sub || payload.username || 'unknown';
 
+      const histUrl = new URL(request.url);
+      const q = (histUrl.searchParams.get('q') || '').trim().toLowerCase();
+      const cat = (histUrl.searchParams.get('cat') || '').trim();
+
       const list = await env.CODE_EXPLORER_KV.list({ prefix: 'upload:file:' });
-      const files = list.keys
+      const all = list.keys
         .map(k => {
           const meta = (k.metadata as any) || {};
+          const id = meta.id || k.name.replace('upload:file:', '');
+          const filename = meta.filename || id;
           return {
-            id: meta.id || k.name.replace('upload:file:', ''),
-            filename: meta.filename,
+            id,
+            filename,
             contentType: meta.contentType,
             size: meta.size,
             uploader: meta.uploader,
             created_at: meta.created_at,
             disabled: !!meta.disabled,
-            url: `https://codingzhou.top/f/${meta.id || k.name.replace('upload:file:', '')}`,
+            ext: fileExt(filename),
+            category: fileCategory(filename, meta.contentType),
+            url: `https://codingzhou.top/f/${id}`,
           };
         })
         .filter(f => f.uploader === username)
         .sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
 
-      return jsonResponse({ success: true, files }, 200);
+      // 分类统计基于全部文件（不受当前筛选影响）
+      const categories: Record<string, number> = { all: all.length };
+      all.forEach(f => { categories[f.category] = (categories[f.category] || 0) + 1; });
+
+      // 应用后端筛选：分类 + 文件名关键词
+      const files = all.filter(f => {
+        if (cat && cat !== 'all' && f.category !== cat) return false;
+        if (q && !(f.filename || '').toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      return jsonResponse({ success: true, files, categories, total: all.length, labels: CATEGORY_LABEL }, 200);
     } catch (e: any) {
       return errorResponse('获取历史记录失败: ' + (e.message || '未知错误'), 500);
     }
@@ -2329,8 +2348,8 @@ const EXT_MIME: Record<string, string> = {
   zip: 'application/zip', rar: 'application/vnd.rar', '7z': 'application/x-7z-compressed',
 };
 
-// 浏览器无法原生渲染、只能下载的格式 → 走在线预览页
-const OFFICE_PREVIEW_EXT = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+// 浏览器无法原生渲染的文档格式 → 走在线预览页
+const PREVIEW_EXT = ['doc', 'docx', 'xls', 'xlsx', 'csv', 'ppt', 'pptx'];
 
 function fileExt(filename: string): string {
   const name = (filename || '').toLowerCase();
@@ -2344,13 +2363,37 @@ function detectContentType(filename: string, declared?: string): string {
   return EXT_MIME[fileExt(filename)] || (t || 'application/octet-stream');
 }
 
+// 上传文件大类（后端按后缀分类，供前端筛选）
+const CATEGORY_LABEL: Record<string, string> = {
+  image: '图片', doc: '文档', sheet: '表格', slides: '演示',
+  archive: '压缩包', text: '文本', media: '音视频', other: '其他',
+};
+
+function fileCategory(filename: string, contentType?: string): string {
+  const ext = fileExt(filename);
+  const ct = (contentType || '').toLowerCase();
+  if (/^image\//.test(ct) || ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'bmp', 'ico'].includes(ext)) return 'image';
+  if (['xls', 'xlsx', 'csv'].includes(ext) || /excel|spreadsheet|csv/.test(ct)) return 'sheet';
+  if (['ppt', 'pptx'].includes(ext) || /powerpoint|presentation/.test(ct)) return 'slides';
+  if (['doc', 'docx', 'pdf'].includes(ext) || /word|msword|officedocument\.wordprocessing|pdf/.test(ct)) return 'doc';
+  if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext) || /zip|compressed|rar/.test(ct)) return 'archive';
+  if (['mp4', 'webm', 'mov', 'avi', 'mp3', 'wav', 'ogg', 'flac', 'm4a'].includes(ext) || /^(video|audio)\//.test(ct)) return 'media';
+  if (/^text\//.test(ct) || /json|xml/.test(ct) ||
+      ['md', 'markdown', 'txt', 'log', 'json', 'xml', 'html', 'htm', 'css', 'js', 'ts', 'py'].includes(ext)) return 'text';
+  return 'other';
+}
+
 function htmlEscape(s: string): string {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// Office 文档：返回内嵌 Office Online 预览的页面（原文件用 ?raw=1 获取）
-function officePreviewPage(rawUrl: string, filename: string): Response {
-  const src = encodeURIComponent(rawUrl);
+// 文档在线预览页：
+//   docx        → 浏览器内用 mammoth.js 转 HTML（不依赖外部服务器）
+//   xls/xlsx/csv → 浏览器内用 SheetJS 渲染成表格
+//   doc/ppt/pptx → 无轻量库，回退 Office Online 在线预览
+// 三种情况都提供「下载原文件」兜底；原文件用 ?raw=1 获取
+function previewPage(rawUrl: string, filename: string): Response {
+  const ext = fileExt(filename);
   const html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${htmlEscape(filename)} - 在线预览</title>
@@ -2358,14 +2401,61 @@ function officePreviewPage(rawUrl: string, filename: string): Response {
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;background:#f5f6f8;color:#222;height:100vh;display:flex;flex-direction:column}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid #e6e8eb}
 .name{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dl{font-size:13px;color:#0060df;text-decoration:none;border:1px solid #d7dbe0;padding:5px 12px;border-radius:7px;white-space:nowrap}
+.dl{font-size:13px;color:#0060df;text-decoration:none;border:1px solid #d7dbe0;padding:5px 12px;white-space:nowrap}
 .dl:hover{background:#f0f4ff}
-iframe{flex:1;width:100%;border:0;background:#fff}
+#view{flex:1;overflow:auto;background:#fff}
+#view iframe{width:100%;height:100%;border:0;background:#fff}
+.loading{padding:16px;font-size:13px;color:#888}
 .tip{padding:8px 16px;font-size:12px;color:#888;background:#fff;border-top:1px solid #e6e8eb}
+.doc{padding:28px 40px;max-width:900px;margin:0 auto;line-height:1.75}
+.doc img{max-width:100%}
+.doc table{border-collapse:collapse;width:100%;margin:12px 0}
+.doc td,.doc th{border:1px solid #d7dbe0;padding:6px 10px}
+.sheet{margin:18px 16px 6px;font-size:15px;color:#333}
+.xls{padding:0 16px 24px}
+.xls table{border-collapse:collapse;font-size:13px}
+.xls td,.xls th{border:1px solid #e0e3e7;padding:4px 8px;white-space:nowrap}
 </style></head><body>
 <div class="bar"><span class="name">${htmlEscape(filename)}</span><a class="dl" href="${htmlEscape(rawUrl)}" download>下载原文件</a></div>
-<iframe src="https://view.officeapps.live.com/op/view.aspx?src=${src}" allowfullscreen></iframe>
-<div class="tip">预览由 Office Online 提供；若加载不出来（网络受限），点右上角「下载原文件」。</div>
+<div id="view"><div class="loading">正在加载预览…</div></div>
+<div class="tip" id="tip">预览在浏览器本地渲染，不依赖外部服务器。若长时间无内容，请点右上角「下载原文件」。</div>
+<script>
+(function(){
+  var EXT=${JSON.stringify(ext)};
+  var RAW=${JSON.stringify(rawUrl)};
+  var view=document.getElementById('view');
+  function show(html){view.innerHTML=html}
+  function officeOnline(){
+    show('<iframe src="https://view.officeapps.live.com/op/view.aspx?src='+encodeURIComponent(RAW)+'" allowfullscreen></iframe>');
+    document.getElementById('tip').textContent='该格式由 Office Online 提供在线预览；若加载不出来，请点右上角「下载原文件」。';
+  }
+  function loadScript(u,ok,er){
+    var s=document.createElement('script');s.src=u;s.onload=ok;s.onerror=er;document.head.appendChild(s);
+  }
+  function getBuf(){
+    return fetch(RAW).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.arrayBuffer()});
+  }
+  if(EXT==='docx'){
+    loadScript('https://cdn.jsdelivr.net/npm/mammoth@1.7.0/mammoth.browser.min.js',function(){
+      getBuf().then(function(buf){return window.mammoth.convertToHtml({arrayBuffer:buf})})
+        .then(function(res){show('<div class="doc">'+(res.value||'<p>（空文档）</p>')+'</div>')})
+        .catch(function(){officeOnline()});
+    },function(){officeOnline()});
+  } else if(EXT==='xls'||EXT==='xlsx'||EXT==='csv'){
+    loadScript('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',function(){
+      getBuf().then(function(buf){
+        var wb=window.XLSX.read(buf,{type:'array'});
+        var out=wb.SheetNames.map(function(n){
+          return '<h3 class="sheet">'+n+'</h3><div class="xls">'+window.XLSX.utils.sheet_to_html(wb.Sheets[n])+'</div>';
+        }).join('');
+        show(out||'<div class="loading">（空表格）</div>');
+      }).catch(function(){officeOnline()});
+    },function(){officeOnline()});
+  } else {
+    officeOnline();
+  }
+})();
+<\/script>
 </body></html>`;
   return new Response(html, {
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
@@ -2403,8 +2493,8 @@ async function serveUploadedFile(request: Request, env: Env, id: string): Promis
   const wantRaw = ['1', 'true', 'yes'].includes(
     (new URL(request.url).searchParams.get('raw') || '').toLowerCase()
   );
-  if (!wantRaw && OFFICE_PREVIEW_EXT.includes(fileExt(filename))) {
-    return officePreviewPage(`https://codingzhou.top/f/${id}?raw=1`, filename);
+  if (!wantRaw && PREVIEW_EXT.includes(fileExt(filename))) {
+    return previewPage(`https://codingzhou.top/f/${id}?raw=1`, filename);
   }
 
   // 文本类补 charset，避免中文乱码
@@ -2419,6 +2509,40 @@ async function serveUploadedFile(request: Request, env: Env, id: string): Promis
   headers.set('Access-Control-Allow-Origin', '*');
 
   return new Response(obj.value, { headers });
+}
+
+// ------------------------------------------------------------
+// 技术文章静态页（构建时由 build.py 生成到 public/articles/）
+//   /articles             → 文章索引页
+//   /articles/{slug}      → {slug}.html（含正文，便于 AI 直接抓取）
+//   /articles/{slug}.md   → 原始 Markdown
+// ------------------------------------------------------------
+async function handleArticles(request: Request, env: Env, path: string): Promise<Response> {
+  let assetPath = path;
+  if (path === '/articles' || path === '/articles/') {
+    assetPath = '/articles/index.html';
+  } else if (!/\.[a-z0-9]+$/i.test(path)) {
+    assetPath = path.replace(/\/+$/, '') + '.html';
+  }
+
+  const resp = await fetchAsset(assetPath, env);
+  if (!resp.ok) {
+    return new Response('文章不存在', {
+      status: 404,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    });
+  }
+
+  const isMd = assetPath.endsWith('.md');
+  const isHtml = assetPath.endsWith('.html');
+  const headers = new Headers();
+  headers.set(
+    'Content-Type',
+    isMd ? 'text/markdown; charset=utf-8' : isHtml ? 'text/html; charset=utf-8' : 'text/plain; charset=utf-8'
+  );
+  headers.set('Cache-Control', isHtml ? 'no-cache' : 'public, max-age=600');
+  headers.set('Access-Control-Allow-Origin', '*');
+  return new Response(await resp.text(), { status: 200, headers });
 }
 
 // ------------------------------------------------------------
@@ -2440,6 +2564,11 @@ export default {
     if (path.startsWith('/f/')) {
       const id = path.substring(3).split('/')[0];
       return handleFileById(request, env, id);
+    }
+
+    // 技术文章静态页：/articles/{slug} → {slug}.html，/articles/{slug}.md 直出 Markdown
+    if (path === '/articles' || path.startsWith('/articles/')) {
+      return handleArticles(request, env, path);
     }
 
     // API 请求
