@@ -1,4 +1,16 @@
-﻿[
+[
+    {
+        "date": "2026-10-05",
+        "title": "新增「Windows 专区」栏目：左侧导航独立入口，托管 Windows EXE 安装包",
+        "version": "2.8.0",
+        "changes": [
+            "左侧导航栏新增「Windows 专区」入口（四宫格图标 + 安装包数量徽标），位于「资源下载」下方",
+            "新建独立公开仓库 zmj2301/windows-zone 存放 Windows 平台教学项目的 EXE/ZIP 安装包，按发布时间顺序提交",
+            "新增 /api/windows/list 与 /api/windows/download：Worker 读取仓库 manifest.json 生成列表，并流式代理下载安装包",
+            "下载以清单做白名单校验，防止任意文件被代理；带 Content-Disposition 保留原始中文文件名",
+            "首个上架项目：日程表 Win7 版（3 个历史版本，最新为 2026-10-05 09:19）"
+        ]
+    },
     {
         "date": "2026-10-03",
         "title": "修复上传文件打开链接直接下载：按扩展名推断 MIME + Office 文档在线预览",

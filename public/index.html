@@ -4976,6 +4976,13 @@ body.preview-active .app-preview { display: flex; }
         </span>
         <span class="sidebar-item-label">资源下载</span>
       </a>
+      <a class="sidebar-item" data-view="windows" id="navWindows">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+        </span>
+        <span class="sidebar-item-label">Windows 专区</span>
+        <span class="sidebar-badge" id="windowsCount">0</span>
+      </a>
       <a class="sidebar-item" data-view="ai-asst" id="navAiAsst">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/></svg>
@@ -5795,6 +5802,18 @@ history 端点也顺手补上 `disabled` 字段和 `url`，让前端一次拿到
         </div>
         <div class="cards-grid" id="textbookGrid"></div>
       </div>
+    </div>
+
+    <!-- Windows 专区 -->
+    <div class="resources-page" id="windowsPage" style="display:none">
+      <header class="main-head">
+        <h1>Windows 专区</h1>
+        <div class="main-head-right">
+          <div class="resources-stats" id="windowsStats"></div>
+        </div>
+      </header>
+      <div class="main-sub">Windows 平台教学项目的可执行程序安装包（EXE），解压即用，无需安装 Python</div>
+      <div class="cards-grid" id="windowsGrid"></div>
     </div>
   </main>
 <div class="mobile-bottom-nav" id="mobileBottomNav">
@@ -9814,6 +9833,63 @@ function downloadResource(path, name) {
     .catch(() => alert('下载失败，请稍后重试'));
 }
 
+// ===== Windows 专区 =====
+async function loadWindows() {
+  const grid = document.getElementById('windowsGrid');
+  const stats = document.getElementById('windowsStats');
+  const badge = document.getElementById('windowsCount');
+  if (!grid) return;
+  grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div><span>加载安装包中...</span></div>';
+  try {
+    const r = await fetch('/api/windows/list');
+    const d = await r.json();
+    const files = d.files || [];
+    if (stats) stats.textContent = `共 ${files.length} 个安装包`;
+    if (badge) badge.textContent = String(files.length);
+    if (files.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--text-secondary)">暂无安装包</div>';
+      return;
+    }
+    grid.innerHTML = files.map(f => `
+      <div class="resource-card accent-blue">
+        <div class="card-header">
+          <div class="card-icon">🪟</div>
+          <div class="card-title">${esc(f.name || '')}</div>
+        </div>
+        <div class="card-desc">${esc(f.desc || '')}</div>
+        <div class="card-tags">
+          ${f.latest ? '<span class="card-tag format">最新</span>' : ''}
+          <span class="card-tag format">ZIP</span>
+          <span class="card-tag size">${esc(formatSize(f.size))}</span>
+          <span class="card-tag">${esc(f.label || f.version || '')}</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-meta-item">🕐 ${esc(f.date || '')}</span>
+          </div>
+          <button class="download-btn" onclick="downloadWindows('${esc(f.file)}','${esc(f.name || '')}_${esc(f.version || '')}.zip')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载
+          </button>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--accent-red)">加载失败</div>';
+  }
+}
+
+function downloadWindows(file, name) {
+  // 大文件直接走浏览器下载（下载接口已带 Content-Disposition，避免 blob 全部载入内存）
+  const a = document.createElement('a');
+  a.href = '/api/windows/download?file=' + encodeURIComponent(file);
+  a.download = name || file;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 // ===== 教材下载 =====
 const SUBJECT_ICONS = {
   '语文': '📖', '数学': '📐', '英语': '🔤', '物理': '⚛️',
@@ -10284,6 +10360,14 @@ function switchSidebarView(view) {
     if (uploadPage) uploadPage.style.display = 'flex';
     resetUpload();
     loadUploadHistory();
+  } else if (view === 'windows') {
+    // Windows 专区页面
+    if (extras) extras.hidden = true;
+    if (cardsGrid) cardsGrid.style.display = 'none';
+    if (aiPage) aiPage.classList.remove('active');
+    const windowsPage = $('#windowsPage');
+    if (windowsPage) windowsPage.style.display = 'flex';
+    loadWindows();
   } else if (view === 'resources') {
     // 资源下载页面
     if (extras) extras.hidden = true;
@@ -10317,6 +10401,11 @@ function switchSidebarView(view) {
     const resourcesPage = $('#resourcesPage');
     if (resourcesPage) resourcesPage.style.display = 'none';
   }
+  // 非 windows 视图时隐藏 Windows 专区页
+  if (view !== 'windows') {
+    const windowsPage = $('#windowsPage');
+    if (windowsPage) windowsPage.style.display = 'none';
+  }
   // 非 articles 视图时隐藏技术文章页
   if (view !== 'articles') {
     const articlesPage = $('#articlesPage');
@@ -10324,7 +10413,7 @@ function switchSidebarView(view) {
   }
   // 更新侧栏高亮
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap', preview: 'navPreview', apikey: 'navApikey', upload: 'navUpload', resources: 'navResources', articles: 'navArticles' };
+  var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap', preview: 'navPreview', apikey: 'navApikey', upload: 'navUpload', resources: 'navResources', articles: 'navArticles', windows: 'navWindows' };
   var navId = navMap[view];
   if (navId) { var el = document.getElementById(navId); if (el) el.classList.add('active'); }
 }
