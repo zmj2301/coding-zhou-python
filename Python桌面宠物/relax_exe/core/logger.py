@@ -4,7 +4,14 @@ import os
 from datetime import datetime
 
 
-_LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
+def _get_log_dir() -> str:
+    """日志目录：打包后跟随 exe 所在目录，开发时为源码目录"""
+    if getattr(sys, 'frozen', False):
+        return os.path.join(os.path.dirname(os.path.abspath(sys.executable)), "logs")
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "logs")
+
+
+_LOG_DIR = _get_log_dir()
 
 
 def setup_logger(name: str = "定时休息") -> logging.Logger:

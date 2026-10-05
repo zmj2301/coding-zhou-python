@@ -1,6 +1,19 @@
 import json
 import os
+import sys
 from typing import Dict, Any, List, Optional
+
+
+def get_base_dir() -> str:
+    """
+    获取应用基准目录：打包后为 exe 所在目录，开发时为项目根目录
+
+    Returns:
+        基准目录绝对路径
+    """
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(os.path.abspath(sys.executable))
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class DeskPetConfig:
@@ -67,7 +80,7 @@ class DeskPetConfig:
             config_path: 配置文件路径，默认为项目根目录下的 config.json
         """
         if config_path is None:
-            config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
+            config_path = os.path.join(get_base_dir(), "config.json")
         self._config_path: str = config_path
         self._data: Dict[str, Any] = {}
         self.load()
@@ -171,8 +184,11 @@ class DeskPetConfig:
 
     @property
     def pet_icon_path(self) -> str:
-        """宠物图标路径"""
-        return self.get("pet", "icon_path", "icon.png")
+        """宠物图标路径（相对路径时基于应用基准目录解析为绝对路径）"""
+        icon = self.get("pet", "icon_path", "icon.png")
+        if icon and not os.path.isabs(icon):
+            return os.path.join(get_base_dir(), icon)
+        return icon
 
     @pet_icon_path.setter
     def pet_icon_path(self, value: str) -> None:

@@ -509,7 +509,42 @@
                 "type": "file",
                 "path": "relax_exe/dist/logs/app_20261003_071128.log",
                 "ext": ".log",
-                "lastModified": 1790984491532
+                "lastModified": 1790986704535
+              },
+              {
+                "name": "app_20261003_081929.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261003_081929.log",
+                "ext": ".log",
+                "lastModified": 1791020748407
+              },
+              {
+                "name": "app_20261004_085604.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261004_085604.log",
+                "ext": ".log",
+                "lastModified": 1791075907554
+              },
+              {
+                "name": "app_20261004_163953.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261004_163953.log",
+                "ext": ".log",
+                "lastModified": 1791106033664
+              },
+              {
+                "name": "app_20261004_200649.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261004_200649.log",
+                "ext": ".log",
+                "lastModified": 1791121785848
+              },
+              {
+                "name": "app_20261005_120135.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261005_120135.log",
+                "ext": ".log",
+                "lastModified": 1791172904100
               }
             ]
           },
@@ -525,7 +560,7 @@
             "type": "file",
             "path": "relax_exe/dist/main_log.log",
             "ext": ".log",
-            "lastModified": 1790984491532
+            "lastModified": 1791172904100
           },
           {
             "name": "定时休息.exe",
@@ -1548,6 +1583,20 @@
             "path": "relax_exe/logs/app_20261003_071110.log",
             "ext": ".log",
             "lastModified": 1790982791233
+          },
+          {
+            "name": "app_20261004_085543.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20261004_085543.log",
+            "ext": ".log",
+            "lastModified": 1791075359831
+          },
+          {
+            "name": "app_20261004_173450.log",
+            "type": "file",
+            "path": "relax_exe/logs/app_20261004_173450.log",
+            "ext": ".log",
+            "lastModified": 1791106530651
           }
         ]
       },

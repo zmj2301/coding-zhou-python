@@ -472,7 +472,8 @@ class PetWindow(QWidget):
 
     def _open_config(self) -> None:
         """打开配置文件"""
-        config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.json')
+        from .config import get_base_dir
+        config_path = os.path.join(get_base_dir(), 'config.json')
         webbrowser.open(config_path)
 
     def position_to_bottom_right(self) -> None:

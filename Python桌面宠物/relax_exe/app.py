@@ -269,10 +269,13 @@ class App(QApplication):
     def _show_agreement(self) -> bool:
         """
         显示用户协议对话框
-        
+
         Returns:
             用户是否同意协议
         """
+        if '--skip-agreement' in sys.argv:
+            logger.info("检测到 --skip-agreement 参数，跳过用户协议")
+            return True
         logger.info("显示用户协议对话框")
         dlg = AgreementDialog()
         result = dlg.exec()
@@ -474,7 +477,8 @@ class App(QApplication):
         """
         try:
             import json
-            config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.json')
+            from deskpet.config import get_base_dir
+            config_path = os.path.join(get_base_dir(), 'config.json')
             
             if os.path.exists(config_path):
                 with open(config_path, 'r', encoding='utf-8') as f:

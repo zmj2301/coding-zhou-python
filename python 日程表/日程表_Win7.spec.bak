@@ -1,0 +1,50 @@
+# -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_submodules
+
+hiddenimports = ['zai._client', '_tkinter', 'tkinter']
+hiddenimports += collect_submodules('tkinter')
+hiddenimports += collect_submodules('idlelib')
+
+
+block_cipher = None
+
+
+a = Analysis(
+    ['show_yourwindows.py'],
+    pathex=[],
+    binaries=[],
+    datas=[('img', 'img')],
+    hiddenimports=hiddenimports,
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=['PySide2.Qt3DCore', 'PySide2.Qt3DRender', 'PySide2.Qt3DAnimation', 'PySide2.Qt3DInput', 'PySide2.Qt3DLogic', 'PySide2.Qt3DSimulation', 'PySide2.Qt3DQuick', 'PySide2.Qt3DQuickRender', 'PySide2.QtWebEngineCore', 'PySide2.QtWebEngineWidgets', 'PySide2.QtWebEngineQuick', 'PySide2.QtWebChannel', 'PySide2.QtMultimedia', 'PySide2.QtMultimediaWidgets', 'PySide2.QtCharts', 'PySide2.QtDataVisualization', 'PySide2.QtBluetooth', 'PySide2.QtNfc', 'PySide2.QtSerialPort', 'PySide2.QtPositioning', 'PySide2.QtLocation', 'PySide2.QtSensors', 'PySide2.QtTest', 'PySide2.QtSql', 'PySide2.QtHelp', 'PySide2.QtXmlPatterns', 'PySide2.QtOpenGL', 'PySide2.QtPdf', 'PySide2.QtScxml', 'PySide2.QtStateMachine', 'PySide2.QtRemoteObjects', 'PySide2.QtDesigner', 'PySide2.QtUiTools', 'PySide2.QtQuick', 'PySide2.QtQml', 'PySide2.QtQuickControls2', 'PySide2.QtQmlModels', 'tensorflow', 'pygame', 'numba', 'llvmlite', 'torch', 'matplotlib', 'scipy', 'IPython', 'notebook', 'pytest', 'pyqtgraph', 'win32com', 'pythoncom', 'lxml', 'lz4', 'sqlalchemy', 'test', 'tests'],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False,
+)
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    [],
+    name='日程表_Win7',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    runtime_tmpdir='C:\\ProgramData\\ScheduleMate_Win7',
+    console=False,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+    icon=['combined.ico'],
+)
