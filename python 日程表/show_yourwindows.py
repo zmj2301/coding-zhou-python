@@ -38,6 +38,7 @@ import tkinter as tk
 import json
 import urllib.request
 import urllib.error
+import urllib.parse
 import ssl
 from tkinter import ttk
 from tkinter import messagebox
@@ -62,6 +63,12 @@ def _exec_menu(menu, pos):
     """QMenu 弹出：Qt6 叫 exec()，Qt5 叫 exec_()。"""
     fn = getattr(menu, "exec", None) or getattr(menu, "exec_", None)
     return fn(pos)
+
+
+def _dialog_exec(dlg):
+    """QDialog 执行：Qt6 用 exec()，Qt5 用 exec_()。消除 DeprecationWarning。"""
+    fn = getattr(dlg, "exec", None) or getattr(dlg, "exec_", None)
+    return fn()
 
 
 def get_app_path():
@@ -443,6 +450,10 @@ _CAL_COLOR = {
     'has_event_fg':   '#92400e',
     'weekday_bg':     '#f8fafc',
     'weekday_fg':     '#8a94a6',
+    # 「有新版本」按钮用的柔和红（降饱和，主窗口与日历窗口共用同一套值）
+    'update_bg':         '#e06a6a',
+    'update_bg_active':  '#d15a5a',
+    'update_bg_pressed': '#bf4d4d',
 }
 _CAL_FONT = {
     'win_title':  ('Microsoft YaHei', 13, 'bold'),
@@ -503,6 +514,17 @@ def _apply_calendar_styles(style):
     style.map("Primary.TButton",
               background=[("active", c['accent_active']),
                           ("pressed", '#2d4bcf')])
+
+    # 更新按钮（柔和红底白字 —— 有新版时才显示，和主窗口按钮同色系）
+    style.configure("Update.TButton",
+                    background=c['update_bg'],
+                    foreground='#ffffff',
+                    font=f['btn'],
+                    padding=(10, 4),
+                    borderwidth=0)
+    style.map("Update.TButton",
+              background=[("active", c['update_bg_active']),
+                          ("pressed", c['update_bg_pressed'])])
 
     # 危险按钮（红底白字，供恢复默认等破坏性操作使用）
     style.configure("Danger.TButton",
@@ -588,7 +610,14 @@ def load_user_settings(dir_path):
     if os.path.exists(path):
         try:
             with open(path, 'r', encoding='utf-8') as f:
-                loaded = json.load(f)
+                raw = f.read()
+            try:
+                loaded = json.loads(raw)
+            except Exception:
+                # 兼容历史 bug：个别版本用 Python 字面量（单引号）写了这个文件，
+                # 于是每次启动都报「读取失败」。这里兜底解析一次。
+                import ast
+                loaded = ast.literal_eval(raw)
             if isinstance(loaded, dict):
                 data.update(loaded)
         except Exception as e:
@@ -700,81 +729,224 @@ def sync_events_to_excel(self, on_error=None):
 # ============================================================================
 # 版本检查 —— 从 Codingzhou.top Windows 专区 /api/windows/list 读取 manifest.json
 # ============================================================================
-# 本地版本号：格式 YYYY.MM.DD（打包日期），改这里即可
-APP_VERSION = "2026.10.5"  # 测试用旧版本
+# 本地版本号：必须与发布到 manifest.json 里的 version 字段**完全一致**。
+# 否则会出现「更新完仍提示有新版本」的死循环 —— 例如本地写 "2026.10.6"（无时刻）
+# 而远端是 "20261006_1143"（含时刻），比较时远端恒大于本地，永远追不上。
+# 界面显示用的日期由 _app_version_display() 格式化。
+APP_VERSION = "20261006_1810"
+
+
+def _app_version_display():
+    """把 manifest 风格版本号（如 20261006_1143）格式化成 2026.10.6 供界面显示。"""
+    import re as _re2
+    s = str(APP_VERSION)
+    m = _re2.match(r"^(\d{4})(\d{2})(\d{2})", s)
+    if m:
+        return "%s.%d.%d" % (m.group(1), int(m.group(2)), int(m.group(3)))
+    return s.replace("_", " ")
+
+
+# ---------------------------------------------------------------------------
+# 版本检查「唯一真相源」
+# ---------------------------------------------------------------------------
+# 主窗口在启动时后台检查一次，把结果写进 _VER_STATE；日历窗口等其它界面
+# 只读取 / 订阅这份状态，不再各自重复请求 —— 保证任何时刻各界面显示一致，
+# 不会再出现「一个还在检查、另一个已经显示版本号」的错位。
+#   state: 'checking' | 'newer' | 'latest' | 'error'
+# ---------------------------------------------------------------------------
+_VER_STATE = {
+    "state": "checking",
+    "is_newer": False,
+    "remote_ver": "",
+    "info": None,
+    "err": None,
+    "done": False,      # 后台请求是否已返回
+}
+_VER_SUBSCRIBERS = []   # [callback(state_copy), ...]
+
+
+def _ver_set_state(newer=False, remote_ver="", info=None, err=None):
+    """由主窗口的版本检查结果调用：更新唯一真相源并通知所有订阅者。"""
+    if err:
+        _VER_STATE.update(state="error", is_newer=False, remote_ver=remote_ver or "",
+                          info=info, err=err, done=True)
+    elif newer:
+        _VER_STATE.update(state="newer", is_newer=True, remote_ver=remote_ver or "",
+                          info=info, err=None, done=True)
+    else:
+        _VER_STATE.update(state="latest", is_newer=False, remote_ver=remote_ver or "",
+                          info=info, err=None, done=True)
+    for cb in list(_VER_SUBSCRIBERS):
+        try:
+            cb(dict(_VER_STATE))
+        except Exception:
+            pass
+
+
+def _ver_subscribe(cb):
+    """注册一个订阅者，返回取消订阅的函数。"""
+    _VER_SUBSCRIBERS.append(cb)
+
+    def _unsub():
+        try:
+            _VER_SUBSCRIBERS.remove(cb)
+        except ValueError:
+            pass
+    return _unsub
+
 
 # Worker 代理的 Windows 专区 manifest（已部署好的端点，读 zmj2301/windows-zone 仓库）
+# ⚠️ 注意：必须用 www.codingzhou.top —— 裸域名 SSL 证书不匹配、Worker 路由也不对。
 # 返回格式见仓库 manifest.json：files[].version = "20261005_0919", latest = true
-REMOTE_VERSION_URL = "https://codingzhou.top/api/windows/list"
+REMOTE_VERSION_URL = "https://www.codingzhou.top/api/windows/list"
 
 # 下载端点模板 —— Worker 流式代理 GitHub raw 文件
 # 用法：REMOTE_DOWNLOAD_BASE + file 名字（files[].file 字段）
-REMOTE_DOWNLOAD_BASE = "https://codingzhou.top/api/windows/download?file="
+REMOTE_DOWNLOAD_BASE = "https://www.codingzhou.top/api/windows/download?file="
+
+
+# ============================================================================
+# HTTP 请求统一工具 —— 自动处理代理、SSL、重试
+# ----------------------------------------------------------------------------
+def _build_opener(ssl_context=None):
+    """构造一个能走 Windows 系统代理 + 环境变量代理的 opener。
+
+    Python urllib 默认**不走代理**，这就是"Chrome 能上网但程序请求失败"的根因。
+    这里先读 http_proxy/https_proxy 环境变量，再读 Windows 注册表系统代理，
+    都没有就走直连。
+
+    ssl_context 可选 —— 传入则塞进 HTTPSHandler，None 让 Python 用默认值。
+    """
+    proxy_map = {}
+    # 1. 读环境变量（最通用）
+    for scheme in ("http", "https"):
+        for var in (scheme + "_proxy", scheme.upper() + "_PROXY"):
+            val = os.environ.get(var)
+            if val:
+                proxy_map[scheme] = val
+                break
+
+    # 2. 读 Windows 注册表系统代理（很多人只在系统设置里配）
+    if os.name == "nt":
+        try:
+            import winreg
+            key = winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER,
+                r"Software\Microsoft\Windows\CurrentVersion\Internet Settings")
+            enabled, _ = winreg.QueryValueEx(key, "ProxyEnable")
+            if enabled:
+                proxy_server, _ = winreg.QueryValueEx(key, "ProxyServer")
+                if proxy_server:
+                    # 格式可能是 "http=127.0.0.1:7890;https=127.0.0.1:7890" 或 "127.0.0.1:7890"
+                    for part in proxy_server.split(";"):
+                        part = part.strip()
+                        if "=" in part:
+                            sch, addr = part.split("=", 1)
+                            proxy_map[sch.strip().lower()] = addr.strip()
+                        elif not proxy_map:  # 全局代理
+                            proxy_map["http"] = part
+                            proxy_map["https"] = part
+        except Exception:
+            pass
+
+    handlers = []
+    if proxy_map:
+        handlers.append(urllib.request.ProxyHandler(proxy_map))
+    handlers.append(urllib.request.HTTPHandler)
+    handlers.append(urllib.request.HTTPSHandler(context=ssl_context))
+    return urllib.request.build_opener(*handlers)
+
+
+def _ssl_context():
+    """尽力构造一个 SSL context，失败返回 None（让 Python 用默认值）。"""
+    try:
+        ctx = ssl.create_default_context()
+        try:
+            ctx.minimum_version = ssl.TLSVersion.TLSv1_2
+        except Exception:
+            pass
+        return ctx
+    except Exception:
+        return None
+
+
+def _http_get(url, timeout=10, headers=None, retries=2):
+    """GET 请求，返回 (body_str, None) 或 (None, error_msg)。
+
+    自动走系统代理 + 环境变量代理，自动处理 SSL fallback，带重试。
+    """
+    if headers is None:
+        headers = {"User-Agent": "ScheduleMateWin7/" + APP_VERSION,
+                   "Accept": "*/*",
+                   "Cache-Control": "no-cache"}
+
+    last_err = None
+
+    for attempt in range(retries + 1):
+        ctx = _ssl_context()
+        opener = _build_opener(ssl_context=ctx)
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with opener.open(req, timeout=timeout) as resp:
+                body = resp.read().decode("utf-8", errors="replace")
+                return body, None
+
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                msg = "服务器上没找到版本文件 (HTTP 404)"
+            elif e.code == 403:
+                msg = "服务器拒绝访问 (HTTP 403)"
+            elif e.code == 429:
+                msg = "请求太频繁被限流 (HTTP 429)"
+            elif 500 <= e.code < 600:
+                msg = "服务器出错 (HTTP %d) —— 稍后再试" % e.code
+            else:
+                msg = "服务器返回 HTTP %d" % e.code
+            return None, msg
+
+        except urllib.error.URLError as e:
+            reason = str(e.reason).lower()
+            if "name or service not known" in reason or "getaddrinfo" in reason:
+                last_err = "DNS 解析失败 —— 检查是否联网，或刷新后再试"
+            elif "timed out" in reason or "timeout" in reason:
+                last_err = "请求超时 —— 网络慢或服务器暂时不可用"
+            elif "connection refused" in reason:
+                last_err = "连接被拒绝 —— 目标服务器没启动或被防火墙挡了"
+            elif "ssl" in reason or "certificate" in reason or "handshake" in reason:
+                last_err = "SSL 握手失败 —— 检查系统时间是否正确"
+            elif "proxy" in reason.lower():
+                last_err = "代理连接失败 —— 检查系统代理设置是否正确"
+            elif "winerror" in reason and ("10061" in reason or "10013" in reason):
+                last_err = "网络不通 —— 检查防火墙/杀毒软件是否拦截"
+            else:
+                last_err = "网络错误 —— " + str(e.reason)
+
+        except Exception as e:
+            low = str(e).lower()
+            if "timed out" in low or "timeout" in low:
+                last_err = "请求超时 —— 网络慢或服务器暂时不可用"
+            else:
+                last_err = "请求异常 —— " + str(e)
+
+        if attempt < retries:
+            time.sleep(0.6 * (attempt + 1))
+
+    return None, last_err
 
 
 def check_update_available(timeout=8):
     """请求 /api/windows/list 并对比本地版本。
 
     返回 (is_newer: bool, remote_version: str, info: dict | None, error: str | None)
-
-    manifest.json 格式：
-      { "files": [ { "version": "20261005_0919", "date": "2026-10-05",
-                     "file": "日程表_Win7_20261005_0919.zip", "latest": true } ] }
-
-    版本比较：
-      本地 APP_VERSION = "2026.10.5"  # 测试用旧版本 → 拆成 [2026, 10, 5]
-      manifest.version = "20261005_0919" → 拆成 [2026, 10, 5, 9, 19]
-      逐项比数字，多出来的段补 0。
     """
     import re as _re
 
     # 1. 请求 Worker 端点 —— 加时间戳绕过 CDN/边缘缓存
-    ctx = ssl.create_default_context()
-    _cache_buster = "&_t=%d" % int(time.time())
-    _url = REMOTE_VERSION_URL + _cache_buster
-    try:
-        req = urllib.request.Request(
-            _url,
-            headers={"User-Agent": "ScheduleMateWin7/" + APP_VERSION,
-                     "Cache-Control": "no-cache"})
-        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
-            body = resp.read().decode("utf-8")
-    except urllib.error.URLError as e:
-        reason = str(e.reason)
-        low = reason.lower()
-        if 'name or service not known' in low or 'getaddrinfo' in low:
-            hint = "DNS 解析失败 —— 检查是否连了 WiFi / 网线，或试试刷新"
-        elif 'timed out' in low or 'timeout' in low:
-            hint = "请求超时 —— 网络慢或服务器暂时不可用，稍后再试"
-        elif 'connection refused' in low:
-            hint = "连接被拒绝 —— 目标服务器没启动或端口被防火墙挡了"
-        elif 'ssl' in low or 'certificate' in low or 'handshake' in low:
-            hint = "SSL 证书问题 —— 系统时间是否正确？或网络有中间人代理"
-        elif 'winerror' in low and ('10061' in low or '10013' in low):
-            hint = "网络不通 —— 检查防火墙/杀毒软件是否拦截"
-        else:
-            hint = "网络错误 —— " + reason
-        return False, "", None, hint
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            hint = "服务器上没找到版本文件 (HTTP 404)"
-        elif e.code == 403:
-            hint = "服务器拒绝访问 (HTTP 403)"
-        elif e.code == 429:
-            hint = "请求太频繁被限流 (HTTP 429) —— 稍后再试"
-        elif 500 <= e.code < 600:
-            hint = "服务器出错 (HTTP %d) —— 服务器可能在维护，稍后再试" % e.code
-        else:
-            hint = "服务器返回 HTTP %d —— %s" % (e.code, e.reason)
-        return False, "", None, hint
-    except ssl.SSLError as e:
-        return False, "", None, "SSL 握手失败 —— 检查系统时间是否正确：" + str(e)
-    except Exception as e:
-        # socket.timeout 也会走到这里
-        low = str(e).lower()
-        if 'timed out' in low or 'timeout' in low:
-            return False, "", None, "请求超时 —— 网络慢或服务器暂时不可用"
-        return False, "", None, "请求异常 —— " + str(e)
+    _sep = "&" if "?" in REMOTE_VERSION_URL else "?"
+    _url = REMOTE_VERSION_URL + _sep + "_t=%d" % int(time.time())
+    body, err = _http_get(_url, timeout=timeout)
+    if err:
+        return False, "", None, err
 
     # 2. 解析 manifest.json
     try:
@@ -806,22 +978,13 @@ def check_update_available(timeout=8):
 
     # 4. 版本比较 —— 统一转成整数数组
     def _parse(v):
-        """把任意版本字符串转成整数数组。
-
-        支持格式：
-          "2026.10.5"       → [2026, 10, 5, 0, 0]
-          "20261005_0919"   → [2026, 10, 5, 9, 19]
-          "20261005"        → [2026, 10, 5, 0, 0]
-
-        紧凑 YYYYMMDD_HHMM 先拆成空格分隔再提取数字。
-        """
+        """把任意版本字符串转成整数数组。"""
         s = str(v)
-        # 先把 YYYYMMDD_HHMM 紧凑格式拆成 YYYY MM DD HH MM
         s = _re.sub(r'^(\d{4})(\d{2})(\d{2})(?:_(\d{2})(\d{2}))?$',
                     r'\1 \2 \3 \4 \5', s)
         parts = _re.findall(r"\d+", s)
         out = []
-        for p in parts[:5]:  # 最多 5 段：年 月 日 时 分
+        for p in parts[:5]:
             try:
                 out.append(int(p))
             except ValueError:
@@ -832,17 +995,17 @@ def check_update_available(timeout=8):
     remote_parts = _parse(remote_ver_raw)
     is_newer = remote_parts > local_parts
 
-    # 5. 组装 info dict —— UpdateDialog 要用
+    # 5. 组装 info dict
     remote_ver_pretty = remote_ver_raw.replace("_", " ")
+    _fname = str(latest.get("file", ""))
     info = {
         "version": remote_ver_raw,
         "release_date": latest.get("date", ""),
-        "download_url": REMOTE_DOWNLOAD_BASE + latest.get("file", ""),
-        "file_name": latest.get("file", ""),
+        "download_url": REMOTE_DOWNLOAD_BASE + urllib.parse.quote(_fname),
+        "file_name": _fname,
         "file_size": latest.get("size", 0),
         "sha256": latest.get("sha256", ""),
         "desc": latest.get("desc", ""),
-        # notes 没有 —— manifest.json 里没这个字段，保持空列表
         "notes": [],
     }
     return is_newer, remote_ver_pretty, info, None
@@ -867,13 +1030,14 @@ class UpdateDialog(QDialog):
 
     # ── UI 组装 ────────────────────────────────────────────────────────────
     def _build_ui(self, local_ver, remote_ver, info, is_newer, error):
-        # 卡片壳：圆角 + 阴影 + 深蓝渐变
+        # 卡片壳：圆角 + 阴影 + 浅色卡片（与日历窗口同色系）
         card = QFrame(self)
         card.setGeometry(0, 0, 520, 420)
         card.setStyleSheet("""
             QFrame#card {
                 background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
-                    stop:0 #1e293b, stop:1 #0f172a);
+                    stop:0 #ffffff, stop:1 #f6f8fc);
+                border: 1px solid #e3e7ef;
                 border-radius: 20px;
             }
         """)
@@ -890,13 +1054,13 @@ class UpdateDialog(QDialog):
 
         # 顶部图标 + 标题
         if error:
-            self._add_header(layout, "⚠️", "检查失败", "#fbbf24",
+            self._add_header(layout, "⚠️", "检查失败", "#d97706",
                              subtitle="网络或服务器错误，无法获取最新版本")
         elif is_newer:
-            self._add_header(layout, "✨", "发现新版本！", "#38bdf8",
+            self._add_header(layout, "✨", "发现新版本！", "#4f6ef7",
                              subtitle="有新功能等你体验")
         else:
-            self._add_header(layout, "✅", "已经是最新版", "#34d399",
+            self._add_header(layout, "✅", "已经是最新版", "#22a06b",
                              subtitle="感谢使用，暂无新版本发布")
 
         # 版本对比卡片
@@ -928,16 +1092,16 @@ class UpdateDialog(QDialog):
             self.btn_later.setCursor(Qt.PointingHandCursor)
             self.btn_later.setStyleSheet("""
                 QPushButton {
-                    color: #cbd5e1;
+                    color: #6b7280;
                     background: transparent;
-                    border: 1px solid #475569;
+                    border: 1px solid #d7dce6;
                     border-radius: 10px;
                     padding: 0 22px;
                     font-family: "Microsoft YaHei";
                     font-size: 14px;
                 }
-                QPushButton:hover { color: #f1f5f9; border-color: #64748b; }
-                QPushButton:pressed { color: #94a3b8; }
+                QPushButton:hover { color: #1f2937; border-color: #4f6ef7; }
+                QPushButton:pressed { color: #9aa3b2; }
             """)
             self.btn_later.clicked.connect(self.reject)
             row.addWidget(self.btn_later)
@@ -949,7 +1113,7 @@ class UpdateDialog(QDialog):
                 QPushButton {
                     color: #ffffff;
                     background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
-                        stop:0 #3b82f6, stop:1 #6366f1);
+                        stop:0 #4f6ef7, stop:1 #3d5be0);
                     border: none;
                     border-radius: 10px;
                     padding: 0 22px;
@@ -959,12 +1123,13 @@ class UpdateDialog(QDialog):
                 }
                 QPushButton:hover {
                     background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
-                        stop:0 #60a5fa, stop:1 #818cf8);
+                        stop:0 #6b86f9, stop:1 #5a7ae8);
                 }
                 QPushButton:pressed { padding: 0 21px; }
             """)
             self.btn_update.clicked.connect(
-                lambda: self._open(info.get("download_url")))
+                lambda: self._open(info.get("download_url"),
+                                   expected_sha256=info.get("sha256")))
             row.addWidget(self.btn_update)
         else:
             self.btn_close = QPushButton("知道了")
@@ -974,7 +1139,7 @@ class UpdateDialog(QDialog):
                 QPushButton {
                     color: #ffffff;
                     background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
-                        stop:0 #3b82f6, stop:1 #6366f1);
+                        stop:0 #4f6ef7, stop:1 #3d5be0);
                     border: none;
                     border-radius: 10px;
                     padding: 0 22px;
@@ -984,7 +1149,7 @@ class UpdateDialog(QDialog):
                 }
                 QPushButton:hover {
                     background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
-                        stop:0 #60a5fa, stop:1 #818cf8);
+                        stop:0 #6b86f9, stop:1 #5a7ae8);
                 }
             """)
             self.btn_close.clicked.connect(self.reject)
@@ -995,7 +1160,7 @@ class UpdateDialog(QDialog):
         # 底部小字
         foot = QLabel("© Codingzhou.top  ·  日程表  ·  仅检查版本不自动下载")
         foot.setStyleSheet(
-            "color: #475569; font-family: 'Microsoft YaHei'; font-size: 11px;")
+            "color: #9aa3b2; font-family: 'Microsoft YaHei'; font-size: 11px;")
         foot.setAlignment(Qt.AlignCenter)
         layout.addWidget(foot)
 
@@ -1013,12 +1178,12 @@ class UpdateDialog(QDialog):
         title_col.setSpacing(2)
         t = QLabel(title)
         t.setFont(QFont("Microsoft YaHei", 16, QFont.Bold))
-        t.setStyleSheet("color: #f1f5f9; background: transparent;")
+        t.setStyleSheet("color: #1f2937; background: transparent;")
         title_col.addWidget(t)
         if subtitle:
             s = QLabel(subtitle)
             s.setFont(QFont("Microsoft YaHei", 10))
-            s.setStyleSheet("color: #94a3b8; background: transparent;")
+            s.setStyleSheet("color: #8a94a6; background: transparent;")
             title_col.addWidget(s)
         row.addLayout(title_col)
         row.addStretch(1)
@@ -1028,13 +1193,13 @@ class UpdateDialog(QDialog):
         if error:
             local_band = QFrame()
             local_band.setStyleSheet("""
-                QFrame { background: #1e293b; border-radius: 10px; }""")
+                QFrame { background: #fef7e6; border-radius: 10px; }""")
             h = QHBoxLayout(local_band)
             h.setContentsMargins(18, 14, 18, 14)
             h.addWidget(QLabel(
-                '<span style="color:#fbbf24">网络请求失败</span>'
-                '<span style="color:#64748b">  —— </span>'
-                '<span style="color:#e2e8f0">可稍后在设置里再次检查</span>'))
+                '<span style="color:#b45309">网络请求失败</span>'
+                '<span style="color:#c2c9d6">  —— </span>'
+                '<span style="color:#374151">可稍后在设置里再次检查</span>'))
             layout.addWidget(local_band)
             return
 
@@ -1045,8 +1210,8 @@ class UpdateDialog(QDialog):
         local = QLabel(f"  当前版本：{local_ver}  ")
         local.setStyleSheet("""
             QLabel {
-                color: #cbd5e1;
-                background: #1e293b;
+                color: #374151;
+                background: #f1f4fa;
                 border-radius: 10px;
                 padding: 8px 16px;
                 font-family: "Microsoft YaHei";
@@ -1059,7 +1224,7 @@ class UpdateDialog(QDialog):
         arrow.setFont(QFont("Segoe UI Emoji", 14, QFont.Bold))
         arrow.setStyleSheet(
             "color: %s; background: transparent;"
-            % ("#38bdf8" if is_newer else "#475569"))
+            % ("#4f6ef7" if is_newer else "#c2c9d6"))
         pill_row.addWidget(arrow)
 
         latest = QLabel(
@@ -1075,9 +1240,9 @@ class UpdateDialog(QDialog):
                 font-size: 13px;
                 font-weight: bold;
             }
-        """ % ("#ffffff",
-               "qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 #3b82f6,stop:1 #6366f1)"
-               if is_newer else "#0f3d2e"))
+        """ % (("#ffffff",
+                "qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 #4f6ef7,stop:1 #3d5be0)")
+               if is_newer else ("#1a7f5a", "#e7f7ef")))
         pill_row.addWidget(latest)
         pill_row.addStretch(1)
         layout.addLayout(pill_row)
@@ -1085,23 +1250,23 @@ class UpdateDialog(QDialog):
     def _add_notes(self, layout, items):
         box = QFrame()
         box.setStyleSheet("""
-            QFrame { background: #0f172a; border-radius: 12px; }""")
+            QFrame { background: #f6f8fc; border-radius: 12px; }""")
         v = QVBoxLayout(box)
         v.setContentsMargins(16, 14, 16, 14)
         v.setSpacing(6)
         title = QLabel("📝  更新内容")
         title.setFont(QFont("Microsoft YaHei", 11, QFont.Bold))
-        title.setStyleSheet("color: #94a3b8; background: transparent;")
+        title.setStyleSheet("color: #8a94a6; background: transparent;")
         v.addWidget(title)
         for item in items[:6]:  # 最多 6 条，避免弹窗过长
             row = QHBoxLayout()
             dot = QLabel("•")
-            dot.setStyleSheet("color: #38bdf8; font-size: 16px; background: transparent;")
+            dot.setStyleSheet("color: #4f6ef7; font-size: 16px; background: transparent;")
             dot.setFixedWidth(14)
             txt = QLabel(item)
             txt.setWordWrap(True)
             txt.setStyleSheet(
-                "color: #cbd5e1; font-family: 'Microsoft YaHei'; "
+                "color: #374151; font-family: 'Microsoft YaHei'; "
                 "font-size: 12px; background: transparent;")
             row.addWidget(dot)
             row.addWidget(txt)
@@ -1110,23 +1275,66 @@ class UpdateDialog(QDialog):
         layout.addWidget(box)
 
     # ── 点击更新 ───────────────────────────────────────────────────────────
-    def _open(self, url):
+    def _open(self, url, expected_sha256=None):
+        """点「立即更新」→ 调 run_self_update 做代码层面的下载 + 替换 + 重启。
+
+        run_self_update 里会：
+          1. 下载 zip（带进度窗口 + 速度折线图）
+          2. sha256 校验（和 manifest 里的比对）
+          3. 解压 → 挑 exe
+          4. 写 bat 脚本等本进程退出后覆盖
+          5. 重启
+
+        失败时弹窗显示错误原因，降级 webbrowser 作为兜底。
+        """
         import webbrowser
-        if url:
+
+        self.accept()  # 先关 UpdateDialog
+
+        if not url:
+            return
+
+        # 非打包环境（直接 python show_yourwindows.py）→ 降级浏览器下载
+        if not getattr(sys, "frozen", False):
             try:
                 webbrowser.open(url, new=2)
             except Exception:
                 pass
-        self.accept()
+            return
+
+        try:
+            ok, msg = run_self_update(self, url,
+                                      expected_sha256=expected_sha256)
+            if not ok:
+                # 失败 —— 先降级浏览器，再弹原因
+                try:
+                    webbrowser.open(url, new=2)
+                except Exception:
+                    pass
+                if msg:
+                    QMessageBox.warning(
+                        self.parent() if self.parent() else self,
+                        "更新失败",
+                        msg + "\n\n已改用浏览器下载。")
+        except Exception as e:
+            # run_self_update 本身崩了 —— 兜底
+            try:
+                webbrowser.open(url, new=2)
+            except Exception:
+                pass
+            QMessageBox.warning(
+                self.parent() if self.parent() else self,
+                "更新异常",
+                "自动更新脚本执行出错：%s\n\n已改用浏览器下载。" % e)
 
     # ── 无边框拖动 ─────────────────────────────────────────────────────────
     def mousePressEvent(self, ev):
-        self._drag_pos = ev.globalPos() - self.frameGeometry().topLeft()
+        self._drag_pos = _global_pos(ev) - self.frameGeometry().topLeft()
         super().mousePressEvent(ev)
 
     def mouseMoveEvent(self, ev):
         if hasattr(self, "_drag_pos") and ev.buttons() & Qt.LeftButton:
-            self.move(ev.globalPos() - self._drag_pos)
+            self.move(_global_pos(ev) - self._drag_pos)
         super().mouseMoveEvent(ev)
 
 
@@ -3072,7 +3280,21 @@ class MyWindow(QMainWindow):
         self.countdown_label.setFont(QFont('Microsoft YaHei', 18, QFont.Bold))
         self.countdown_label.setAlignment(Qt.AlignCenter)
         self.countdown_label.setStyleSheet("color: #FFFFFF; background-color: rgba(64, 158, 255, 0.8); padding: 12px 20px; border-radius: 15px;")
-        
+
+        # 版本状态小标签（倒计时框右边，动态显示）：
+        #   · 加载中     → "⏳ 检查中..."（低调灰色）
+        #   · 有新版     → "🔴 有新版本"（红色，可点击）
+        #   · 已是最新   → 隐藏（不占位置）
+        #   · 网络错误   → 隐藏
+        self.version_label = QLabel(self)
+        self.version_label.setCursor(Qt.PointingHandCursor)
+        self.version_label.setStyleSheet(
+            "color: #999999; font-size: 11px; padding: 2px 6px; border-radius: 6px;")
+        # 初始状态：显示"检查中"（绝对可见，让用户知道后台在跑）
+        self.version_label.setText("⏳ 检查中…")
+        self.version_label.show()
+        self.version_label.mousePressEvent = lambda e: self.check_update_from_menu()
+
         # 顶部水平布局：图标居左、倒计时框居右（右上角）。
         # 原来图标和倒计时垂直居中排列，用户反馈倒计时框在中间不好看，
         # 改到右上角后整体更紧凑、信息层级更清晰。
@@ -3080,7 +3302,14 @@ class MyWindow(QMainWindow):
         self.top_layout.setContentsMargins(0, 0, 0, 0)
         self.top_layout.addWidget(self.image_label, alignment=Qt.AlignLeft | Qt.AlignVCenter)
         self.top_layout.addStretch(1)
-        self.top_layout.addWidget(self.countdown_label, alignment=Qt.AlignRight | Qt.AlignTop)
+
+        # 倒计时 + 版本状态 —— 垂直小布局，都靠右边
+        right_col = QVBoxLayout()
+        right_col.setContentsMargins(0, 0, 0, 0)
+        right_col.setSpacing(2)
+        right_col.addWidget(self.countdown_label, alignment=Qt.AlignRight)
+        right_col.addWidget(self.version_label, alignment=Qt.AlignRight)
+        self.top_layout.addLayout(right_col)
         self.layout.addLayout(self.top_layout)
         
         # 创建内容信息显示
@@ -3174,6 +3403,13 @@ class MyWindow(QMainWindow):
 
         # 程序启动时自动校验上次使用的 Excel 数据
         self.validate_and_load_data()
+
+        # 后台异步检查新版本 —— 更新右下角 version_label
+        self._update_checked.connect(self._on_version_check_result)
+        # 立即启动（后台线程不阻塞 UI），不等 1500ms
+        self._start_version_check_background()
+        # 超时兜底：12 秒没结果 → 显示"检查超时，点我重试"
+        QTimer.singleShot(12000, self._version_check_timeout_fallback)
 
     def apply_text_size(self, size=None):
         """应用主窗口文字大小。
@@ -3797,7 +4033,69 @@ class MyWindow(QMainWindow):
                 f'已加载 {len(loaded)} 条有效待办；\n'
                 f'同时发现 {len(problems)} 个问题，对应行已跳过：\n\n'
                 + problem_text(problems))
-    
+
+    def _version_check_timeout_fallback(self):
+        """12 秒后如果 version_label 还停留在"⏳ 检查中…"——说明后台线程卡死/网络超时。"""
+        if not getattr(self, "_ver_check_done", False):
+            cur = self.version_label.text()
+            if cur and "检查中" in cur:
+                self.version_label.setText("⚠️ 检查超时 点我重试")
+                self.version_label.setStyleSheet(
+                    "color: #fbbf24; font-size: 10px; padding: 2px 6px; "
+                    "border-radius: 6px;")
+                self.version_label.show()
+                # 同步唯一真相源：超时也算「已结束（错误态）」，避免日历端一直转圈
+                _ver_set_state(err="检查超时")
+
+    def _start_version_check_background(self):
+        """启动时后台静默检查新版本 —— 更新 version_label（右下角）。"""
+        import threading
+
+        def _worker():
+            try:
+                is_newer, remote_ver, info, err = check_update_available(timeout=8)
+                info_json = json.dumps(info, ensure_ascii=False) if info else ""
+                self._update_checked.emit(is_newer, remote_ver or "", info_json, err or "")
+            except Exception as e:
+                self._update_checked.emit(False, "", "", str(e))
+
+        threading.Thread(target=_worker, daemon=True).start()
+
+    def _on_version_check_result(self, is_newer, remote_ver, info_json, err):
+        """后台版本检查结果 —— 更新右下角 version_label。"""
+        self._ver_check_done = True  # 标记：后台线程已返回（防止超时兜底覆盖）
+
+        # 写入唯一真相源，供日历窗口等其它界面同步显示（以主窗口为准）
+        _ver_set_state(newer=bool(is_newer), remote_ver=remote_ver or "",
+                       info=info_json and json.loads(info_json) or None,
+                       err=err or None)
+
+        if err:
+            # 网络错误：低调显示（让用户知道为什么没红按钮）
+            short = err[:40] + ("…" if len(err) > 40 else "")
+            self.version_label.setText("⚠️ 检查失败: " + short)
+            self.version_label.setStyleSheet(
+                "color: #fbbf24; font-size: 10px; padding: 2px 6px; "
+                "border-radius: 6px;")
+            self.version_label.show()
+            return
+
+        if is_newer:
+            # 有新版：柔和红醒目（与日历窗口 Update.TButton 同一套颜色）
+            self.version_label.setText("🔴 有新版本 点我更新")
+            self.version_label.setStyleSheet(
+                "color: #ffffff; background-color: %s; "
+                "font-size: 11px; padding: 3px 8px; border-radius: 8px; "
+                "font-weight: bold;" % _CAL_COLOR['update_bg'])
+            self.version_label.show()
+        else:
+            # 已是最新：低调显示版本号（不空白、不抢注意力）
+            self.version_label.setText('v' + _app_version_display())
+            self.version_label.setStyleSheet(
+                'color: #8a94a6; font-size: 10px; padding: 2px 6px; '
+                'border-radius: 6px; background: transparent;')
+            self.version_label.show()
+
     def check_update_from_menu(self):
         """右键菜单「检查更新…」：子线程请求远端 version.json，信号回主线程弹窗。
 
@@ -3818,7 +4116,7 @@ class MyWindow(QMainWindow):
             try:
                 dlg = UpdateDialog(
                     parent=self,
-                    local_ver=APP_VERSION,
+                    local_ver=_app_version_display(),
                     remote_ver=remote_ver or "-",
                     info=info,
                     is_newer=is_newer,
@@ -3833,20 +4131,20 @@ class MyWindow(QMainWindow):
                     screen = _QA.primaryScreen().availableGeometry()
                     dlg.move(screen.center().x() - dlg.width() // 2,
                              screen.center().y() - dlg.height() // 2)
-                dlg.exec_()
+                _dialog_exec(dlg)
             except Exception as e:
                 # 兜底：如果 UpdateDialog 构造失败（极少发生），降级到 QMessageBox
                 if err:
                     QMessageBox.warning(self, "检查更新",
-                        "检查新版本时出错：\n\n%s\n\n本地版本：%s" % (err, APP_VERSION))
+                        "检查新版本时出错：\n\n%s\n\n本地版本：%s" % (err, _app_version_display()))
                 elif is_newer:
                     QMessageBox.information(self, "检查更新",
                         "有新版本！本地 %s → 最新 %s\n\n%s" % (
-                            APP_VERSION, remote_ver,
+                            _app_version_display(), remote_ver,
                             (info.get("download_url", "") if isinstance(info, dict) else "")))
                 else:
                     QMessageBox.information(self, "检查更新",
-                        "当前已是最新版本 %s" % APP_VERSION)
+                        "当前已是最新版本 %s" % _app_version_display())
                 _log_error("UpdateDialog 构造失败: %s" % e)
 
         self._update_checked.connect(_on_result)
@@ -5727,6 +6025,113 @@ class MyWindow(QMainWindow):
             cal_window.minsize(840, 520)
             cal_window.configure(bg=_CAL_COLOR['window_bg'])
 
+            # ── 漂亮的 Tk 更新弹窗（独立 Toplevel，居中，深蓝渐变 + 圆角卡片观感）──
+            def _show_update_dialog_tk(remote_ver, info, is_newer=False, err=None):
+                import webbrowser
+                dlg = tk.Toplevel(cal_window)
+                dlg.title("发现新版本")
+                dlg.configure(bg=_CAL_COLOR['window_bg'])
+                dlg.resizable(False, False)
+                # 居中
+                W, H = 440, 360
+                sw = dlg.winfo_screenwidth(); sh = dlg.winfo_screenheight()
+                dlg.geometry("%dx%d+%d+%d" % (W, H, max(0, (sw-W)//2), max(0, (sh-H)//3)))
+                dlg.transient(cal_window)
+                dlg.grab_set()
+
+                # 卡片背景（主内容区）
+                card = tk.Frame(dlg, bg="#ffffff", highlightthickness=0)
+                card.place(x=12, y=12, width=W-24, height=H-24)
+
+                # 顶部标题条（日历主色）
+                top = tk.Frame(card, bg=_CAL_COLOR['accent'])
+                top.pack(fill="x", padx=0, pady=0)
+                tk.Label(top, text="✨  发现新版本！",
+                         bg=_CAL_COLOR['accent'], fg="#ffffff",
+                         font=('Microsoft YaHei', 14, 'bold')).pack(pady=(14, 6))
+                tk.Label(top, text="当前版本：%s  →  最新：%s" % (_app_version_display(), remote_ver),
+                         bg=_CAL_COLOR['accent'], fg="#dfe6ff",
+                         font=('Microsoft YaHei', 9)).pack(pady=(0, 10))
+
+                # 更新详情区
+                detail = tk.Frame(card, bg="#ffffff")
+                detail.pack(fill="both", expand=True, padx=18, pady=(12, 8))
+
+                if info and isinstance(info, dict):
+                    rows = []
+                    if info.get('release_date'):
+                        rows.append(("📅 发布日期", info['release_date']))
+                    if info.get('file_name'):
+                        size_mb = info.get('file_size', 0)
+                        if size_mb:
+                            rows.append(("📦 文件大小", "%.1f MB" % (size_mb/1024/1024)))
+                        else:
+                            rows.append(("📦 文件名", info['file_name']))
+                    if info.get('desc'):
+                        rows.append(("📝 说明", info['desc'][:120]))
+
+                    for label, val in rows:
+                        row = tk.Frame(detail, bg="#ffffff")
+                        row.pack(fill="x", pady=2)
+                        tk.Label(row, text=label + "：", bg="#ffffff", fg=_CAL_COLOR['text_dim'],
+                                 font=('Microsoft YaHei', 9)).pack(side="left")
+                        tk.Label(row, text=str(val), bg="#ffffff", fg=_CAL_COLOR['title'],
+                                 font=('Microsoft YaHei', 9), wraplength=300,
+                                 justify="left").pack(side="left", fill="x", expand=True)
+
+                    if info.get('notes'):
+                        tk.Label(detail, text="更新内容：", bg="#ffffff", fg=_CAL_COLOR['accent'],
+                                 font=('Microsoft YaHei', 10, 'bold')).pack(anchor="w", pady=(8, 2))
+                        note_box = tk.Frame(detail, bg=_CAL_COLOR['accent_soft'])
+                        note_box.pack(fill="x", pady=(0, 4))
+                        for n in info['notes'][:5]:
+                            tk.Label(note_box, text="  • " + str(n), bg=_CAL_COLOR['accent_soft'],
+                                     fg=_CAL_COLOR['text'], font=('Microsoft YaHei', 9),
+                                     wraplength=380, justify="left").pack(anchor="w", pady=1)
+                else:
+                    tk.Label(detail, text="远端返回信息不可用，请手动下载。",
+                             bg="#ffffff", fg=_CAL_COLOR['text_dim'],
+                             font=('Microsoft YaHei', 10)).pack(pady=20)
+
+                # 按钮区
+                btn_bar = tk.Frame(card, bg="#ffffff")
+                btn_bar.pack(fill="x", padx=18, pady=(8, 16))
+
+                def _open_update():
+                    url = (info.get('download_url') if (info and info.get('download_url'))
+                           else "https://codingzhou.top")
+                    sha256 = info.get('sha256') if (info and isinstance(info, dict)) else None
+                    dlg.destroy()
+                    # 直接在本程序内下载并自动覆盖 —— 以管理员身份运行时
+                    # webbrowser.open() 会静默失败（表现就是「点了没反应」）。
+                    ok, msg = run_self_update(cal_window, url, expected_sha256=sha256)
+                    if not ok:
+                        try:
+                            webbrowser.open(url, new=2)
+                        except Exception:
+                            pass
+                        if msg:
+                            messagebox.showinfo("提示", msg)
+
+                ttk.Button(btn_bar, text="稍后再说",
+                           style="Secondary.TButton",
+                           command=dlg.destroy).pack(side="left", padx=(0, 8))
+
+                # 渐变色下载按钮 —— 用普通 tk.Button 才能自定义 bg 色
+                download_btn = tk.Button(btn_bar, text="⬇  立即下载更新",
+                                         bg=_CAL_COLOR['accent'], fg="#ffffff",
+                                         activebackground=_CAL_COLOR['accent_active'],
+                                         activeforeground="#ffffff",
+                                         font=('Microsoft YaHei', 10, 'bold'),
+                                         relief="flat", bd=0, padx=16, pady=6,
+                                         cursor="hand2",
+                                         command=_open_update)
+                download_btn.pack(side="right")
+
+                # ESC 关闭
+                dlg.bind("<Escape>", lambda e: dlg.destroy())
+                dlg.focus_set()
+
             # 应用新样式（统一的卡片区 + 主色）
             style = ttk.Style()
             _apply_calendar_styles(style)
@@ -5737,6 +6142,77 @@ class MyWindow(QMainWindow):
 
             ttk.Label(header, text="📅  事件日历管理",
                       style="WinTitle.TLabel").pack(side="left")
+
+            # ── 版本状态入口（左上角，标题旁边）—— 动态显示 ──
+            # 打开日历后立即后台检查远端版本，按结果决定显示什么：
+            #   · 检查中         → 「正在检查…」（低调灰色，不抢注意力）
+            #   · 连接失败       → 不显示任何入口（不打扰用户）
+            #   · 已是最新版本   → 显示版本号（低调灰字）
+            #   · 有新版可更新   → 「🔴 点我下载最新版本」（红底白字，强强调）
+            ver_holder = tk.Frame(header, bg=_CAL_COLOR['window_bg'])
+            ver_holder.pack(side="left", padx=(14, 0))
+
+            def _clear_ver_holder():
+                for _w in ver_holder.winfo_children():
+                    _w.destroy()
+
+            def _show_loading():
+                """后台请求进行中，低调显示检查中。"""
+                _clear_ver_holder()
+                ver_holder.pack(side="left", padx=(14, 0))
+                ttk.Label(ver_holder, text="正在检查更新…",
+                          style="CardTitle.TLabel").pack(side="left")
+
+            def _show_error(err):
+                """网络/服务器出错 —— 与主窗口保持同一状态，低调灰字提示。"""
+                _clear_ver_holder()
+                ver_holder.pack(side="left", padx=(14, 0))
+                ttk.Label(ver_holder, text="版本检查失败",
+                          style="CardTitle.TLabel").pack(side="left")
+
+            def _show_up_to_date():
+                """已是最新 —— 低调版本号。"""
+                _clear_ver_holder()
+                ver_holder.pack(side="left", padx=(14, 0))
+                ttk.Label(ver_holder, text="版本 %s" % _app_version_display(),
+                          style="CardTitle.TLabel").pack(side="left")
+
+            def _show_update_available(remote_ver, info):
+                """有新版 —— 红底白字醒目按钮。"""
+                _clear_ver_holder()
+                ver_holder.pack(side="left", padx=(14, 0))
+                btn = ttk.Button(
+                    ver_holder,
+                    text="🔴  点我下载最新版本",
+                    style="Update.TButton",
+                    command=lambda: _show_update_dialog_tk(
+                        remote_ver or "???", info or {}, True, None))
+                btn.pack(side="left")
+                self._cal_update_btn = btn
+
+            # ── 版本状态：只读主窗口的「唯一真相源」，不再自行重复请求 ──
+            # 这样两边任何时刻都显示同一状态，不会一个还在「正在检查」、
+            # 另一个已经显示了版本号。
+            def _render_ver(st):
+                if not cal_window.winfo_exists():
+                    return
+                if st.get("state") == "checking":
+                    _show_loading()
+                elif st.get("state") == "newer":
+                    _show_update_available(st.get("remote_ver"), st.get("info"))
+                elif st.get("state") == "error":
+                    _show_error(st.get("err"))
+                else:
+                    _show_up_to_date()
+
+            _render_ver(dict(_VER_STATE))
+            _cal_unsub = _ver_subscribe(
+                lambda st: cal_window.after(0, lambda: _render_ver(st)))
+
+            # 日历关闭时取消订阅（cal_window.destroy 前触发）
+            cal_window.bind("<Destroy>", lambda e: (
+                _cal_unsub() if e.widget is cal_window else None))
+
 
             ttk.Button(header, text="⚙ 设置",
                        style="Secondary.TButton",
@@ -6050,6 +6526,7 @@ class FloatingPanel(QWidget):
     restore_clicked = Signal()
     mouse_entered = Signal()
     mouse_left = Signal()
+    pin_changed = Signal(bool)
 
     PANEL_WIDTH = 268
 
@@ -6084,6 +6561,16 @@ class FloatingPanel(QWidget):
         title.setFont(QFont('Microsoft YaHei', 12, QFont.Bold))
         header.addWidget(title)
         header.addStretch()
+        # 固定按钮（图钉）：点一下固定 → 鼠标移开后不再自动收起；再点取消固定
+        self.pinned = False
+        self.pin_btn = QPushButton('📌')
+        self.pin_btn.setObjectName('pinBtn')
+        self.pin_btn.setCheckable(True)
+        self.pin_btn.setFixedSize(22, 22)
+        self.pin_btn.setCursor(Qt.PointingHandCursor)
+        self.pin_btn.setToolTip('固定显示：鼠标移开后面板不自动收起')
+        self.pin_btn.toggled.connect(self._on_pin_toggled)
+        header.addWidget(self.pin_btn)
         close_btn = QPushButton('×')
         close_btn.setObjectName('closeBtn')
         close_btn.setFixedSize(22, 22)
@@ -6134,6 +6621,11 @@ class FloatingPanel(QWidget):
             QPushButton#closeBtn { color: #8a94a6; background: transparent;
                                    border: none; font-size: 16px; }
             QPushButton#closeBtn:hover { color: #1f2a44; }
+            QPushButton#pinBtn { color: #8a94a6; background: transparent;
+                                 border: none; font-size: 13px; }
+            QPushButton#pinBtn:hover { color: #1f2a44; background: #eef2f9;
+                                       border-radius: 6px; }
+            QPushButton#pinBtn:checked { background: #e8f0fe; border-radius: 6px; }
             QFrame#todoRow { background: #f2f6fe; border-radius: 10px; }
             QFrame#todoRowToday { background: #fff3e2; border-radius: 10px; }
             QLabel#rowTitle { color: #1f2a44; background: transparent; }
@@ -6170,6 +6662,14 @@ class FloatingPanel(QWidget):
         self.tick_timer = QTimer(self)
         self.tick_timer.setInterval(1000)
         self.tick_timer.timeout.connect(self.update_countdowns)
+
+    def _on_pin_toggled(self, checked):
+        """图钉状态变化：更新自身状态并通知悬浮球（决定是否自动收起）。"""
+        self.pinned = bool(checked)
+        self.pin_btn.setToolTip(
+            '已固定：鼠标移开不收起，再点取消' if checked
+            else '固定显示：鼠标移开后面板不自动收起')
+        self.pin_changed.emit(self.pinned)
 
     @staticmethod
     def relative_text(seconds_diff):
@@ -6346,6 +6846,7 @@ class FloatingBall(QWidget):
         self.panel.restore_clicked.connect(self.restore_full)
         self.panel.mouse_entered.connect(self._cancel_hide)
         self.panel.mouse_left.connect(self._schedule_hide)
+        self.panel.pin_changed.connect(self._on_pin_changed)
 
         # 离开悬浮球/面板后延迟收起，避免移动间隙误触
         self.hide_timer = QTimer(self)
@@ -6401,7 +6902,18 @@ class FloatingBall(QWidget):
         self.hide_timer.stop()
 
     def _schedule_hide(self):
+        # 面板处于「固定」状态时，鼠标移开也不自动收起
+        if getattr(self.panel, 'pinned', False):
+            return
         self.hide_timer.start()
+
+    def _on_pin_changed(self, pinned):
+        """图钉切换：固定时立即取消待收起；取消固定时，若鼠标已不在这边则安排收起。"""
+        if pinned:
+            self.hide_timer.stop()
+        else:
+            if not (self.panel.underMouse() or self.underMouse()):
+                self._schedule_hide()
 
     def show_panel(self):
         self.panel.refresh()
@@ -6506,7 +7018,387 @@ class FloatingBall(QWidget):
         self.close()
 
 
+# ---------------------------------------------------------------- 自我更新
+def _hide_console_window():
+    """console=True 打包会附带一个黑色控制台窗口，启动时把它隐藏掉。"""
+    try:
+        import ctypes
+        hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+        if hwnd:
+            ctypes.windll.user32.ShowWindow(hwnd, 0)  # SW_HIDE
+    except Exception:
+        pass
+
+
+def _download_to_file(url, dest, progress_cb=None, timeout=120):
+    """带进度回调的下载。progress_cb(got, total)。返回 (ok, err)。"""
+    try:
+        ctx = _ssl_context()
+        opener = _build_opener(ssl_context=ctx)
+        req = urllib.request.Request(url, headers={"User-Agent": "ScheduleMate-Updater"})
+        with opener.open(req, timeout=timeout) as r:
+            total = int(r.headers.get("Content-Length") or 0)
+            got = 0
+            with open(dest, "wb") as f:
+                while True:
+                    chunk = r.read(65536)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+                    got += len(chunk)
+                    if progress_cb:
+                        progress_cb(got, total)
+        return True, None
+    except Exception as e:
+        return False, str(e)
+
+
+def run_self_update(parent_tk, url, expected_sha256=None):
+    """下载新版 ZIP → 解出 exe → 用 bat 等本进程退出后覆盖 → 重启。
+
+    不依赖 webbrowser —— 以管理员身份运行时会静默失败（点「下载」没反应）。
+
+    expected_sha256: manifest 里的 sha256（大写十六进制字符串），下载完 zip 后
+                    做完整性校验。传 None 则跳过校验（但建议始终传）。
+    """
+    import tempfile
+    import zipfile
+    import subprocess
+    import threading
+    import hashlib
+
+    if not getattr(sys, "frozen", False):
+        return False, "当前不是打包后的 exe，无法自动覆盖，已改用浏览器下载"
+
+    cur_exe = sys.executable
+    state = {"got": 0, "total": 0, "done": False, "ok": False, "msg": "",
+             "phase": "下载中"}
+    samples = []  # 速度采样（KB/s），用于画 Windows 风格的折线图
+
+    # ---- 进度窗口（仿 Windows 复制文件的传输窗口）----
+    # parent_tk 可能是 Tk 窗口，也可能是 Qt 对象（从 Qt 的 UpdateDialog 调用）。
+    # 若是 Qt 对象，就自建一个隐藏的 Tk root 承载进度窗，并自己跑事件循环。
+    _is_tk_parent = hasattr(parent_tk, "winfo_toplevel")
+    _default_root = getattr(tk, "_default_root", None)
+    if _is_tk_parent:
+        win = tk.Toplevel(parent_tk)
+        own_root = None            # Tk 主循环已在运行，直接 after 调度即可
+    elif _default_root is not None and _default_root.winfo_exists():
+        win = tk.Toplevel(_default_root)
+        own_root = None
+    else:
+        own_root = tk.Tk()
+        own_root.withdraw()        # 隐藏宿主 root，避免出现空白黑窗
+        win = tk.Toplevel(own_root)
+
+    win.title("日程表 更新")
+    win.configure(bg="#f3f3f3")
+    win.resizable(False, False)
+    W, H = 470, 320
+    sw, sh = win.winfo_screenwidth(), win.winfo_screenheight()
+    win.geometry("%dx%d+%d+%d" % (W, H, max(0, (sw - W) // 2), max(0, (sh - H) // 3)))
+    if _is_tk_parent:
+        try:
+            win.transient(parent_tk)
+        except Exception:
+            pass
+    win.lift()
+    win.attributes("-topmost", True)
+
+    head = tk.Label(win, text="正在下载更新", bg="#f3f3f3", fg="#1a1a1a",
+                    font=("Microsoft YaHei", 13, "bold"))
+    head.pack(anchor="w", padx=22, pady=(18, 2))
+    sub = tk.Label(win, text="日程表_Win7  ·  更新包", bg="#f3f3f3", fg="#767676",
+                   font=("Microsoft YaHei", 9))
+    sub.pack(anchor="w", padx=22)
+
+    # 速度折线图（核心视觉）
+    CW, CH = 426, 100
+    canvas = tk.Canvas(win, width=CW, height=CH, bg="#ffffff",
+                       highlightthickness=1, highlightbackground="#dcdcdc")
+    canvas.pack(padx=22, pady=(12, 10))
+
+    pct_lbl = tk.Label(win, text="0%", bg="#f3f3f3", fg="#1a1a1a",
+                       font=("Microsoft YaHei", 20, "bold"))
+    pct_lbl.pack(anchor="w", padx=22)
+    info_lbl = tk.Label(win, text="正在连接…", bg="#f3f3f3", fg="#555555",
+                        font=("Microsoft YaHei", 9))
+    info_lbl.pack(anchor="w", padx=22, pady=(0, 14))
+
+    def _worker():
+        tmpdir = tempfile.mkdtemp(prefix="sched_upd_")
+        zip_path = os.path.join(tmpdir, "update.zip")
+
+        def _cb(got, total):
+            state["got"], state["total"] = got, total
+
+        ok, err = _download_to_file(url, zip_path, _cb)
+        if not ok:
+            state.update(done=True, ok=False, msg="下载失败：%s" % err)
+            return
+
+        # sha256 校验 —— 防止下载中断或被篡改
+        if expected_sha256:
+            try:
+                h = hashlib.sha256()
+                with open(zip_path, "rb") as f:
+                    while True:
+                        chunk = f.read(65536)
+                        if not chunk:
+                            break
+                        h.update(chunk)
+                actual = h.hexdigest().upper()
+                expected = expected_sha256.strip().upper()
+                if actual != expected:
+                    state.update(done=True, ok=False,
+                                 msg="sha256 校验不通过：\n期望 %s\n实际 %s\n\n可能下载中断，请重试。"
+                                     % (expected, actual))
+                    return
+            except Exception as e:
+                state.update(done=True, ok=False, msg="sha256 校验异常：%s" % e)
+                return
+
+        # 从 ZIP 里挑出主程序 exe
+        try:
+            with zipfile.ZipFile(zip_path) as z:
+                names = z.namelist()
+                target = None
+                for n in names:
+                    b = os.path.basename(n)
+                    if b.lower().endswith(".exe") and "日程表" in b and "诊断" not in b:
+                        target = n
+                        break
+                if target is None:
+                    exes = [n for n in names if n.lower().endswith(".exe")]
+                    if not exes:
+                        state.update(done=True, ok=False, msg="压缩包里没有 exe 文件")
+                        return
+                    target = exes[0]
+                z.extract(target, tmpdir)
+            new_exe = os.path.join(tmpdir, target)
+        except Exception as e:
+            state.update(done=True, ok=False, msg="解压失败：%s" % e)
+            return
+
+        # 校验解出来的 exe 是不是有效的 Windows 程序：
+        # 防止下载到坏包 / 半截文件把当前版本覆盖坏（用户曾反馈「版本被删」）。
+        try:
+            new_size = os.path.getsize(new_exe)
+            with open(new_exe, "rb") as f:
+                magic = f.read(2)
+        except Exception as e:
+            state.update(done=True, ok=False, msg="更新包校验异常：%s" % e)
+            return
+        if magic != b"MZ" or new_size < 5 * 1024 * 1024:
+            state.update(
+                done=True, ok=False,
+                msg="更新包校验失败：解出的程序不是有效的 Windows 程序"
+                    "（%.1f MB）。\n已中止，当前版本未做任何改动。"
+                    % (new_size / 1048576.0))
+            return
+        # 体积合理性：新版不应比当前版本小太多，否则多半是服务器上的旧包/坏包，
+        # 直接覆盖会导致「版本变小 / 像被删了」。
+        try:
+            cur_size = os.path.getsize(cur_exe)
+        except Exception:
+            cur_size = 0
+        if cur_size and new_size < cur_size * 0.5:
+            state.update(
+                done=True, ok=False,
+                msg="更新包异常：新版程序仅 %.1f MB，当前版本 %.1f MB，"
+                    "体积相差过大，疑似服务器上是旧包或坏包。\n"
+                    "已中止，当前版本未做任何改动。请稍后重试或联系发布者。"
+                    % (new_size / 1048576.0, cur_size / 1048576.0))
+            return
+
+        # 覆盖脚本：等本进程退出 → 原子替换 → 清理 → 启动新程序
+        # 用 exe 文件锁判断旧进程是否退出（运行中的 exe 无法被 move 覆盖），
+        # 不再依赖 tasklist/find —— find 会卡死，也是黑框的来源。
+        bat = os.path.join(tmpdir, "do_update.bat")
+        old_exe = cur_exe + ".old"   # 覆盖前先备份当前版本，新版起不来时回滚
+        exe_dir = os.path.dirname(cur_exe)
+        exe_name = os.path.basename(cur_exe)
+        log_file = os.path.join(exe_dir, "update_log.txt")
+        try:
+            # Python 侧先记一条：确认脚本确实写出来、路径是什么，便于事后排查
+            try:
+                with open(log_file, "a", encoding="utf-8", errors="ignore") as lf:
+                    lf.write("[%s] prepare cur_exe=%s\n" % (
+                        time.strftime("%Y-%m-%d %H:%M:%S"), cur_exe))
+                    lf.write("          new_exe=%s\n" % new_exe)
+                    lf.write("          bat=%s\n" % bat)
+            except Exception:
+                pass
+            with open(bat, "w", encoding="gbk", errors="ignore") as f:
+                f.write("@echo off\r\n")
+                f.write("chcp 936 >nul\r\n")
+                f.write('set "LOG=%s"\r\n' % log_file)
+                f.write('echo [stage] begin >> "%LOG%"\r\n')
+                # 1) 先把当前版本改名备份成 .old（运行中的 exe 被系统锁定、改不了名，
+                #    这个重试循环同时充当「等旧进程退出」的闸门）
+                f.write("set /a n=0\r\n")
+                f.write(":bak\r\n")
+                f.write('move /Y "%s" "%s" >> "%%LOG%%" 2>&1\r\n' % (cur_exe, old_exe))
+                f.write("if not errorlevel 1 goto bak_ok\r\n")
+                f.write("set /a n+=1\r\n")
+                f.write("if %n% geq 120 goto fail\r\n")
+                f.write("ping -n 2 127.0.0.1 >nul\r\n")
+                f.write("goto bak\r\n")
+                f.write(":bak_ok\r\n")
+                f.write('echo [stage] backed up >> "%LOG%"\r\n')
+                # 2) 新版就位
+                f.write('copy /Y "%s" "%s" >> "%%LOG%%" 2>&1\r\n' % (new_exe, cur_exe))
+                f.write("if errorlevel 1 goto rollback\r\n")
+                f.write('echo [stage] copied >> "%LOG%"\r\n')
+                # 3) 启动新版（先切到 exe 目录，再用「文件名」start）
+                f.write('cd /D "%s"\r\n' % exe_dir)
+                f.write('start "" "%s"\r\n' % exe_name)
+                f.write('echo [stage] start err=%errorlevel% >> "%LOG%"\r\n')
+                # 4) 实测新版是否真的起来了（最多约 12 秒）
+                f.write("set /a w=0\r\n")
+                f.write(":wait\r\n")
+                f.write("ping -n 3 127.0.0.1 >nul\r\n")
+                f.write('tasklist /FI "IMAGENAME eq %s" /NH | findstr /I /C:"%s" >nul\r\n' % (exe_name, exe_name))
+                f.write("if not errorlevel 1 goto running\r\n")
+                f.write("set /a w+=1\r\n")
+                f.write("if %w% lss 5 goto wait\r\n")
+                f.write("goto rollback\r\n")
+                f.write(":running\r\n")
+                f.write('echo [stage] running ok >> "%LOG%"\r\n')
+                f.write('del /Q "%s" >nul 2>&1\r\n' % new_exe)
+                f.write('del /Q "%s" >nul 2>&1\r\n' % zip_path)
+                f.write('del /Q "%s" >nul 2>&1\r\n' % old_exe)
+                # 新版存活：清理备份与下载包
+                f.write("goto cleanup\r\n")
+                # 5) 新版没起来 —— 还原旧版并重启
+                f.write(":rollback\r\n")
+                f.write('echo [stage] rollback new-exe-not-running >> "%LOG%"\r\n')
+                f.write('taskkill /F /IM "%s" >nul 2>&1\r\n' % exe_name)
+                f.write('del /Q "%s" >nul 2>&1\r\n' % cur_exe)
+                f.write('move /Y "%s" "%s" >> "%%LOG%%" 2>&1\r\n' % (old_exe, cur_exe))
+                f.write('cd /D "%s"\r\n' % exe_dir)
+                f.write('start "" "%s"\r\n' % exe_name)
+                f.write('echo [stage] rolled back, restart old err=%errorlevel% >> "%LOG%"\r\n')
+                f.write("goto cleanup\r\n")
+                f.write(":fail\r\n")
+                f.write('echo [stage] fail n=%n% >> "%LOG%"\r\n')
+                f.write('del /Q "%s" >nul 2>&1\r\n' % new_exe)
+                # 备份阶段没成功（旧进程始终没退出）：当前 exe 原封未动，直接重启它
+                f.write('cd /D "%s"\r\n' % exe_dir)
+                f.write('start "" "%s"\r\n' % exe_name)
+                f.write('echo [stage] fail-restart err=%errorlevel% >> "%LOG%"\r\n')
+                f.write(":cleanup\r\n")
+                f.write('echo [stage] done >> "%LOG%"\r\n')
+                f.write('del "%~f0" >nul 2>&1\r\n')
+                f.write("exit /b\r\n")
+            # CREATE_NO_WINDOW 隐藏控制台；用字符串命令行 + 双引号包裹脚本路径，
+            # 避免脚本路径含中文/空格时 cmd 找不到脚本（同样会「一片安静」）。
+            _flags = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+            subprocess.Popen('cmd /c ""%s""' % bat,
+                             creationflags=_flags,
+                             close_fds=True)
+        except Exception as e:
+            state.update(done=True, ok=False, msg="启动覆盖脚本失败：%s" % e)
+            return
+
+        state.update(done=True, ok=True, msg="更新就绪：程序关闭后将自动替换并重启。")
+
+    threading.Thread(target=_worker, daemon=True).start()
+
+    MAXPTS = 60  # 折线图最多显示的点数
+    _prev = {"t": time.time(), "got": 0}
+
+    def _draw_graph():
+        """把速度采样画成 Windows 复制文件那种折线图。"""
+        canvas.delete("all")
+        if len(samples) < 2:
+            return
+        data = samples[-MAXPTS:]
+        mx = max(data) or 1.0
+        n = len(data)
+        step = CW / float(MAXPTS - 1)
+        coords = []
+        for i, s in enumerate(data):
+            x = CW - (n - 1 - i) * step
+            y = CH - 8 - (s / mx) * (CH - 22)
+            coords.extend([x, y])
+        if len(coords) >= 4:
+            canvas.create_polygon(
+                coords + [coords[-2], CH, coords[0], CH],
+                fill="#cfe3ff", outline="")
+            canvas.create_line(coords, fill="#2b6cb0", width=2, smooth=True)
+
+    def _poll():
+        if state["done"]:
+            canvas.delete("all")
+            try:
+                win.destroy()
+            except Exception:
+                pass
+            if state["ok"]:
+                # 不弹阻塞提示框：立刻退出，尽快释放 exe 文件锁，
+                # 让覆盖脚本完成替换并自动重启（否则要等用户点「确定」）。
+                os._exit(0)
+            else:
+                messagebox.showerror("更新失败", state["msg"] + "\n\n将改用浏览器下载。")
+                try:
+                    import webbrowser
+                    webbrowser.open(url, new=2)
+                except Exception:
+                    pass
+            # Qt 调用场景：关闭自建的 Tk root，结束其 mainloop 并清理
+            if own_root is not None:
+                try:
+                    own_root.destroy()
+                except Exception:
+                    pass
+            return
+
+        now = time.time()
+        dt = now - _prev["t"]
+        if dt >= 0.2:
+            spd = ((state["got"] - _prev["got"]) / 1024.0) / dt  # KB/s
+            samples.append(max(0.0, spd))
+            if len(samples) > MAXPTS:
+                del samples[:-MAXPTS]
+            _prev.update(t=now, got=state["got"])
+
+        total = state["total"]
+        got = state["got"]
+        if total > 0:
+            pct = min(100, got * 100 // total)
+            pct_lbl.config(text="%d%%" % pct)
+            speed_kb = samples[-1] if samples else 0
+            spd_txt = ("%.1f MB/秒" % (speed_kb / 1024.0) if speed_kb >= 1024
+                       else "%.0f KB/秒" % speed_kb)
+            remain = ""
+            if speed_kb > 1:
+                sec = int((total - got) / 1024.0 / speed_kb)
+                remain = ("  ·  剩余 %d 秒" % sec) if sec < 3600 else "  ·  剩余 >1 小时"
+            info_lbl.config(text="%.1f MB / %.1f MB   ·   %s%s" % (
+                got / 1048576.0, total / 1048576.0, spd_txt, remain))
+        else:
+            pct_lbl.config(text="…")
+            info_lbl.config(text="已下载 %.1f MB" % (got / 1048576.0))
+
+        _draw_graph()
+        try:
+            win.after(200, _poll)
+        except Exception:
+            pass
+
+    win.after(200, _poll)
+
+    # Qt 调用场景：本线程没有 Tk 事件循环 → 自己跑，阻塞到进度窗结束
+    if own_root is not None:
+        own_root.mainloop()
+        return True, ""
+
+    return True, ""
+
+
 if __name__ == '__main__':
+    _hide_console_window()   # 隐藏 console=True 打包附带的黑色控制台窗口
     app = QApplication(sys.argv)
     # 主窗口缩小为悬浮球后，关闭悬浮窗不应退出整个程序
     app.setQuitOnLastWindowClosed(False)
