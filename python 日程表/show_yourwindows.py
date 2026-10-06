@@ -733,7 +733,7 @@ def sync_events_to_excel(self, on_error=None):
 # 否则会出现「更新完仍提示有新版本」的死循环 —— 例如本地写 "2026.10.6"（无时刻）
 # 而远端是 "20261006_1143"（含时刻），比较时远端恒大于本地，永远追不上。
 # 界面显示用的日期由 _app_version_display() 格式化。
-APP_VERSION = "20261006_1810"
+APP_VERSION = "20261006_1930"
 
 
 def _app_version_display():
@@ -7215,10 +7215,14 @@ def run_self_update(parent_tk, url, expected_sha256=None):
         # 用 exe 文件锁判断旧进程是否退出（运行中的 exe 无法被 move 覆盖），
         # 不再依赖 tasklist/find —— find 会卡死，也是黑框的来源。
         bat = os.path.join(tmpdir, "do_update.bat")
+        hta = os.path.join(tmpdir, "update_progress.hta")  # 更新期间的可见提示窗
         old_exe = cur_exe + ".old"   # 覆盖前先备份当前版本，新版起不来时回滚
         exe_dir = os.path.dirname(cur_exe)
         exe_name = os.path.basename(cur_exe)
         log_file = os.path.join(exe_dir, "update_log.txt")
+        # 新版启动时会写下这个「心跳文件」；脚本启动前先删掉它，之后只要它重新
+        # 出现，就说明新版确实跑起来了 —— 比查进程名可靠（不受中文/编码影响）。
+        heartbeat = os.path.join(exe_dir, "update_started.txt")
         try:
             # Python 侧先记一条：确认脚本确实写出来、路径是什么，便于事后排查
             try:
@@ -7227,6 +7231,104 @@ def run_self_update(parent_tk, url, expected_sha256=None):
                         time.strftime("%Y-%m-%d %H:%M:%S"), cur_exe))
                     lf.write("          new_exe=%s\n" % new_exe)
                     lf.write("          bat=%s\n" % bat)
+                    lf.write("          heartbeat=%s\n" % heartbeat)
+            except Exception:
+                pass
+            # 更新期间的可见提示窗：用系统自带 mshta 加载一个极简 HTA，
+            # 从替换阶段起显示，实时读 update_log.txt 里的 [stage] 翻成中文，
+            # 看到 done 自动关闭。目的：让用户看到"正在更新"，而不是窗口一关干等。
+            try:
+                _hta_tpl = r"""<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>日程表 正在更新</title>
+<hta:application id="oHTA" border="dialog" caption="yes"
+  maximizebutton="no" minimizebutton="no" sysmenu="no" scroll="no"
+  innerborder="no" contextmenu="no" selection="no"
+  showintaskbar="yes" singleinstance="yes"/>
+<style>
+html,body{margin:0;padding:0;overflow:hidden;background:#ffffff;
+  font-family:"Microsoft YaHei",sans-serif;color:#1a1a1a}
+#wrap{padding:16px 18px}
+#t{font-size:15px;font-weight:bold}
+#s{font-size:12px;color:#555555;margin-top:10px;min-height:16px}
+#d{margin-top:14px;height:6px;background:#ececec;border-radius:3px;overflow:hidden}
+#b{height:100%;width:15%;background:#2b6cb0;border-radius:3px}
+</style>
+</head>
+<body onload="start()">
+<div id="wrap">
+  <div id="t">日程表 正在更新，请稍候…</div>
+  <div id="s">正在准备…</div>
+  <div id="d"><div id="b"></div></div>
+</div>
+<script language="JScript">
+var LOG = "__LOG__";
+var MAP = [
+  ["running ok", "更新成功，正在启动新版本…"],
+  ["rolled back", "已恢复旧版本，正在重新启动…"],
+  ["rollback", "新版启动异常，正在恢复旧版本…"],
+  ["backed up", "正在备份并替换文件…"],
+  ["copied", "正在启动新版本…"],
+  ["start", "正在启动新版本…"],
+  ["fail", "更新未完成，正在重新启动…"],
+  ["begin", "正在准备更新…"],
+  ["done", "更新完成，窗口即将关闭"]
+];
+var fso = null;
+try { fso = new ActiveXObject("Scripting.FileSystemObject"); } catch(e) {}
+var ticks = 0;
+var closed = false;
+function mapStage(st){
+  for(var i = 0; i < MAP.length; i++){
+    if(st.indexOf(MAP[i][0]) == 0) return MAP[i][1];
+  }
+  return "正在处理：" + st;
+}
+function lastStage(){
+  try{
+    if(!fso || !fso.FileExists(LOG)) return "";
+    var f = fso.OpenTextFile(LOG, 1, false);
+    var txt = f.ReadAll();
+    f.Close();
+    var lines = txt.split(/\r?\n/);
+    for(var i = lines.length - 1; i >= 0; i--){
+      var m = lines[i].match(/\[stage\]\s*([^\r\n]+)/);
+      if(m) return m[1].replace(/^\s+|\s+$/g, "");
+    }
+  }catch(e){}
+  return "";
+}
+function tick(){
+  ticks++;
+  var st = lastStage();
+  if(st) document.getElementById("s").innerHTML = mapStage(st);
+  if(st == "done"){
+    document.getElementById("b").style.width = "100%";
+    if(!closed){
+      closed = true;
+      setTimeout(function(){ try{ window.close(); }catch(e){} }, 1200);
+    }
+    return;
+  }
+  var p = 15 + Math.min(75, ticks * 3);
+  document.getElementById("b").style.width = p + "%";
+}
+function start(){
+  try{
+    window.resizeTo(380, 168);
+    window.moveTo(screen.availWidth - 400, screen.availHeight - 200);
+  }catch(e){}
+  tick();
+  window.setInterval(tick, 500);
+}
+</script>
+</body>
+</html>
+"""
+                with open(hta, "w", encoding="gbk", errors="ignore") as hf:
+                    hf.write(_hta_tpl.replace("__LOG__", log_file.replace("\\", "\\\\")))
             except Exception:
                 pass
             with open(bat, "w", encoding="gbk", errors="ignore") as f:
@@ -7246,25 +7348,42 @@ def run_self_update(parent_tk, url, expected_sha256=None):
                 f.write("goto bak\r\n")
                 f.write(":bak_ok\r\n")
                 f.write('echo [stage] backed up >> "%LOG%"\r\n')
+                # 此刻旧进程已退出、正式进入替换阶段：弹出可见提示窗，
+                # 让用户看到"正在更新"而不是窗口一关就干等（mshta 系统自带）
+                f.write('start "" mshta.exe "%s"\r\n' % hta)
                 # 2) 新版就位
                 f.write('copy /Y "%s" "%s" >> "%%LOG%%" 2>&1\r\n' % (new_exe, cur_exe))
                 f.write("if errorlevel 1 goto rollback\r\n")
                 f.write('echo [stage] copied >> "%LOG%"\r\n')
                 # 3) 启动新版（先切到 exe 目录，再用「文件名」start）
                 f.write('cd /D "%s"\r\n' % exe_dir)
+                # 启动前先删掉心跳文件：之后它只要重新出现，就说明新版确实起来了
+                f.write('del /Q "%s" >nul 2>&1\r\n' % heartbeat)
                 f.write('start "" "%s"\r\n' % exe_name)
                 f.write('echo [stage] start err=%errorlevel% >> "%LOG%"\r\n')
-                # 4) 实测新版是否真的起来了（最多约 12 秒）
+                # 4) 实测新版是否真的起来了。判定方式（任一满足即算成功）：
+                #    ① 新版启动时写下的心跳文件重新出现（最可靠，与中文进程名无关）；
+                #    ② tasklist 能查到该进程（兼容"新版还没有心跳功能的旧包"）。
+                #    宽限到 60 次 ≈ 120 秒：新包是 65MB 的 onefile，首次运行要解压到
+                #    %TEMP%，叠加杀软对"第一次出现的新 exe"的首扫，慢到几十秒很常见；
+                #    窗口太短会把「起得慢」误判成「没起来」→ 误回滚，这正是"第一次
+                #    总是失败、紧接着第二次必成功"的根因。
                 f.write("set /a w=0\r\n")
                 f.write(":wait\r\n")
                 f.write("ping -n 3 127.0.0.1 >nul\r\n")
+                f.write('if exist "%s" goto running_hb\r\n' % heartbeat)
                 f.write('tasklist /FI "IMAGENAME eq %s" /NH | findstr /I /C:"%s" >nul\r\n' % (exe_name, exe_name))
-                f.write("if not errorlevel 1 goto running\r\n")
+                f.write("if not errorlevel 1 goto running_ps\r\n")
                 f.write("set /a w+=1\r\n")
-                f.write("if %w% lss 5 goto wait\r\n")
+                f.write("if %w% lss 60 goto wait\r\n")
+                f.write('echo [stage] wait timeout w=%w% >> "%LOG%"\r\n')
                 f.write("goto rollback\r\n")
-                f.write(":running\r\n")
-                f.write('echo [stage] running ok >> "%LOG%"\r\n')
+                f.write(":running_hb\r\n")
+                f.write('echo [stage] running ok heartbeat after=%w% >> "%LOG%"\r\n')
+                f.write("goto running_clean\r\n")
+                f.write(":running_ps\r\n")
+                f.write('echo [stage] running ok process after=%w% >> "%LOG%"\r\n')
+                f.write(":running_clean\r\n")
                 f.write('del /Q "%s" >nul 2>&1\r\n' % new_exe)
                 f.write('del /Q "%s" >nul 2>&1\r\n' % zip_path)
                 f.write('del /Q "%s" >nul 2>&1\r\n' % old_exe)
@@ -7288,6 +7407,9 @@ def run_self_update(parent_tk, url, expected_sha256=None):
                 f.write('start "" "%s"\r\n' % exe_name)
                 f.write('echo [stage] fail-restart err=%errorlevel% >> "%LOG%"\r\n')
                 f.write(":cleanup\r\n")
+                # 兜底清理：仅当当前 exe 确实存在，才删除可能残留的 .old 备份
+                # （避免回滚中 move 失败时把唯一可用的备份也删掉）
+                f.write('if exist "%s" del /Q "%s" >nul 2>&1\r\n' % (cur_exe, old_exe))
                 f.write('echo [stage] done >> "%LOG%"\r\n')
                 f.write('del "%~f0" >nul 2>&1\r\n')
                 f.write("exit /b\r\n")
@@ -7397,7 +7519,26 @@ def run_self_update(parent_tk, url, expected_sha256=None):
     return True, ""
 
 
+def _write_update_heartbeat():
+    """把自己"已成功启动"这件事写进 exe 目录的 update_started.txt。
+
+    do_update.bat 在替换前会先删掉这个文件，然后启动新版并轮询它是否重新出现：
+    出现 = 新版确实跑起来了（据此判定更新成功）。这比 `tasklist|findstr` 查进程名
+    可靠得多 —— 不受中文名/编码/杀软干扰，也没必要长时间干等。
+    仅在打包成 exe（frozen）时写，避免污染源码目录。
+    """
+    try:
+        if not getattr(sys, "frozen", False):
+            return
+        hb = os.path.join(os.path.dirname(sys.executable), "update_started.txt")
+        with open(hb, "w", encoding="utf-8", errors="ignore") as f:
+            f.write("%s %s\n" % (APP_VERSION, time.strftime("%Y-%m-%d %H:%M:%S")))
+    except Exception:
+        pass
+
+
 if __name__ == '__main__':
+    _write_update_heartbeat()   # 第一时间写下"已启动"心跳，供更新脚本判断
     _hide_console_window()   # 隐藏 console=True 打包附带的黑色控制台窗口
     app = QApplication(sys.argv)
     # 主窗口缩小为悬浮球后，关闭悬浮窗不应退出整个程序
