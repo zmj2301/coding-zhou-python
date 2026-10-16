@@ -1,5 +1,75 @@
 [
   {
+    "name": "credits",
+    "type": "directory",
+    "path": "credits",
+    "children": [
+      {
+        "name": "credits_engine.py",
+        "type": "file",
+        "path": "credits/credits_engine.py",
+        "ext": ".py",
+        "lastModified": 1791184399375
+      },
+      {
+        "name": "credits_panel.py",
+        "type": "file",
+        "path": "credits/credits_panel.py",
+        "ext": ".py",
+        "lastModified": 1791184785977
+      },
+      {
+        "name": "panel_preview.png",
+        "type": "file",
+        "path": "credits/panel_preview.png",
+        "ext": ".png",
+        "lastModified": 1791185234093
+      },
+      {
+        "name": "query_server.py",
+        "type": "file",
+        "path": "credits/query_server.py",
+        "ext": ".py",
+        "lastModified": 1791184413569
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "credits/README.md",
+        "ext": ".md",
+        "lastModified": 1791185338099
+      },
+      {
+        "name": "start_tunnel.bat",
+        "type": "file",
+        "path": "credits/start_tunnel.bat",
+        "ext": ".bat",
+        "lastModified": 1791185047694
+      },
+      {
+        "name": "tunnel.log",
+        "type": "file",
+        "path": "credits/tunnel.log",
+        "ext": ".log",
+        "lastModified": 1791185121312
+      },
+      {
+        "name": "tunnel.pid",
+        "type": "file",
+        "path": "credits/tunnel.pid",
+        "ext": ".pid",
+        "lastModified": 1791185120901
+      },
+      {
+        "name": "tunnel.py",
+        "type": "file",
+        "path": "credits/tunnel.py",
+        "ext": ".py",
+        "lastModified": 1791185086718
+      }
+    ]
+  },
+  {
     "name": "deskpet",
     "type": "directory",
     "path": "deskpet",
@@ -79,7 +149,7 @@
         "type": "file",
         "path": "deskpet/pet_window.py",
         "ext": ".py",
-        "lastModified": 1790845508722
+        "lastModified": 1791184720482
       },
       {
         "name": "size_settings_dialog.py",
@@ -544,7 +614,56 @@
                 "type": "file",
                 "path": "relax_exe/dist/logs/app_20261005_120135.log",
                 "ext": ".log",
-                "lastModified": 1791178881141
+                "lastModified": 1791184146365
+              },
+              {
+                "name": "app_20261006_075637.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261006_075637.log",
+                "ext": ".log",
+                "lastModified": 1791247652958
+              },
+              {
+                "name": "app_20261006_084835.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261006_084835.log",
+                "ext": ".log",
+                "lastModified": 1791250053018
+              },
+              {
+                "name": "app_20261006_124423.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261006_124423.log",
+                "ext": ".log",
+                "lastModified": 1791266597065
+              },
+              {
+                "name": "app_20261007_071204.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261007_071204.log",
+                "ext": ".log",
+                "lastModified": 1791331248455
+              },
+              {
+                "name": "app_20261010_162534.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261010_162534.log",
+                "ext": ".log",
+                "lastModified": 1791626600924
+              },
+              {
+                "name": "app_20261011_072639.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261011_072639.log",
+                "ext": ".log",
+                "lastModified": 1791677191190
+              },
+              {
+                "name": "app_20261016_171540.log",
+                "type": "file",
+                "path": "relax_exe/dist/logs/app_20261016_171540.log",
+                "ext": ".log",
+                "lastModified": 1792152037907
               }
             ]
           },
@@ -553,14 +672,14 @@
             "type": "file",
             "path": "relax_exe/dist/config.json",
             "ext": ".json",
-            "lastModified": 1790845925758
+            "lastModified": 1791328336682
           },
           {
             "name": "main_log.log",
             "type": "file",
             "path": "relax_exe/dist/main_log.log",
             "ext": ".log",
-            "lastModified": 1791178881141
+            "lastModified": 1792152037908
           },
           {
             "name": "定时休息.exe",

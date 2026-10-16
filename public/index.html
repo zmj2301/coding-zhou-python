@@ -4931,11 +4931,6 @@ body.preview-active .app-preview { display: flex; }
   </div>
   <div class="auth-right">
     <div class="auth-card">
-      <!-- 登录/注册切换标签 -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="authTabLogin" onclick="showAuthForm('login')">登录</button>
-        <button class="auth-tab" id="authTabRegister" onclick="showAuthForm('register')">注册</button>
-      </div>
       <!-- 登录表单 -->
       <div id="userLoginForm">
         <h2>欢迎回来</h2>
@@ -4950,25 +4945,6 @@ body.preview-active .app-preview { display: flex; }
         </div>
         <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
         <div class="auth-error" id="loginError"></div>
-      </div>
-      <!-- 注册表单 -->
-      <div id="registerForm" style="display:none">
-        <h2>创建账号</h2>
-        <p class="auth-subtitle">注册新账号以访问平台</p>
-        <div class="auth-field">
-          <label for="registerUsernameInput">用户名</label>
-          <input type="text" id="registerUsernameInput" placeholder="3-20位字母、数字或下划线" autocomplete="off">
-        </div>
-        <div class="auth-field">
-          <label for="registerPasswordInput">密码</label>
-          <input type="password" id="registerPasswordInput" placeholder="至少6位密码" autocomplete="off">
-        </div>
-        <div class="auth-field">
-          <label for="registerConfirmInput">确认密码</label>
-          <input type="password" id="registerConfirmInput" placeholder="再次输入密码" autocomplete="off">
-        </div>
-        <button class="auth-btn-primary" id="registerSubmitBtn">注册</button>
-        <div class="auth-error" id="registerError"></div>
       </div>
     </div>
   </div>
@@ -5132,7 +5108,7 @@ body.preview-active .app-preview { display: flex; }
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </span>
-        <span class="sidebar-item-label" id="sidebarLoginLabel">登录/注册</span>
+        <span class="sidebar-item-label" id="sidebarLoginLabel">登录</span>
       </a>
       <a class="sidebar-item" data-view="apikey" id="navApikey">
         <span class="sidebar-item-icon">
@@ -9397,16 +9373,10 @@ function getProjectCardClass(type) {
 const authPage = document.getElementById('authPage');
 const adminPage = document.getElementById('adminPage');
 const userLoginForm = document.getElementById('userLoginForm');
-const registerForm = document.getElementById('registerForm');
 const loginUsernameInput = document.getElementById('loginUsernameInput');
 const loginPasswordInput = document.getElementById('loginPasswordInput');
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginError = document.getElementById('loginError');
-const registerUsernameInput = document.getElementById('registerUsernameInput');
-const registerPasswordInput = document.getElementById('registerPasswordInput');
-const registerConfirmInput = document.getElementById('registerConfirmInput');
-const registerSubmitBtn = document.getElementById('registerSubmitBtn');
-const registerError = document.getElementById('registerError');
 const userMenuBtn = document.getElementById('userMenuBtn');
 const userDropdown = document.getElementById('userDropdown');
 const openAdminFromMenu = document.getElementById('openAdminFromMenu');
@@ -9428,26 +9398,11 @@ function delCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
 }
 
-function showAuthForm(type) {
-  const loginTab = document.getElementById('authTabLogin');
-  const regTab = document.getElementById('authTabRegister');
-  if (type === 'login') {
-    userLoginForm.style.display = 'block';
-    registerForm.style.display = 'none';
-    loginTab.classList.add('active');
-    regTab.classList.remove('active');
-    loginError.classList.remove('show');
-    loginError.textContent = '';
-    setTimeout(() => loginUsernameInput.focus(), 50);
-  } else {
-    userLoginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-    loginTab.classList.remove('active');
-    regTab.classList.add('active');
-    registerError.classList.remove('show');
-    registerError.textContent = '';
-    setTimeout(() => registerUsernameInput.focus(), 50);
-  }
+function showAuthForm() {
+  userLoginForm.style.display = 'block';
+  loginError.classList.remove('show');
+  loginError.textContent = '';
+  setTimeout(() => loginUsernameInput.focus(), 50);
 }
 
 function showLoginPage() {
@@ -9515,39 +9470,6 @@ async function doUserLogin() {
   loginSubmitBtn.disabled = false; loginSubmitBtn.textContent = '登录';
 }
 
-async function doRegister() {
-  const username = registerUsernameInput.value.trim();
-  const pw = registerPasswordInput.value.trim();
-  const confirm = registerConfirmInput.value.trim();
-  if (!username || !pw || !confirm) { registerError.textContent = '请填写所有字段'; registerError.classList.add('show'); return; }
-  if (pw !== confirm) { registerError.textContent = '两次密码不一致'; registerError.classList.add('show'); return; }
-  if (pw.length < 6) { registerError.textContent = '密码长度至少6位'; registerError.classList.add('show'); return; }
-  registerSubmitBtn.disabled = true; registerSubmitBtn.textContent = '注册中...';
-  registerError.classList.remove('show'); registerError.textContent = '';
-  try {
-    const r = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
-    const d = await r.json();
-    if (r.ok) {
-      // 注册成功，自动登录
-      registerError.textContent = '注册成功，正在登录...';
-      registerError.classList.add('show');
-      registerError.style.color = 'var(--success, #22c55e)';
-      registerError.style.borderColor = 'var(--success, #22c55e)';
-      // 切换到登录表单并自动填充
-      showAuthForm('login');
-      loginUsernameInput.value = username;
-      loginPasswordInput.value = pw;
-      setTimeout(() => doUserLogin(), 300);
-    } else {
-      registerError.textContent = d.error || '注册失败';
-      registerError.classList.add('show');
-      registerError.style.color = '';
-      registerError.style.borderColor = '';
-    }
-  } catch(e) { registerError.textContent = '网络错误，请重试'; registerError.classList.add('show'); }
-  registerSubmitBtn.disabled = false; registerSubmitBtn.textContent = '注册';
-}
-
 function showAdminDashboard() {
   adminPage.classList.add('active');
   userDropdown.classList.remove('show');
@@ -9569,7 +9491,7 @@ async function doLogout() {
   userDropdown.classList.remove('show');
   // 恢复侧栏登录标签
   var sLabel = document.getElementById('sidebarLoginLabel');
-  if (sLabel) sLabel.textContent = '登录/注册';
+  if (sLabel) sLabel.textContent = '登录';
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
   document.getElementById('homePage').classList.add('active');
@@ -9820,8 +9742,6 @@ async function deleteUser(userId, username) {
 loginSubmitBtn.addEventListener('click', doUserLogin);
 loginPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
 loginUsernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
-registerSubmitBtn.addEventListener('click', doRegister);
-registerConfirmInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doRegister(); });
 
 userMenuBtn.addEventListener('click', function(e) {
   e.stopPropagation();
@@ -10730,7 +10650,7 @@ if (mainFilterToggle) {
   });
 }
 
-// 侧栏登录/注册按钮
+// 侧栏登录按钮
 const sidebarLogin = document.getElementById('sidebarLogin');
 if (sidebarLogin) {
   sidebarLogin.addEventListener('click', (e) => {
