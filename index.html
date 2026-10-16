@@ -4931,11 +4931,6 @@ body.preview-active .app-preview { display: flex; }
   </div>
   <div class="auth-right">
     <div class="auth-card">
-      <!-- 登录/注册切换标签 -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="authTabLogin" onclick="showAuthForm('login')">登录</button>
-        <button class="auth-tab" id="authTabRegister" onclick="showAuthForm('register')">注册</button>
-      </div>
       <!-- 登录表单 -->
       <div id="userLoginForm">
         <h2>欢迎回来</h2>
@@ -4950,25 +4945,6 @@ body.preview-active .app-preview { display: flex; }
         </div>
         <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
         <div class="auth-error" id="loginError"></div>
-      </div>
-      <!-- 注册表单 -->
-      <div id="registerForm" style="display:none">
-        <h2>创建账号</h2>
-        <p class="auth-subtitle">注册新账号以访问平台</p>
-        <div class="auth-field">
-          <label for="registerUsernameInput">用户名</label>
-          <input type="text" id="registerUsernameInput" placeholder="3-20位字母、数字或下划线" autocomplete="off">
-        </div>
-        <div class="auth-field">
-          <label for="registerPasswordInput">密码</label>
-          <input type="password" id="registerPasswordInput" placeholder="至少6位密码" autocomplete="off">
-        </div>
-        <div class="auth-field">
-          <label for="registerConfirmInput">确认密码</label>
-          <input type="password" id="registerConfirmInput" placeholder="再次输入密码" autocomplete="off">
-        </div>
-        <button class="auth-btn-primary" id="registerSubmitBtn">注册</button>
-        <div class="auth-error" id="registerError"></div>
       </div>
     </div>
   </div>
@@ -5053,71 +5029,128 @@ body.preview-active .app-preview { display: flex; }
     <nav class="sidebar-nav">
       <!-- 广场 -->
       <div class="sidebar-group-label">广场</div>
-      <a class="sidebar-item active" data-view="plaza" id="navPlaza">
+      <a class="sidebar-item active" data-view="plaza" id="navPlaza" href="/plaza">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </span>
         <span class="sidebar-item-label">项目广场</span>
         <span class="sidebar-badge" id="plazaCount">0</span>
       </a>
-      <a class="sidebar-item" data-view="home" id="navHome">
+      <a class="sidebar-item" data-view="home" id="navHome" href="/plaza/home">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </span>
         <span class="sidebar-item-label">首页 (轮播/最近/收藏)</span>
       </a>
-      <a class="sidebar-item" data-view="resources" id="navResources">
-        <span class="sidebar-item-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </span>
-        <span class="sidebar-item-label">资源下载</span>
-      </a>
-      <a class="sidebar-item" data-view="windows" id="navWindows">
-        <span class="sidebar-item-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
-        </span>
-        <span class="sidebar-item-label">Windows 专区</span>
-        <span class="sidebar-badge" id="windowsCount">0</span>
-      </a>
-      <a class="sidebar-item" data-view="ai-asst" id="navAiAsst">
-        <span class="sidebar-item-icon">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/></svg>
-        </span>
-        <span class="sidebar-item-label">AGENTS 手册</span>
-      </a>
-      <a class="sidebar-item" data-view="preview" id="navPreview">
+      <a class="sidebar-item" data-view="preview" id="navPreview" href="/plaza/editor">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
         </span>
         <span class="sidebar-item-label">在线编辑</span>
       </a>
 
+      <!-- 游戏 -->
+      <div class="sidebar-group-label">游戏</div>
+      <a class="sidebar-item" href="/play/games" id="navPlayGames">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg>
+        </span>
+        <span class="sidebar-item-label">网页游戏</span>
+      </a>
+      <a class="sidebar-item" href="/play/python" id="navPlayPython">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </span>
+        <span class="sidebar-item-label">Python 广场</span>
+      </a>
+      <a class="sidebar-item" href="/play/scratch" id="navPlayScratch">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.61 1.61a2.404 2.404 0 0 1-1.705.707 2.402 2.402 0 0 1-1.704-.706l-1.568-1.568a1.026 1.026 0 0 0-.877-.29c-.493.074-.84.504-1.02.968a2.5 2.5 0 1 1-3.237-3.237c.464-.18.894-.527.967-1.02a1.026 1.026 0 0 0-.289-.877l-1.568-1.568A2.402 2.402 0 0 1 1.998 12c0-.617.236-1.234.706-1.704L4.23 8.77c.24-.24.581-.353.917-.303.515.077.877.528 1.073 1.01a2.5 2.5 0 1 0 3.259-3.259c-.482-.196-.933-.558-1.01-1.073-.05-.336.062-.676.303-.917l1.525-1.525A2.402 2.402 0 0 1 12 1.998c.617 0 1.234.236 1.704.706l1.568 1.568c.23.23.556.338.877.29.493-.074.84-.504 1.02-.968a2.5 2.5 0 1 1 3.237 3.237c-.464.18-.894.527-.967 1.02z"/></svg>
+        </span>
+        <span class="sidebar-item-label">Scratch</span>
+      </a>
+      <a class="sidebar-item" href="/play/fathers-day" id="navPlayFathersDay">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </span>
+        <span class="sidebar-item-label">父亲节专题</span>
+      </a>
+
       <!-- 资源 -->
       <div class="sidebar-group-label">资源</div>
-      <a class="sidebar-item" data-view="about" id="navAbout">
+      <a class="sidebar-item" data-view="resources" id="navResources" href="/res/download">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </span>
+        <span class="sidebar-item-label">资源下载</span>
+      </a>
+      <a class="sidebar-item" data-view="windows" id="navWindows" href="/res/windows">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+        </span>
+        <span class="sidebar-item-label">Windows 专区</span>
+        <span class="sidebar-badge" id="windowsCount">0</span>
+      </a>
+
+      <!-- 文档 -->
+      <div class="sidebar-group-label">文档</div>
+      <a class="sidebar-item" id="navArticles" href="/docs/articles">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="17" y2="11"/></svg>
+        </span>
+        <span class="sidebar-item-label">技术文章</span>
+      </a>
+      <a class="sidebar-item" data-view="ai-asst" id="navAiAsst" href="/docs/agents">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/></svg>
+        </span>
+        <span class="sidebar-item-label">AGENTS 手册</span>
+      </a>
+      <a class="sidebar-item" data-view="about" id="navAbout" href="/docs/about">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
         </span>
         <span class="sidebar-item-label">关于</span>
       </a>
-      <a class="sidebar-item" data-view="mindmap" id="navMindmap">
+      <a class="sidebar-item" data-view="mindmap" id="navMindmap" href="/docs/mindmap">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
         </span>
         <span class="sidebar-item-label">思维导图</span>
       </a>
 
-      <!-- 文章 -->
-      <div class="sidebar-group-label">文章</div>
-      <a class="sidebar-item" data-view="articles" id="navArticles">
+      <!-- 工具 -->
+      <div class="sidebar-group-label">工具</div>
+      <a class="sidebar-item" data-view="upload" id="navUpload" href="/tools/upload">
         <span class="sidebar-item-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="17" y2="11"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         </span>
-        <span class="sidebar-item-label">技术文章</span>
+        <span class="sidebar-item-label">文件上传</span>
       </a>
-
-      <!-- 本机 -->
-      <div class="sidebar-group-label">本机</div>
+      <a class="sidebar-item" data-view="apikey" id="navApikey" href="/tools/apikey">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg>
+        </span>
+        <span class="sidebar-item-label">API 密钥</span>
+      </a>
+      <a class="sidebar-item" href="/tools/console" id="navConsole">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        </span>
+        <span class="sidebar-item-label">控制台</span>
+      </a>
+      <a class="sidebar-item" href="/tools/feedback" id="navFeedback">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        <span class="sidebar-item-label">意见反馈</span>
+      </a>
+      <a class="sidebar-item" href="/run/local" id="navRunLocal">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        </span>
+        <span class="sidebar-item-label">本地运行</span>
+      </a>
       <a class="sidebar-item" href="http://127.0.0.1:8765/" target="_blank" rel="noopener" id="navLauncher" title="打开本机本地启动器（需本机运行 launcher.py）">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
@@ -5128,32 +5161,12 @@ body.preview-active .app-preview { display: flex; }
 
       <!-- 账户 -->
       <div class="sidebar-group-label">账户</div>
-      <a class="sidebar-item" id="sidebarLogin">
+      <a class="sidebar-item" id="sidebarLogin" href="/account/login">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </span>
-        <span class="sidebar-item-label" id="sidebarLoginLabel">登录/注册</span>
+        <span class="sidebar-item-label" id="sidebarLoginLabel">登录</span>
       </a>
-      <a class="sidebar-item" data-view="apikey" id="navApikey">
-        <span class="sidebar-item-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg>
-        </span>
-        <span class="sidebar-item-label">API 密钥</span>
-      </a>
-      <a class="sidebar-item" data-view="upload" id="navUpload">
-        <span class="sidebar-item-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        </span>
-        <span class="sidebar-item-label">文件上传</span>
-      </a>
-
-      <!-- 快捷链接 -->
-      <div class="sidebar-quick-links">
-        <a class="sidebar-quick-link" href="/web-games/">网页游戏</a>
-        <a class="sidebar-quick-link" href="/scratch">Scratch</a>
-        <a class="sidebar-quick-link" href="/python/">Python</a>
-        <a class="sidebar-quick-link" href="/run/local">本地运行</a>
-      </div>
     </nav>
 
     <div class="sidebar-footer">
@@ -7027,6 +7040,7 @@ async function openProject(projectPath) {
   $('#themeToggleBtn').style.display = 'none';
   $('#changelogBtn').style.display = 'none';
   $('#userMenuBtn').style.display = 'none';
+  syncUrl('preview');
 
   state.openTabs = [];
   state.activeTabIdx = -1;
@@ -7078,6 +7092,7 @@ function goHome() {
     $('#userMenuBtn').style.display = '';
     $('#userMenuBtn').classList.remove('hidden');
   }
+  syncUrl('plaza');
 }
 
 // ==================== README DRAWER (项目卡片右侧弹出) ====================
@@ -8465,6 +8480,8 @@ function closeAIAssistant() {
   document.querySelectorAll('.mb-nav-item').forEach(function(i) { i.classList.remove('active'); });
   var mbHome = document.querySelector('.mb-nav-item[data-page="home"]');
   if (mbHome) mbHome.classList.add('active');
+  // 由侧栏切换触发时不回写地址（switchSidebarView 会统一处理）
+  if (!_switchingView) syncUrl('plaza');
 }
 
 function aiAsstInitModel() {
@@ -9397,16 +9414,10 @@ function getProjectCardClass(type) {
 const authPage = document.getElementById('authPage');
 const adminPage = document.getElementById('adminPage');
 const userLoginForm = document.getElementById('userLoginForm');
-const registerForm = document.getElementById('registerForm');
 const loginUsernameInput = document.getElementById('loginUsernameInput');
 const loginPasswordInput = document.getElementById('loginPasswordInput');
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginError = document.getElementById('loginError');
-const registerUsernameInput = document.getElementById('registerUsernameInput');
-const registerPasswordInput = document.getElementById('registerPasswordInput');
-const registerConfirmInput = document.getElementById('registerConfirmInput');
-const registerSubmitBtn = document.getElementById('registerSubmitBtn');
-const registerError = document.getElementById('registerError');
 const userMenuBtn = document.getElementById('userMenuBtn');
 const userDropdown = document.getElementById('userDropdown');
 const openAdminFromMenu = document.getElementById('openAdminFromMenu');
@@ -9428,26 +9439,11 @@ function delCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
 }
 
-function showAuthForm(type) {
-  const loginTab = document.getElementById('authTabLogin');
-  const regTab = document.getElementById('authTabRegister');
-  if (type === 'login') {
-    userLoginForm.style.display = 'block';
-    registerForm.style.display = 'none';
-    loginTab.classList.add('active');
-    regTab.classList.remove('active');
-    loginError.classList.remove('show');
-    loginError.textContent = '';
-    setTimeout(() => loginUsernameInput.focus(), 50);
-  } else {
-    userLoginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-    loginTab.classList.remove('active');
-    regTab.classList.add('active');
-    registerError.classList.remove('show');
-    registerError.textContent = '';
-    setTimeout(() => registerUsernameInput.focus(), 50);
-  }
+function showAuthForm() {
+  userLoginForm.style.display = 'block';
+  loginError.classList.remove('show');
+  loginError.textContent = '';
+  setTimeout(() => loginUsernameInput.focus(), 50);
 }
 
 function showLoginPage() {
@@ -9501,6 +9497,7 @@ async function doUserLogin() {
       loginPasswordInput.value = '';
       loginError.textContent = '';
       init();
+      applyRouteFromLocation();
       // 若当前在 API 密钥页面，登录后自动刷新列表
       const apikeyPage = document.getElementById('apikeyPage');
       if (apikeyPage && apikeyPage.style.display !== 'none' && typeof loadApiKeys === 'function') {
@@ -9513,39 +9510,6 @@ async function doUserLogin() {
     }
   } catch(e) { loginError.textContent = '网络错误，请重试'; loginError.classList.add('show'); }
   loginSubmitBtn.disabled = false; loginSubmitBtn.textContent = '登录';
-}
-
-async function doRegister() {
-  const username = registerUsernameInput.value.trim();
-  const pw = registerPasswordInput.value.trim();
-  const confirm = registerConfirmInput.value.trim();
-  if (!username || !pw || !confirm) { registerError.textContent = '请填写所有字段'; registerError.classList.add('show'); return; }
-  if (pw !== confirm) { registerError.textContent = '两次密码不一致'; registerError.classList.add('show'); return; }
-  if (pw.length < 6) { registerError.textContent = '密码长度至少6位'; registerError.classList.add('show'); return; }
-  registerSubmitBtn.disabled = true; registerSubmitBtn.textContent = '注册中...';
-  registerError.classList.remove('show'); registerError.textContent = '';
-  try {
-    const r = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:username, password:pw}) });
-    const d = await r.json();
-    if (r.ok) {
-      // 注册成功，自动登录
-      registerError.textContent = '注册成功，正在登录...';
-      registerError.classList.add('show');
-      registerError.style.color = 'var(--success, #22c55e)';
-      registerError.style.borderColor = 'var(--success, #22c55e)';
-      // 切换到登录表单并自动填充
-      showAuthForm('login');
-      loginUsernameInput.value = username;
-      loginPasswordInput.value = pw;
-      setTimeout(() => doUserLogin(), 300);
-    } else {
-      registerError.textContent = d.error || '注册失败';
-      registerError.classList.add('show');
-      registerError.style.color = '';
-      registerError.style.borderColor = '';
-    }
-  } catch(e) { registerError.textContent = '网络错误，请重试'; registerError.classList.add('show'); }
-  registerSubmitBtn.disabled = false; registerSubmitBtn.textContent = '注册';
 }
 
 function showAdminDashboard() {
@@ -9569,7 +9533,7 @@ async function doLogout() {
   userDropdown.classList.remove('show');
   // 恢复侧栏登录标签
   var sLabel = document.getElementById('sidebarLoginLabel');
-  if (sLabel) sLabel.textContent = '登录/注册';
+  if (sLabel) sLabel.textContent = '登录';
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('editorPage').classList.remove('active');
   document.getElementById('homePage').classList.add('active');
@@ -9820,8 +9784,6 @@ async function deleteUser(userId, username) {
 loginSubmitBtn.addEventListener('click', doUserLogin);
 loginPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
 loginUsernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
-registerSubmitBtn.addEventListener('click', doRegister);
-registerConfirmInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doRegister(); });
 
 userMenuBtn.addEventListener('click', function(e) {
   e.stopPropagation();
@@ -10519,8 +10481,85 @@ async function deleteHistoryFile(id, btn) {
   }
 }
 
+// ===== 分区路由：URL 与视图双向同步 =====
+// 大区/小区路径 ↔ 侧栏视图映射（与 worker.ts 的 ZONE_REWRITES 对应）
+var VIEW_PATH = {
+  plaza: '/plaza',
+  home: '/plaza/home',
+  preview: '/plaza/editor',
+  resources: '/res/download',
+  windows: '/res/windows',
+  'ai-asst': '/docs/agents',
+  about: '/docs/about',
+  mindmap: '/docs/mindmap',
+  upload: '/tools/upload',
+  apikey: '/tools/apikey'
+};
+var PATH_VIEW = {};
+Object.keys(VIEW_PATH).forEach(function (v) { PATH_VIEW[VIEW_PATH[v]] = v; });
+// 以弹窗形式呈现的分区路径
+var PATH_MODAL = { '/docs/about': 'about', '/docs/mindmap': 'mindmap' };
+// 抑制标志：popstate / 启动时按地址渲染，不再回写地址
+var _suppressPush = false;
+// 由 switchSidebarView 置位，避免 closeAIAssistant 抢先写入地址
+var _switchingView = false;
+
+function syncUrl(view) {
+  if (_suppressPush) return;
+  var target = VIEW_PATH[view] || '/plaza';
+  if (location.pathname === target) return;
+  try { history.pushState({ view: view }, '', target); } catch (e) {}
+}
+
+// 仅替换当前地址，不新增历史记录（用于纠正失效路径 / 登录后回落）
+function replaceUrl(path) {
+  if (location.pathname === path) return;
+  try { history.replaceState({}, '', path); } catch (e) {}
+}
+
+// 按当前地址渲染对应视图/弹窗（刷新、直达、前进后退共用）
+function applyRouteFromLocation() {
+  var p = location.pathname.replace(/\/+$/, '') || '/';
+  _suppressPush = true;
+  try {
+    if (p === '/account/login') {
+      // 已登录时不再展示登录页，回落到广场视图
+      if (state.isAuthenticated) {
+        replaceUrl('/plaza');
+        switchSidebarView('plaza');
+      } else {
+        showLoginPage();
+      }
+      return;
+    }
+    if (p === '/account/profile') {
+      if (state.currentUser && typeof showProfileModal === 'function') showProfileModal();
+      else {
+        replaceUrl('/account/login');
+        showLoginPage();
+      }
+      return;
+    }
+    if (PATH_MODAL[p]) {
+      switchSidebarView('plaza');
+      if (p === '/docs/about' && typeof openAboutModal === 'function') openAboutModal();
+      else if (p === '/docs/mindmap' && typeof openMindmapModal === 'function') openMindmapModal();
+      return;
+    }
+    var view = PATH_VIEW[p];
+    switchSidebarView(view || 'plaza');
+  } finally {
+    _suppressPush = false;
+  }
+}
+
+window.addEventListener('popstate', function () {
+  applyRouteFromLocation();
+});
+
 // ===== 三栏布局交互 =====
 function switchSidebarView(view) {
+  _switchingView = true;
   const extras = $('#homeExtras');
   const cardsGrid = $('#cardsGrid');
   const aiPage = $('#aiAsstPage');
@@ -10637,12 +10676,14 @@ function switchSidebarView(view) {
   var navMap = { plaza: 'navPlaza', home: 'navHome', 'ai-asst': 'navAiAsst', about: 'navAbout', mindmap: 'navMindmap', preview: 'navPreview', apikey: 'navApikey', upload: 'navUpload', resources: 'navResources', articles: 'navArticles', windows: 'navWindows' };
   var navId = navMap[view];
   if (navId) { var el = document.getElementById(navId); if (el) el.classList.add('active'); }
+  _switchingView = false;
+  syncUrl(view);
 }
 
 // 侧栏导航点击
+// href 仅用于中键/新标签直达（分区路径），普通点击走 SPA 视图切换不刷新页面
 document.querySelectorAll('.sidebar-item[data-view]').forEach(item => {
   item.addEventListener('click', e => {
-    if (item.hasAttribute('href') && item.getAttribute('data-view') !== 'plaza' && item.getAttribute('data-view') !== 'home' && item.getAttribute('data-view') !== 'ai-asst' && item.getAttribute('data-view') !== 'about' && item.getAttribute('data-view') !== 'mindmap' && item.getAttribute('data-view') !== 'preview') return;
     e.preventDefault();
     const view = item.dataset.view;
     if (view) switchSidebarView(view);
@@ -10730,10 +10771,11 @@ if (mainFilterToggle) {
   });
 }
 
-// 侧栏登录/注册按钮
+// 侧栏登录按钮
 const sidebarLogin = document.getElementById('sidebarLogin');
 if (sidebarLogin) {
   sidebarLogin.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
     const userMenuBtn = document.getElementById('userMenuBtn');
     const isLoggedIn = userMenuBtn && !userMenuBtn.classList.contains('hidden') && state.currentUser;
@@ -10741,7 +10783,10 @@ if (sidebarLogin) {
       // 已登录，打开用户菜单
       document.getElementById('userDropdown').classList.toggle('show');
     } else {
-      // 未登录，打开登录页
+      // 未登录，打开登录页（地址同步为 /account/login，支持直达与刷新）
+      if (location.pathname !== '/account/login') {
+        try { history.pushState({}, '', '/account/login'); } catch (err) {}
+      }
       showLoginPage();
     }
   });
@@ -11154,6 +11199,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       state.isAuthenticated = authed;
+      // 按地址栏路径渲染对应视图（直达/刷新）
+      applyRouteFromLocation();
     }).catch(() => {});
     return;
   }
@@ -11196,6 +11243,8 @@ document.addEventListener('DOMContentLoaded', function() {
       var sLabel2 = document.getElementById('sidebarLoginLabel');
       if (sLabel2 && state.currentUser) sLabel2.textContent = state.currentUser.username;
       init();
+      // 按地址栏路径渲染对应视图（直达/刷新）
+      applyRouteFromLocation();
     } else {
       showLoginPage();
     }

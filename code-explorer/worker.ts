@@ -2371,6 +2371,29 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
 }
 
 // ------------------------------------------------------------
+// 分区路由（大区 → 既有静态路径）
+// ------------------------------------------------------------
+
+// 大区/小区层级路径 → 既有静态路径的等价重写。
+// 旧路径保持可用，这里只做别名，避免同一份内容维护两处。
+const ZONE_REWRITES: Array<[RegExp, string]> = [
+  [/^\/play\/games(?=\/|$)/, '/web-games'],
+  [/^\/play\/scratch(?=\/|$)/, '/scratch'],
+  [/^\/play\/python(?=\/|$)/, '/python'],
+  [/^\/play\/fathers-day(?=\/|$)/, '/fathers-day'],
+  [/^\/tools\/console$/, '/console.html'],
+  [/^\/tools\/feedback$/, '/feedback.html'],
+  [/^\/run\/local$/, '/run/local.html'],
+];
+
+function rewriteZonePath(path: string): string | null {
+  for (const [pattern, target] of ZONE_REWRITES) {
+    if (pattern.test(path)) return path.replace(pattern, target);
+  }
+  return null;
+}
+
+// ------------------------------------------------------------
 // 静态文件代理
 // ------------------------------------------------------------
 
@@ -2795,6 +2818,10 @@ export default {
     }
 
     // 技术文章静态页：/articles/{slug} → {slug}.html，/articles/{slug}.md 直出 Markdown
+    // 分区路径 /docs/articles 与 /articles 等价
+    if (path === '/docs/articles' || path.startsWith('/docs/articles/')) {
+      return handleArticles(request, env, '/articles' + path.substring('/docs/articles'.length));
+    }
     if (path === '/articles' || path.startsWith('/articles/')) {
       return handleArticles(request, env, path);
     }
@@ -2810,7 +2837,24 @@ export default {
       return handleApi(request, env, path);
     }
 
+    // 分区路由：本地启动器是外链，直接跳转
+    if (path === '/tools/local') {
+      return Response.redirect('http://127.0.0.1:8765/', 302);
+    }
+
+    // 分区路由：大区/小区层级路径重写到既有静态路径（不复制内容，旧路径继续可用）
+    const zonePath = rewriteZonePath(path);
+    if (zonePath) {
+      return handleStatic(request, env, zonePath);
+    }
+
     // 静态文件 / 页面
-    return handleStatic(request, env, path);
+    const staticResp = await handleStatic(request, env, path);
+
+    // SPA 回退：无扩展名的未命中路径返回 SPA 外壳，由前端按 location.pathname 渲染视图
+    if (staticResp.status === 404 && !getExt(path)) {
+      return serveHomePage(request, env);
+    }
+    return staticResp;
   }
 };
