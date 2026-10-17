@@ -1,5 +1,26 @@
 [
   {
+    "name": "_probe",
+    "type": "directory",
+    "path": "_probe",
+    "children": [
+      {
+        "name": "fetch.py",
+        "type": "file",
+        "path": "_probe/fetch.py",
+        "ext": ".py",
+        "lastModified": 1792243650771
+      },
+      {
+        "name": "probe.py",
+        "type": "file",
+        "path": "_probe/probe.py",
+        "ext": ".py",
+        "lastModified": 1792243622497
+      }
+    ]
+  },
+  {
     "name": "data",
     "type": "directory",
     "path": "data",
