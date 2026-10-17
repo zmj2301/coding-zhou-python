@@ -341,11 +341,15 @@ function ensureUtf8Charset(resp: Response): Response {
   return resp;
 }
 
+// Workers 里 new Request('/x') 会抛 "Invalid URL: /x"，必须给绝对 URL。
+// Assets 绑定按 pathname 解析资源，这里统一用站点自身 origin 构造请求。
+const ASSET_ORIGIN = 'https://codingzhou.top';
+
 async function fetchAsset(path: string, env: Env): Promise<Response> {
   try {
     if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
       const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-      const resp = await env.ASSETS.fetch(new Request('/' + cleanPath));
+      const resp = await env.ASSETS.fetch(new Request(ASSET_ORIGIN + '/' + cleanPath));
       if (resp.ok) {
         const r = ensureUtf8Charset(resp);
         // HTML 不缓存，确保更新后立即可见
@@ -2291,7 +2295,8 @@ async function fetchSpaShell(env: Env): Promise<Response> {
   if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
     for (const assetPath of ['/', '/index.html']) {
       try {
-        const resp = await env.ASSETS.fetch(new Request(assetPath));
+        // 绝对 URL：Workers 里 new Request('/x') 会抛 "Invalid URL"，必须带 origin
+        const resp = await env.ASSETS.fetch(new Request(ASSET_ORIGIN + assetPath));
         if (resp.ok) {
           const text = await resp.text();
           if (text.includes('</head>')) {
