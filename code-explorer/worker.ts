@@ -905,13 +905,11 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   }
 
   // ---- 需要认证的 API ----
-  const needAuth = path.startsWith('/api/files/') ||
-    path.startsWith('/api/comments') ||
-    path.startsWith('/api/code/') ||
+  // 游客可访问：/api/files/*（查看源代码）、/api/resources/download、/api/textbook/download、
+  // /api/comments 读（读评论/评论数）；写操作（发评论、点赞）在各自分支内单独鉴权。
+  const needAuth = path.startsWith('/api/code/') ||
     path === '/api/likes' ||
     path === '/api/admin/dashboard' ||
-    path.startsWith('/api/resources/download') ||
-    path.startsWith('/api/textbook/download') ||
     path.startsWith('/api/proxy-download');
 
   if (needAuth) {
@@ -1227,6 +1225,9 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     }
 
     if (request.method === 'POST') {
+      // 发表评论需要登录（游客可读不可写）
+      const authenticated = await checkAuth(request, env);
+      if (!authenticated) return errorResponse('请先登录', 401);
       try {
         const data = await request.json();
         const project = data.project || '';
@@ -1292,6 +1293,9 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   }
 
   if (path === '/api/comments/like' && request.method === 'POST') {
+    // 点赞需要登录（游客可读不可写）
+    const authenticated = await checkAuth(request, env);
+    if (!authenticated) return errorResponse('请先登录', 401);
     try {
       const data = await request.json();
       const project = data.project || '';
@@ -2433,13 +2437,7 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     return serveHomePage(request, env);
   }
 
-  // web-games 页面保护
-  if (path.startsWith('/web-games/') || path === '/web-games') {
-    if (isBrowserRequest(request)) {
-      const authenticated = await checkAuth(request, env);
-      if (!authenticated) return redirectResponse('/');
-    }
-  }
+  // web-games 页面已对游客开放（与 CDN 直供的旧路径 /web-games/ 行为一致）
 
   // fathers-day 页面保护
   if (path.startsWith('/fathers-day/') || path === '/fathers-day') {
