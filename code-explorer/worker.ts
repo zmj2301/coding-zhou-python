@@ -798,7 +798,14 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       // 我们改为传 username
       const username = (data.username || '').trim();
       if (!username) return errorResponse('缺少用户名', 400);
-      if (username === 'admin' || username === 'codingzhou') return errorResponse('不能删除管理员账号', 403);
+      // 只有超级管理员 codingzhou 受保护，其他用户（含其他管理员）均可删除
+      if (username === 'codingzhou') return errorResponse('超级管理员账号不可删除', 403);
+      // 禁止删除当前登录的账号，避免把自己删掉后立即失去访问权
+      const token = getTokenFromRequest(request);
+      if (token) {
+        const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+        if (payload && payload.sub === username) return errorResponse('不能删除当前登录的账号', 403);
+      }
 
       const key = `user:${username}`;
       const existing = await env.CODE_EXPLORER_KV.get(key);
