@@ -222,8 +222,8 @@
     "label": "工具",
     "desc": "",
     "mainFile": "main.py",
-    "fileCount": 8,
-    "lastModified": 1792243720983,
+    "fileCount": 12,
+    "lastModified": 1792245930594,
     "themeColor": "hsl(234, 39%, 62%)",
     "popupUrl": null
   },
@@ -726,6 +726,18 @@
     "popupUrl": null
   },
   {
+    "name": "新建文件夹",
+    "path": "新建文件夹",
+    "type": "other",
+    "label": "其他",
+    "desc": "",
+    "mainFile": "",
+    "fileCount": 0,
+    "lastModified": 1792246184620,
+    "themeColor": "hsl(216, 40%, 63%)",
+    "popupUrl": null
+  },
+  {
     "name": "每日励志语句",
     "path": "每日励志语句",
     "type": "tool",
@@ -734,7 +746,7 @@
     "mainFile": "get_conent.py",
     "fileCount": 6,
     "lastModified": 1785830344661,
-    "themeColor": "hsl(216, 40%, 63%)",
+    "themeColor": "hsl(183, 37%, 65%)",
     "popupUrl": null
   },
   {
@@ -746,7 +758,7 @@
     "mainFile": "2026跨年.py",
     "fileCount": 27,
     "lastModified": 1785830344674,
-    "themeColor": "hsl(183, 37%, 65%)",
+    "themeColor": "hsl(193, 33%, 61%)",
     "popupUrl": null
   },
   {
@@ -758,7 +770,7 @@
     "mainFile": "index.html",
     "fileCount": 5,
     "lastModified": 1785830344681,
-    "themeColor": "hsl(193, 33%, 61%)",
+    "themeColor": "hsl(182, 32%, 60%)",
     "popupUrl": null
   },
   {
@@ -770,7 +782,7 @@
     "mainFile": "game.js",
     "fileCount": 2,
     "lastModified": 1785830344538,
-    "themeColor": "hsl(182, 32%, 60%)",
+    "themeColor": "hsl(200, 42%, 65%)",
     "webGameUrl": "/web-games/shared/",
     "hasSubProjects": false
   }

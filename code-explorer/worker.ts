@@ -122,11 +122,28 @@ async function checkAuth(request: Request, env: Env): Promise<boolean> {
   return payload !== null;
 }
 
+// 解析当前会话的角色：以 KV 中的用户记录为准，KV 无记录时兜底用 JWT 的 is_admin。
+// 这样在 KV 中新增/调整管理员后，无需重新登录（旧 JWT 里没有 is_admin）即可立即生效。
+async function resolveRole(env: Env, payload: any): Promise<string> {
+  const username = payload && payload.sub;
+  if (username) {
+    try {
+      const uStr = await env.CODE_EXPLORER_KV.get(`user:${username}`);
+      if (uStr) {
+        const u = JSON.parse(uStr);
+        return u.role || 'user';
+      }
+    } catch {}
+  }
+  return payload && payload.is_admin ? 'admin' : 'user';
+}
+
 async function checkAdmin(request: Request, env: Env): Promise<boolean> {
   const token = getTokenFromRequest(request);
   if (!token) return false;
   const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
-  return payload !== null && payload.is_admin === true;
+  if (!payload) return false;
+  return (await resolveRole(env, payload)) === 'admin';
 }
 
 function jsonResponse(data: any, status: number = 200): Response {
@@ -630,7 +647,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
           user = {
             id: 1,
             username: payload.sub || 'user',
-            role: payload.is_admin ? 'admin' : 'user'
+            role: await resolveRole(env, payload)
           };
         }
       }
