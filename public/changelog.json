@@ -9,7 +9,7 @@
             "前端新增 URL 与视图双向同步（syncUrl / applyRouteFromLocation / popstate）：侧栏切换、进入在线编辑、返回首页、关闭 AI 助手均同步地址栏，浏览器前进/后退可回退视图，刷新仍停留在同一视图",
             "侧栏按大区重排为 广场 / 游戏 / 资源 / 文档 / 工具 / 账户，所有项补齐分区 href，普通点击走 SPA 切换、中键或新标签可直达分区路径；移除旧「快捷链接」块（内容并入对应大区）",
             "修复 /run/local 死链（由 404 变为 200，重写到 run/local.html）；登录页地址同步为 /account/login，已登录访问该路径自动回落 /plaza",
-            "修复 SPA 外壳取到过时副本的问题：Cloudflare Assets 对 /index.html 会做 307 归一化导致 Worker 退回 GitHub 旧副本，改为直接按 / → /index.html 读取当前部署的 Assets，首页与各分区路径渲染最新页面",
+            "修复 SPA 外壳取到过时副本的根因：Worker 中以相对 URL 构造 new Request('/x') 会抛 Invalid URL，导致 Assets 绑定分支从未生效、所有静态资源都退回 GitHub 旧副本；改用站点自身 origin 的绝对 URL 读取当前部署的 Assets，首页与各分区路径渲染最新页面",
             "旧路径全部保留可用：/web-games/、/python/、/fathers-day/、/articles/、/console.html、/feedback.html、/scratch 均不受影响"
         ]
     },
