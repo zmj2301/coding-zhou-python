@@ -2282,6 +2282,31 @@ async function getConversationalAI(messages: { role: string; content: string }[]
 // ------------------------------------------------------------
 // 首页服务（内联项目数据 + KV 缓存）
 // ------------------------------------------------------------
+
+// SPA 外壳（index.html）取值：必须用当前部署的 Assets 资源。
+// Cloudflare Assets 对 "/index.html" 会做 URL 归一化（→ "/"，307），直接交给 fetchAsset
+// 会拿不到 200 从而退回到 GitHub 上的旧副本，导致首页/S 分区路径渲染出过时的 HTML。
+// 这里显式按 "/" → "/index.html" 顺序取 Assets，都失败才回退 fetchAsset。
+async function fetchSpaShell(env: Env): Promise<Response> {
+  if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
+    for (const assetPath of ['/', '/index.html']) {
+      try {
+        const resp = await env.ASSETS.fetch(new Request(assetPath));
+        if (resp.ok) {
+          const text = await resp.text();
+          if (text.includes('</head>')) {
+            return new Response(text, {
+              status: 200,
+              headers: { 'Content-Type': 'text/html; charset=utf-8' }
+            });
+          }
+        }
+      } catch {}
+    }
+  }
+  return fetchAsset('/index.html', env);
+}
+
 async function serveHomePage(request: Request, env: Env): Promise<Response> {
   const CACHE_KEY = 'cache:home-page-v3';
   const CACHE_TTL = 1800;
@@ -2297,7 +2322,7 @@ async function serveHomePage(request: Request, env: Env): Promise<Response> {
   } catch {}
 
   const [htmlResp, listResp] = await Promise.all([
-    fetchAsset('/index.html', env),
+    fetchSpaShell(env),
     fetchAsset('/project-list.json', env),
   ]);
 
