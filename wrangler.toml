@@ -19,6 +19,9 @@ preview_id = "69c61f369a764a519631b00e613f7ea6"
 [assets]
 binding = "ASSETS"
 directory = "public"
+# public/ 下物理存在的文件默认由 CF Assets CDN 直接返回，不会经过 Worker，
+# 导致前端登录墙（如 /fathers-day）被绕过。这里强制这些路径先走 Worker。
+run_worker_first = ["/fathers-day", "/fathers-day/*"]
 
 [ai]
 binding = "AI"

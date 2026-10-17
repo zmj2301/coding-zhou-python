@@ -649,16 +649,20 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       let role = 'user';
       // 1. 优先检查 KV 中注册的用户
       const userStr = await env.CODE_EXPLORER_KV.get(`user:${username}`);
+      let kvUser: any = null;
       if (userStr) {
-        const user = JSON.parse(userStr);
+        try { kvUser = JSON.parse(userStr); } catch { kvUser = null; }
+      }
+      if (kvUser && kvUser.passwordHash) {
         const hashed = await hashPassword(password);
-        valid = (user.passwordHash === hashed);
-        if (valid) role = user.role || 'user';
+        valid = (kvUser.passwordHash === hashed);
+        if (valid) role = kvUser.role || 'user';
       }
       // 2. 回退到共享密码（向后兼容）
+      //    若 KV 中已登记该用户（如管理员账号），沿用其 role，避免降级为普通用户
       if (!valid && env.USER_PASSWORD && password === env.USER_PASSWORD) {
         valid = true;
-        role = 'user';
+        role = (kvUser && kvUser.role) ? kvUser.role : 'user';
       }
 
       if (!valid) return errorResponse('用户名或密码错误', 401);
@@ -2443,7 +2447,7 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
   if (path.startsWith('/fathers-day/') || path === '/fathers-day') {
     if (isBrowserRequest(request)) {
       const authenticated = await checkAuth(request, env);
-      if (!authenticated) return redirectResponse('/');
+      if (!authenticated) return redirectResponse('/account/login');
     }
   }
 
@@ -2451,7 +2455,7 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
   if (path.startsWith('/resource/') || path === '/resource') {
     if (isBrowserRequest(request)) {
       const authenticated = await checkAuth(request, env);
-      if (!authenticated) return redirectResponse('/');
+      if (!authenticated) return redirectResponse('/account/login');
     }
   }
 
@@ -2459,7 +2463,7 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
   if (path.startsWith('/scratch/') || path === '/scratch') {
     if (isBrowserRequest(request)) {
       const authenticated = await checkAuth(request, env);
-      if (!authenticated) return redirectResponse('/');
+      if (!authenticated) return redirectResponse('/account/login');
     }
   }
 

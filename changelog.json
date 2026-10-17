@@ -1,6 +1,17 @@
 [
     {
         "date": "2026-10-17",
+        "title": "修复父亲节专题登录墙被 CDN 绕过、以及管理员「进入后台」按钮不显示",
+        "version": "2.9.2",
+        "changes": [
+            "修复 /fathers-day 登录保护失效：public/ 下物理存在的页面默认由 CF Assets CDN 直接返回、完全不经过 Worker，登录墙形同虚设；wrangler.toml [assets] 新增 run_worker_first 强制该路径先经过 Worker 再决定放行或拦截",
+            "登录墙跳转目标由首页 / 改为 /account/login：未登录访问受保护页面（fathers-day / scratch / resource）时直接落到登录页，保护状态可见，不再只是静默跳回广场",
+            "登录逻辑修复：使用共享密码登录时，若 KV 中已登记该用户则沿用其 role，避免管理员账号被降级为普通用户",
+            "KV 中恢复管理员账号 codingzhou（role=admin），登录后用户下拉菜单中的「管理员后台」按钮正常显示，可进入后台管理"
+        ]
+    },
+    {
+        "date": "2026-10-17",
         "title": "新增「游客访问」模式：未登录也能浏览公开内容，仅关键功能需登录",
         "version": "2.9.1",
         "changes": [

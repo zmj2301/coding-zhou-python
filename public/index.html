@@ -4141,6 +4141,19 @@ body.preview-active .app-preview { display: flex; }
     box-shadow: 0 4px 16px color-mix(in srgb, var(--accent-blue) 30%, transparent);
   }
   .auth-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+  .auth-btn-guest {
+    width: 100%; padding: 11px 16px; margin-top: 10px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color); border-radius: 8px;
+    cursor: pointer; font-size: 14px; font-weight: 500;
+    transition: all 0.15s; font-family: inherit;
+  }
+  .auth-btn-guest:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-blue);
+    background: color-mix(in srgb, var(--accent-blue) 8%, transparent);
+  }
   .auth-btn-admin {
     background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
   }
@@ -4944,6 +4957,7 @@ body.preview-active .app-preview { display: flex; }
           <input type="password" id="loginPasswordInput" placeholder="请输入密码" autocomplete="off">
         </div>
         <button class="auth-btn-primary" id="loginSubmitBtn">登录</button>
+        <button class="auth-btn-guest" id="guestEnterBtn">游客访问</button>
         <div class="auth-error" id="loginError"></div>
       </div>
     </div>
@@ -6391,6 +6405,7 @@ const state = {
   currentProject: null,
   currentUser: null,
   isAuthenticated: false,
+  isGuest: false,      // 游客模式（未登录但允许浏览公开内容）
   openTabs: [],
   activeTabIdx: -1,
   expandedDirs: new Set(),
@@ -7010,13 +7025,7 @@ async function openProject(projectPath) {
     return;
   }
 
-  // P2: 登录引导优化 - 点击查看项目详情时检查登录
-  // 网页游戏和弹出预览不需要登录检查（它们是公开的）
-  const needsAuth = project.type !== 'web-game' && project.type !== 'popup-preview';
-  if (needsAuth && !state.isAuthenticated) {
-    showAuthPromptModal(project.name);
-    return;
-  }
+  // 查看项目详情/源代码已对游客开放，不再拦截（在线运行等写操作仍在各自入口鉴权）
 
   addRecentProject(project);
 
@@ -7108,12 +7117,7 @@ function openProjectReadme(projectPath) {
     return;
   }
 
-  // 登录检查：网页游戏和弹出预览是公开的，其余需登录（与 openProject 保持一致）
-  const needsAuth = project.type !== 'web-game' && project.type !== 'popup-preview';
-  if (needsAuth && !state.isAuthenticated) {
-    showAuthPromptModal(project.name);
-    return;
-  }
+  // 查看项目详情/源代码已对游客开放，不再拦截（与 openProject 保持一致）
 
   _drawerActiveProject = project;
   $('#readmeDrawerTitle').textContent = project.name;
@@ -7912,6 +7916,12 @@ function hideTerminal() {
 
 async function runPythonCodeSSE() {
   if (state.isRunning) return;
+  // 在线运行需要登录（游客可查看源代码，但不可执行）
+  if (!state.isAuthenticated) {
+    toast('请先登录后再运行代码');
+    showLoginPage();
+    return;
+  }
   const mode = $('#runModeSelect').value;
 
   showTerminal();
@@ -8906,12 +8916,7 @@ function renderMindmap() {
       card.addEventListener('click', function() {
         const path = this.dataset.path;
         closeMindmapModal();
-        if (state.isAuthenticated) {
-          openProject(path);
-        } else {
-          const project = projects.find(p => p.path === path);
-          if (project) showAuthPromptModal(project.name);
-        }
+        openProject(path);
       });
     });
   }
@@ -9455,6 +9460,38 @@ function hideLoginPage() {
   authPage.classList.remove('active');
 }
 
+// ==================== 游客模式 ====================
+// 游客可浏览公开内容（项目广场、网页游戏、查看源代码、资源下载、文档等），
+// 仅上传 / 在线运行 / 评论点赞 / API 密钥 / Scratch / 父亲节等仍需要登录。
+function isGuestMode() {
+  try { return localStorage.getItem('wg_guest') === '1'; } catch (e) { return false; }
+}
+
+function startApp() {
+  hideLoginPage();
+  if (!state.isAuthenticated) {
+    var sLabel = document.getElementById('sidebarLoginLabel');
+    if (sLabel) sLabel.textContent = '游客';
+  }
+  if (!state._started) {
+    state._started = true;
+    try { init(); } catch (e) { console.error('渲染失败:', e); }
+  }
+  applyRouteFromLocation();
+}
+
+// 登录页「游客访问」按钮：不校验账号，直接进入站点并记住游客身份
+function enterAsGuest() {
+  try { localStorage.setItem('wg_guest', '1'); } catch (e) {}
+  state.isGuest = true;
+  startApp();
+}
+
+function clearGuestMode() {
+  try { localStorage.removeItem('wg_guest'); } catch (e) {}
+  state.isGuest = false;
+}
+
 async function checkAuth() {
   try {
     const r = await fetch('/api/auth-check');
@@ -9484,6 +9521,7 @@ async function doUserLogin() {
       setCookie('wg_token', d.token, 7);
       state.currentUser = d.user;
       state.isAuthenticated = true;
+      clearGuestMode();
       hideLoginPage();
       userMenuBtn.classList.remove('hidden');
       if (document.getElementById('userMenuName')) document.getElementById('userMenuName').textContent = d.user.username;
@@ -9496,6 +9534,7 @@ async function doUserLogin() {
       loginUsernameInput.value = '';
       loginPasswordInput.value = '';
       loginError.textContent = '';
+      state._started = true;
       init();
       applyRouteFromLocation();
       // 若当前在 API 密钥页面，登录后自动刷新列表
@@ -9782,6 +9821,9 @@ async function deleteUser(userId, username) {
 
 // ===== 事件绑定 =====
 loginSubmitBtn.addEventListener('click', doUserLogin);
+if (document.getElementById('guestEnterBtn')) {
+  document.getElementById('guestEnterBtn').addEventListener('click', enterAsGuest);
+}
 loginPasswordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
 loginUsernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doUserLogin(); });
 
@@ -11179,6 +11221,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (hasInitialData) {
     try {
       init();
+      state._started = true;
     } catch(e) {
       console.error('渲染失败:', e);
     }
@@ -11199,6 +11242,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       state.isAuthenticated = authed;
+      // 游客模式：未登录但已选择游客访问，更新侧栏标签
+      if (!authed && isGuestMode()) {
+        state.isGuest = true;
+        var gLabel = document.getElementById('sidebarLoginLabel');
+        if (gLabel) gLabel.textContent = '游客';
+      }
       // 按地址栏路径渲染对应视图（直达/刷新）
       applyRouteFromLocation();
     }).catch(() => {});
@@ -11243,8 +11292,13 @@ document.addEventListener('DOMContentLoaded', function() {
       var sLabel2 = document.getElementById('sidebarLoginLabel');
       if (sLabel2 && state.currentUser) sLabel2.textContent = state.currentUser.username;
       init();
+      state._started = true;
       // 按地址栏路径渲染对应视图（直达/刷新）
       applyRouteFromLocation();
+    } else if (isGuestMode()) {
+      // 游客模式：跳过登录页，直接进入站点
+      state.isGuest = true;
+      startApp();
     } else {
       showLoginPage();
     }
