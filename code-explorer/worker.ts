@@ -1224,6 +1224,33 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     });
   }
 
+  // 下载整个项目（目录自动打包为 ZIP）或单个文件：代理到 ECS 的 /api/files/download。
+  // 前端一直用 /export 这个路径名（历史原因：绕开 Cloudflare 对 download 关键词的拦截），
+  // 但 Worker 从未注册对应路由，导致编辑器工具栏「下载为 ZIP」必然 404。这里补上。
+  if (path === '/api/files/export') {
+    const filePath = url.searchParams.get('path') || '';
+    if (!filePath) return errorResponse('缺少 path 参数', 400);
+    if (filePath.includes('..') || filePath.startsWith('/')) return errorResponse('访问被拒绝：路径越界', 403);
+
+    try {
+      const ecsResp = await fetchFromEcs('/api/files/download' + (url.search || ''), env, request);
+      if (!ecsResp.ok) {
+        const errText = await ecsResp.text().catch(() => '');
+        return errorResponse('下载失败: ' + (errText || `上游返回 ${ecsResp.status}`), ecsResp.status === 404 ? 404 : 502);
+      }
+      // 透传 ECS 的下载响应头，保证文件名与类型正确
+      const headers = new Headers();
+      for (const h of ['Content-Type', 'Content-Disposition', 'Content-Length']) {
+        const v = ecsResp.headers.get(h);
+        if (v) headers.set(h, v);
+      }
+      if (!headers.has('Content-Type')) headers.set('Content-Type', 'application/octet-stream');
+      return new Response(ecsResp.body, { status: 200, headers });
+    } catch (e: any) {
+      return errorResponse('下载失败: ' + (e.message || String(e)), 500);
+    }
+  }
+
   if (path === '/api/files/search') {
     const query = (url.searchParams.get('q') || '').toLowerCase();
     if (!query) return jsonResponse([]);

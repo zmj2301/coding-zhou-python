@@ -1,5 +1,16 @@
 [
     {
+        "date": "2026-10-18",
+        "title": "修复「下载为 ZIP」必失败，资源下载页改为真实内容聚合",
+        "version": "2.9.5",
+        "changes": [
+            "修复编辑器工具栏「下载为 ZIP / 下载整个项目」必然失败：前端调用 /api/files/export，但 Worker 从未注册该路由，请求落到「未找到接口」404；Worker 新增该路由并代理到 ECS 已支持的 /api/files/download（目录自动打包 ZIP、单文件直传），透传 Content-Type / Content-Disposition / Content-Length",
+            "该下载对游客开放（与「查看源代码」口径一致）；前端移除无效的 Authorization: Bearer 请求头（Worker 仅识别 Cookie wg_token）",
+            "资源下载页重做：原 8 张卡片引用的文件在仓库中并不存在（public/resource/ 下只有 resources.json），点击必然提示「资源不存在」；改为真实内容聚合页，收录 Windows 专区安装包与八年级上册教材",
+            "移除失效的资源卡片渲染与下载逻辑（loadResources、downloadResource），Windows 列表渲染支持指定渲染目标以便复用到资源下载页"
+        ]
+    },
+    {
         "date": "2026-10-17",
         "title": "精简管理员后台卡片，新增「添加用户」，修复用户删除功能",
         "version": "2.9.4",
