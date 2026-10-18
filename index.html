@@ -5958,12 +5958,15 @@ history 端点也顺手补上 `disabled` 字段和 `url`，让前端一次拿到
     <div class="resources-page" id="resourcesPage" style="display:none">
       <header class="main-head">
         <h1>资源下载</h1>
-        <div class="main-head-right">
-          <div class="resources-stats" id="resourcesStats"></div>
-        </div>
       </header>
-      <div class="main-sub">精选 Python 学习资源、项目模板、开发工具和文档合集</div>
-      <div class="cards-grid" id="resourcesGrid"></div>
+      <div class="main-sub">Windows 平台安装包与八年级上册教材，点击即可直接下载</div>
+      <div class="textbook-section">
+        <div class="textbook-section-head">
+          <h2>🪟 Windows 专区</h2>
+          <span class="textbook-section-sub" id="resourcesStats"></span>
+        </div>
+        <div class="cards-grid" id="resourcesWindowsGrid"></div>
+      </div>
       <div class="textbook-section">
         <div class="textbook-section-head">
           <h2>📚 八年级上册教材</h2>
@@ -8155,10 +8158,8 @@ async function downloadProject() {
   try {
     toast('正在打包下载...');
     const path = encodeURIComponent(state.currentProject.path);
-    // 使用 fetch 而非 api() 以便正确处理二进制响应 (使用 /export 绕过 Cloudflare 对 /download 的拦截)
-    const resp = await fetch(`/api/files/export?path=${path}`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-    });
+    // 使用 fetch 而非 api() 以便正确处理二进制响应（/api/files/export 由 Worker 代理到 ECS 打包下载）
+    const resp = await fetch(`/api/files/export?path=${path}`);
     if (!resp.ok) {
       let errMsg = `HTTP ${resp.status}`;
       try {
@@ -9931,78 +9932,11 @@ if (navAiAsst) navAiAsst.addEventListener('click', openAIAssistant);
 const aiRecommendInput = document.getElementById('aiRecommendInput');
 if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
 
-// ===== 资源下载 =====
-async function loadResources() {
-  const grid = document.getElementById('resourcesGrid');
-  const stats = document.getElementById('resourcesStats');
-  if (!grid) return;
-  grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div><span>加载资源中...</span></div>';
-  try {
-    const r = await fetch('/api/resources/list');
-    const d = await r.json();
-    const resources = d.resources || [];
-    if (stats) stats.textContent = `共 ${resources.length} 个资源`;
-    if (resources.length === 0) {
-      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--text-secondary)">暂无资源</div>';
-      return;
-    }
-    grid.innerHTML = resources.map(res => `
-      <div class="resource-card accent-${res.accent || 'purple'}">
-        <div class="card-header">
-          <div class="card-icon">${res.icon || '📦'}</div>
-          <div class="card-title">${esc(res.name)}</div>
-        </div>
-        <div class="card-desc">${esc(res.desc || '')}</div>
-        <div class="card-tags">
-          <span class="card-tag format">${esc(res.format || '')}</span>
-          <span class="card-tag size">${esc(res.size || '')}</span>
-          ${(res.tags || []).map(t => `<span class="card-tag">${esc(t)}</span>`).join('')}
-        </div>
-        <div class="card-footer">
-          <div class="card-meta">
-            <span class="card-meta-item">⬇ ${res.downloads || 0} 次下载</span>
-            <span class="card-meta-item">🕐 ${esc(res.updated || '')} 更新</span>
-          </div>
-          <button class="download-btn" onclick="downloadResource('${esc(res.path)}','${esc(res.name)}')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            下载
-          </button>
-        </div>
-      </div>
-    `).join('');
-  } catch (e) {
-    grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--accent-red)">加载失败</div>';
-  }
-}
-
-function downloadResource(path, name) {
-  const url = '/api/resources/download?path=' + encodeURIComponent(path);
-  fetch(url)
-    .then(async resp => {
-      if (!resp.ok) {
-        let msg = '下载失败';
-        try { const d = await resp.json(); msg = d.error || msg; } catch {}
-        alert(msg);
-        return;
-      }
-      const blob = await resp.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = name || path;
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
-    })
-    .catch(() => alert('下载失败，请稍后重试'));
-}
-
 // ===== Windows 专区 =====
-async function loadWindows() {
-  const grid = document.getElementById('windowsGrid');
-  const stats = document.getElementById('windowsStats');
+// gridId/statsId 可指定渲染目标：Windows 专区页用默认值，资源下载页把它并入同一渲染逻辑
+async function loadWindows(gridId, statsId) {
+  const grid = document.getElementById(gridId || 'windowsGrid');
+  const stats = document.getElementById(statsId || 'windowsStats');
   const badge = document.getElementById('windowsCount');
   if (!grid) return;
   grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div><span>加载安装包中...</span></div>';
@@ -10697,7 +10631,7 @@ function switchSidebarView(view) {
     if (aiPage) aiPage.classList.remove('active');
     const resourcesPage = $('#resourcesPage');
     if (resourcesPage) resourcesPage.style.display = 'flex';
-    loadResources();
+    loadWindows('resourcesWindowsGrid', 'resourcesStats');
     loadTextbooks();
   } else if (view === 'articles') {
     // 技术文章页面
