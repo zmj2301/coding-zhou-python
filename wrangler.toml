@@ -6,7 +6,9 @@ main = "code-explorer/worker.ts"
 [vars]
 GITHUB_REPO = "zmj2301/coding-zhou-python"
 GITHUB_BRANCH = "main"
-ECS_SERVER_URL = "http://39.107.96.165.nip.io"
+# Worker 子请求不能直连裸 IP（Cloudflare 返回 error 1003），也不能用 *.nip.io（被 CF 边缘接管，返回 520）。
+# *.sslip.io 由第三方权威 DNS 直接解析到 ECS 公网 IP，CF 正常回源，因此作为 ECS 代理入口。
+ECS_SERVER_URL = "http://39-107-96-165.sslip.io"
 OLLAMA_TUNNEL_URL = "https://ollama.codingzhou.top"
 
 account_id = "d6b8ca32610afe0fd9407736b9266cb3"

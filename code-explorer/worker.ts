@@ -302,7 +302,7 @@ async function syncUploadToGitHub(
 // ------------------------------------------------------------
 
 async function fetchFromEcs(path: string, env: Env, request: Request): Promise<Response> {
-  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165.nip.io';
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
   const url = `${ecsUrl}${path}`;
   const headers = new Headers(request.headers);
   headers.set('Host', new URL(ecsUrl).host);
@@ -315,7 +315,7 @@ async function fetchFromEcs(path: string, env: Env, request: Request): Promise<R
 }
 
 async function proxyStreamToEcs(path: string, env: Env, request: Request): Promise<Response> {
-  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165.nip.io';
+  const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165';
   const url = `${ecsUrl}${path}`;
   const headers = new Headers(request.headers);
   headers.set('Host', new URL(ecsUrl).host);
