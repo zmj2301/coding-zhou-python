@@ -1,6 +1,17 @@
 [
     {
         "date": "2026-10-18",
+        "title": "修复 Worker 无法访问 ECS，下载为 ZIP 与实时文件树/预览全部恢复",
+        "version": "2.9.6",
+        "changes": [
+            "定位到下载失败的真因：Worker 代理 ECS 使用的 ECS_SERVER_URL 为 http://39.107.96.165.nip.io，而 Cloudflare 会接管 *.nip.io 子请求并返回 520 错误页，裸 IP 则被拒绝（error 1003），导致 Worker → ECS 的调用全部不可达",
+            "此前不易察觉：文件树、文件内容、文件预览等接口都有 GitHub / KV 兜底，ECS 不可达时会静默回退，表面仍返回 200，直到「下载为 ZIP」没有兜底才暴露为 502",
+            "ECS_SERVER_URL 改用 http://39-107-96-165.sslip.io（第三方权威 DNS 直接解析到 ECS 公网 IP，Cloudflare 可正常回源），Worker 与代码内的默认兜底地址同步更新",
+            "修复后：下载整个项目返回有效 ZIP、下载单个文件返回原始字节，且 /api/projects/tree 转为走 ECS 实时扫描（缓存 300 秒），文件内容与预览同样恢复走 ECS"
+        ]
+    },
+    {
+        "date": "2026-10-18",
         "title": "修复「下载为 ZIP」必失败，资源下载页改为真实内容聚合",
         "version": "2.9.5",
         "changes": [
