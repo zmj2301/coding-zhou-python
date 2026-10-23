@@ -281,8 +281,7 @@ class PetWindow(QWidget):
         painter.drawEllipse(0, 0, self.width(), self.height())
 
     def contextMenuEvent(self, event: Any) -> None:
-        """右键菜单"""
-        menu = QMenu(self)
+        """右键菜单"""        menu = QMenu(self)
         menu.setStyleSheet("""
             QMenu {
                 background-color: #2d2d30;
@@ -315,6 +314,11 @@ class PetWindow(QWidget):
         auto_start_action.setChecked(is_enabled)
         auto_start_action.triggered.connect(self._toggle_auto_start)
         menu.addAction(auto_start_action)
+
+        # 积分看板（懒加载：只有点了菜单才导入 Qt 面板，避免拖慢启动）
+        credits_action = QAction('📊 积分看板', self)
+        credits_action.triggered.connect(self._open_credits_panel)
+        menu.addAction(credits_action)
 
         menu.addSeparator()
 
@@ -456,6 +460,43 @@ class PetWindow(QWidget):
             self._countdown_widget.show()
             self._countdown_widget.raise_()
             self._countdown_widget.activateWindow()
+
+    def _open_credits_panel(self) -> None:
+        """打开积分看板面板。
+
+        面板需要访问 ECS 上的查询服务（127.0.0.1:8899），本地要先有 SSH 隧道。
+        这里做懒加载 + 自动拉隧道，失败时给明确提示而不是静默空白。
+        """
+        logging.info('打开积分看板')
+        # 复用同一个窗口实例，重复点击不再新建
+        if getattr(self, '_credits_panel', None) is None:
+            try:
+                import sys
+                credits_dir = os.path.join(
+                    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'credits')
+                if credits_dir not in sys.path:
+                    sys.path.insert(0, credits_dir)
+                from credits_panel import CreditsPanel
+                self._credits_panel = CreditsPanel()
+            except Exception as e:
+                logging.error(f'积分看板加载失败: {e}')
+                QMessageBox.warning(self, '积分看板', f'面板加载失败：\n{e}')
+                return
+
+        # 隧道不通就自动建一个，省得用户手动开终端
+        if not getattr(self, '_tunnel_checked', True):
+            self._tunnel_checked = True
+        try:
+            import tunnel
+            if not tunnel.health():
+                tunnel.start_tunnel()
+        except Exception as e:
+            logging.warning(f'隧道检查/建立失败: {e}')
+
+        self._credits_panel.refresh()
+        self._credits_panel.show()
+        self._credits_panel.raise_()
+        self._credits_panel.activateWindow()
 
     def _make_url_handler(self, url: str) -> Callable[[], None]:
         """创建URL处理函数"""

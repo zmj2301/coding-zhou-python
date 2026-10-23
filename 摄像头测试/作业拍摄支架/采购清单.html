@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作业拍摄支架 · 最终采购清单</title>
+<style>
+:root{--bg:#fbfaf8;--card:#fff;--ink:#2c2c2a;--sub:#5f5e5a;--hint:#888780;--line:#e8e5dd;
+--blue:#185fa5;--blue-bg:#e6f1fb;--amber:#854f0b;--amber-bg:#faeeda;--teal:#0f6e56;--teal-bg:#e1f5ee;--red:#a32d2d;--gray-bg:#f4f2ee}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;font-size:15px;padding:40px 20px}
+.wrap{max-width:960px;margin:0 auto}
+header{margin-bottom:30px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+h1{font-size:25px;font-weight:600;margin-bottom:8px;letter-spacing:-0.3px}
+.lead{color:var(--sub);font-size:14px}
+h2{font-size:19px;font-weight:600;margin:38px 0 14px;padding-left:12px;border-left:3px solid var(--blue)}
+h2.g{border-color:var(--teal)}h2.a{border-color:var(--amber)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:14px}
+.chosen{background:var(--teal-bg);border:1px solid #9fe1cb;border-radius:12px;padding:18px 22px;margin-bottom:14px}
+.chosen .tag{display:inline-block;background:var(--teal);color:#fff;font-size:12px;padding:3px 12px;border-radius:20px;font-weight:500;margin-bottom:10px}
+.chosen .item{font-weight:600;font-size:16px;margin-bottom:6px}
+.note{background:var(--amber-bg);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:14px 18px;margin:14px 0;font-size:14px;color:#633806}
+.note.blue{background:var(--blue-bg);border-color:var(--blue);color:#0c447c}
+.note.teal{background:var(--teal-bg);border-color:var(--teal);color:#085041}
+.note.gray{background:var(--gray-bg);border-color:#b4b2a9;color:#444441}
+.note strong{display:block;margin-bottom:4px;font-weight:600}
+.say{background:var(--card);border:2px dashed var(--blue);border-radius:10px;padding:16px 20px;margin:14px 0;font-size:14px;color:#0c447c;line-height:1.85}
+.say .lbl{font-size:12px;color:var(--sub);font-weight:600;display:block;margin-bottom:8px;letter-spacing:0.5px}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;font-size:14px;margin:12px 0}
+th{background:#f4f2ee;text-align:left;padding:11px 14px;font-weight:600;font-size:13px;color:var(--sub);border-bottom:1px solid var(--line)}
+td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.chk{color:var(--teal);font-weight:600}
+.price{color:var(--blue);font-weight:600}
+.total{background:var(--blue-bg);border:1px solid #b5d4f4;border-radius:12px;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.total-label{font-weight:600;color:#0c447c}
+.total-num{font-size:28px;font-weight:700;color:var(--blue)}
+.steps{counter-reset:s;list-style:none}
+.steps li{counter-increment:s;position:relative;padding-left:42px;margin-bottom:18px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:27px;height:27px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.steps li strong{display:block;font-weight:600}
+.steps li span{color:var(--sub);font-size:14px}
+ul.plain{list-style:none;padding-left:2px}
+ul.plain li{padding-left:20px;position:relative;margin-bottom:7px}
+ul.plain li::before{content:"";position:absolute;left:4px;top:10px;width:5px;height:5px;background:var(--hint);border-radius:50%}
+.tw{background:var(--gray-bg);border-radius:6px;padding:3px 9px;font-family:ui-monospace,Consolas,monospace;font-size:13px;display:inline-block;margin:2px 3px 2px 0}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--hint);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>作业拍摄支架 · 最终采购清单</h1>
+  <p class="lead">已确认型号 · 含可直接发给客服的话术 · 到货后验收流程</p>
+</header>
+
+<h2 class="g">✅ 你已经选定的两件</h2>
+
+<div class="chosen">
+  <span class="tag">摄像头 · 已选定</span>
+  <div class="item">技彩科技 · USB工业视觉无畸变摄像头</div>
+  <p style="font-size:14px;color:#085041;margin-bottom:10px;">
+    选中规格：<b>2K 镜头 + 3.6MM 无畸变镜头 + 外壳</b>｜ 到手约 <b>127 元</b>
+  </p>
+  <table style="margin-bottom:0">
+    <tr><th style="width:34%">参数</th><th>确认值</th><th>为什么对</th></tr>
+    <tr><td>分辨率</td><td>4096×2160（2K/4K级）</td><td class="chk">远超拍纸质文件所需</td></tr>
+    <tr><td>镜头焦距</td><td><b>3.6MM</b>（约 90° 视场角）</td><td class="chk">拍满 A4 只需 15cm，支架高度刚好</td></tr>
+    <tr><td>畸变</td><td>无畸变</td><td class="chk">纸的边缘不会被拉成梯形</td></tr>
+    <tr><td>外壳</td><td>金属硬壳</td><td class="chk">保护镜头 + 散热，比裸板耐用</td></tr>
+    <tr><td>对焦距离</td><td>厂商同系列标称 1cm～100m</td><td class="chk">拍 20cm 完全没问题</td></tr>
+    <tr><td>协议</td><td>UVC 免驱</td><td class="chk">Windows 插上就有画面</td></tr>
+    <tr><td>售后</td><td>7 天无理由退货</td><td class="chk">试错零成本，不合适就退</td></tr>
+  </table>
+</div>
+
+<div class="chosen">
+  <span class="tag">支架 · 已选定</span>
+  <div class="item">悦瑞客 · 自由拉伸桌面悬臂支架</div>
+  <p style="font-size:14px;color:#085041;margin-bottom:10px;">
+    选中规格：<b>（13mm铝方）68cm升降杆 + 桌面夹</b>｜ <b>52 元</b>，90 天退换
+  </p>
+  <table style="margin-bottom:0">
+    <tr><th style="width:34%">参数</th><th>确认值</th><th>为什么对</th></tr>
+    <tr><td>升降杆长度</td><td>68cm</td><td class="chk">可覆盖 15～30cm 拍摄高度</td></tr>
+    <tr><td>杆材质</td><td>13mm 铝方</td><td class="chk">够刚，锁紧后不晃</td></tr>
+    <tr><td>底座</td><td>桌面夹</td><td class="chk">夹桌边，不占桌面空间</td></tr>
+    <tr><td>调节</td><td>多角度调节 + 铝制包胶</td><td class="chk">能俯拍对准作业纸</td></tr>
+  </table>
+  <p style="font-size:13px;color:#085041;margin-top:10px;">
+    ⚠️ 别选错：<b>不要选 1米 / 1.3米 / 1.5米 升降杆</b>（太长更晃，你也用不到）。
+  </p>
+</div>
+
+<h2>💰 完整清单</h2>
+<table>
+  <thead><tr><th>物品</th><th style="width:16%">价格</th><th style="width:14%">状态</th></tr></thead>
+  <tbody>
+    <tr><td>技彩 USB 工业摄像头（2K + 3.6MM 无畸变 + 外壳）</td><td class="price">~127 元</td><td>待下单</td></tr>
+    <tr><td>悦瑞客 悬臂支架（13mm铝方 68cm + 桌面夹）</td><td class="price">52 元</td><td>待下单</td></tr>
+    <tr><td>台灯（代替补光灯）</td><td>0 元</td><td class="chk">家里已有</td></tr>
+    <tr><td>USB 快门按钮</td><td>—</td><td>已决定暂不购买</td></tr>
+  </tbody>
+</table>
+<div class="total">
+  <span class="total-label">合计</span>
+  <span class="total-num">≈ 179 元</span>
+</div>
+<div class="note gray">
+  <strong>关于超预算的说明</strong>
+  原始目标是 100 元 + 4K，这两个条件本身冲突。实际结果是：<b>省下补光灯 18 元，摄像头多花 27 元</b>，
+  最终多支出 79 元，换来的是 4K 分辨率 + 金属外壳 + 无畸变镜头 + 7 天无理由退换。
+  <b>收货不满意可以全额退，不会亏。</b>
+</div>
+
+<h2 class="a">📞 发给客服的话术（直接复制）</h2>
+
+<h3 style="font-size:15px;font-weight:600;margin:20px 0 10px">发给摄像头客服（技彩科技）</h3>
+<div class="say">
+<span class="lbl">消息 1 · 下单前必问</span>
+你好，我准备拍纸质作业文件，需要近距离拍摄。请问：<br>
+1）我选的"2K镜头+3.6MM无畸变镜头+外壳"这个规格，<b>底部有 1/4 英寸螺孔吗</b>？能装在悬臂支架上吗？<br>
+2）这个镜头<b>最近对焦距离是多少厘米</b>？我要拍 15～20 厘米处的 A4 纸。<br>
+3）Windows11 插上不用装驱动就能直接用吗？是 UVC 协议吗？<br>
+4）如果收到实物装不上支架，支持 7 天无理由退货吗？
+</div>
+<div class="say">
+<span class="lbl">消息 2 · 如果客服回复含糊，追问这句</span>
+麻烦给个明确的数字：<b>对焦距离是"X厘米"还是"X米"？</b>我需要能拍 15cm 的近摄。<br>
+另外请确认<b>外壳底部是否有 1/4 英寸螺孔</b>，有的话拍个实物图给我看一下。
+</div>
+
+<h3 style="font-size:15px;font-weight:600;margin:24px 0 10px">发给支架客服（悦瑞客）</h3>
+<div class="say">
+<span class="lbl">消息</span>
+你好，我问几个问题：<br>
+1）"（13mm铝方）68cm升降杆+桌面夹"这个规格，<b>顶部接口是 1/4 英寸螺孔吗</b>？<br>
+2）我装的是一个小金属方盒摄像头（约 4cm 见方），<b>能卡住或拧上去吗</b>？<br>
+3）关节是<b>旋钮锁紧</b>的对吧？（不是球头，球头装摄像头会垂下来）<br>
+4）桌夹能夹多厚的桌板？我家桌子大概 2～3cm。
+</div>
+
+<div class="note">
+  <strong>怎么判断客服回答靠不靠谱</strong>
+  <br>❌「差不多可以」「应该没问题」「质量很好的」 → 不买，继续追问<br>
+  ✅ 给出具体数字（如「最近对焦 10cm」）+ 提供实物图 → 可以买
+  <br><br>
+  这家（技彩）参数标得规范，是斑梨电子的同类产品线，属于靠谱商家。
+</div>
+
+<h2 class="g">📦 到货后验收（5 分钟，别跳过）</h2>
+<ol class="steps">
+  <li><strong>先不装支架</strong><span>摄像头直接插电脑，打开 Windows「相机」应用，看有没有画面</span></li>
+  <li><strong>测近距离清晰度</strong><span>把镜头怼到 <b>15～20cm 外的有字纸面</b>，看小字是否清楚。<b>这一步不过关，直接申请退货</b></span></li>
+  <li><strong>测分辨率</strong><span>在「相机」设置里看能否切到 4096×2160。切不了也不影响，程序会自动用最高可用分辨率</span></li>
+  <li><strong>装支架</strong><span>桌面夹夹桌沿 → 摄像头装到顶部 → 台灯放在镜头同侧前方 → 作业纸平铺，调到 15～20cm 高度</span></li>
+  <li><strong>跑程序</strong><span>打开命令行 → <span class="tw">cd "E:\coding-zhou\Python\摄像头测试\作业拍摄支架"</span> → <span class="tw">pip install opencv-python numpy</span> → <span class="tw">python 拍照助手.py</span> → 按空格拍照</span></li>
+</ol>
+
+<div class="note blue">
+  <strong>装支架的关键技巧</strong>
+  <b>灯、镜头、作业纸三点在一条线上</b>——灯在最靠前，镜头在中间，纸在最后。
+  这样光"顺着"镜头方向打，纸面的阴影会落在镜头自己的死角里，画面均匀、没有斜向硬阴影。
+  如果灯和镜头分列左右两边，纸面上会有一道明显斜影，铅笔字会变成灰色影子看不清。
+</div>
+
+<h2>📁 文件位置</h2>
+<table>
+  <thead><tr><th style="width:32%">文件</th><th>用途</th></tr></thead>
+  <tbody>
+    <tr><td><code>拍照助手.py</code></td><td>拍照程序，291 行，已通过语法检查</td></tr>
+    <tr><td><code>操作手册.md</code></td><td>零基础组装 + 上手 + 排障手册</td></tr>
+    <tr><td><code>采购清单.html</code></td><td>本次最终清单（即本文件）</td></tr>
+    <tr><td><code>README.md</code></td><td>项目总览</td></tr>
+  </tbody>
+</table>
+<p style="font-size:14px;color:var(--sub)">全部位于：<code>E:\coding-zhou\Python\摄像头测试\作业拍摄支架\</code></p>
+
+<h2>🔧 程序已具备的功能</h2>
+<ul class="plain">
+  <li><strong>实时预览</strong>：屏幕上显示摄像头画面，拍前能确认构图</li>
+  <li><strong>空格拍照</strong>：按一下存一张，自动按日期分文件夹</li>
+  <li><strong>自动裁切拉正</strong>：检测作业纸边缘，把歪斜的纸拉正、裁掉多余背景</li>
+  <li><strong>纸面增强</strong>：自动白平衡 + 局部对比度 + 锐化，让铅笔字迹更清晰</li>
+  <li><strong>超分放大</strong>：2倍放大 + 边缘锐化补偿</li>
+  <li><strong>批量连拍</strong>：按 <code>B</code> 连拍 15 张，拍整套作业用</li>
+  <li><strong>定时拍摄</strong>：按 <code>T</code> 等 5 秒自动拍，等墨水干</li>
+  <li><strong>拍照反馈</strong>：拍摄瞬间右下角显示绿色 OK 圆标，确认存上了</li>
+</ul>
+<div class="note teal">
+  <strong>关于 USB 快门按钮</strong>
+  程序已预留支持——它是一个内置固件的 USB 设备，电脑识别为"键盘"，按一下= 发一个空格字符。
+  <b>无需接线，插上即用，程序零改动。</b>以后想盲拍时，买一个 10～20 元的
+  <span class="tw">USB 模拟快门按钮</span> 直接插上就行。
+</div>
+
+<footer>
+  2026-10-17 · 商品价格与库存以下单页为准 · 本清单已整合调研结论与你实际选定的商品
+</footer>
+
+</div>
+</body>
+</html>

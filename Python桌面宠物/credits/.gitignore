@@ -1,0 +1,7 @@
+# 运行时产物，不进版本库
+tunnel.pid
+tunnel.log
+credits_state.json
+collect.log
+*.pyc
+__pycache__/

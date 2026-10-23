@@ -5147,13 +5147,7 @@ body.preview-active .app-preview { display: flex; }
         </span>
         <span class="sidebar-item-label">API 密钥</span>
       </a>
-      <a class="sidebar-item" href="/tools/console" id="navConsole">
-        <span class="sidebar-item-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-        </span>
-        <span class="sidebar-item-label">控制台</span>
-      </a>
-      <a class="sidebar-item" href="/tools/feedback" id="navFeedback">
+      <a class="sidebar-item" href="/feedback" id="navFeedback">
         <span class="sidebar-item-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </span>
@@ -5958,12 +5952,15 @@ history 端点也顺手补上 `disabled` 字段和 `url`，让前端一次拿到
     <div class="resources-page" id="resourcesPage" style="display:none">
       <header class="main-head">
         <h1>资源下载</h1>
-        <div class="main-head-right">
-          <div class="resources-stats" id="resourcesStats"></div>
-        </div>
       </header>
-      <div class="main-sub">精选 Python 学习资源、项目模板、开发工具和文档合集</div>
-      <div class="cards-grid" id="resourcesGrid"></div>
+      <div class="main-sub">Windows 平台安装包与八年级上册教材，点击即可直接下载</div>
+      <div class="textbook-section">
+        <div class="textbook-section-head">
+          <h2>🪟 Windows 专区</h2>
+          <span class="textbook-section-sub" id="resourcesStats"></span>
+        </div>
+        <div class="cards-grid" id="resourcesWindowsGrid"></div>
+      </div>
       <div class="textbook-section">
         <div class="textbook-section-head">
           <h2>📚 八年级上册教材</h2>
@@ -6332,6 +6329,34 @@ history 端点也顺手补上 `disabled` 字段和 `url`，让前端一次拿到
     <div class="apikey-modal-actions">
       <button class="btn" onclick="apikeyCloseCreate()">关闭</button>
       <button class="btn btn-primary" id="apikeyCreateConfirmBtn" onclick="apikeyConfirmCreate()">创建密钥</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 管理员：添加用户弹窗 ========== -->
+<div class="apikey-modal-overlay" id="adminAddUserModal" onclick="if(event.target===this)adminCloseAddUser()">
+  <div class="apikey-modal">
+    <h2>添加用户</h2>
+    <p class="modal-desc">创建一个新的登录账号，角色可选普通用户或管理员。</p>
+    <div class="apikey-form-group">
+      <label>用户名</label>
+      <input type="text" id="adminNewUsername" placeholder="3-20 位字母、数字或下划线" autocomplete="off">
+    </div>
+    <div class="apikey-form-group">
+      <label>密码</label>
+      <input type="text" id="adminNewPassword" placeholder="至少 6 位" autocomplete="off">
+    </div>
+    <div class="apikey-form-group">
+      <label>角色</label>
+      <select id="adminNewRole">
+        <option value="user">普通用户</option>
+        <option value="admin">管理员</option>
+      </select>
+    </div>
+    <div id="adminAddUserError" style="display:none;color:#ef4444;font-size:13px;margin-top:4px"></div>
+    <div class="apikey-modal-actions">
+      <button class="btn" onclick="adminCloseAddUser()">取消</button>
+      <button class="btn btn-primary" id="adminAddUserConfirmBtn" onclick="adminConfirmAddUser()">创建用户</button>
     </div>
   </div>
 </div>
@@ -8127,10 +8152,8 @@ async function downloadProject() {
   try {
     toast('正在打包下载...');
     const path = encodeURIComponent(state.currentProject.path);
-    // 使用 fetch 而非 api() 以便正确处理二进制响应 (使用 /export 绕过 Cloudflare 对 /download 的拦截)
-    const resp = await fetch(`/api/files/export?path=${path}`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-    });
+    // 使用 fetch 而非 api() 以便正确处理二进制响应（/api/files/export 由 Worker 代理到 ECS 打包下载）
+    const resp = await fetch(`/api/files/export?path=${path}`);
     if (!resp.ok) {
       let errMsg = `HTTP ${resp.status}`;
       try {
@@ -9639,64 +9662,8 @@ function renderDashboard(data) {
     : '<span class="admin-badge off"><span class="dot"></span>未设置</span>';
   adminDashboardContent.innerHTML = `
     <div class="admin-section">
-      <div class="admin-section-title">服务器状态</div>
+      <div class="admin-section-title">系统状态</div>
       <div class="admin-cards">
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <div class="admin-card-icon blue">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </div>
-            <div class="admin-card-title">运行时间</div>
-          </div>
-          <div class="admin-card-value">${escape(data.server.uptime)}</div>
-          <div class="admin-card-desc">累计 ${data.server.uptime_seconds} 秒</div>
-        </div>
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <div class="admin-card-icon purple">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-            </div>
-            <div class="admin-card-title">文件总数</div>
-          </div>
-          <div class="admin-card-value">${data.server.total_files.toLocaleString()}</div>
-          <div class="admin-card-desc">${escape(data.server.base_dir)}</div>
-        </div>
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <div class="admin-card-icon yellow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            </div>
-            <div class="admin-card-title">服务端口</div>
-          </div>
-          <div class="admin-card-value">${data.server.port}</div>
-          <div class="admin-card-desc">HTTPS / 443</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">登录认证</div>
-      <div class="admin-cards">
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <div class="admin-card-icon green">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            </div>
-            <div class="admin-card-title">活跃会话</div>
-          </div>
-          <div class="admin-card-value">${escape(String(data.auth.active_sessions))}</div>
-          <div class="admin-card-desc">Worker 无状态，不保留会话</div>
-        </div>
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <div class="admin-card-icon purple">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-            </div>
-            <div class="admin-card-title">管理员会话</div>
-          </div>
-          <div class="admin-card-value">${escape(String(data.auth.admin_sessions))}</div>
-          <div class="admin-card-desc">基于 JWT Token 认证</div>
-        </div>
         <div class="admin-card">
           <div class="admin-card-header">
             <div class="admin-card-icon ${data.auth.password_set ? 'green' : 'red'}">
@@ -9715,7 +9682,7 @@ function renderDashboard(data) {
             <div class="admin-card-title">管理员密码</div>
           </div>
           <div style="margin-top:4px">${authBadge(data.auth.admin_password_set)}</div>
-          <div class="admin-card-desc" style="margin-top:8px">CODE_EXPLORER_ADMINISTRATOR</div>
+          <div class="admin-card-desc" style="margin-top:8px">${data.auth.admin_password_set ? '已配置（CODE_EXPLORER_ADMINISTRATOR）' : '未配置，/api/admin/login 暂不可用'}</div>
         </div>
       </div>
     </div>
@@ -9760,7 +9727,10 @@ function renderDashboard(data) {
     </div>
 
     <div class="admin-section">
-      <div class="admin-section-title">用户管理</div>
+      <div class="admin-section-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>用户管理</span>
+        <button class="admin-clear-cache-btn" onclick="adminOpenAddUser()">＋ 添加用户</button>
+      </div>
       <div id="adminUserList" style="background:var(--bg-secondary,#2a2a3e);border-radius:8px;overflow:hidden">
         <div style="padding:16px;text-align:center;color:var(--text-secondary)">加载中...</div>
       </div>
@@ -9798,17 +9768,23 @@ async function loadAdminUsers() {
     }
     const escape = (s) => { const el=document.createElement('div'); el.textContent=s; return el.innerHTML; };
     container.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:var(--bg-primary,#1e1e2e)"><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">ID</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">用户名</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">角色</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">注册时间</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">最后登录</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-secondary);border-bottom:1px solid var(--border-color,#333)">操作</th></tr></thead><tbody>' +
-      d.users.map(u => '<tr style="border-bottom:1px solid var(--border-color,#333)"><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + u.id + '</td><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + escape(u.username) + '</td><td style="padding:10px 12px;font-size:13px"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:' + (u.role === 'admin' ? 'var(--accent,#6366f1)' : 'var(--bg-tertiary,#3a3a4e)') + ';color:#fff">' + (u.role === 'admin' ? '管理员' : '用户') + '</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.created_at ? new Date(u.created_at * 1000).toLocaleString('zh-CN') : '-') + '</td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.last_login ? new Date(u.last_login * 1000).toLocaleString('zh-CN') : '从未登录') + '</td><td style="padding:10px 12px">' +
-        (u.role !== 'admin' ? '<button onclick="deleteUser(' + u.id + ',\'' + escape(u.username) + '\')" style="padding:4px 10px;border:none;border-radius:4px;background:#ef4444;color:#fff;font-size:11px;cursor:pointer">删除</button>' : '<span style="font-size:11px;color:var(--text-tertiary)">-</span>') +
-      '</td></tr>').join('') +
+      d.users.map(u => {
+        const isSelf = state.currentUser && state.currentUser.username === u.username;
+        const locked = (u.username === 'codingzhou') || isSelf;
+        const tip = u.username === 'codingzhou' ? '超级管理员' : '当前账号';
+        const action = locked
+          ? '<span style="font-size:11px;color:var(--text-tertiary)">' + tip + '</span>'
+          : '<button onclick="deleteUser(\'' + escape(u.username) + '\')" style="padding:4px 10px;border:none;border-radius:4px;background:#ef4444;color:#fff;font-size:11px;cursor:pointer">删除</button>';
+        return '<tr style="border-bottom:1px solid var(--border-color,#333)"><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + u.id + '</td><td style="padding:10px 12px;font-size:13px;color:var(--text-primary)">' + escape(u.username) + '</td><td style="padding:10px 12px;font-size:13px"><span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:' + (u.role === 'admin' ? 'var(--accent,#6366f1)' : 'var(--bg-tertiary,#3a3a4e)') + ';color:#fff">' + (u.role === 'admin' ? '管理员' : '用户') + '</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.created_at ? new Date(u.created_at * 1000).toLocaleString('zh-CN') : '-') + '</td><td style="padding:10px 12px;font-size:12px;color:var(--text-secondary)">' + (u.last_login ? new Date(u.last_login * 1000).toLocaleString('zh-CN') : '从未登录') + '</td><td style="padding:10px 12px">' + action + '</td></tr>';
+      }).join('') +
       '</tbody></table>';
   } catch(e) {}
 }
 
-async function deleteUser(userId, username) {
-  if (!confirm('确定要删除用户 "' + username + '" 吗？\n此操作不可恢复，该用户的所有数据将被清除。')) return;
+async function deleteUser(username) {
+  if (!confirm('确定要删除用户 "' + username + '" 吗？\n此操作不可恢复。')) return;
   try {
-    const r = await fetch('/api/admin/users/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({user_id: userId}) });
+    const r = await fetch('/api/admin/users/delete', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username: username}) });
     const d = await r.json();
     if (r.ok) {
       toast('用户已删除');
@@ -9817,6 +9793,45 @@ async function deleteUser(userId, username) {
       toast(d.error || '删除失败');
     }
   } catch(e) { toast('网络错误'); }
+}
+
+function adminOpenAddUser() {
+  const m = document.getElementById('adminAddUserModal');
+  const err = document.getElementById('adminAddUserError');
+  document.getElementById('adminNewUsername').value = '';
+  document.getElementById('adminNewPassword').value = '';
+  document.getElementById('adminNewRole').value = 'user';
+  err.style.display = 'none'; err.textContent = '';
+  m.classList.add('show');
+  setTimeout(function() { document.getElementById('adminNewUsername').focus(); }, 50);
+}
+
+function adminCloseAddUser() {
+  document.getElementById('adminAddUserModal').classList.remove('show');
+}
+
+async function adminConfirmAddUser() {
+  const username = document.getElementById('adminNewUsername').value.trim();
+  const password = document.getElementById('adminNewPassword').value;
+  const role = document.getElementById('adminNewRole').value;
+  const err = document.getElementById('adminAddUserError');
+  const btn = document.getElementById('adminAddUserConfirmBtn');
+  err.style.display = 'none'; err.textContent = '';
+  if (!username || !password) { err.textContent = '请填写用户名和密码'; err.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = '创建中...';
+  try {
+    const r = await fetch('/api/admin/users/create', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ username: username, password: password, role: role }) });
+    const d = await r.json();
+    if (r.ok) {
+      adminCloseAddUser();
+      toast('用户 ' + username + ' 已创建');
+      loadAdminUsers();
+    } else {
+      err.textContent = d.error || '创建失败';
+      err.style.display = 'block';
+    }
+  } catch(e) { err.textContent = '网络错误，请重试'; err.style.display = 'block'; }
+  btn.disabled = false; btn.textContent = '创建用户';
 }
 
 // ===== 事件绑定 =====
@@ -9911,78 +9926,11 @@ if (navAiAsst) navAiAsst.addEventListener('click', openAIAssistant);
 const aiRecommendInput = document.getElementById('aiRecommendInput');
 if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
 
-// ===== 资源下载 =====
-async function loadResources() {
-  const grid = document.getElementById('resourcesGrid');
-  const stats = document.getElementById('resourcesStats');
-  if (!grid) return;
-  grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div><span>加载资源中...</span></div>';
-  try {
-    const r = await fetch('/api/resources/list');
-    const d = await r.json();
-    const resources = d.resources || [];
-    if (stats) stats.textContent = `共 ${resources.length} 个资源`;
-    if (resources.length === 0) {
-      grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--text-secondary)">暂无资源</div>';
-      return;
-    }
-    grid.innerHTML = resources.map(res => `
-      <div class="resource-card accent-${res.accent || 'purple'}">
-        <div class="card-header">
-          <div class="card-icon">${res.icon || '📦'}</div>
-          <div class="card-title">${esc(res.name)}</div>
-        </div>
-        <div class="card-desc">${esc(res.desc || '')}</div>
-        <div class="card-tags">
-          <span class="card-tag format">${esc(res.format || '')}</span>
-          <span class="card-tag size">${esc(res.size || '')}</span>
-          ${(res.tags || []).map(t => `<span class="card-tag">${esc(t)}</span>`).join('')}
-        </div>
-        <div class="card-footer">
-          <div class="card-meta">
-            <span class="card-meta-item">⬇ ${res.downloads || 0} 次下载</span>
-            <span class="card-meta-item">🕐 ${esc(res.updated || '')} 更新</span>
-          </div>
-          <button class="download-btn" onclick="downloadResource('${esc(res.path)}','${esc(res.name)}')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            下载
-          </button>
-        </div>
-      </div>
-    `).join('');
-  } catch (e) {
-    grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--accent-red)">加载失败</div>';
-  }
-}
-
-function downloadResource(path, name) {
-  const url = '/api/resources/download?path=' + encodeURIComponent(path);
-  fetch(url)
-    .then(async resp => {
-      if (!resp.ok) {
-        let msg = '下载失败';
-        try { const d = await resp.json(); msg = d.error || msg; } catch {}
-        alert(msg);
-        return;
-      }
-      const blob = await resp.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = name || path;
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
-    })
-    .catch(() => alert('下载失败，请稍后重试'));
-}
-
 // ===== Windows 专区 =====
-async function loadWindows() {
-  const grid = document.getElementById('windowsGrid');
-  const stats = document.getElementById('windowsStats');
+// gridId/statsId 可指定渲染目标：Windows 专区页用默认值，资源下载页把它并入同一渲染逻辑
+async function loadWindows(gridId, statsId) {
+  const grid = document.getElementById(gridId || 'windowsGrid');
+  const stats = document.getElementById(statsId || 'windowsStats');
   const badge = document.getElementById('windowsCount');
   if (!grid) return;
   grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div><span>加载安装包中...</span></div>';
@@ -10677,7 +10625,7 @@ function switchSidebarView(view) {
     if (aiPage) aiPage.classList.remove('active');
     const resourcesPage = $('#resourcesPage');
     if (resourcesPage) resourcesPage.style.display = 'flex';
-    loadResources();
+    loadWindows('resourcesWindowsGrid', 'resourcesStats');
     loadTextbooks();
   } else if (view === 'articles') {
     // 技术文章页面

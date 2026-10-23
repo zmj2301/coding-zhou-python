@@ -145,14 +145,6 @@ def main():
         copy_file(root_index, PUBLIC_DIR / 'index.html')
 
     print()
-    print('步骤 2.1: 复制控制台 console.html...')
-    console_src = CODE_EXPLORER_DIR / 'console.html'
-    if console_src.exists():
-        copy_file(console_src, PUBLIC_DIR / 'console.html')
-    else:
-        print('  跳过: console.html 不存在')
-
-    print()
     print('步骤 2.3: 复制反馈页 feedback.html...')
     feedback_src = CODE_EXPLORER_DIR / 'feedback.html'
     if feedback_src.exists():

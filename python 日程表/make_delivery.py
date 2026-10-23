@@ -17,7 +17,9 @@ _EXE_CANDIDATES = [
     os.path.join(ROOT, "win7_dist_new", "日程表_Win7.exe"),
     os.path.join(ROOT, "dist", "日程表_Win7.exe"),
 ]
-EXE = next((p for p in _EXE_CANDIDATES if os.path.exists(p)), _EXE_CANDIDATES[0])
+# 取候选中「修改时间最新」的那个，避免误打成目录里的旧构建。
+_existing = [p for p in _EXE_CANDIDATES if os.path.exists(p)]
+EXE = max(_existing, key=os.path.getmtime) if _existing else _EXE_CANDIDATES[0]
 DIAG_EXE_CANDIDATES = [
     os.path.join(ROOT, "diag_dist", "日程表_诊断工具.exe"),
     os.path.join(ROOT, "diag_dist_new", "日程表_诊断工具.exe"),

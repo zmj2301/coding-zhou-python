@@ -823,6 +823,77 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     return clearCookie(resp, 'wg_token');
   }
 
+  // ---- 用户中心 ----
+  // 个人资料：以 JWT 的 sub 为用户名读取 KV 用户记录（前端期望秒级时间戳的 created_at / last_login）
+  if (path === '/api/user/profile' && request.method === 'GET') {
+    const token = getTokenFromRequest(request);
+    if (!token) return errorResponse('请先登录', 401);
+    const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+    if (!payload || !payload.sub) return errorResponse('请先登录', 401);
+    const username = payload.sub as string;
+
+    try {
+      const raw = await env.CODE_EXPLORER_KV.get(`user:${username}`);
+      if (!raw) {
+        // 管理员密码登录的会话在 KV 中没有用户记录，返回最小信息避免个人资料弹窗报错
+        if (payload.is_admin) {
+          return jsonResponse({
+            user: { username, role: 'admin', created_at: 0, last_login: 0, login_count: 0 }
+          });
+        }
+        return errorResponse('用户不存在', 404);
+      }
+      const u = JSON.parse(raw);
+      return jsonResponse({
+        user: {
+          username: u.username || username,
+          role: u.role || 'user',
+          created_at: u.createdAt || u.created_at || 0,
+          last_login: u.last_login || 0,
+          login_count: u.login_count || 0
+        }
+      });
+    } catch (e: any) {
+      return errorResponse('获取用户信息失败: ' + (e.message || '未知错误'), 500);
+    }
+  }
+
+  // 修改密码：校验原密码后写回；put 时必须保留 metadata，否则管理员用户列表会丢失角色/创建时间
+  if (path === '/api/user/change-password' && request.method === 'POST') {
+    const token = getTokenFromRequest(request);
+    if (!token) return errorResponse('请先登录', 401);
+    const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+    if (!payload || !payload.sub) return errorResponse('请先登录', 401);
+    const username = payload.sub as string;
+
+    try {
+      const data: any = await request.json();
+      const oldPassword = (data.old_password || '').toString();
+      const newPassword = (data.new_password || '').toString();
+      if (!oldPassword || !newPassword) return errorResponse('请填写原密码和新密码', 400);
+      if (newPassword.length < 6) return errorResponse('新密码长度至少6位', 400);
+      if (newPassword === oldPassword) return errorResponse('新密码不能与原密码相同', 400);
+
+      const key = `user:${username}`;
+      const raw = await env.CODE_EXPLORER_KV.get(key);
+      if (!raw) return errorResponse('用户不存在', 404);
+      const u = JSON.parse(raw);
+      if (u.passwordHash !== await hashPassword(oldPassword)) return errorResponse('原密码错误', 400);
+
+      u.passwordHash = await hashPassword(newPassword);
+      await env.CODE_EXPLORER_KV.put(key, JSON.stringify(u), {
+        metadata: {
+          username: u.username || username,
+          role: u.role || 'user',
+          createdAt: u.createdAt || 0
+        }
+      });
+      return jsonResponse({ success: true, message: '密码修改成功' });
+    } catch (e: any) {
+      return errorResponse('修改密码失败: ' + (e.message || '未知错误'), 500);
+    }
+  }
+
   if (path === '/api/admin/login' && request.method === 'POST') {
     try {
       const data = await request.json();
@@ -927,6 +998,92 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!id) return errorResponse('缺少反馈 ID', 400);
       await env.CODE_EXPLORER_KV.delete(`feedback:${id}`);
       return jsonResponse({ success: true });
+    } catch {
+      return errorResponse('无效的请求', 400);
+    }
+  }
+
+  // 反馈工单详情：回复存放在工单自身的 replies 数组里，随工单一起删除
+  if (path === '/api/feedback/detail' && request.method === 'GET') {
+    const token = getTokenFromRequest(request);
+    const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+    if (!payload) return errorResponse('请先登录', 401);
+    const id = (url.searchParams.get('id') || '').toString().trim();
+    if (!id) return errorResponse('缺少反馈 ID', 400);
+
+    const raw = await env.CODE_EXPLORER_KV.get(`feedback:${id}`);
+    if (!raw) return errorResponse('反馈不存在', 404);
+    let item: any;
+    try {
+      item = JSON.parse(raw);
+    } catch {
+      return errorResponse('反馈数据异常', 500);
+    }
+    // 管理员可查看全部工单，普通用户只能查看自己提交的
+    const role = await resolveRole(env, payload);
+    if (role !== 'admin' && item.username !== payload.sub) return errorResponse('无权查看该反馈', 403);
+
+    return jsonResponse({
+      ...item,
+      replies: Array.isArray(item.replies) ? item.replies : []
+    });
+  }
+
+  // 更新工单状态（仅管理员）
+  if (path === '/api/feedback/status' && request.method === 'POST') {
+    const isAdmin = await checkAdmin(request, env);
+    if (!isAdmin) return errorResponse('需要管理员权限', 401);
+    try {
+      const data: any = await request.json();
+      const id = (data.id || '').toString().trim();
+      const status = (data.status || '').toString();
+      const allowed = ['new', 'processing', 'resolved', 'closed'];
+      if (!id) return errorResponse('缺少反馈 ID', 400);
+      if (!allowed.includes(status)) return errorResponse('无效的状态值', 400);
+
+      const key = `feedback:${id}`;
+      const raw = await env.CODE_EXPLORER_KV.get(key);
+      if (!raw) return errorResponse('反馈不存在', 404);
+      const item = JSON.parse(raw);
+      item.status = status;
+      await env.CODE_EXPLORER_KV.put(key, JSON.stringify(item));
+      return jsonResponse({ success: true, status });
+    } catch {
+      return errorResponse('无效的请求', 400);
+    }
+  }
+
+  // 管理员回复工单
+  if (path === '/api/feedback/reply' && request.method === 'POST') {
+    const isAdmin = await checkAdmin(request, env);
+    if (!isAdmin) return errorResponse('需要管理员权限', 401);
+    try {
+      const data: any = await request.json();
+      const feedbackId = (data.feedback_id || data.id || '').toString().trim();
+      const content = (data.content || '').toString().trim();
+      if (!feedbackId) return errorResponse('缺少反馈 ID', 400);
+      if (!content) return errorResponse('请输入回复内容', 400);
+
+      const token = getTokenFromRequest(request);
+      const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+      const adminName = (payload && payload.sub) || '管理员';
+
+      const key = `feedback:${feedbackId}`;
+      const raw = await env.CODE_EXPLORER_KV.get(key);
+      if (!raw) return errorResponse('反馈不存在', 404);
+      const item = JSON.parse(raw);
+      const replies = Array.isArray(item.replies) ? item.replies : [];
+      replies.push({
+        username: adminName,
+        content: content.slice(0, 2000),
+        created_at: Math.floor(Date.now() / 1000),
+        is_admin: 1
+      });
+      item.replies = replies;
+      // 首次回复说明已开始处理；已解决/已关闭的工单保持原状态
+      if (item.status === 'new') item.status = 'processing';
+      await env.CODE_EXPLORER_KV.put(key, JSON.stringify(item));
+      return jsonResponse({ success: true, count: replies.length });
     } catch {
       return errorResponse('无效的请求', 400);
     }
@@ -1248,6 +1405,20 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       return new Response(ecsResp.body, { status: 200, headers });
     } catch (e: any) {
       return errorResponse('下载失败: ' + (e.message || String(e)), 500);
+    }
+  }
+
+  // 目录懒加载：ECS 已有 /api/files/subtree 实现，Worker 之前缺失该路由导致前端调用 404
+  if (path === '/api/files/subtree' && request.method === 'GET') {
+    try {
+      const ecsResp = await fetchFromEcs('/api/files/subtree' + (url.search || ''), env, request);
+      if (!ecsResp.ok) return errorResponse('获取目录失败: 上游返回 ' + ecsResp.status, 502);
+      const data = await ecsResp.json();
+      const resp = jsonResponse(data);
+      addCacheHeader(resp.headers, 300);
+      return resp;
+    } catch (e: any) {
+      return errorResponse('获取目录失败: ' + (e.message || String(e)), 500);
     }
   }
 
@@ -2470,7 +2641,6 @@ const ZONE_REWRITES: Array<[RegExp, string]> = [
   [/^\/play\/scratch(?=\/|$)/, '/scratch'],
   [/^\/play\/python(?=\/|$)/, '/python'],
   [/^\/play\/fathers-day(?=\/|$)/, '/fathers-day'],
-  [/^\/tools\/console$/, '/console.html'],
   [/^\/tools\/feedback$/, '/feedback.html'],
   [/^\/run\/local$/, '/run/local.html'],
 ];
@@ -2923,6 +3093,11 @@ export default {
     // 分区路由：本地启动器是外链，直接跳转
     if (path === '/tools/local') {
       return Response.redirect('http://127.0.0.1:8765/', 302);
+    }
+
+    // 旧控制台页面已下线（页面依赖的接口均为历史遗留），统一回到首页
+    if (path === '/console' || path === '/console.html' || path === '/tools/console') {
+      return Response.redirect(ASSET_ORIGIN + '/', 301);
     }
 
     // 分区路由：大区/小区层级路径重写到既有静态路径（不复制内容，旧路径继续可用）

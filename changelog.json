@@ -1,5 +1,19 @@
 [
     {
+        "date": "2026-10-23",
+        "title": "补齐 5 个前端在用但后端缺失的接口，下线旧控制台，修复意见反馈入口",
+        "version": "2.9.7",
+        "changes": [
+            "全站接口巡检：逐一核对前端调用与 Worker 路由后，发现 6 个接口前端一直在用、Worker 却从未注册，请求全部落到「未找到接口」404，相关按钮点了没有任何反应",
+            "个人资料弹窗恢复：Worker 新增 GET /api/user/profile，以会话用户名读取 KV 用户记录，返回用户名、角色、注册时间、最近登录与登录次数",
+            "修改密码恢复：Worker 新增 POST /api/user/change-password，校验原密码（SHA-256）与新密码长度后写回，并保留 KV metadata，避免管理员用户列表丢失角色与创建时间",
+            "意见箱工单恢复：Worker 新增 GET /api/feedback/detail（管理员可看全部、普通用户仅可看自己的工单）、POST /api/feedback/status（状态限定 new/processing/resolved/closed）、POST /api/feedback/reply（回复存入工单内，首次回复自动转为「处理中」，随工单一起删除）",
+            "文件树懒加载恢复：Worker 新增 GET /api/files/subtree 并代理到 ECS 既有实现，展开未预加载的子目录不再返回 404",
+            "下线旧控制台页面 /console：页面依赖的 /api/chat、/api/ai-pool、/api/tags 等均为历史遗留接口（线上全部 404），移除构建时的 console.html 复制步骤与侧栏「控制台」入口，/console、/console.html、/tools/console 统一 301 回首页",
+            "修复侧栏「意见反馈」链接：原 /tools/feedback 落到 SPA 兜底显示首页，改为正确的 /feedback"
+        ]
+    },
+    {
         "date": "2026-10-18",
         "title": "修复 Worker 无法访问 ECS，下载为 ZIP 与实时文件树/预览全部恢复",
         "version": "2.9.6",

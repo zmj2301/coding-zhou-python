@@ -1,0 +1,5 @@
+build-manual/gen/com/workbuddy/xiangtanbus/R.java
+app/src/main/java/com/workbuddy/xiangtanbus/BuildInfo.java
+app/src/main/java/com/workbuddy/xiangtanbus/ChelaileClient.java
+app/src/main/java/com/workbuddy/xiangtanbus/MainActivity.java
+app/src/main/java/com/workbuddy/xiangtanbus/Planner.java
