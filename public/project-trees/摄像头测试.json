@@ -1,0 +1,37 @@
+[
+  {
+    "name": "作业拍摄支架",
+    "type": "directory",
+    "path": "作业拍摄支架",
+    "children": [
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "作业拍摄支架/README.md",
+        "ext": ".md",
+        "lastModified": 1792248340574
+      },
+      {
+        "name": "拍照助手.py",
+        "type": "file",
+        "path": "作业拍摄支架/拍照助手.py",
+        "ext": ".py",
+        "lastModified": 1792248264464
+      },
+      {
+        "name": "操作手册.md",
+        "type": "file",
+        "path": "作业拍摄支架/操作手册.md",
+        "ext": ".md",
+        "lastModified": 1792246617176
+      },
+      {
+        "name": "采购清单.html",
+        "type": "file",
+        "path": "作业拍摄支架/采购清单.html",
+        "ext": ".html",
+        "lastModified": 1792248299347
+      }
+    ]
+  }
+]

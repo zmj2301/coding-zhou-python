@@ -1,0 +1,15 @@
+build-manual/classes/com/workbuddy/xiangtanbus/BuildInfo.class
+build-manual/classes/com/workbuddy/xiangtanbus/ChelaileClient$ApiException.class
+build-manual/classes/com/workbuddy/xiangtanbus/ChelaileClient.class
+build-manual/classes/com/workbuddy/xiangtanbus/MainActivity$1.class
+build-manual/classes/com/workbuddy/xiangtanbus/MainActivity.class
+build-manual/classes/com/workbuddy/xiangtanbus/Planner$Leg.class
+build-manual/classes/com/workbuddy/xiangtanbus/Planner$LineInfo.class
+build-manual/classes/com/workbuddy/xiangtanbus/Planner$LineRoute.class
+build-manual/classes/com/workbuddy/xiangtanbus/Planner$Plan.class
+build-manual/classes/com/workbuddy/xiangtanbus/Planner$Stop.class
+build-manual/classes/com/workbuddy/xiangtanbus/Planner.class
+build-manual/classes/com/workbuddy/xiangtanbus/R$mipmap.class
+build-manual/classes/com/workbuddy/xiangtanbus/R$string.class
+build-manual/classes/com/workbuddy/xiangtanbus/R$style.class
+build-manual/classes/com/workbuddy/xiangtanbus/R.class

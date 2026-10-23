@@ -1,5 +1,52 @@
 [
     {
+        "date": "2026-10-23",
+        "title": "补齐 5 个前端在用但后端缺失的接口，下线旧控制台，修复意见反馈入口",
+        "version": "2.9.7",
+        "changes": [
+            "全站接口巡检：逐一核对前端调用与 Worker 路由后，发现 6 个接口前端一直在用、Worker 却从未注册，请求全部落到「未找到接口」404，相关按钮点了没有任何反应",
+            "个人资料弹窗恢复：Worker 新增 GET /api/user/profile，以会话用户名读取 KV 用户记录，返回用户名、角色、注册时间、最近登录与登录次数",
+            "修改密码恢复：Worker 新增 POST /api/user/change-password，校验原密码（SHA-256）与新密码长度后写回，并保留 KV metadata，避免管理员用户列表丢失角色与创建时间",
+            "意见箱工单恢复：Worker 新增 GET /api/feedback/detail（管理员可看全部、普通用户仅可看自己的工单）、POST /api/feedback/status（状态限定 new/processing/resolved/closed）、POST /api/feedback/reply（回复存入工单内，首次回复自动转为「处理中」，随工单一起删除）",
+            "文件树懒加载恢复：Worker 新增 GET /api/files/subtree 并代理到 ECS 既有实现，展开未预加载的子目录不再返回 404",
+            "下线旧控制台页面 /console：页面依赖的 /api/chat、/api/ai-pool、/api/tags 等均为历史遗留接口（线上全部 404），移除构建时的 console.html 复制步骤与侧栏「控制台」入口，/console、/console.html、/tools/console 统一 301 回首页",
+            "修复侧栏「意见反馈」链接：原 /tools/feedback 落到 SPA 兜底显示首页，改为正确的 /feedback"
+        ]
+    },
+    {
+        "date": "2026-10-18",
+        "title": "修复 Worker 无法访问 ECS，下载为 ZIP 与实时文件树/预览全部恢复",
+        "version": "2.9.6",
+        "changes": [
+            "定位到下载失败的真因：Worker 代理 ECS 使用的 ECS_SERVER_URL 为 http://39.107.96.165.nip.io，而 Cloudflare 会接管 *.nip.io 子请求并返回 520 错误页，裸 IP 则被拒绝（error 1003），导致 Worker → ECS 的调用全部不可达",
+            "此前不易察觉：文件树、文件内容、文件预览等接口都有 GitHub / KV 兜底，ECS 不可达时会静默回退，表面仍返回 200，直到「下载为 ZIP」没有兜底才暴露为 502",
+            "ECS_SERVER_URL 改用 http://39-107-96-165.sslip.io（第三方权威 DNS 直接解析到 ECS 公网 IP，Cloudflare 可正常回源），Worker 与代码内的默认兜底地址同步更新",
+            "修复后：下载整个项目返回有效 ZIP、下载单个文件返回原始字节，且 /api/projects/tree 转为走 ECS 实时扫描（缓存 300 秒），文件内容与预览同样恢复走 ECS"
+        ]
+    },
+    {
+        "date": "2026-10-18",
+        "title": "修复「下载为 ZIP」必失败，资源下载页改为真实内容聚合",
+        "version": "2.9.5",
+        "changes": [
+            "修复编辑器工具栏「下载为 ZIP / 下载整个项目」必然失败：前端调用 /api/files/export，但 Worker 从未注册该路由，请求落到「未找到接口」404；Worker 新增该路由并代理到 ECS 已支持的 /api/files/download（目录自动打包 ZIP、单文件直传），透传 Content-Type / Content-Disposition / Content-Length",
+            "该下载对游客开放（与「查看源代码」口径一致）；前端移除无效的 Authorization: Bearer 请求头（Worker 仅识别 Cookie wg_token）",
+            "资源下载页重做：原 8 张卡片引用的文件在仓库中并不存在（public/resource/ 下只有 resources.json），点击必然提示「资源不存在」；改为真实内容聚合页，收录 Windows 专区安装包与八年级上册教材",
+            "移除失效的资源卡片渲染与下载逻辑（loadResources、downloadResource），Windows 列表渲染支持指定渲染目标以便复用到资源下载页"
+        ]
+    },
+    {
+        "date": "2026-10-17",
+        "title": "精简管理员后台卡片，新增「添加用户」，修复用户删除功能",
+        "version": "2.9.4",
+        "changes": [
+            "精简管理员后台：移除运行时间、文件总数、服务端口、活跃会话、管理员会话 5 张无意义卡片，保留用户密码、管理员密码、点赞总数、评论总数与缓存管理 5 项",
+            "「用户管理」新增「＋ 添加用户」按钮：弹窗内填写用户名、密码与角色（普通用户 / 管理员），由管理员后台直接创建账号",
+            "修复删除用户失效：前端原发送 user_id（数字索引）而后端按 username 查找，改为发送用户名后删除功能恢复",
+            "删除权限调整：仅超级管理员 codingzhou 不可删除，其他用户（含其他管理员）均可删除；当前登录账号不允许删除自己，删除前二次确认"
+        ]
+    },
+    {
         "date": "2026-10-17",
         "title": "管理员角色改为按 KV 实时判定，已登录会话无需重新登录即可看到「管理员后台」",
         "version": "2.9.3",

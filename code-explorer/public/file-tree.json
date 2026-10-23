@@ -2977,6 +2977,29 @@
     ]
   },
   {
+    "name": "bin",
+    "type": "directory",
+    "path": "bin",
+    "themeColor": "hsl(173, 37%, 60%)",
+    "lastModified": 1792297276542,
+    "children": [
+      {
+        "name": "xiangtan-bus-v1.1.0.apk",
+        "type": "file",
+        "path": "bin/xiangtan-bus-v1.1.0.apk",
+        "ext": ".apk",
+        "lastModified": 1792297276498
+      },
+      {
+        "name": "xiangtan-bus-v1.1.0.apk.idsig",
+        "type": "file",
+        "path": "bin/xiangtan-bus-v1.1.0.apk.idsig",
+        "ext": ".idsig",
+        "lastModified": 1792297276543
+      }
+    ]
+  },
+  {
     "name": "codinghou",
     "type": "directory",
     "path": "codinghou",
@@ -37295,414 +37318,6 @@
     ]
   },
   {
-    "name": "python",
-    "type": "directory",
-    "path": "python",
-    "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1790843926097,
-    "children": [
-      {
-        "name": "DLLs",
-        "type": "directory",
-        "path": "python/DLLs",
-        "children": [
-          {
-            "name": "_tkinter.pyd",
-            "type": "file",
-            "path": "python/DLLs/_tkinter.pyd",
-            "ext": ".pyd",
-            "lastModified": 1620014086000
-          }
-        ]
-      },
-      {
-        "name": "Lib",
-        "type": "directory",
-        "path": "python/Lib",
-        "children": [
-          {
-            "name": "idlelib",
-            "type": "directory",
-            "path": "python/Lib/idlelib",
-            "children": [
-              {
-                "name": "Icons",
-                "type": "directory",
-                "path": "python/Lib/idlelib/Icons",
-                "children": [
-                  {
-                    "name": "folder.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/folder.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "idle.ico",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/idle.ico",
-                    "ext": ".ico",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "idle_16.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/idle_16.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "idle_16.png",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/idle_16.png",
-                    "ext": ".png",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "idle_256.png",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/idle_256.png",
-                    "ext": ".png",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "idle_32.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/idle_32.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "idle_32.png",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/idle_32.png",
-                    "ext": ".png",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "idle_48.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/idle_48.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "idle_48.png",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/idle_48.png",
-                    "ext": ".png",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "minusnode.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/minusnode.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "openfolder.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/openfolder.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "plusnode.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/plusnode.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "python.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/python.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  },
-                  {
-                    "name": "tk.gif",
-                    "type": "file",
-                    "path": "python/Lib/idlelib/Icons/tk.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014042000
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "tcl",
-        "type": "directory",
-        "path": "python/tcl",
-        "children": [
-          {
-            "name": "tix8.4.3",
-            "type": "directory",
-            "path": "python/tcl/tix8.4.3",
-            "children": [
-              {
-                "name": "bitmaps",
-                "type": "directory",
-                "path": "python/tcl/tix8.4.3/bitmaps",
-                "children": [
-                  {
-                    "name": "act_fold.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/act_fold.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "file.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/file.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "folder.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/folder.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "info.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/info.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "minus.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/minus.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "minusarm.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/minusarm.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "no_entry.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/no_entry.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "openfold.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/openfold.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "plus.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/plus.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "plusarm.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/plusarm.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "srcfile.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/srcfile.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "textfile.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/textfile.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "warning.gif",
-                    "type": "file",
-                    "path": "python/tcl/tix8.4.3/bitmaps/warning.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  }
-                ]
-              },
-              {
-                "name": "demos",
-                "type": "directory",
-                "path": "python/tcl/tix8.4.3/demos",
-                "children": [
-                  {
-                    "name": "bitmaps",
-                    "type": "directory",
-                    "path": "python/tcl/tix8.4.3/demos/bitmaps",
-                    "children": [
-                      {
-                        "name": "tix.gif",
-                        "type": "file",
-                        "path": "python/tcl/tix8.4.3/demos/bitmaps/tix.gif",
-                        "ext": ".gif",
-                        "lastModified": 1620014100000
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "name": "tk8.6",
-            "type": "directory",
-            "path": "python/tcl/tk8.6",
-            "children": [
-              {
-                "name": "demos",
-                "type": "directory",
-                "path": "python/tcl/tk8.6/demos",
-                "children": [
-                  {
-                    "name": "images",
-                    "type": "directory",
-                    "path": "python/tcl/tk8.6/demos/images",
-                    "children": [
-                      {
-                        "name": "earth.gif",
-                        "type": "file",
-                        "path": "python/tcl/tk8.6/demos/images/earth.gif",
-                        "ext": ".gif",
-                        "lastModified": 1620014100000
-                      },
-                      {
-                        "name": "earthmenu.png",
-                        "type": "file",
-                        "path": "python/tcl/tk8.6/demos/images/earthmenu.png",
-                        "ext": ".png",
-                        "lastModified": 1620014100000
-                      },
-                      {
-                        "name": "earthris.gif",
-                        "type": "file",
-                        "path": "python/tcl/tk8.6/demos/images/earthris.gif",
-                        "ext": ".gif",
-                        "lastModified": 1620014100000
-                      },
-                      {
-                        "name": "ouster.png",
-                        "type": "file",
-                        "path": "python/tcl/tk8.6/demos/images/ouster.png",
-                        "ext": ".png",
-                        "lastModified": 1620014100000
-                      },
-                      {
-                        "name": "tcllogo.gif",
-                        "type": "file",
-                        "path": "python/tcl/tk8.6/demos/images/tcllogo.gif",
-                        "ext": ".gif",
-                        "lastModified": 1620014100000
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "name": "images",
-                "type": "directory",
-                "path": "python/tcl/tk8.6/images",
-                "children": [
-                  {
-                    "name": "logo100.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/logo100.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014102000
-                  },
-                  {
-                    "name": "logo64.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/logo64.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "logoLarge.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/logoLarge.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "logoMed.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/logoMed.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "pwrdLogo100.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/pwrdLogo100.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "pwrdLogo150.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/pwrdLogo150.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "pwrdLogo175.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/pwrdLogo175.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "pwrdLogo200.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/pwrdLogo200.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "pwrdLogo75.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/pwrdLogo75.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  },
-                  {
-                    "name": "tai-ku.gif",
-                    "type": "file",
-                    "path": "python/tcl/tk8.6/images/tai-ku.gif",
-                    "ext": ".gif",
-                    "lastModified": 1620014100000
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
     "name": "python 3D射击",
     "type": "directory",
     "path": "python 3D射击",
@@ -39882,8 +39497,862 @@
     "type": "directory",
     "path": "Python 公交车查询",
     "themeColor": "hsl(173, 37%, 60%)",
-    "lastModified": 1785830339444,
+    "lastModified": 1792299297414,
     "children": [
+      {
+        "name": "_probe",
+        "type": "directory",
+        "path": "Python 公交车查询/_probe",
+        "children": [
+          {
+            "name": "fetch.py",
+            "type": "file",
+            "path": "Python 公交车查询/_probe/fetch.py",
+            "ext": ".py",
+            "lastModified": 1792243650771
+          },
+          {
+            "name": "probe.py",
+            "type": "file",
+            "path": "Python 公交车查询/_probe/probe.py",
+            "ext": ".py",
+            "lastModified": 1792243622497
+          }
+        ]
+      },
+      {
+        "name": "android",
+        "type": "directory",
+        "path": "Python 公交车查询/android",
+        "children": [
+          {
+            "name": "app",
+            "type": "directory",
+            "path": "Python 公交车查询/android/app",
+            "children": [
+              {
+                "name": "src",
+                "type": "directory",
+                "path": "Python 公交车查询/android/app/src",
+                "children": [
+                  {
+                    "name": "main",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/app/src/main",
+                    "children": [
+                      {
+                        "name": "java",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/app/src/main/java",
+                        "children": [
+                          {
+                            "name": "com",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/app/src/main/java/com",
+                            "children": [
+                              {
+                                "name": "workbuddy",
+                                "type": "directory",
+                                "path": "Python 公交车查询/android/app/src/main/java/com/workbuddy",
+                                "children": [
+                                  {
+                                    "name": "xiangtanbus",
+                                    "type": "directory",
+                                    "path": "Python 公交车查询/android/app/src/main/java/com/workbuddy/xiangtanbus",
+                                    "children": [
+                                      {
+                                        "name": "BuildInfo.java",
+                                        "type": "file",
+                                        "path": "Python 公交车查询/android/app/src/main/java/com/workbuddy/xiangtanbus/BuildInfo.java",
+                                        "ext": ".java",
+                                        "lastModified": 1792296431188
+                                      },
+                                      {
+                                        "name": "ChelaileClient.java",
+                                        "type": "file",
+                                        "path": "Python 公交车查询/android/app/src/main/java/com/workbuddy/xiangtanbus/ChelaileClient.java",
+                                        "ext": ".java",
+                                        "lastModified": 1792296207744
+                                      },
+                                      {
+                                        "name": "MainActivity.java",
+                                        "type": "file",
+                                        "path": "Python 公交车查询/android/app/src/main/java/com/workbuddy/xiangtanbus/MainActivity.java",
+                                        "ext": ".java",
+                                        "lastModified": 1792299206250
+                                      },
+                                      {
+                                        "name": "Planner.java",
+                                        "type": "file",
+                                        "path": "Python 公交车查询/android/app/src/main/java/com/workbuddy/xiangtanbus/Planner.java",
+                                        "ext": ".java",
+                                        "lastModified": 1792296817758
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "res",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/app/src/main/res",
+                        "children": [
+                          {
+                            "name": "mipmap-hdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/app/src/main/res/mipmap-hdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792296527176
+                              }
+                            ]
+                          },
+                          {
+                            "name": "mipmap-mdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/app/src/main/res/mipmap-mdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792296527171
+                              }
+                            ]
+                          },
+                          {
+                            "name": "mipmap-xhdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/app/src/main/res/mipmap-xhdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792296527181
+                              }
+                            ]
+                          },
+                          {
+                            "name": "mipmap-xxhdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/app/src/main/res/mipmap-xxhdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792296527184
+                              }
+                            ]
+                          },
+                          {
+                            "name": "mipmap-xxxhdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/app/src/main/res/mipmap-xxxhdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792296527190
+                              }
+                            ]
+                          },
+                          {
+                            "name": "values",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/app/src/main/res/values",
+                            "children": [
+                              {
+                                "name": "strings.xml",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/app/src/main/res/values/strings.xml",
+                                "ext": ".xml",
+                                "lastModified": 1792296437568
+                              },
+                              {
+                                "name": "themes.xml",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/app/src/main/res/values/themes.xml",
+                                "ext": ".xml",
+                                "lastModified": 1792296437568
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "name": "AndroidManifest.xml",
+                        "type": "file",
+                        "path": "Python 公交车查询/android/app/src/main/AndroidManifest.xml",
+                        "ext": ".xml",
+                        "lastModified": 1792296981304
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "build.gradle",
+                "type": "file",
+                "path": "Python 公交车查询/android/app/build.gradle",
+                "ext": ".gradle",
+                "lastModified": 1792296515768
+              }
+            ]
+          },
+          {
+            "name": "bin",
+            "type": "directory",
+            "path": "Python 公交车查询/android/bin",
+            "children": [
+              {
+                "name": "xiangtan-bus-v1.1.0.apk",
+                "type": "file",
+                "path": "Python 公交车查询/android/bin/xiangtan-bus-v1.1.0.apk",
+                "ext": ".apk",
+                "lastModified": 1792299226943
+              }
+            ]
+          },
+          {
+            "name": "build-manual",
+            "type": "directory",
+            "path": "Python 公交车查询/android/build-manual",
+            "children": [
+              {
+                "name": "apk",
+                "type": "directory",
+                "path": "Python 公交车查询/android/build-manual/apk",
+                "children": [
+                  {
+                    "name": "res",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/apk/res",
+                    "children": [
+                      {
+                        "name": "mipmap-hdpi-v4",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-hdpi-v4",
+                        "children": [
+                          {
+                            "name": "ic_launcher.png",
+                            "type": "file",
+                            "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-hdpi-v4/ic_launcher.png",
+                            "ext": ".png",
+                            "lastModified": 315532800000
+                          }
+                        ]
+                      },
+                      {
+                        "name": "mipmap-mdpi-v4",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-mdpi-v4",
+                        "children": [
+                          {
+                            "name": "ic_launcher.png",
+                            "type": "file",
+                            "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-mdpi-v4/ic_launcher.png",
+                            "ext": ".png",
+                            "lastModified": 315532800000
+                          }
+                        ]
+                      },
+                      {
+                        "name": "mipmap-xhdpi-v4",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-xhdpi-v4",
+                        "children": [
+                          {
+                            "name": "ic_launcher.png",
+                            "type": "file",
+                            "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-xhdpi-v4/ic_launcher.png",
+                            "ext": ".png",
+                            "lastModified": 315532800000
+                          }
+                        ]
+                      },
+                      {
+                        "name": "mipmap-xxhdpi-v4",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-xxhdpi-v4",
+                        "children": [
+                          {
+                            "name": "ic_launcher.png",
+                            "type": "file",
+                            "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-xxhdpi-v4/ic_launcher.png",
+                            "ext": ".png",
+                            "lastModified": 315532800000
+                          }
+                        ]
+                      },
+                      {
+                        "name": "mipmap-xxxhdpi-v4",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-xxxhdpi-v4",
+                        "children": [
+                          {
+                            "name": "ic_launcher.png",
+                            "type": "file",
+                            "path": "Python 公交车查询/android/build-manual/apk/res/mipmap-xxxhdpi-v4/ic_launcher.png",
+                            "ext": ".png",
+                            "lastModified": 315532800000
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "AndroidManifest.xml",
+                    "type": "file",
+                    "path": "Python 公交车查询/android/build-manual/apk/AndroidManifest.xml",
+                    "ext": ".xml",
+                    "lastModified": 315532800000
+                  },
+                  {
+                    "name": "classes.dex",
+                    "type": "file",
+                    "path": "Python 公交车查询/android/build-manual/apk/classes.dex",
+                    "ext": ".dex",
+                    "lastModified": 1792297375535
+                  },
+                  {
+                    "name": "resources.arsc",
+                    "type": "file",
+                    "path": "Python 公交车查询/android/build-manual/apk/resources.arsc",
+                    "ext": ".arsc",
+                    "lastModified": 315532800000
+                  }
+                ]
+              },
+              {
+                "name": "classes",
+                "type": "directory",
+                "path": "Python 公交车查询/android/build-manual/classes",
+                "children": [
+                  {
+                    "name": "com",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/classes/com",
+                    "children": [
+                      {
+                        "name": "workbuddy",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy",
+                        "children": [
+                          {
+                            "name": "xiangtanbus",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus",
+                            "children": [
+                              {
+                                "name": "BuildInfo.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/BuildInfo.class",
+                                "ext": ".class",
+                                "lastModified": 1792297366470
+                              },
+                              {
+                                "name": "ChelaileClient$ApiException.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/ChelaileClient$ApiException.class",
+                                "ext": ".class",
+                                "lastModified": 1792297366869
+                              },
+                              {
+                                "name": "ChelaileClient.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/ChelaileClient.class",
+                                "ext": ".class",
+                                "lastModified": 1792297366912
+                              },
+                              {
+                                "name": "MainActivity$1.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/MainActivity$1.class",
+                                "ext": ".class",
+                                "lastModified": 1792297367195
+                              },
+                              {
+                                "name": "MainActivity.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/MainActivity.class",
+                                "ext": ".class",
+                                "lastModified": 1792297367220
+                              },
+                              {
+                                "name": "Planner$Leg.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/Planner$Leg.class",
+                                "ext": ".class",
+                                "lastModified": 1792297367443
+                              },
+                              {
+                                "name": "Planner$LineInfo.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/Planner$LineInfo.class",
+                                "ext": ".class",
+                                "lastModified": 1792297367440
+                              },
+                              {
+                                "name": "Planner$LineRoute.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/Planner$LineRoute.class",
+                                "ext": ".class",
+                                "lastModified": 1792297367449
+                              },
+                              {
+                                "name": "Planner$Plan.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/Planner$Plan.class",
+                                "ext": ".class",
+                                "lastModified": 1792297367447
+                              },
+                              {
+                                "name": "Planner$Stop.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/Planner$Stop.class",
+                                "ext": ".class",
+                                "lastModified": 1792297367437
+                              },
+                              {
+                                "name": "Planner.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/Planner.class",
+                                "ext": ".class",
+                                "lastModified": 1792297367480
+                              },
+                              {
+                                "name": "R$mipmap.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/R$mipmap.class",
+                                "ext": ".class",
+                                "lastModified": 1792297366452
+                              },
+                              {
+                                "name": "R$string.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/R$string.class",
+                                "ext": ".class",
+                                "lastModified": 1792297366455
+                              },
+                              {
+                                "name": "R$style.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/R$style.class",
+                                "ext": ".class",
+                                "lastModified": 1792297366461
+                              },
+                              {
+                                "name": "R.class",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/classes/com/workbuddy/xiangtanbus/R.class",
+                                "ext": ".class",
+                                "lastModified": 1792297366463
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "dex",
+                "type": "directory",
+                "path": "Python 公交车查询/android/build-manual/dex",
+                "children": [
+                  {
+                    "name": "classes.dex",
+                    "type": "file",
+                    "path": "Python 公交车查询/android/build-manual/dex/classes.dex",
+                    "ext": ".dex",
+                    "lastModified": 1792297373451
+                  }
+                ]
+              },
+              {
+                "name": "gen",
+                "type": "directory",
+                "path": "Python 公交车查询/android/build-manual/gen",
+                "children": [
+                  {
+                    "name": "com",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/gen/com",
+                    "children": [
+                      {
+                        "name": "workbuddy",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/build-manual/gen/com/workbuddy",
+                        "children": [
+                          {
+                            "name": "xiangtanbus",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/build-manual/gen/com/workbuddy/xiangtanbus",
+                            "children": [
+                              {
+                                "name": "R.java",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/build-manual/gen/com/workbuddy/xiangtanbus/R.java",
+                                "ext": ".java",
+                                "lastModified": 1792297360790
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "res",
+                "type": "directory",
+                "path": "Python 公交车查询/android/build-manual/res",
+                "children": [
+                  {
+                    "name": "mipmap-hdpi",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/res/mipmap-hdpi",
+                    "children": [
+                      {
+                        "name": "ic_launcher.png",
+                        "type": "file",
+                        "path": "Python 公交车查询/android/build-manual/res/mipmap-hdpi/ic_launcher.png",
+                        "ext": ".png",
+                        "lastModified": 1792297354357
+                      }
+                    ]
+                  },
+                  {
+                    "name": "mipmap-mdpi",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/res/mipmap-mdpi",
+                    "children": [
+                      {
+                        "name": "ic_launcher.png",
+                        "type": "file",
+                        "path": "Python 公交车查询/android/build-manual/res/mipmap-mdpi/ic_launcher.png",
+                        "ext": ".png",
+                        "lastModified": 1792297354363
+                      }
+                    ]
+                  },
+                  {
+                    "name": "mipmap-xhdpi",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/res/mipmap-xhdpi",
+                    "children": [
+                      {
+                        "name": "ic_launcher.png",
+                        "type": "file",
+                        "path": "Python 公交车查询/android/build-manual/res/mipmap-xhdpi/ic_launcher.png",
+                        "ext": ".png",
+                        "lastModified": 1792297354367
+                      }
+                    ]
+                  },
+                  {
+                    "name": "mipmap-xxhdpi",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/res/mipmap-xxhdpi",
+                    "children": [
+                      {
+                        "name": "ic_launcher.png",
+                        "type": "file",
+                        "path": "Python 公交车查询/android/build-manual/res/mipmap-xxhdpi/ic_launcher.png",
+                        "ext": ".png",
+                        "lastModified": 1792297354372
+                      }
+                    ]
+                  },
+                  {
+                    "name": "mipmap-xxxhdpi",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/res/mipmap-xxxhdpi",
+                    "children": [
+                      {
+                        "name": "ic_launcher.png",
+                        "type": "file",
+                        "path": "Python 公交车查询/android/build-manual/res/mipmap-xxxhdpi/ic_launcher.png",
+                        "ext": ".png",
+                        "lastModified": 1792297354376
+                      }
+                    ]
+                  },
+                  {
+                    "name": "values",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/build-manual/res/values",
+                    "children": [
+                      {
+                        "name": "strings.xml",
+                        "type": "file",
+                        "path": "Python 公交车查询/android/build-manual/res/values/strings.xml",
+                        "ext": ".xml",
+                        "lastModified": 1792297354384
+                      },
+                      {
+                        "name": "themes.xml",
+                        "type": "file",
+                        "path": "Python 公交车查询/android/build-manual/res/values/themes.xml",
+                        "ext": ".xml",
+                        "lastModified": 1792297354381
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "aligned.apk",
+                "type": "file",
+                "path": "Python 公交车查询/android/build-manual/aligned.apk",
+                "ext": ".apk",
+                "lastModified": 1792297398422
+              },
+              {
+                "name": "base.apk",
+                "type": "file",
+                "path": "Python 公交车查询/android/build-manual/base.apk",
+                "ext": ".apk",
+                "lastModified": 1792297360791
+              },
+              {
+                "name": "classes.txt",
+                "type": "file",
+                "path": "Python 公交车查询/android/build-manual/classes.txt",
+                "ext": ".txt",
+                "lastModified": 1792297368426
+              },
+              {
+                "name": "res.zip",
+                "type": "file",
+                "path": "Python 公交车查询/android/build-manual/res.zip",
+                "ext": ".zip",
+                "lastModified": 1792297356863
+              },
+              {
+                "name": "sources.txt",
+                "type": "file",
+                "path": "Python 公交车查询/android/build-manual/sources.txt",
+                "ext": ".txt",
+                "lastModified": 1792297362648
+              },
+              {
+                "name": "unsigned.apk",
+                "type": "file",
+                "path": "Python 公交车查询/android/build-manual/unsigned.apk",
+                "ext": ".apk",
+                "lastModified": 1792297394875
+              }
+            ]
+          },
+          {
+            "name": "公交车查询",
+            "type": "directory",
+            "path": "Python 公交车查询/android/公交车查询",
+            "children": [
+              {
+                "name": "android",
+                "type": "directory",
+                "path": "Python 公交车查询/android/公交车查询/android",
+                "children": [
+                  {
+                    "name": "build-manual",
+                    "type": "directory",
+                    "path": "Python 公交车查询/android/公交车查询/android/build-manual",
+                    "children": [
+                      {
+                        "name": "res",
+                        "type": "directory",
+                        "path": "Python 公交车查询/android/公交车查询/android/build-manual/res",
+                        "children": [
+                          {
+                            "name": "mipmap-hdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-hdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-hdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792297693751
+                              }
+                            ]
+                          },
+                          {
+                            "name": "mipmap-mdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-mdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-mdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792297693729
+                              }
+                            ]
+                          },
+                          {
+                            "name": "mipmap-xhdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-xhdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-xhdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792297693734
+                              }
+                            ]
+                          },
+                          {
+                            "name": "mipmap-xxhdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-xxhdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-xxhdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792297693741
+                              }
+                            ]
+                          },
+                          {
+                            "name": "mipmap-xxxhdpi",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-xxxhdpi",
+                            "children": [
+                              {
+                                "name": "ic_launcher.png",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/mipmap-xxxhdpi/ic_launcher.png",
+                                "ext": ".png",
+                                "lastModified": 1792297693737
+                              }
+                            ]
+                          },
+                          {
+                            "name": "values",
+                            "type": "directory",
+                            "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/values",
+                            "children": [
+                              {
+                                "name": "strings.xml",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/values/strings.xml",
+                                "ext": ".xml",
+                                "lastModified": 1792297693748
+                              },
+                              {
+                                "name": "themes.xml",
+                                "type": "file",
+                                "path": "Python 公交车查询/android/公交车查询/android/build-manual/res/values/themes.xml",
+                                "ext": ".xml",
+                                "lastModified": 1792297693744
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "build.gradle",
+            "type": "file",
+            "path": "Python 公交车查询/android/build.gradle",
+            "ext": ".gradle",
+            "lastModified": 1792296509493
+          },
+          {
+            "name": "build_manual.sh",
+            "type": "file",
+            "path": "Python 公交车查询/android/build_manual.sh",
+            "ext": ".sh",
+            "lastModified": 1792298505782
+          },
+          {
+            "name": "debug.keystore",
+            "type": "file",
+            "path": "Python 公交车查询/android/debug.keystore",
+            "ext": ".keystore",
+            "lastModified": 1792296862823
+          },
+          {
+            "name": "gradle.properties",
+            "type": "file",
+            "path": "Python 公交车查询/android/gradle.properties",
+            "ext": ".properties",
+            "lastModified": 1792296523529
+          },
+          {
+            "name": "settings.gradle",
+            "type": "file",
+            "path": "Python 公交车查询/android/settings.gradle",
+            "ext": ".gradle",
+            "lastModified": 1792296509495
+          }
+        ]
+      },
+      {
+        "name": "busapp",
+        "type": "directory",
+        "path": "Python 公交车查询/busapp",
+        "children": [
+          {
+            "name": "__init__.py",
+            "type": "file",
+            "path": "Python 公交车查询/busapp/__init__.py",
+            "ext": ".py",
+            "lastModified": 1792245962835
+          },
+          {
+            "name": "aes.py",
+            "type": "file",
+            "path": "Python 公交车查询/busapp/aes.py",
+            "ext": ".py",
+            "lastModified": 1792245985226
+          },
+          {
+            "name": "chelaile_client.py",
+            "type": "file",
+            "path": "Python 公交车查询/busapp/chelaile_client.py",
+            "ext": ".py",
+            "lastModified": 1792295662663
+          },
+          {
+            "name": "planner.py",
+            "type": "file",
+            "path": "Python 公交车查询/busapp/planner.py",
+            "ext": ".py",
+            "lastModified": 1792305791832
+          }
+        ]
+      },
       {
         "name": "data",
         "type": "directory",
@@ -39899,11 +40368,60 @@
         ]
       },
       {
+        "name": "app_main.py",
+        "type": "file",
+        "path": "Python 公交车查询/app_main.py",
+        "ext": ".py",
+        "lastModified": 1792295756506
+      },
+      {
+        "name": "build_apk.sh",
+        "type": "file",
+        "path": "Python 公交车查询/build_apk.sh",
+        "ext": ".sh",
+        "lastModified": 1792295663152
+      },
+      {
+        "name": "buildozer.spec",
+        "type": "file",
+        "path": "Python 公交车查询/buildozer.spec",
+        "ext": ".spec",
+        "lastModified": 1792295663602
+      },
+      {
         "name": "bus_query.py",
         "type": "file",
         "path": "Python 公交车查询/bus_query.py",
         "ext": ".py",
         "lastModified": 1785830339440
+      },
+      {
+        "name": "cli.py",
+        "type": "file",
+        "path": "Python 公交车查询/cli.py",
+        "ext": ".py",
+        "lastModified": 1792295716078
+      },
+      {
+        "name": "docs_screenshot_mumu.png",
+        "type": "file",
+        "path": "Python 公交车查询/docs_screenshot_mumu.png",
+        "ext": ".png",
+        "lastModified": 1792299297415
+      },
+      {
+        "name": "icon.png",
+        "type": "file",
+        "path": "Python 公交车查询/icon.png",
+        "ext": ".png",
+        "lastModified": 1792247150672
+      },
+      {
+        "name": "IMAGE_PROMPTS.md",
+        "type": "file",
+        "path": "Python 公交车查询/IMAGE_PROMPTS.md",
+        "ext": ".md",
+        "lastModified": 1792246947323
       },
       {
         "name": "main.py",
@@ -39913,11 +40431,25 @@
         "lastModified": 1785830339442
       },
       {
+        "name": "presplash.png",
+        "type": "file",
+        "path": "Python 公交车查询/presplash.png",
+        "ext": ".png",
+        "lastModified": 1792247150676
+      },
+      {
         "name": "README.md",
         "type": "file",
         "path": "Python 公交车查询/README.md",
         "ext": ".md",
         "lastModified": 1785830339439
+      },
+      {
+        "name": "README_APP.md",
+        "type": "file",
+        "path": "Python 公交车查询/README_APP.md",
+        "ext": ".md",
+        "lastModified": 1792295776953
       },
       {
         "name": "requirements.txt",
@@ -44500,6 +45032,20 @@
                     "path": "Python桌面宠物/relax_exe/dist/logs/app_20261017_162157.log",
                     "ext": ".log",
                     "lastModified": 1792226374972
+                  },
+                  {
+                    "name": "app_20261018_114436.log",
+                    "type": "file",
+                    "path": "Python桌面宠物/relax_exe/dist/logs/app_20261018_114436.log",
+                    "ext": ".log",
+                    "lastModified": 1792295637356
+                  },
+                  {
+                    "name": "app_20261023_172240.log",
+                    "type": "file",
+                    "path": "Python桌面宠物/relax_exe/dist/logs/app_20261023_172240.log",
+                    "ext": ".log",
+                    "lastModified": 1792752856454
                   }
                 ]
               },
@@ -44515,7 +45061,7 @@
                 "type": "file",
                 "path": "Python桌面宠物/relax_exe/dist/main_log.log",
                 "ext": ".log",
-                "lastModified": 1792226374972
+                "lastModified": 1792752856454
               },
               {
                 "name": "定时休息.exe",
@@ -65902,6 +66448,50 @@
         "path": "快捷键操作/wechat_paster.py",
         "ext": ".py",
         "lastModified": 1785830344652
+      }
+    ]
+  },
+  {
+    "name": "摄像头测试",
+    "type": "directory",
+    "path": "摄像头测试",
+    "themeColor": "hsl(173, 37%, 60%)",
+    "lastModified": 1792246629413,
+    "children": [
+      {
+        "name": "作业拍摄支架",
+        "type": "directory",
+        "path": "摄像头测试/作业拍摄支架",
+        "children": [
+          {
+            "name": "README.md",
+            "type": "file",
+            "path": "摄像头测试/作业拍摄支架/README.md",
+            "ext": ".md",
+            "lastModified": 1792248340574
+          },
+          {
+            "name": "拍照助手.py",
+            "type": "file",
+            "path": "摄像头测试/作业拍摄支架/拍照助手.py",
+            "ext": ".py",
+            "lastModified": 1792248264464
+          },
+          {
+            "name": "操作手册.md",
+            "type": "file",
+            "path": "摄像头测试/作业拍摄支架/操作手册.md",
+            "ext": ".md",
+            "lastModified": 1792246617176
+          },
+          {
+            "name": "采购清单.html",
+            "type": "file",
+            "path": "摄像头测试/作业拍摄支架/采购清单.html",
+            "ext": ".html",
+            "lastModified": 1792248299347
+          }
+        ]
       }
     ]
   },
