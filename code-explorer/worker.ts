@@ -2791,6 +2791,17 @@ async function handleMdConverter(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const target = new URL(`https://${MD_CONVERTER_HOST}${url.pathname}${url.search}`);
 
+  // 隧道停用期间，md 首页曾被主站通配路由响应并写入边缘缓存（Cache Everything），
+  // 命中后会一直返回主站页面。这里在访问首页时主动删掉这两个缓存键。
+  if (url.pathname === '/' || url.pathname === '/index.html') {
+    try {
+      await caches.default.delete(`https://${MD_CONVERTER_HOST}/`);
+      await caches.default.delete(`https://${MD_CONVERTER_HOST}/index.html`);
+    } catch {
+      // 无缓存操作权限时忽略
+    }
+  }
+
   const headers = new Headers(request.headers);
   headers.set('x-md-proxy-hop', '1');
   headers.delete('host');
