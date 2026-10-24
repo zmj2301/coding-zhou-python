@@ -2789,7 +2789,9 @@ async function handleMdConverter(request: Request): Promise<Response> {
   }
 
   const url = new URL(request.url);
-  const target = new URL(`https://${MD_CONVERTER_HOST}${url.pathname}${url.search}`);
+  // 转换器只有 / 一个页面路由，/index.html 也回源到 /，避免直接 404
+  const proxyPath = url.pathname === '/index.html' ? '/' : url.pathname;
+  const target = new URL(`https://${MD_CONVERTER_HOST}${proxyPath}${url.search}`);
 
   // 隧道停用期间，md 首页曾被主站通配路由响应并写入边缘缓存（Cache Everything），
   // 命中后会一直返回主站页面。这里在访问首页时主动删掉这两个缓存键。
