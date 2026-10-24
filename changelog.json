@@ -1,5 +1,17 @@
 [
     {
+        "date": "2026-10-24",
+        "title": "Markdown 转 Word/PDF 转换器独立上线 md.codingzhou.top",
+        "version": "2.9.8",
+        "changes": [
+            "ECS 上原本就有 Markdown → Word/PDF 转换服务（Flask + gunicorn，监听 127.0.0.1:10000），并由 Cloudflare Tunnel md-converter 暴露为 md.codingzhou.top，但该隧道自 9 月 19 日起已停止，域名实际被主站通配路由接管",
+            "已重新启用 cloudflared-md 隧道并确认 4 条边缘连接在线，请求可正常回源到转换服务",
+            "Worker 新增 md 子域名反向代理：由于本站通配 Worker 路由会先拦截所有 *.codingzhou.top 请求，浏览器无法直达隧道，改为在 Worker 内把 md.codingzhou.top 的请求转发给隧道出口，并带代理循环保护",
+            "转换器页面的 HTML 响应不缓存，避免边缘缓存命中旧内容；PDF/Word 下载与文件上传按流式透传",
+            "现在浏览器直接访问 https://md.codingzhou.top 即可使用独立的 Markdown 转 Word/PDF 工具（含链接抓取与实时预览）"
+        ]
+    },
+    {
         "date": "2026-10-23",
         "title": "补齐 5 个前端在用但后端缺失的接口，下线旧控制台，修复意见反馈入口",
         "version": "2.9.7",

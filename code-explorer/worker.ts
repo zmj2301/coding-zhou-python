@@ -2775,6 +2775,51 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
 }
 
 // ------------------------------------------------------------
+// Markdown → Word/PDF 转换器（md.codingzhou.top）
+// ------------------------------------------------------------
+// ECS 上用 Flask + gunicorn 跑着转换器，Cloudflare Tunnel md-converter 已指向它。
+// 但本站 Worker 的通配路由会先拦截所有 *.codingzhou.top 请求，浏览器无法直达隧道，
+// 因此这里把 md 子域名的请求反向代理给隧道出口（Worker 子请求不受路由拦截）。
+const MD_CONVERTER_HOST = 'md.codingzhou.top';
+
+async function handleMdConverter(request: Request): Promise<Response> {
+  // 代理循环保护：万一子请求再次回到本 Worker，直接返回错误而不是死循环
+  if (request.headers.get('x-md-proxy-hop')) {
+    return errorResponse('转换服务暂不可用（代理循环保护）', 508);
+  }
+
+  const url = new URL(request.url);
+  const target = new URL(`https://${MD_CONVERTER_HOST}${url.pathname}${url.search}`);
+
+  const headers = new Headers(request.headers);
+  headers.set('x-md-proxy-hop', '1');
+  headers.delete('host');
+  headers.delete('cf-connecting-ip');
+  headers.delete('cf-ray');
+
+  const init: RequestInit = { method: request.method, headers, redirect: 'manual' };
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    init.body = request.body;
+  }
+
+  try {
+    const resp = await fetch(target.toString(), init);
+    const out = new Headers(resp.headers);
+    // Workers 会自动解压/重算长度，这些头必须去掉
+    out.delete('content-encoding');
+    out.delete('content-length');
+    out.delete('transfer-encoding');
+    // HTML 不缓存，避免边缘缓存到旧版本
+    if ((out.get('content-type') || '').includes('text/html')) {
+      out.set('Cache-Control', 'no-store');
+    }
+    return new Response(resp.body, { status: resp.status, statusText: resp.statusText, headers: out });
+  } catch (e: any) {
+    return errorResponse('转换服务连接失败: ' + (e.message || String(e)), 502);
+  }
+}
+
+// ------------------------------------------------------------
 // 子域名文件访问（KV 存储）
 // ------------------------------------------------------------
 async function handleFileSubdomain(request: Request, env: Env, hostname: string): Promise<Response> {
@@ -3058,6 +3103,11 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
     const hostname = url.hostname;
+
+    // Markdown → Word/PDF 转换器：md 子域名单独转到 ECS 上的转换服务
+    if (hostname === 'md.codingzhou.top' || hostname === 'md.codingzhou.dpdns.org') {
+      return handleMdConverter(request);
+    }
 
     // 子域名文件访问：xxx.codingzhou.top 从 R2 读取文件
     if (hostname.endsWith('.codingzhou.top') && hostname !== 'codingzhou.top' && hostname !== 'www.codingzhou.top') {
