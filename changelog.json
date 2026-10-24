@@ -8,7 +8,8 @@
             "已重新启用 cloudflared-md 隧道并确认 4 条边缘连接在线，请求可正常回源到转换服务",
             "Worker 新增 md 子域名反向代理：由于本站通配 Worker 路由会先拦截所有 *.codingzhou.top 请求，浏览器无法直达隧道，改为在 Worker 内把 md.codingzhou.top 的请求转发给隧道出口，并带代理循环保护",
             "转换器页面的 HTML 响应不缓存，避免边缘缓存命中旧内容；PDF/Word 下载与文件上传按流式透传",
-            "隧道停用期间 md 首页曾被主站通配路由响应并写入边缘缓存，Worker 在访问首页时主动删除这两个旧缓存键，确保不会再看到主站页面",
+            "定位到首页打不开的真正原因：Cloudflare Assets 的 CDN 快速路径会比 Worker 更早命中，public/index.html 存在时，任何指向本站 Worker 的域名访问 / 或 /index.html 都会被直接返回主站首页，md 子域名的反向代理逻辑根本没机会执行（响应无代理标记、CF-Cache-Status 为 HIT）",
+            "在 wrangler.toml 的 run_worker_first 中追加 / 与 /index.html，强制这两条路径先进入 Worker，再按 hostname 分流：md 子域名走转换服务，主域名仍返回首页",
             "现在浏览器直接访问 https://md.codingzhou.top 即可使用独立的 Markdown 转 Word/PDF 工具（含链接抓取与实时预览）"
         ]
     },
