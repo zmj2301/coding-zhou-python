@@ -1863,7 +1863,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         const data = await resp.json() as any;
         const payload = { zone: data.zone || 'Windows 专区', updated: data.updated || '', files: data.files || [] };
         try {
-          await env.CODE_EXPLORER_KV.put(CACHE_KEY, JSON.stringify(payload), { expirationTtl: 1800 });
+          // 5 分钟：兼顾首屏速度与「上传新版本后尽快可见」的新鲜度
+          await env.CODE_EXPLORER_KV.put(CACHE_KEY, JSON.stringify(payload), { expirationTtl: 300 });
         } catch {}
         const result = jsonResponse(payload);
         addCacheHeader(result.headers, 300);

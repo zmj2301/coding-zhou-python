@@ -9324,6 +9324,9 @@ async function init() {
       }
     } catch(_) {}
 
+    // 启动即预取 Windows 清单，侧栏徽标不用等用户点进专区才更新
+    prefetchWindowsBadge();
+
     // 等待真实点赞/评论数加载完成，确保不会先显示 0 再更新
     try {
       await loadAllLikeCounts();
@@ -9967,6 +9970,45 @@ const aiRecommendInput = document.getElementById('aiRecommendInput');
 if (aiRecommendInput) aiRecommendInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchAIRecommend(); });
 
 // ===== Windows 专区 =====
+// 安装包清单只请求一次并缓存 60 秒：启动时预取用于侧栏徽标，进入页面时直接渲染
+let _windowsData = null;
+let _windowsFetchedAt = 0;
+let _windowsInflight = null;
+
+async function fetchWindowsData(force) {
+  const now = Date.now();
+  if (!force && _windowsData && now - _windowsFetchedAt < 60000) return _windowsData;
+  if (_windowsInflight) return _windowsInflight;
+  _windowsInflight = (async () => {
+    try {
+      const r = await fetch('/api/windows/list', { cache: force ? 'no-store' : 'default' });
+      const d = await r.json();
+      _windowsData = d;
+      _windowsFetchedAt = Date.now();
+      return d;
+    } finally {
+      _windowsInflight = null;
+    }
+  })();
+  return _windowsInflight;
+}
+
+// 徽标统计的是「应用」数量，不是安装包版本数量
+function windowsAppCount(files) {
+  const apps = {};
+  (files || []).forEach(f => { apps[f.name || '未命名'] = 1; });
+  return Object.keys(apps).length;
+}
+
+async function prefetchWindowsBadge() {
+  const badge = document.getElementById('windowsCount');
+  if (!badge) return;
+  try {
+    const d = await fetchWindowsData();
+    badge.textContent = String(windowsAppCount(d.files));
+  } catch (_) {}
+}
+
 // gridId/statsId 可指定渲染目标：Windows 专区页用默认值，资源下载页把它并入同一渲染逻辑
 async function loadWindows(gridId, statsId) {
   const grid = document.getElementById(gridId || 'windowsGrid');
@@ -9975,10 +10017,9 @@ async function loadWindows(gridId, statsId) {
   if (!grid) return;
   grid.innerHTML = '<div class="home-loading" style="grid-column:1/-1;padding:60px"><div class="spinner"></div><span>加载安装包中...</span></div>';
   try {
-    const r = await fetch('/api/windows/list');
-    const d = await r.json();
+    const d = await fetchWindowsData();
     const files = d.files || [];
-    if (badge) badge.textContent = String(files.length);
+    if (badge) badge.textContent = String(windowsAppCount(files));
     if (files.length === 0) {
       grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--text-secondary)">暂无安装包</div>';
       return;
