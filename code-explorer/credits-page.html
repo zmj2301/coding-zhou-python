@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>积分预测规划 · Code Explorer</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#fff; --ink:#1c2430; --ink2:#5b6675; --ink3:#8b95a6;
+  --line:#e6e9ef; --accent:#2f6fed; --ok:#0f9d76; --warn:#e8a33d; --bad:#c0392b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:14px;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px}
+h1{font-size:22px;font-weight:600;margin:0 0 6px}
+.sub{color:var(--ink3);font-size:13px;margin-bottom:22px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card .k{color:var(--ink3);font-size:12px}
+.card .v{font-size:22px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+.card .v small{font-size:12px;font-weight:400;color:var(--ink3);margin-left:2px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:18px 20px;margin-bottom:16px}
+.sechd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.sechd h2{font-size:16px;font-weight:600;margin:0}
+.badge{font-size:12px;color:var(--ink2);background:#f2f4f7;border-radius:6px;padding:2px 8px}
+.badge.err{background:#fdecec;color:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#fafbfc;border-radius:9px;padding:9px 11px}
+.stat .k{color:var(--ink3);font-size:11px}
+.stat .v{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:#eef1f5;border-radius:5px;overflow:hidden;margin:2px 0 14px}
+.bar i{display:block;height:100%;border-radius:5px}
+details{margin-top:6px}
+summary{cursor:pointer;color:var(--accent);font-size:13px;outline:none}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--ink3);font-weight:500;font-size:12px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.today td{background:#eef4ff;font-weight:600}
+tr.exp td{color:var(--bad)}
+.dim{color:var(--ink2)}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start}
+.evlist{margin:0;padding-left:0;list-style:none}
+.evlist li{padding:5px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.evlist li:last-child{border-bottom:0}
+.amt{font-weight:600;font-variant-numeric:tabular-nums}
+.warns{margin-top:12px;padding:11px 13px;background:#fdf7ec;border-radius:9px;
+  border-left:3px solid var(--warn);font-size:13px}
+.warns ul{margin:0;padding-left:18px}
+.warns li{margin:3px 0}
+.state{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:36px 24px;text-align:center;color:var(--ink2)}
+.state b{display:block;font-size:16px;color:var(--ink);margin-bottom:8px}
+.state a{color:var(--accent);text-decoration:none}
+.foot{color:var(--ink3);font-size:12px;margin-top:24px;line-height:1.9}
+@media(max-width:760px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .two{grid-template-columns:1fr}
+  .wrap{padding:20px 14px 50px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>积分预测规划</h1>
+  <div class="sub" id="sub">加载中…</div>
+  <div id="app"></div>
+  <div class="foot" id="foot" hidden>
+    口径说明：每日额度按「到期先后 + 剩余加权可用日」逐日动态计算，取摊平速率与到期压力中的较大者，
+    保证期末正好剩预留缓冲。可用日按作息加权：周五回家 0.5、周六 1.0、周日返校 0.5，上学日 0；
+    法定假期和校历假期（如春秋假）按「前一天 / 后一天上不上学」判定出发日与返程日。
+  </div>
+</div>
+
+<script>
+(function () {
+  var app = document.getElementById('app');
+  var sub = document.getElementById('sub');
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = text;
+    return e;
+  }
+  function n(v, d) {
+    var x = Number(v);
+    if (!isFinite(x)) return '—';
+    return x.toLocaleString('zh-CN', { maximumFractionDigits: d === undefined ? 0 : d });
+  }
+  function mmdd(s) { return String(s || '').slice(5); }
+
+  function showState(title, msg, linkHref, linkText) {
+    app.innerHTML = '';
+    var box = el('div', 'state');
+    box.appendChild(el('b', null, title));
+    if (msg) box.appendChild(el('div', null, msg));
+    if (linkHref) {
+      var p = el('div');
+      p.style.marginTop = '14px';
+      var a = el('a', null, linkText || linkHref);
+      a.href = linkHref;
+      p.appendChild(a);
+      box.appendChild(p);
+    }
+    app.appendChild(box);
+  }
+
+  function providerCard(p) {
+    var sec = el('div', 'sec');
+    var hd = el('div', 'sechd');
+    var dot = el('span', 'dot');
+    dot.style.background = p.color || '#888';
+    hd.appendChild(dot);
+    hd.appendChild(el('h2', null, p.title));
+    var b1 = el('span', 'badge' + (p.stale ? ' err' : ''), p.source || '');
+    if (p.source) hd.appendChild(b1);
+    hd.appendChild(el('span', 'badge', p.has_expiry ? '按批到期' : '周期估算'));
+    sec.appendChild(hd);
+
+    var stats = el('div', 'stats');
+    [['当前余额', n(p.remaining), p.color],
+     ['缓冲预留', n(p.buffer), null],
+     ['可安排消耗', n(p.usable), null],
+     [p.has_expiry ? '最晚用完' : '周期末（估算）', p.finish_by || '—', null],
+     ['加权可用日', n(p.weighted_days, 1), null]
+    ].forEach(function (it) {
+      var s = el('div', 'stat');
+      s.appendChild(el('div', 'k', it[0]));
+      var v = el('div', 'v', it[1]);
+      if (it[2]) v.style.color = it[2];
+      s.appendChild(v);
+      stats.appendChild(s);
+    });
+    sec.appendChild(stats);
+
+    var stats2 = el('div', 'stats');
+    [['建议日均', n(p.spread_rate), null],
+     ['今日建议', n(p.today_quota), 'var(--accent)'],
+     ['预计浪费', n(p.waste), (p.waste > 0 ? 'var(--bad)' : 'var(--ok)')]
+    ].forEach(function (it) {
+      var s = el('div', 'stat');
+      s.appendChild(el('div', 'k', it[0]));
+      var v = el('div', 'v', it[1]);
+      if (it[2]) v.style.color = it[2];
+      s.appendChild(v);
+      stats2.appendChild(s);
+    });
+    sec.appendChild(stats2);
+
+    if (p.pace !== null && p.pace !== undefined) {
+      var pct = p.usable > 0 ? Math.max(0, Math.min(100, (1 - (p.pace_total || 0) / p.usable) * 100)) : 0;
+      var warn = pct >= 10;
+      var note = el('div', null,
+        '按最近节奏 ' + n(p.pace) + ' / 可用日：周期内大约只能烧掉 ' + n(p.pace_total) +
+        '，预计有 ' + n(p.pace_waste) + '（' + n(pct) + '%）会过期' +
+        (warn ? ' —— 要清零得把日均拉到 ' + n(p.spread_rate) : ''));
+      note.style.cssText = 'font-size:13px;padding:10px 13px;border-radius:9px;margin-bottom:12px;' +
+        'border-left:3px solid ' + (warn ? 'var(--warn)' : 'var(--accent)') + ';' +
+        'background:' + (warn ? '#fdeee0' : '#eef4ff');
+      sec.appendChild(note);
+    }
+
+    var usedPct = (p.remaining + p.usable) > 0 ? (p.usable / (p.remaining + p.usable)) * 100 : 0;
+    var bar = el('div', 'bar');
+    var fill = el('i');
+    fill.style.width = Math.max(2, Math.min(100, usedPct)).toFixed(1) + '%';
+    fill.style.background = p.color || '#888';
+    bar.appendChild(fill);
+    sec.appendChild(bar);
+
+    var two = el('div', 'two');
+    var left = el('div');
+    var right = el('div');
+
+    if (p.rows && p.rows.length) {
+      var det = el('details');
+      var sm = el('summary', null, '逐日规划（' + p.rows.length + ' 天）');
+      det.appendChild(sm);
+      var tb = el('table');
+      var thead = el('thead');
+      var hr = el('tr');
+      ['日期', '类型', '建议额度', '日终余额', '到期'].forEach(function (t, i) {
+        hr.appendChild(el('th', i >= 2 ? 'num' : null, t));
+      });
+      thead.appendChild(hr);
+      tb.appendChild(thead);
+      var tbody = el('tbody');
+      p.rows.forEach(function (r) {
+        var tr = el('tr');
+        if (mmdd(r.d) === mmdd(new Date().toISOString().slice(0, 10))) tr.className = 'today';
+        if (r.x > 0) tr.className = (tr.className + ' exp').trim();
+        tr.appendChild(el('td', null, mmdd(r.d)));
+        var td2 = el('td', 'dim', r.t || '');
+        tr.appendChild(td2);
+        tr.appendChild(el('td', 'num', n(r.q, 1)));
+        tr.appendChild(el('td', 'num', n(r.b)));
+        tr.appendChild(el('td', 'num', r.x > 0 ? n(r.x) : ''));
+        tbody.appendChild(tr);
+      });
+      tb.appendChild(tbody);
+      det.appendChild(tb);
+      left.appendChild(det);
+    } else {
+      left.appendChild(el('div', 'dim', '没有可用日'));
+    }
+
+    if (p.expiry && p.expiry.length) {
+      right.appendChild(el('div', 'dim', '到期节点'));
+      var ul = el('ul', 'evlist');
+      p.expiry.forEach(function (e) {
+        var li = el('li');
+        var b = el('b', null, mmdd(e.d) + ' 前用完');
+        li.appendChild(b);
+        li.appendChild(document.createTextNode(' · '));
+        li.appendChild(el('span', 'amt', n(e.amount) + ' 分'));
+        if (e.raw && e.raw !== e.d) {
+          var sp = el('span', 'dim', '（真实到期 ' + mmdd(e.raw) + '，当天用不了）');
+          sp.style.fontSize = '12px';
+          li.appendChild(sp);
+        }
+        ul.appendChild(li);
+      });
+      right.appendChild(ul);
+    }
+    two.appendChild(left);
+    two.appendChild(right);
+    sec.appendChild(two);
+
+    if (p.warnings && p.warnings.length) {
+      var w = el('div', 'warns');
+      var wu = el('ul');
+      p.warnings.forEach(function (t) {
+        wu.appendChild(el('li', null, t));
+      });
+      w.appendChild(wu);
+      sec.appendChild(w);
+    }
+    return sec;
+  }
+
+  function render(d) {
+    var t = d.totals || {};
+    document.getElementById('foot').hidden = false;
+    sub.textContent = '生成时间 ' + (d.generated_at || '—') + ' · 每平台预留 ' +
+      (d.buffer || 0) + ' 分缓冲';
+
+    app.innerHTML = '';
+    var cards = el('div', 'cards');
+    [['三家余额合计', n(t.remaining), '分', null],
+     ['可安排消耗', n(t.usable), '分', null],
+     ['预计浪费', n(t.waste), '分', (t.waste > 0 ? 'var(--bad)' : 'var(--ok)')],
+     ['缓冲到期作废', n(t.buffer_lost), '分', null]
+    ].forEach(function (it) {
+      var c = el('div', 'card');
+      c.appendChild(el('div', 'k', it[0]));
+      var v = el('div', 'v', it[1]);
+      if (it[3]) v.style.color = it[3];
+      var s = el('small', null, ' ' + it[2]);
+      v.appendChild(s);
+      c.appendChild(v);
+      cards.appendChild(c);
+    });
+    app.appendChild(cards);
+
+    (d.providers || []).forEach(function (p) {
+      app.appendChild(providerCard(p));
+    });
+  }
+
+  fetch('/api/credits', { credentials: 'same-origin', cache: 'no-store' })
+    .then(function (r) {
+      if (r.status === 401) {
+        showState('需要登录', '这个页面包含个人账户数据，登录后才能查看。',
+          '/account/login?redirect=/articles/credit-plan', '去登录 →');
+        sub.textContent = '';
+        throw new Error('unauthorized');
+      }
+      if (r.status === 404) {
+        showState('还没有数据', '计划数据还没上传过。在本地跑一次 plan_report.py 再用 upload_credits.py 推上来即可。');
+        sub.textContent = '';
+        throw new Error('nodata');
+      }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(render)
+    .catch(function (e) {
+      if (e && (e.message === 'unauthorized' || e.message === 'nodata')) return;
+      showState('加载失败', String(e && e.message ? e.message : e));
+      sub.textContent = '';
+    });
+})();
+</script>
+</body>
+</html>

@@ -635,6 +635,22 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // OPTIONS 预检
   if (request.method === 'OPTIONS') return optionsResponse();
 
+  // ---- 积分规划数据（需登录，数据存 KV） ----
+  // 数据由本地 plan_report.py 生成 credit_plan.json，再用 upload_credits.py 推上来。
+  // 放 KV 而不是打进 Worker：更新数据不用重新部署，改完立刻生效。
+  if (path === '/api/credits' && request.method === 'GET') {
+    const authed = await checkAuth(request, env);
+    if (!authed) return errorResponse('请先登录', 401);
+    const raw = await env.CODE_EXPLORER_KV.get('credits:plan', 'text');
+    if (!raw) return errorResponse('暂无数据', 404);
+    return new Response(raw, {
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-store',
+      },
+    });
+  }
+
   // ---- 认证相关（公开） ----
   if (path === '/api/auth-check') {
     const authenticated = await checkAuth(request, env);
@@ -2669,6 +2685,14 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     if (isBrowserRequest(request)) {
       const authenticated = await checkAuth(request, env);
       if (!authenticated) return redirectResponse('/account/login');
+    }
+  }
+
+  // 积分规划页保护：含三家平台真实余额，必须登录才能看
+  if (path === '/articles/credit-plan' || path === '/articles/credit-plan.html') {
+    if (isBrowserRequest(request)) {
+      const authenticated = await checkAuth(request, env);
+      if (!authenticated) return redirectResponse('/account/login?redirect=/articles/credit-plan');
     }
   }
 

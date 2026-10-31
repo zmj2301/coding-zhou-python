@@ -198,8 +198,12 @@ def main():
     try:
         import markdown as md_lib
     except ImportError:
-        md_lib = None
-        print('  ⚠ 未安装 markdown 库，跳过 HTML 生成（仅复制 .md 原文）')
+        # 绝不能静默跳过：public/ 在这一步之前已经被整个清空了，
+        # 跳过 HTML 生成会让 /articles/* 全部 404。
+        # 2026-10-31 踩过：本地换了没装 markdown 的 Python，构建后文章页全丢。
+        print('  ✗ 构建中止: 缺少 markdown 库，无法生成 public/articles/*.html')
+        print('    处理: pip install markdown')
+        sys.exit(1)
 
     art_dir = PUBLIC_DIR / 'articles'
     art_dir.mkdir(parents=True, exist_ok=True)
@@ -227,6 +231,16 @@ def main():
         (art_dir / 'index.html').write_text(
             article_html('技术文章', f'<ul class="art-index">{links}</ul>', 'index'), encoding='utf-8')
         print('  生成: articles/index.html')
+
+    print()
+    print('步骤 2.8.5: 复制积分规划页（public/articles/credit-plan.html）...')
+    # 这份页面不走 ARTICLES 那条 markdown 管线 —— 它是数据驱动的单页应用，
+    # 运行时从 /api/credits 拉 JSON 渲染，塞进文章模板反而会被模板 CSS 压坏。
+    credits_page_src = CODE_EXPLORER_DIR / 'code-explorer' / 'credits-page.html'
+    if credits_page_src.exists():
+        copy_file(credits_page_src, PUBLIC_DIR / 'articles' / 'credit-plan.html')
+    else:
+        print('  跳过: code-explorer/credits-page.html 不存在')
 
     print()
     print('步骤 2.9: 复制 AGENTS.md 到 public/share/agents.md...')
