@@ -2076,6 +2076,16 @@ body.filter-hidden .main-filter-toggle {
 .win-tl-ver { font-size: 13px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .win-tl-size { font-size: 12px; color: var(--text-tertiary); }
 .win-tl-btn { padding: 6px 14px; font-size: 12px; flex-shrink: 0; }
+/* 版本折叠：默认只显示最新 3 个版本，其余折叠 */
+.win-tl-item.is-folded { display: none; }
+.win-card.is-expanded .win-tl-item.is-folded { display: flex; }
+.win-tl-more {
+  display: block; margin: 8px auto 2px; padding: 2px 8px;
+  background: none; border: none; cursor: pointer;
+  font-size: 12.5px; font-family: var(--font-sans);
+  color: var(--accent-blue);
+}
+.win-tl-more:hover { text-decoration: underline; }
 
 /* 教材下载区域 */
 .textbook-section { margin-top: 32px; }
@@ -9951,8 +9961,9 @@ async function loadWindows(gridId, statsId) {
     grid.innerHTML = groupKeys.map(name => {
       const arr = groups[name].slice().sort((a, b) => String(b.version || '').localeCompare(String(a.version || '')));
       const latest = arr.find(f => f.latest) || arr[0];
-      const rows = arr.map(f => `
-        <div class="win-tl-item${f.latest ? ' is-latest' : ''}">
+      const VISIBLE_VERSIONS = 3;
+      const rows = arr.map((f, i) => `
+        <div class="win-tl-item${f.latest ? ' is-latest' : ''}${i >= VISIBLE_VERSIONS ? ' is-folded' : ''}">
           <span class="win-tl-dot"></span>
           <div class="win-tl-info">
             <div class="win-tl-ver">${esc(f.label || f.version || '')}${f.latest ? '<span class="card-tag format">最新</span>' : ''}</div>
@@ -9961,6 +9972,9 @@ async function loadWindows(gridId, statsId) {
           <button class="download-btn win-tl-btn" onclick="downloadWindows('${esc(f.file)}','${esc(name)}_${esc(f.version || '')}.zip')">下载</button>
         </div>
       `).join('');
+      const moreBtn = arr.length > VISIBLE_VERSIONS
+        ? '<button class="win-tl-more" onclick="toggleWinHistory(this)">查看完整的历史</button>'
+        : '';
       return `
         <div class="resource-card accent-blue win-card">
           <div class="card-header">
@@ -9971,13 +9985,20 @@ async function loadWindows(gridId, statsId) {
             </div>
           </div>
           <div class="card-desc">${esc(latest.desc || '')}</div>
-          <div class="win-timeline">${rows}</div>
+          <div class="win-timeline">${rows}${moreBtn}</div>
         </div>
       `;
     }).join('');
   } catch (e) {
     grid.innerHTML = '<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--accent-red)">加载失败</div>';
   }
+}
+
+function toggleWinHistory(btn) {
+  const card = btn.closest('.win-card');
+  if (!card) return;
+  const expanded = card.classList.toggle('is-expanded');
+  btn.textContent = expanded ? '收起' : '查看完整的历史';
 }
 
 function downloadWindows(file, name) {
