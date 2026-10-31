@@ -6,86 +6,611 @@
 <meta name="robots" content="noindex,nofollow">
 <title>积分预测规划 · Code Explorer</title>
 <style>
+/* ================================================================
+   主题变量：与 code-explorer/index.html 的 :root 保持一致。
+   改主站配色时这里要同步，否则侧边栏和积分卡片会脱节。
+   ================================================================ */
 :root{
-  --bg:#f5f6f8; --card:#fff; --ink:#1c2430; --ink2:#5b6675; --ink3:#8b95a6;
-  --line:#e6e9ef; --accent:#2f6fed; --ok:#0f9d76; --warn:#e8a33d; --bad:#c0392b;
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1a2332;
+  --bg-overlay: #243044;
+  --border-color: #1e293b;
+  --border-light: #141b2d;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --accent-blue: #38bdf8;
+  --accent-green: #34d399;
+  --accent-yellow: #fbbf24;
+  --accent-red: #fb7185;
+  --accent-purple: #a78bfa;
+  --accent-orange: #fb923c;
+  --accent-cyan: #22d3ee;
+  --font-sans: 'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  --font-display: 'Outfit','DM Sans',sans-serif;
+  --transition: 200ms ease;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --glass-bg: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+
+  /* 积分卡片用的语义别名，全部指向主站变量，切主题自动跟随 */
+  --bg: var(--bg-primary);
+  --card: var(--bg-secondary);
+  --ink: var(--text-primary);
+  --ink2: var(--text-secondary);
+  --ink3: var(--text-tertiary);
+  --line: var(--border-color);
+  --accent: var(--accent-blue);
+  --ok: var(--accent-green);
+  --warn: var(--accent-yellow);
+  --bad: var(--accent-red);
 }
+[data-theme="light"]{
+  --bg-primary: #faf9f6;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f0ede8;
+  --bg-overlay: #e6e2db;
+  --border-color: #e2ddd5;
+  --border-light: #f0ede8;
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a68;
+  --text-tertiary: #8a8a9a;
+  --accent-blue: #0284c7;
+  --accent-green: #059669;
+  --accent-yellow: #d97706;
+  --accent-red: #e11d48;
+  --accent-purple: #7c3aed;
+  --accent-orange: #ea580c;
+  --accent-cyan: #0891b2;
+  --glass-bg: rgba(255,255,255,0.6);
+  --glass-border: rgba(0,0,0,0.06);
+}
+
+/* ================================================================
+   基础
+   ================================================================ */
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
-  font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-  font-size:14px;line-height:1.6}
-.wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px}
-h1{font-size:22px;font-weight:600;margin:0 0 6px}
-.sub{color:var(--ink3);font-size:13px;margin-bottom:22px}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:var(--font-sans);
+  font-size:14px;
+  line-height:1.6;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(56,189,248,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(167,139,250,0.05) 0%, transparent 50%),
+    var(--bg-primary);
+  color:var(--text-primary);
+  overflow:hidden;
+}
+[data-theme="light"] body{
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(2,132,199,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(124,58,237,0.03) 0%, transparent 50%),
+    var(--bg-primary);
+}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#475569}
+
+/* ================================================================
+   左侧导航栏
+   这段样式与 code-explorer/index.html 的 .app-shell / .app-sidebar
+   保持一致（复制于 2026-10-31）。改主站侧栏时这里要同步。
+   ================================================================ */
+.app-shell{
+  display:flex;
+  height:100vh;
+  overflow:hidden;
+  position:relative;
+  z-index:1;
+}
+.app-sidebar{
+  flex-shrink:0;
+  width:200px;
+  background:color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+  border-right:1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  transition:width 200ms ease;
+}
+body.sidebar-collapsed .app-sidebar{width:60px}
+body.sidebar-collapsed .app-sidebar .sidebar-brand-text,
+body.sidebar-collapsed .app-sidebar .sidebar-group-label,
+body.sidebar-collapsed .app-sidebar .sidebar-item-label,
+body.sidebar-collapsed .app-sidebar .sidebar-badge,
+body.sidebar-collapsed .app-sidebar .sidebar-version,
+body.sidebar-collapsed .app-sidebar .sidebar-footer-icon span{display:none}
+body.sidebar-collapsed .app-sidebar .sidebar-item{justify-content:center;padding:10px 0}
+body.sidebar-collapsed .app-sidebar .sidebar-brand{padding:16px 8px;justify-content:center;gap:0}
+body.sidebar-collapsed .app-sidebar .sidebar-logo{width:28px;height:28px}
+body.sidebar-collapsed .app-sidebar .sidebar-collapse-btn{
+  position:absolute;top:18px;right:-12px;width:22px;height:22px;
+  background:var(--bg-tertiary);border-radius:50%;z-index:10;
+  box-shadow:0 2px 6px rgba(0,0,0,0.25);
+}
+.sidebar-brand{
+  display:flex;align-items:center;gap:10px;padding:16px 14px;
+  border-bottom:1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  flex-shrink:0;position:relative;
+}
+.sidebar-logo{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:13px;font-weight:700;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(56,189,248,0.3);
+}
+.sidebar-brand-text{
+  font-size:14px;font-weight:700;color:var(--text-primary);
+  white-space:nowrap;font-family:var(--font-display);
+}
+.sidebar-collapse-btn{
+  margin-left:auto;width:24px;height:24px;border-radius:6px;background:transparent;
+  border:none;cursor:pointer;color:var(--text-tertiary);
+  display:flex;align-items:center;justify-content:center;
+  transition:all 200ms ease;flex-shrink:0;
+}
+.sidebar-collapse-btn:hover{
+  background:color-mix(in srgb, var(--bg-tertiary) 70%, transparent);
+  color:var(--text-primary);
+}
+.sidebar-collapse-btn svg{width:14px;height:14px}
+body.sidebar-collapsed .sidebar-collapse-btn{transform:rotate(180deg)}
+.sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
+.sidebar-group-label{
+  font-size:11px;font-weight:600;color:var(--text-tertiary);
+  text-transform:uppercase;letter-spacing:0.5px;
+  padding:12px 14px 4px;white-space:nowrap;
+}
+.sidebar-item{
+  display:flex;align-items:center;gap:10px;padding:8px 14px;
+  font-size:13px;color:var(--text-secondary);cursor:pointer;
+  transition:all 150ms ease;border-left:3px solid transparent;
+  white-space:nowrap;user-select:none;text-decoration:none;
+}
+.sidebar-item:hover{
+  background:color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  color:var(--text-primary);
+}
+.sidebar-item.active{
+  background:color-mix(in srgb, var(--accent-blue) 12%, transparent);
+  color:var(--accent-blue);border-left-color:var(--accent-blue);font-weight:600;
+}
+.sidebar-item-icon{
+  width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;
+}
+.sidebar-item-icon svg{width:16px;height:16px}
+.sidebar-item-label{flex:1}
+.sidebar-badge{
+  font-size:11px;font-weight:600;color:var(--text-tertiary);
+  background:var(--bg-tertiary);border-radius:10px;padding:1px 8px;
+  min-width:20px;text-align:center;
+}
+.sidebar-item.active .sidebar-badge{
+  background:color-mix(in srgb, var(--accent-blue) 20%, transparent);
+  color:var(--accent-blue);
+}
+.sidebar-footer{
+  flex-shrink:0;border-top:1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
+  padding:8px 0;
+}
+.sidebar-footer-icon{
+  display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 0 8px;
+}
+.sidebar-footer-icon button{
+  width:32px;height:32px;border-radius:8px;background:transparent;border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--text-secondary);transition:all 150ms ease;
+}
+.sidebar-footer-icon button:hover{
+  background:color-mix(in srgb, var(--bg-tertiary) 60%, transparent);
+  color:var(--text-primary);
+}
+.sidebar-footer-icon svg{width:16px;height:16px}
+.sidebar-version{
+  text-align:center;font-size:11px;color:var(--text-tertiary);padding:4px 0;
+}
+.moon-icon{display:none}
+[data-theme="light"] .sun-icon{display:none}
+[data-theme="light"] .moon-icon{display:block}
+.sidebar-drawer-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99990;
+}
+.mobile-sidebar-btn{display:none}
+
+/* ================================================================
+   主区
+   ================================================================ */
+.app-main{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:22px 26px 70px;
+}
+.credit-head h1{
+  font-size:22px;font-weight:700;margin:0 0 6px;
+  font-family:var(--font-display);letter-spacing:-0.5px;
+}
+.sub{color:var(--ink3);font-size:13px;margin-bottom:20px}
 .sub .age{font-weight:600}
 .sub .age.fresh{color:var(--ok)}
 .sub .age.mid{color:var(--warn)}
 .sub .age.old{color:var(--bad)}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+
+/* 顶部汇总 */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.card{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:13px 16px;
+}
 .card .k{color:var(--ink3);font-size:12px}
 .card .v{font-size:22px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
 .card .v small{font-size:12px;font-weight:400;color:var(--ink3);margin-left:2px}
-.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:18px 20px;margin-bottom:16px}
-.sechd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.dot{width:9px;height:9px;border-radius:50%;flex:none}
-.sechd h2{font-size:16px;font-weight:600;margin:0}
-.badge{font-size:12px;color:var(--ink2);background:#f2f4f7;border-radius:6px;padding:2px 8px}
-.badge.err{background:#fdecec;color:var(--bad)}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
-.stat{background:#fafbfc;border-radius:9px;padding:9px 11px}
-.stat .k{color:var(--ink3);font-size:11px}
-.stat .v{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
-.bar{height:8px;background:#eef1f5;border-radius:5px;overflow:hidden;margin:2px 0 14px}
-.bar i{display:block;height:100%;border-radius:5px}
-details{margin-top:6px}
-summary{cursor:pointer;color:var(--accent);font-size:13px;outline:none}
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
-th{color:var(--ink3);font-weight:500;font-size:12px}
+
+/* ================================================================
+   三家平台：横向三列卡片（TRAE / MiniMax / WorkBuddy）
+   ================================================================ */
+.pgrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  align-items:start;
+}
+.pcard{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-top:3px solid var(--pc, var(--accent));
+  border-radius:var(--radius-md);
+  padding:15px 16px 14px;
+  display:flex;flex-direction:column;gap:11px;
+  min-width:0;
+}
+.pcard-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pcard-hd h2{
+  font-size:15px;font-weight:600;margin:0;font-family:var(--font-display);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.badge{
+  font-size:11px;color:var(--ink2);background:var(--bg-tertiary);
+  border-radius:5px;padding:1px 7px;white-space:nowrap;
+}
+.badge.err{
+  background:color-mix(in srgb, var(--bad) 16%, transparent);
+  color:var(--bad);
+}
+.pbig{font-size:27px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.pbig small{font-size:12px;font-weight:400;color:var(--ink3);margin-left:3px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stat{background:var(--bg-tertiary);border-radius:7px;padding:7px 9px;min-width:0}
+.stat .k{color:var(--ink3);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .v{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.bar{height:7px;background:var(--bg-tertiary);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px}
+.pnote{
+  font-size:12px;line-height:1.55;padding:8px 10px;border-radius:7px;
+}
+details{margin:0}
+summary{
+  cursor:pointer;color:var(--accent);font-size:12px;outline:none;
+  list-style:none;user-select:none;
+}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▸ ';display:inline-block;transition:transform 150ms ease}
+details[open] summary::before{content:'▾ '}
+table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+th,td{padding:5px 4px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--ink3);font-weight:500;font-size:11px}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-tr.today td{background:#eef4ff;font-weight:600}
+tr.today td{
+  background:color-mix(in srgb, var(--accent) 12%, transparent);font-weight:600;
+}
 tr.exp td{color:var(--bad)}
 .dim{color:var(--ink2)}
-.two{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start}
 .evlist{margin:0;padding-left:0;list-style:none}
-.evlist li{padding:5px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.evlist li{padding:4px 0;border-bottom:1px dashed var(--line);font-size:12px}
 .evlist li:last-child{border-bottom:0}
 .amt{font-weight:600;font-variant-numeric:tabular-nums}
-.warns{margin-top:12px;padding:11px 13px;background:#fdf7ec;border-radius:9px;
-  border-left:3px solid var(--warn);font-size:13px}
-.warns ul{margin:0;padding-left:18px}
-.warns li{margin:3px 0}
-.state{background:var(--card);border:1px solid var(--line);border-radius:14px;
-  padding:36px 24px;text-align:center;color:var(--ink2)}
+.warns{
+  padding:9px 11px;border-radius:7px;font-size:12px;
+  background:color-mix(in srgb, var(--warn) 13%, transparent);
+  border-left:3px solid var(--warn);
+}
+.warns ul{margin:0;padding-left:16px}
+.warns li{margin:2px 0}
+
+/* 空态 / 错误态 */
+.state{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:40px 24px;text-align:center;color:var(--ink2);
+}
 .state b{display:block;font-size:16px;color:var(--ink);margin-bottom:8px}
 .state a{color:var(--accent);text-decoration:none}
-.foot{color:var(--ink3);font-size:12px;margin-top:24px;line-height:1.9}
-@media(max-width:760px){
+.foot{color:var(--ink3);font-size:12px;margin-top:26px;line-height:1.9;max-width:900px}
+
+/* ================================================================
+   响应式
+   ================================================================ */
+@media (max-width:1180px){
+  .pgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cards{grid-template-columns:repeat(2,1fr)}
-  .stats{grid-template-columns:repeat(3,1fr)}
-  .two{grid-template-columns:1fr}
-  .wrap{padding:20px 14px 50px}
+}
+@media (max-width:860px){
+  .app-sidebar{
+    position:fixed;top:0;left:0;bottom:0;z-index:99991;width:240px;
+    transform:translateX(-100%);transition:transform 250ms ease;
+  }
+  body.sidebar-open .app-sidebar{transform:translateX(0)}
+  body.sidebar-open .sidebar-drawer-overlay{display:block}
+  .sidebar-collapse-btn{display:none}
+  .mobile-sidebar-btn{
+    display:flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:8px;background:var(--bg-secondary);
+    border:1px solid var(--border-color);color:var(--text-secondary);
+    cursor:pointer;margin-bottom:14px;
+  }
+  .app-main{padding:16px 14px 60px}
+  .pgrid{grid-template-columns:1fr}
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .credit-head h1{font-size:19px}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>积分预测规划</h1>
-  <div class="sub" id="sub">加载中…</div>
-  <div id="app"></div>
-  <div class="foot" id="foot" hidden>
-    口径说明：每日额度按「到期先后 + 剩余加权可用日」逐日动态计算，取摊平速率与到期压力中的较大者，
-    保证期末正好剩预留缓冲。可用日按作息加权：周五回家 0.5、周六 1.0、周日返校 0.5，上学日 0；
-    法定假期和校历假期（如春秋假）按「前一天 / 后一天上不上学」判定出发日与返程日。
-  </div>
+
+<div class="sidebar-drawer-overlay" id="drawerOverlay"></div>
+
+<div class="app-shell">
+  <!-- ====== 左侧导航栏 ======
+       与 code-explorer/index.html 的 <aside class="app-sidebar"> 同级内容保持一致。
+       本页当前位于「工具 → 积分预测规划」，所以该项带 active。
+       主站改侧栏时，这段需要同步（尤其是新增/改名的条目）。 -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-brand">
+      <span class="sidebar-logo">CE</span>
+      <span class="sidebar-brand-text">Code Explorer</span>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="折叠侧栏">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- 广场 -->
+      <div class="sidebar-group-label">广场</div>
+      <a class="sidebar-item" data-view="plaza" id="navPlaza" href="/plaza">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        <span class="sidebar-item-label">项目广场</span>
+      </a>
+      <a class="sidebar-item" data-view="home" id="navHome" href="/plaza/home">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <span class="sidebar-item-label">首页 (轮播/最近/收藏)</span>
+      </a>
+      <a class="sidebar-item" data-view="preview" id="navPreview" href="/plaza/editor">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </span>
+        <span class="sidebar-item-label">在线编辑</span>
+      </a>
+
+      <!-- 游戏 -->
+      <div class="sidebar-group-label">游戏</div>
+      <a class="sidebar-item" href="/play/games" id="navPlayGames">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="11" x2="10" y2="11"/><line x1="8" y1="9" x2="8" y2="13"/><line x1="15" y1="12" x2="15.01" y2="12"/><line x1="18" y1="10" x2="18.01" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg>
+        </span>
+        <span class="sidebar-item-label">网页游戏</span>
+      </a>
+      <a class="sidebar-item" href="/play/python" id="navPlayPython">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </span>
+        <span class="sidebar-item-label">Python 广场</span>
+      </a>
+      <a class="sidebar-item" href="/play/scratch" id="navPlayScratch">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.61 1.61a2.404 2.404 0 0 1-1.705.707 2.402 2.402 0 0 1-1.704-.706l-1.568-1.568a1.026 1.026 0 0 0-.877-.29c-.493.074-.84.504-1.02.968a2.5 2.5 0 1 1-3.237-3.237c.464-.18.894-.527.967-1.02a1.026 1.026 0 0 0-.289-.877l-1.568-1.568A2.402 2.402 0 0 1 1.998 12c0-.617.236-1.234.706-1.704L4.23 8.77c.24-.24.581-.353.917-.303.515.077.877.528 1.073 1.01a2.5 2.5 0 1 0 3.259-3.259c-.482-.196-.933-.558-1.01-1.073-.05-.336.062-.676.303-.917l1.525-1.525A2.402 2.402 0 0 1 12 1.998c.617 0 1.234.236 1.704.706l1.568 1.568c.23.23.556.338.877.29.493-.074.84-.504 1.02-.968a2.5 2.5 0 1 1 3.237 3.237c-.464.18-.894.527-.967 1.02z"/></svg>
+        </span>
+        <span class="sidebar-item-label">Scratch</span>
+      </a>
+      <a class="sidebar-item" href="/play/fathers-day" id="navPlayFathersDay">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </span>
+        <span class="sidebar-item-label">父亲节专题</span>
+      </a>
+
+      <!-- 资源 -->
+      <div class="sidebar-group-label">资源</div>
+      <a class="sidebar-item" data-view="resources" id="navResources" href="/res/download">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </span>
+        <span class="sidebar-item-label">资源下载</span>
+      </a>
+      <a class="sidebar-item" data-view="windows" id="navWindows" href="/res/windows">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+        </span>
+        <span class="sidebar-item-label">Windows 专区</span>
+      </a>
+
+      <!-- 文档 -->
+      <div class="sidebar-group-label">文档</div>
+      <a class="sidebar-item" id="navArticles" href="/docs/articles">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="17" y2="11"/></svg>
+        </span>
+        <span class="sidebar-item-label">技术文章</span>
+      </a>
+      <a class="sidebar-item" data-view="ai-asst" id="navAiAsst" href="/docs/agents">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" fill="currentColor"/></svg>
+        </span>
+        <span class="sidebar-item-label">AGENTS 手册</span>
+      </a>
+      <a class="sidebar-item" data-view="about" id="navAbout" href="/docs/about">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </span>
+        <span class="sidebar-item-label">关于</span>
+      </a>
+      <a class="sidebar-item" data-view="mindmap" id="navMindmap" href="/docs/mindmap">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </span>
+        <span class="sidebar-item-label">思维导图</span>
+      </a>
+
+      <!-- 工具 -->
+      <div class="sidebar-group-label">工具</div>
+      <a class="sidebar-item" data-view="upload" id="navUpload" href="/tools/upload">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </span>
+        <span class="sidebar-item-label">文件上传</span>
+      </a>
+      <a class="sidebar-item" data-view="apikey" id="navApikey" href="/tools/apikey">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.5 7.5a5.5 5.5 0 1 1-8 8 5.5 5.5 0 0 1 8-8zm0 0L18 5m-2-3l3 3"/></svg>
+        </span>
+        <span class="sidebar-item-label">API 密钥</span>
+      </a>
+      <a class="sidebar-item" href="/feedback" id="navFeedback">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        <span class="sidebar-item-label">意见反馈</span>
+      </a>
+      <!-- ↓ 原「本地运行」(/run/local) 改为本页入口 -->
+      <a class="sidebar-item active" href="/articles/credit-plan" id="navCreditPlan">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><polyline points="7 14 11 10 14 13 19 7"/></svg>
+        </span>
+        <span class="sidebar-item-label">积分预测规划</span>
+      </a>
+      <a class="sidebar-item" href="http://127.0.0.1:8765/" target="_blank" rel="noopener" id="navLauncher" title="打开本机本地启动器（需本机运行 launcher.py）">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </span>
+        <span class="sidebar-item-label">本地启动器</span>
+      </a>
+
+      <!-- 账户 -->
+      <div class="sidebar-group-label">账户</div>
+      <a class="sidebar-item" id="sidebarLogin" href="/account/login">
+        <span class="sidebar-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        <span class="sidebar-item-label" id="sidebarLoginLabel">登录</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-icon">
+        <button class="changelog-btn" id="changelogBtn" title="更新日志" style="width:32px;height:32px;border-radius:8px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </button>
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="切换主题" style="width:32px;height:32px;border-radius:8px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+      <div class="sidebar-version">v2.13.0</div>
+    </div>
+  </aside>
+
+  <!-- ====== 主内容 ====== -->
+  <main class="app-main" id="mainArea">
+    <button class="mobile-sidebar-btn" id="mobileSidebarBtn" title="打开导航">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
+    <div class="credit-head">
+      <h1>积分预测规划</h1>
+      <div class="sub" id="sub">加载中…</div>
+    </div>
+
+    <div id="app"></div>
+
+    <div class="foot" id="foot" hidden>
+      口径说明：每日额度按「到期先后 + 剩余加权可用日」逐日动态计算，取摊平速率与到期压力中的较大者，
+      保证期末正好剩预留缓冲。可用日按作息加权：周五回家 0.5、周六 1.0、周日返校 0.5，上学日 0；
+      法定假期和校历假期（如春秋假）按「前一天 / 后一天上不上学」判定出发日与返程日。
+    </div>
+  </main>
 </div>
 
 <script>
+/* ================================================================
+   侧边栏交互（折叠 / 主题 / 移动端抽屉）
+   存储键与 index.html 完全一致，保证两页状态互通
+   ================================================================ */
+(function () {
+  var THEME_KEY = 'code_explorer_theme';
+
+  // 主题：进入页面先应用已保存的值，避免闪一下默认色
+  try {
+    var saved = localStorage.getItem(THEME_KEY);
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) {}
+
+  var themeBtn = document.getElementById('themeToggleBtn');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    });
+  }
+
+  // 折叠
+  try {
+    if (localStorage.getItem('sidebar-collapsed') === '1') {
+      document.body.classList.add('sidebar-collapsed');
+    }
+  } catch (e) {}
+  var colBtn = document.getElementById('sidebarCollapseBtn');
+  if (colBtn) {
+    colBtn.addEventListener('click', function () {
+      document.body.classList.toggle('sidebar-collapsed');
+      try {
+        localStorage.setItem('sidebar-collapsed',
+          document.body.classList.contains('sidebar-collapsed') ? '1' : '0');
+      } catch (e) {}
+    });
+  }
+
+  // 移动端抽屉
+  var mobBtn = document.getElementById('mobileSidebarBtn');
+  var overlay = document.getElementById('drawerOverlay');
+  if (mobBtn) mobBtn.addEventListener('click', function () { document.body.classList.add('sidebar-open'); });
+  if (overlay) overlay.addEventListener('click', function () { document.body.classList.remove('sidebar-open'); });
+
+  // 更新日志按钮回首页看（本页没有弹窗）
+  var clBtn = document.getElementById('changelogBtn');
+  if (clBtn) clBtn.addEventListener('click', function () { location.href = '/'; });
+})();
+
+/* ================================================================
+   积分数据渲染
+   ================================================================ */
 (function () {
   var app = document.getElementById('app');
   var sub = document.getElementById('sub');
+
+  // 三家卡片横向顺序：TRAE 在左、MiniMax 居中、WorkBuddy 在右。
+  // 数据里 providers 的顺序是采集顺序，不能直接拿来排版。
+  var ORDER = ['trae', 'minimax', 'workbuddy'];
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -116,93 +641,89 @@ tr.exp td{color:var(--bad)}
     app.appendChild(box);
   }
 
+  function statBox(k, v, color) {
+    var s = el('div', 'stat');
+    s.appendChild(el('div', 'k', k));
+    var val = el('div', 'v', v);
+    if (color) val.style.color = color;
+    s.appendChild(val);
+    return s;
+  }
+
   function providerCard(p) {
-    var sec = el('div', 'sec');
-    var hd = el('div', 'sechd');
+    var card = el('div', 'pcard');
+    if (p.color) card.style.setProperty('--pc', p.color);
+
+    // 头部
+    var hd = el('div', 'pcard-hd');
     var dot = el('span', 'dot');
     dot.style.background = p.color || '#888';
     hd.appendChild(dot);
     hd.appendChild(el('h2', null, p.title));
-    var b1 = el('span', 'badge' + (p.stale ? ' err' : ''), p.source || '');
-    if (p.source) hd.appendChild(b1);
+    if (p.source) hd.appendChild(el('span', 'badge' + (p.stale ? ' err' : ''), p.source));
     hd.appendChild(el('span', 'badge', p.has_expiry ? '按批到期' : '周期估算'));
-    sec.appendChild(hd);
+    card.appendChild(hd);
 
-    var stats = el('div', 'stats');
-    [['当前余额', n(p.remaining), p.color],
-     ['缓冲预留', n(p.buffer), null],
-     ['可安排消耗', n(p.usable), null],
-     [p.has_expiry ? '最晚用完' : '周期末（估算）', p.finish_by || '—', null],
-     ['加权可用日', n(p.weighted_days, 1), null]
-    ].forEach(function (it) {
-      var s = el('div', 'stat');
-      s.appendChild(el('div', 'k', it[0]));
-      var v = el('div', 'v', it[1]);
-      if (it[2]) v.style.color = it[2];
-      s.appendChild(v);
-      stats.appendChild(s);
-    });
-    sec.appendChild(stats);
+    // 余额大字
+    var big = el('div', 'pbig', n(p.remaining));
+    big.style.color = p.color || 'inherit';
+    big.appendChild(el('small', null, '分可用'));
+    card.appendChild(big);
 
-    var stats2 = el('div', 'stats');
-    [['建议日均', n(p.spread_rate), null],
-     ['今日建议', n(p.today_quota), 'var(--accent)'],
-     ['预计浪费', n(p.waste), (p.waste > 0 ? 'var(--bad)' : 'var(--ok)')]
-    ].forEach(function (it) {
-      var s = el('div', 'stat');
-      s.appendChild(el('div', 'k', it[0]));
-      var v = el('div', 'v', it[1]);
-      if (it[2]) v.style.color = it[2];
-      s.appendChild(v);
-      stats2.appendChild(s);
-    });
-    sec.appendChild(stats2);
+    // 四格指标
+    var grid = el('div', 'stats');
+    grid.appendChild(statBox('可安排消耗', n(p.usable)));
+    grid.appendChild(statBox('加权可用日', n(p.weighted_days, 1)));
+    grid.appendChild(statBox('建议日均', n(p.spread_rate)));
+    grid.appendChild(statBox('今日建议', n(p.today_quota), 'var(--accent)'));
+    grid.appendChild(statBox(p.has_expiry ? '最晚用完' : '周期末', p.finish_by || '—'));
+    grid.appendChild(statBox('预计浪费', n(p.waste), p.waste > 0 ? 'var(--bad)' : 'var(--ok)'));
+    card.appendChild(grid);
 
-    if (p.pace !== null && p.pace !== undefined) {
-      var pct = p.usable > 0 ? Math.max(0, Math.min(100, (1 - (p.pace_total || 0) / p.usable) * 100)) : 0;
-      var warn = pct >= 10;
-      var note = el('div', null,
-        '按最近节奏 ' + n(p.pace) + ' / 可用日：周期内大约只能烧掉 ' + n(p.pace_total) +
-        '，预计有 ' + n(p.pace_waste) + '（' + n(pct) + '%）会过期' +
-        (warn ? ' —— 要清零得把日均拉到 ' + n(p.spread_rate) : ''));
-      note.style.cssText = 'font-size:13px;padding:10px 13px;border-radius:9px;margin-bottom:12px;' +
-        'border-left:3px solid ' + (warn ? 'var(--warn)' : 'var(--accent)') + ';' +
-        'background:' + (warn ? '#fdeee0' : '#eef4ff');
-      sec.appendChild(note);
-    }
-
+    // 进度条
     var usedPct = (p.remaining + p.usable) > 0 ? (p.usable / (p.remaining + p.usable)) * 100 : 0;
     var bar = el('div', 'bar');
     var fill = el('i');
     fill.style.width = Math.max(2, Math.min(100, usedPct)).toFixed(1) + '%';
     fill.style.background = p.color || '#888';
     bar.appendChild(fill);
-    sec.appendChild(bar);
+    card.appendChild(bar);
 
-    var two = el('div', 'two');
-    var left = el('div');
-    var right = el('div');
+    // 节奏提示
+    if (p.pace !== null && p.pace !== undefined) {
+      var pct = p.usable > 0
+        ? Math.max(0, Math.min(100, (1 - (p.pace_total || 0) / p.usable) * 100)) : 0;
+      var warn = pct >= 10;
+      var note = el('div', 'pnote',
+        '按最近节奏 ' + n(p.pace) + ' / 可用日，周期内约只能烧掉 ' + n(p.pace_total) +
+        '，预计 ' + n(p.pace_waste) + '（' + n(pct) + '%）会过期' +
+        (warn ? '。要清零需把日均拉到 ' + n(p.spread_rate) : ''));
+      note.style.borderLeft = '3px solid ' + (warn ? 'var(--warn)' : 'var(--accent)');
+      note.style.background = warn
+        ? 'color-mix(in srgb, var(--warn) 13%, transparent)'
+        : 'color-mix(in srgb, var(--accent) 11%, transparent)';
+      card.appendChild(note);
+    }
 
+    // 逐日规划（默认收起，卡片窄，展开后按表格读）
     if (p.rows && p.rows.length) {
       var det = el('details');
-      var sm = el('summary', null, '逐日规划（' + p.rows.length + ' 天）');
-      det.appendChild(sm);
+      det.appendChild(el('summary', null, '逐日规划（' + p.rows.length + ' 天）'));
       var tb = el('table');
       var thead = el('thead');
       var hr = el('tr');
-      ['日期', '类型', '建议额度', '日终余额', '到期'].forEach(function (t, i) {
-        hr.appendChild(el('th', i >= 2 ? 'num' : null, t));
+      ['日期', '额度', '余额', '到期'].forEach(function (t, i) {
+        hr.appendChild(el('th', i >= 1 ? 'num' : null, t));
       });
       thead.appendChild(hr);
       tb.appendChild(thead);
       var tbody = el('tbody');
+      var todayStr = mmdd(new Date().toISOString().slice(0, 10));
       p.rows.forEach(function (r) {
         var tr = el('tr');
-        if (mmdd(r.d) === mmdd(new Date().toISOString().slice(0, 10))) tr.className = 'today';
-        if (r.x > 0) tr.className = (tr.className + ' exp').trim();
+        if (mmdd(r.d) === todayStr) tr.className = 'today';
+        else if (r.x > 0) tr.className = 'exp';
         tr.appendChild(el('td', null, mmdd(r.d)));
-        var td2 = el('td', 'dim', r.t || '');
-        tr.appendChild(td2);
         tr.appendChild(el('td', 'num', n(r.q, 1)));
         tr.appendChild(el('td', 'num', n(r.b)));
         tr.appendChild(el('td', 'num', r.x > 0 ? n(r.x) : ''));
@@ -210,48 +731,43 @@ tr.exp td{color:var(--bad)}
       });
       tb.appendChild(tbody);
       det.appendChild(tb);
-      left.appendChild(det);
+      card.appendChild(det);
     } else {
-      left.appendChild(el('div', 'dim', '没有可用日'));
+      card.appendChild(el('div', 'dim', '没有可用日'));
     }
 
+    // 到期节点
     if (p.expiry && p.expiry.length) {
-      right.appendChild(el('div', 'dim', '到期节点'));
+      var det2 = el('details');
+      det2.appendChild(el('summary', null, '到期节点（' + p.expiry.length + '）'));
       var ul = el('ul', 'evlist');
       p.expiry.forEach(function (e) {
         var li = el('li');
-        var b = el('b', null, mmdd(e.d) + ' 前用完');
-        li.appendChild(b);
+        li.appendChild(el('b', null, mmdd(e.d) + ' 前用完'));
         li.appendChild(document.createTextNode(' · '));
         li.appendChild(el('span', 'amt', n(e.amount) + ' 分'));
         if (e.raw && e.raw !== e.d) {
-          var sp = el('span', 'dim', '（真实到期 ' + mmdd(e.raw) + '，当天用不了）');
-          sp.style.fontSize = '12px';
-          li.appendChild(sp);
+          li.appendChild(el('span', 'dim', '（真实到期 ' + mmdd(e.raw) + '）'));
         }
         ul.appendChild(li);
       });
-      right.appendChild(ul);
+      det2.appendChild(ul);
+      card.appendChild(det2);
     }
-    two.appendChild(left);
-    two.appendChild(right);
-    sec.appendChild(two);
 
+    // 风险提示
     if (p.warnings && p.warnings.length) {
       var w = el('div', 'warns');
       var wu = el('ul');
-      p.warnings.forEach(function (t) {
-        wu.appendChild(el('li', null, t));
-      });
+      p.warnings.forEach(function (t) { wu.appendChild(el('li', null, t)); });
       w.appendChild(wu);
-      sec.appendChild(w);
+      card.appendChild(w);
     }
-    return sec;
+    return card;
   }
 
   // 页面上的数字是「某一次采集出来的快照」，不会自己变新。
   // 只显示静态时间戳会误导：下午四点打开却看到早上 12:27，会以为页面坏了。
-  // 所以这里把「距今多久」直接算出来，并按时效上色。
   function agoText(iso) {
     if (!iso) return null;
     var m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
@@ -283,6 +799,8 @@ tr.exp td{color:var(--bad)}
     sub.appendChild(document.createTextNode(' · 每平台预留 ' + (d.buffer || 0) + ' 分缓冲'));
 
     app.innerHTML = '';
+
+    // 顶部汇总
     var cards = el('div', 'cards');
     [['三家余额合计', n(t.remaining), '分', null],
      ['可安排消耗', n(t.usable), '分', null],
@@ -293,16 +811,23 @@ tr.exp td{color:var(--bad)}
       c.appendChild(el('div', 'k', it[0]));
       var v = el('div', 'v', it[1]);
       if (it[3]) v.style.color = it[3];
-      var s = el('small', null, ' ' + it[2]);
-      v.appendChild(s);
+      v.appendChild(el('small', null, ' ' + it[2]));
       c.appendChild(v);
       cards.appendChild(c);
     });
     app.appendChild(cards);
 
-    (d.providers || []).forEach(function (p) {
-      app.appendChild(providerCard(p));
+    // 三家横向卡片：按 ORDER 排，数据里没有的跳过，未知的追加到末尾
+    var list = (d.providers || []).slice();
+    list.sort(function (a, b) {
+      var ia = ORDER.indexOf(a.key), ib = ORDER.indexOf(b.key);
+      if (ia < 0) ia = 99;
+      if (ib < 0) ib = 99;
+      return ia - ib;
     });
+    var grid = el('div', 'pgrid');
+    list.forEach(function (p) { grid.appendChild(providerCard(p)); });
+    app.appendChild(grid);
   }
 
   fetch('/api/credits', { credentials: 'same-origin', cache: 'no-store' })
