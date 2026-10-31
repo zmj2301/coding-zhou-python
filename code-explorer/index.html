@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Code Explorer - 代码浏览与执行平台</title>
+<meta name="description" content="Code Explorer：在线浏览、运行与分享 Python 项目的教学平台，包含网页游戏、Windows 专区、资源下载与技术文章。">
+<meta property="og:title" content="Code Explorer - 代码浏览与执行平台">
+<meta property="og:description" content="在线浏览、运行与分享 Python 项目的教学平台，包含网页游戏、Windows 专区、资源下载与技术文章。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://codingzhou.top/">
+<meta property="og:image" content="https://codingzhou.top/images/code_explorer.png">
 <!-- Markdown renderer：自托管，避免 cdn.jsdelivr.net 在部分网络下不可达导致 README 退化成纯文本 -->
 <script src="/vendor/marked.umd.js"></script>
 <!-- Monaco Editor loader（jsdelivr 在部分网络被阻断，改用 unpkg） -->
@@ -5232,7 +5238,7 @@ body.preview-active .app-preview { display: flex; }
     <header class="main-head" id="plazaHeader">
       <h1 id="plazaTitle">项目广场</h1>
       <div class="main-search" id="heroSearch">
-        <input type="text" id="heroSearchInput" placeholder="输入项目名称或关键词搜索..." autocomplete="off">
+        <input type="text" id="heroSearchInput" placeholder="搜索项目名称、描述或路径..." autocomplete="off">
         <kbd>Ctrl+P</kbd>
       </div>
       <button class="main-filter-toggle" id="mainFilterToggle">筛选</button>
@@ -6940,10 +6946,12 @@ function renderCards(projects, filter = 'all', searchQuery = '') {
   }
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
-    filtered = filtered.filter(p => 
-      p.name.toLowerCase().includes(q) ||
-      p.desc.toLowerCase().includes(q) ||
-      p.label.toLowerCase().includes(q)
+    filtered = filtered.filter(p =>
+      (p.name || '').toLowerCase().includes(q) ||
+      (p.desc || '').toLowerCase().includes(q) ||
+      (p.label || '').toLowerCase().includes(q) ||
+      (p.path || '').toLowerCase().includes(q) ||
+      (p.mainFile || '').toLowerCase().includes(q)
     );
   }
   const grid = $('#cardsGrid');
@@ -9305,6 +9313,16 @@ async function init() {
     updateStats(state.projects);
     renderCategoryIndex(state.projects);
     renderCards(state.projects);
+
+    // 支持 /plaza?project=<path> 直达（供静态项目页与外部分享使用）
+    try {
+      const direct = new URLSearchParams(location.search).get('project');
+      if (direct) {
+        const target = state.projects.find(p => (p.path || '') === direct) ||
+                       state.projects.find(p => (p.name || '') === direct);
+        if (target) setTimeout(() => openProject(target.path), 50);
+      }
+    } catch(_) {}
 
     // 等待真实点赞/评论数加载完成，确保不会先显示 0 再更新
     try {

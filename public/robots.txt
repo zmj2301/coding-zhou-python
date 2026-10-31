@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://codingzhou.top/sitemap.xml

@@ -1,6 +1,20 @@
 [
     {
         "date": "2026-10-31",
+        "title": "安全加固 + 接口提速 + 搜索与 SEO：配置 JWT 密钥、AI 限流、Windows 清单缓存、项目静态页",
+        "version": "2.12.0",
+        "changes": [
+            "为 Worker 配置强随机的 JWT_SECRET 与 ADMIN_PASSWORD，并移除代码中 24 处「default-secret-change-me」兜底，未配置密钥时鉴权直接失败，杜绝伪造管理员会话",
+            "AI 推荐接口按 IP 每小时限流 20 次（KV 计数），避免公开接口被脚本刷完 Workers AI 每日免费额度",
+            "Windows 专区清单增加 KV 边缘缓存（30 分钟）与 8 秒回源超时，失败时回退上一次成功数据，解决首次加载 20 秒级等待",
+            "项目广场搜索扩展为匹配名称、描述、标签、路径与入口文件，占位文案同步更新",
+            "新增 64 个项目静态介绍页（/projects/*.html），带独立的标题、description 与 Open Graph 信息，并提供「在站内打开」入口",
+            "首页补充 description 与 Open Graph 元信息；新增 sitemap.xml（71 条 URL）与 robots.txt",
+            "支持 /plaza?project=<路径> 直达指定项目，供静态项目页与外部分享使用"
+        ]
+    },
+    {
+        "date": "2026-10-31",
         "title": "修复 README 显示为原始 Markdown：marked 改为自托管，Monaco 改用 unpkg",
         "version": "2.11.1",
         "changes": [

@@ -5,9 +5,12 @@
 """
 
 import os
+import re
 import shutil
 import json
 import sys
+from html import escape
+from urllib.parse import quote
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -249,6 +252,82 @@ def main():
         copy_file(agents_src, PUBLIC_DIR / 'share' / 'agents.md')
     else:
         print('  跳过: AGENTS.md 不存在')
+
+    print()
+    print('步骤 2.9.5: 生成项目静态页 + sitemap.xml + robots.txt...')
+    SITE = 'https://codingzhou.top'
+    TYPE_CN = {
+        'game': '游戏', 'ai': 'AI', 'tool': '工具', 'other': '其他',
+        'web-game': '网页游戏', 'system-file': '系统文件', 'popup-preview': '弹出预览',
+    }
+    projects_data = []
+    if project_list_src.exists():
+        try:
+            projects_data = json.loads(project_list_src.read_text(encoding='utf-8'))
+        except Exception as e:
+            print(f'  读取 project-list.json 失败: {e}')
+
+    proj_dir = PUBLIC_DIR / 'projects'
+    proj_dir.mkdir(parents=True, exist_ok=True)
+    project_urls = []
+    for i, p in enumerate(projects_data):
+        name = (p.get('name') or p.get('path') or f'项目 {i + 1}').strip()
+        ppath = (p.get('path') or name).strip()
+        desc = (p.get('desc') or f'{name} —— 站内可在线浏览与运行的项目').strip()
+        type_cn = TYPE_CN.get(p.get('type') or 'other', '其他')
+        raw_slug = re.sub(r'[^a-zA-Z0-9]+', '-', name).strip('-').lower()
+        slug = f'{i + 1:02d}-{raw_slug}' if raw_slug else f'project-{i + 1:02d}'
+        open_url = f'/plaza?project={quote(ppath, safe="")}'
+        meta_desc = escape(desc[:150])
+        page = f'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{escape(name)} - Code Explorer</title>
+<meta name="description" content="{meta_desc}">
+<meta property="og:title" content="{escape(name)}">
+<meta property="og:description" content="{meta_desc}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{SITE}/projects/{slug}">
+<link rel="canonical" href="{SITE}/projects/{slug}">
+<style>
+body{{margin:0;padding:48px 20px;background:#0a0e1a;color:#e2e8f0;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7}}
+main{{max-width:760px;margin:0 auto}}
+a{{color:#38bdf8}}
+h1{{font-size:28px;margin:0 0 12px}}
+.meta{{color:#94a3b8;font-size:14px;margin-bottom:24px}}
+p{{color:#cbd5e1}}
+.btn{{display:inline-block;margin-top:28px;padding:10px 18px;border-radius:8px;background:#38bdf8;color:#0a0e1a;text-decoration:none;font-weight:600}}
+</style>
+</head>
+<body>
+<main>
+<h1>{escape(name)}</h1>
+<div class="meta">{escape(type_cn)} · 共 {p.get('fileCount', 0)} 个文件{f" · 入口 {escape(str(p.get('mainFile')))}" if p.get('mainFile') else ''}</div>
+<p>{escape(desc)}</p>
+<a class="btn" href="{open_url}">在站内打开这个项目</a>
+<p style="margin-top:32px"><a href="/plaza">返回项目广场</a></p>
+</main>
+</body>
+</html>
+'''
+        (proj_dir / f'{slug}.html').write_text(page, encoding='utf-8')
+        # Cloudflare Assets 会把 *.html 307 到无扩展名地址，canonical/sitemap 直接用最终地址
+        project_urls.append(f'{SITE}/projects/{slug}')
+    print(f'  生成项目页: {len(project_urls)} 个')
+
+    urls = [f'{SITE}/', f'{SITE}/plaza', f'{SITE}/res/windows']
+    urls += [f'{SITE}/articles/{slug}' for slug, _ in index_items]
+    urls += project_urls
+    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for u in urls:
+        sitemap += f'  <url><loc>{escape(u)}</loc></url>\n'
+    sitemap += '</urlset>\n'
+    (PUBLIC_DIR / 'sitemap.xml').write_text(sitemap, encoding='utf-8')
+    (PUBLIC_DIR / 'robots.txt').write_text(
+        f'User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n', encoding='utf-8')
+    print(f'  生成: sitemap.xml（{len(urls)} 条）+ robots.txt')
 
     print()
     print('步骤 2.10: 复制 vendor 目录（自托管前端依赖）...')

@@ -70,6 +70,13 @@ async function signJwt(
   return `${headerB64}.${payloadB64}.${sigB64}`;
 }
 
+// 未配置 JWT_SECRET 时直接失败，避免回退到公开的默认密钥（任何人都能伪造管理员会话）
+function getJwtSecret(env: Env): string {
+  const secret = env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET 未配置');
+  return secret;
+}
+
 async function verifyJwt(token: string, secret: string): Promise<any | null> {
   try {
     const parts = token.split('.');
@@ -118,7 +125,7 @@ async function hashPassword(password: string): Promise<string> {
 async function checkAuth(request: Request, env: Env): Promise<boolean> {
   const token = getTokenFromRequest(request);
   if (!token) return false;
-  const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+  const payload = await verifyJwt(token, getJwtSecret(env));
   return payload !== null;
 }
 
@@ -141,7 +148,7 @@ async function resolveRole(env: Env, payload: any): Promise<string> {
 async function checkAdmin(request: Request, env: Env): Promise<boolean> {
   const token = getTokenFromRequest(request);
   if (!token) return false;
-  const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+  const payload = await verifyJwt(token, getJwtSecret(env));
   if (!payload) return false;
   return (await resolveRole(env, payload)) === 'admin';
 }
@@ -658,7 +665,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     if (authenticated) {
       const token = getTokenFromRequest(request);
       if (token) {
-        const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+        const payload = await verifyJwt(token, getJwtSecret(env));
         if (payload) {
           user = {
             id: 1,
@@ -716,7 +723,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 
       const token = await signJwt(
         { sub: username, is_admin: isAdmin },
-        env.JWT_SECRET || 'default-secret-change-me',
+        getJwtSecret(env),
         604800
       );
       const resp = jsonResponse({
@@ -819,7 +826,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       // 禁止删除当前登录的账号，避免把自己删掉后立即失去访问权
       const token = getTokenFromRequest(request);
       if (token) {
-        const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+        const payload = await verifyJwt(token, getJwtSecret(env));
         if (payload && payload.sub === username) return errorResponse('不能删除当前登录的账号', 403);
       }
 
@@ -844,7 +851,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   if (path === '/api/user/profile' && request.method === 'GET') {
     const token = getTokenFromRequest(request);
     if (!token) return errorResponse('请先登录', 401);
-    const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+    const payload = await verifyJwt(token, getJwtSecret(env));
     if (!payload || !payload.sub) return errorResponse('请先登录', 401);
     const username = payload.sub as string;
 
@@ -878,7 +885,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   if (path === '/api/user/change-password' && request.method === 'POST') {
     const token = getTokenFromRequest(request);
     if (!token) return errorResponse('请先登录', 401);
-    const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+    const payload = await verifyJwt(token, getJwtSecret(env));
     if (!payload || !payload.sub) return errorResponse('请先登录', 401);
     const username = payload.sub as string;
 
@@ -918,7 +925,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (password !== env.ADMIN_PASSWORD) return errorResponse('管理员密码错误', 401);
       const token = await signJwt(
         { sub: 'admin', is_admin: true },
-        env.JWT_SECRET || 'default-secret-change-me',
+        getJwtSecret(env),
         604800
       );
       const resp = jsonResponse({
@@ -963,7 +970,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!rating) return errorResponse('请选择评分', 400);
 
       const token = getTokenFromRequest(request);
-      const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+      const payload = token ? await verifyJwt(token, getJwtSecret(env)) : null;
       const username = payload?.sub || (payload?.username as string) || '用户';
       const id = `fb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
@@ -1022,7 +1029,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // 反馈工单详情：回复存放在工单自身的 replies 数组里，随工单一起删除
   if (path === '/api/feedback/detail' && request.method === 'GET') {
     const token = getTokenFromRequest(request);
-    const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+    const payload = token ? await verifyJwt(token, getJwtSecret(env)) : null;
     if (!payload) return errorResponse('请先登录', 401);
     const id = (url.searchParams.get('id') || '').toString().trim();
     if (!id) return errorResponse('缺少反馈 ID', 400);
@@ -1081,7 +1088,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!content) return errorResponse('请输入回复内容', 400);
 
       const token = getTokenFromRequest(request);
-      const payload = token ? await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me') : null;
+      const payload = token ? await verifyJwt(token, getJwtSecret(env)) : null;
       const adminName = (payload && payload.sub) || '管理员';
 
       const key = `feedback:${feedbackId}`;
@@ -1671,6 +1678,17 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   // 链路：本地检索候选 → Workers AI 排序写理由 → Ollama 仅兜底文本 → 纯本地兜底
   if (path === '/api/recommend' && request.method === 'POST') {
     try {
+      // 同一 IP 每小时最多 20 次，避免公开接口被脚本刷完 Workers AI 免费额度
+      const clientIp = request.headers.get('cf-connecting-ip') || 'unknown';
+      const rateKey = `rl:ai:${clientIp}:${Math.floor(Date.now() / 3600000)}`;
+      try {
+        const used = parseInt(await env.CODE_EXPLORER_KV.get(rateKey) || '0', 10);
+        if (used >= 20) {
+          return errorResponse('AI 推荐请求过于频繁，请稍后再试', 429);
+        }
+        await env.CODE_EXPLORER_KV.put(rateKey, String(used + 1), { expirationTtl: 3600 });
+      } catch { /* KV 异常时不阻断正常推荐 */ }
+
       const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string; needsProjects?: boolean };
       let messages = data.messages;
 
@@ -1827,15 +1845,37 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   const WINDOWS_BRANCH = 'main';
 
   if (path === '/api/windows/list') {
+    // GitHub raw 回源偶尔要 20 秒以上，这里加 KV 缓存 + 8 秒超时，失败时回退旧数据
+    const CACHE_KEY = 'cache:windows-list-v1';
+    let stale: any = null;
     try {
-      const resp = await fetchFromRepo(WINDOWS_REPO, WINDOWS_BRANCH, 'manifest.json');
-      if (resp.ok) {
-        const data = await resp.json() as any;
-        const result = jsonResponse({ zone: data.zone || 'Windows 专区', updated: data.updated || '', files: data.files || [] });
+      stale = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' }) as any;
+      if (stale) {
+        const result = jsonResponse(stale);
         addCacheHeader(result.headers, 300);
         return result;
       }
     } catch {}
+
+    try {
+      const resp = await withTimeout(fetchFromRepo(WINDOWS_REPO, WINDOWS_BRANCH, 'manifest.json'), 8000, 'Windows 清单');
+      if (resp.ok) {
+        const data = await resp.json() as any;
+        const payload = { zone: data.zone || 'Windows 专区', updated: data.updated || '', files: data.files || [] };
+        try {
+          await env.CODE_EXPLORER_KV.put(CACHE_KEY, JSON.stringify(payload), { expirationTtl: 1800 });
+        } catch {}
+        const result = jsonResponse(payload);
+        addCacheHeader(result.headers, 300);
+        return result;
+      }
+    } catch {}
+
+    if (stale) {
+      const result = jsonResponse(stale);
+      addCacheHeader(result.headers, 60);
+      return result;
+    }
     return jsonResponse({ zone: 'Windows 专区', updated: '', files: [] });
   }
 
@@ -1992,7 +2032,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         try {
           const token = getTokenFromRequest(request);
           if (!token) return errorResponse('请先登录', 401);
-          const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+          const payload = await verifyJwt(token, getJwtSecret(env));
           if (!payload) return errorResponse('请先登录', 401);
           const showAll = url.searchParams.get('all') === '1';
           const username = payload.sub || payload.username || 'user';
@@ -2011,7 +2051,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
         try {
           const token = getTokenFromRequest(request);
           if (!token) return errorResponse('请先登录', 401);
-          const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+          const payload = await verifyJwt(token, getJwtSecret(env));
           if (!payload) return errorResponse('请先登录', 401);
           const username = payload.sub || payload.username || 'user';
           const userRole = payload.role || 'user';
@@ -2044,7 +2084,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       try {
         const token = getTokenFromRequest(request);
         if (!token) return errorResponse('请先登录', 401);
-        const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+        const payload = await verifyJwt(token, getJwtSecret(env));
         if (!payload) return errorResponse('请先登录', 401);
         const username = payload.sub || payload.username || 'user';
         const isAdmin = payload.role === 'admin';
@@ -2096,7 +2136,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const token = getTokenFromRequest(request);
       if (!token) return errorResponse('请先登录', 401);
-      const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+      const payload = await verifyJwt(token, getJwtSecret(env));
       if (!payload) return errorResponse('请先登录', 401);
 
       const formData = await request.formData();
@@ -2164,7 +2204,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const token = getTokenFromRequest(request);
       if (!token) return errorResponse('请先登录', 401);
-      const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+      const payload = await verifyJwt(token, getJwtSecret(env));
       if (!payload) return errorResponse('请先登录', 401);
       const username = payload.sub || payload.username || 'unknown';
 
@@ -2221,7 +2261,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const token = getTokenFromRequest(request);
       if (!token) return errorResponse('请先登录', 401);
-      const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+      const payload = await verifyJwt(token, getJwtSecret(env));
       if (!payload) return errorResponse('请先登录', 401);
       const username = payload.sub || payload.username || 'unknown';
 
@@ -2252,7 +2292,7 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     try {
       const token = getTokenFromRequest(request);
       if (!token) return errorResponse('请先登录', 401);
-      const payload = await verifyJwt(token, env.JWT_SECRET || 'default-secret-change-me');
+      const payload = await verifyJwt(token, getJwtSecret(env));
       if (!payload) return errorResponse('请先登录', 401);
       const username = payload.sub || payload.username || 'unknown';
 
