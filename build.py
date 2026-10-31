@@ -251,6 +251,16 @@ def main():
         print('  跳过: AGENTS.md 不存在')
 
     print()
+    print('步骤 2.10: 复制 vendor 目录（自托管前端依赖）...')
+    # public 每次构建都会重建，自托管的第三方库必须从源码目录复制，
+    # 否则 /vendor/marked.umd.js 会在部署后 404，README 又退回纯文本。
+    vendor_src = CODE_EXPLORER_DIR / 'code-explorer' / 'vendor'
+    if vendor_src.exists():
+        copy_dir(vendor_src, PUBLIC_DIR / 'vendor')
+    else:
+        print('  跳过: code-explorer/vendor 目录不存在')
+
+    print()
     print('步骤 3: 复制 web-games 目录...')
     if WEB_GAMES_DIR.exists():
         copy_dir(WEB_GAMES_DIR, PUBLIC_DIR / 'web-games')

@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Code Explorer - 代码浏览与执行平台</title>
-<!-- Markdown renderer -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<!-- Monaco Editor loader -->
-<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<!-- Markdown renderer：自托管，避免 cdn.jsdelivr.net 在部分网络下不可达导致 README 退化成纯文本 -->
+<script src="/vendor/marked.umd.js"></script>
+<!-- Monaco Editor loader（jsdelivr 在部分网络被阻断，改用 unpkg） -->
+<script src="https://unpkg.com/monaco-editor@0.52.2/min/vs/loader.js"></script>
 <script>
 // 配置 Monaco 加载路径
 require.config({
-  paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' }
+  paths: { vs: 'https://unpkg.com/monaco-editor@0.52.2/min/vs' }
 });
 </script>
 <style>

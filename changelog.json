@@ -1,6 +1,17 @@
 [
     {
         "date": "2026-10-31",
+        "title": "修复 README 显示为原始 Markdown：marked 改为自托管，Monaco 改用 unpkg",
+        "version": "2.11.1",
+        "changes": [
+            "定位到 README 显示源码的原因：marked.js 原本从 cdn.jsdelivr.net 加载，该域名在当前网络被阻断（实测连接直接关闭），浏览器里 marked 为 undefined，renderReadme 走了 <pre> 纯文本兜底",
+            "将 marked 18.1.2 的 UMD 构建自托管到 public/vendor/marked.umd.js（49KB），页面改为从本站 /vendor/marked.umd.js 加载，不再依赖外部 CDN",
+            "同一原因会导致 Monaco 编辑器加载失败，loader 与 vs 路径从 jsdelivr 切换到 unpkg（实测可正常返回）",
+            "修复覆盖三处 README 渲染：编辑器右侧「项目说明」面板、项目卡片 README 抽屉、项目详情预览"
+        ]
+    },
+    {
+        "date": "2026-10-31",
         "title": "AI 项目推荐改为「本地检索 + Workers AI」，恢复推荐能力并把响应从 1 分钟压到秒级",
         "version": "2.11.0",
         "changes": [
