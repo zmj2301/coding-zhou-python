@@ -2688,8 +2688,14 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     }
   }
 
+  // 积分规划页：无扩展名访问显式映射到 .html，
+  // 不依赖 Assets 的 html_handling（那条规则一变就会 404）
+  if (path === '/articles/credit-plan' || path === '/articles/credit-plan/') {
+    path = '/articles/credit-plan.html';
+  }
+
   // 积分规划页保护：含三家平台真实余额，必须登录才能看
-  if (path === '/articles/credit-plan' || path === '/articles/credit-plan.html') {
+  if (path === '/articles/credit-plan.html') {
     if (isBrowserRequest(request)) {
       const authenticated = await checkAuth(request, env);
       if (!authenticated) return redirectResponse('/account/login?redirect=/articles/credit-plan');
