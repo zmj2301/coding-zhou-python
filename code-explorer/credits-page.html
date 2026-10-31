@@ -233,15 +233,34 @@ body.sidebar-collapsed .sidebar-collapse-btn{transform:rotate(180deg)}
   overflow-x:hidden;
   padding:22px 26px 70px;
 }
+.title-row{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 6px;
+}
 .credit-head h1{
-  font-size:22px;font-weight:700;margin:0 0 6px;
+  font-size:22px;font-weight:700;margin:0;
   font-family:var(--font-display);letter-spacing:-0.5px;
 }
+/* 标题右侧的「N 分钟前」：绿点 + 绿字，数据变旧时自动转黄/红 */
+.age-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:600;line-height:1;
+  color:var(--ok);
+  background:color-mix(in srgb, var(--ok) 14%, transparent);
+  border-radius:20px;padding:4px 10px;white-space:nowrap;
+}
+.age-tag::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:currentColor;flex:none;
+}
+.age-tag.mid{
+  color:var(--warn);
+  background:color-mix(in srgb, var(--warn) 15%, transparent);
+}
+.age-tag.old{
+  color:var(--bad);
+  background:color-mix(in srgb, var(--bad) 15%, transparent);
+}
 .sub{color:var(--ink3);font-size:13px;margin-bottom:20px}
-.sub .age{font-weight:600}
-.sub .age.fresh{color:var(--ok)}
-.sub .age.mid{color:var(--warn)}
-.sub .age.old{color:var(--bad)}
 
 /* 顶部汇总 */
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
@@ -270,6 +289,24 @@ body.sidebar-collapsed .sidebar-collapse-btn{transform:rotate(180deg)}
   padding:15px 16px 14px;
   display:flex;flex-direction:column;gap:11px;
   min-width:0;
+  position:relative;
+  transition:transform 240ms cubic-bezier(.2,.8,.3,1),
+             box-shadow 240ms ease,
+             border-color 240ms ease;
+}
+/* 悬浮时轻微上浮放大，投影跟着加深，边框染上本平台的主色 */
+.pcard:hover{
+  transform:translateY(-5px) scale(1.018);
+  box-shadow:0 14px 34px rgba(0,0,0,0.38);
+  border-color:color-mix(in srgb, var(--pc, var(--accent)) 45%, var(--line));
+  z-index:3;      /* 放大后要压住相邻卡片，否则边缘会被盖掉 */
+}
+[data-theme="light"] .pcard:hover{
+  box-shadow:0 14px 30px rgba(15,23,42,0.16);
+}
+@media (prefers-reduced-motion: reduce){
+  .pcard{transition:none}
+  .pcard:hover{transform:none}
 }
 .pcard-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .pcard-hd h2{
@@ -525,7 +562,7 @@ tr.exp td{color:var(--bad)}
           <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
-      <div class="sidebar-version">v2.13.0</div>
+      <div class="sidebar-version">v2.13.1</div>
     </div>
   </aside>
 
@@ -536,7 +573,10 @@ tr.exp td{color:var(--bad)}
     </button>
 
     <div class="credit-head">
-      <h1>积分预测规划</h1>
+      <div class="title-row">
+        <h1>积分预测规划</h1>
+        <span class="age-tag" id="ageTag" hidden></span>
+      </div>
       <div class="sub" id="sub">加载中…</div>
     </div>
 
@@ -627,6 +667,8 @@ tr.exp td{color:var(--bad)}
 
   function showState(title, msg, linkHref, linkText) {
     app.innerHTML = '';
+    var ag = document.getElementById('ageTag');
+    if (ag) ag.hidden = true;
     var box = el('div', 'state');
     box.appendChild(el('b', null, title));
     if (msg) box.appendChild(el('div', null, msg));
@@ -788,15 +830,23 @@ tr.exp td{color:var(--bad)}
     document.getElementById('foot').hidden = false;
 
     var age = agoText(d.generated_at);
-    sub.innerHTML = '';
-    sub.appendChild(document.createTextNode('数据快照 ' + (d.generated_at || '—')));
-    if (age) {
-      sub.appendChild(el('span', 'age ' + age.cls, '（' + age.text + '）'));
-      if (age.mins >= 720) {
-        sub.appendChild(document.createTextNode(' · 数据偏旧，双击「更新积分数据.bat」可刷新'));
+
+    // 「N 分钟前」单独挂在标题右边（绿色小字），副标题里不再重复一遍
+    var ageTag = document.getElementById('ageTag');
+    if (ageTag) {
+      if (age) {
+        ageTag.hidden = false;
+        ageTag.className = 'age-tag ' + age.cls;
+        ageTag.textContent = age.text;
+        ageTag.title = '数据快照时间 ' + (d.generated_at || '');
+      } else {
+        ageTag.hidden = true;
       }
     }
-    sub.appendChild(document.createTextNode(' · 每平台预留 ' + (d.buffer || 0) + ' 分缓冲'));
+
+    sub.textContent = '数据快照 ' + (d.generated_at || '—') +
+      ' · 每平台预留 ' + (d.buffer || 0) + ' 分缓冲' +
+      ((age && age.mins >= 720) ? ' · 数据偏旧，双击「更新积分数据.bat」可刷新' : '');
 
     app.innerHTML = '';
 
