@@ -45,6 +45,13 @@ ecs-env.sh
 code-explorer/ecs-env.sh
 ecs-ollama-token.txt
 
+# 部署/隧道临时脚本（含服务器登录凭据，禁止提交）
+_tunnel_*.py
+_ssh_*.py
+_deploy_from_ecs.py
+*.pem
+*.key
+
 # 图片文件
 *.png
 *.jpg

@@ -1,5 +1,16 @@
 [
     {
+        "date": "2026-10-31",
+        "title": "仓库安全清理：移除硬编码的服务器凭据",
+        "version": "2.9.9",
+        "changes": [
+            "清理仓库中 8 个部署/隧道调试脚本，它们把服务器登录密码硬编码在源码里，并且已经存在于当前分支与历史提交中",
+            "使用 git filter-repo 重写全部提交历史，当前分支与历史记录均不再包含这些文件",
+            "新增 .gitignore 规则（_tunnel_*.py、_ssh_*.py、_deploy_from_ecs.py、*.pem、*.key），防止再次误提交凭据文件",
+            "后续部署脚本改为从环境变量或 SSH 密钥读取凭据，不再写入源码"
+        ]
+    },
+    {
         "date": "2026-10-24",
         "title": "Markdown 转 Word/PDF 转换器独立上线 md.codingzhou.top",
         "version": "2.9.8",
