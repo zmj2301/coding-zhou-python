@@ -1667,7 +1667,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
     });
   }
 
-  // ---- AI 对话 API ----
+  // ---- AI 对话 / 项目推荐 API ----
+  // 链路：本地检索候选 → Workers AI 排序写理由 → Ollama 仅兜底文本 → 纯本地兜底
   if (path === '/api/recommend' && request.method === 'POST') {
     try {
       const data = await request.json() as { messages?: { role: string; content: string }[]; input?: string; preferences?: string; context?: { folder?: string }; model?: string; needsProjects?: boolean };
@@ -1676,72 +1677,74 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
       if (!messages && (data.input || data.preferences)) {
         const userInput = (data.input || data.preferences || '').trim();
         if (!userInput) return errorResponse('请输入你的兴趣或需求', 400);
-        messages = [{ role: 'user', content: `我的兴趣：${userInput}` }];
+        messages = [{ role: 'user', content: userInput }];
       }
 
       if (!messages || messages.length === 0) {
         return errorResponse('请输入消息', 400);
       }
 
+      const lastUser = [...messages].reverse().find(m => m.role === 'user');
+      const query = (lastUser?.content || data.input || data.preferences || '').trim();
+      const allowRecommend = data.needsProjects !== false;
+
+      // 第一步：本地检索候选项目，保证返回的 path 一定真实存在
       const projects = await loadProjectsForRecommend(env);
-      let aiResponse: { text: string; recommendations: any[]; reasoning?: string };
-      let source = 'workers';
+      const candidates = searchProjects(projects, query, MAX_CANDIDATES);
 
-      // AI 优先级链: Ollama (本地 ECS via Tunnel) → Workers AI (Cloudflare) → Zhipu AI
-      const tunnelUrl = env.OLLAMA_TUNNEL_URL || '';
-      let ollamaDebug = '';
+      let reply = '';
+      let items: { path: string; reason: string }[] = [];
+      let source = 'local';
+      let aiError = '';
 
-      // 1. 尝试 Ollama (本地 qwen2.5:1.5b)
-      if (tunnelUrl && tunnelUrl.includes('ollama')) {
+      // 第二步：Workers AI 只负责排序和写理由（免费额度内、边缘执行、无需外部密钥）
+      if (candidates.length) {
         try {
-          const started = Date.now();
-          aiResponse = await callOllamaAI(messages, tunnelUrl, projects, data.context);
-          source = 'ollama';
-          ollamaDebug = `ok(${Date.now() - started}ms)`;
-          if (!aiResponse.text && aiResponse.recommendations.length === 0) {
-            throw new Error('Ollama 空响应');
-          }
-          console.log('[AI] Ollama OK:', ollamaDebug);
-          // Ollama 成功，直接返回
-          return jsonResponse({
-            success: true,
-            response: aiResponse.text,
-            recommendations: aiResponse.recommendations || [],
-            reasoning: aiResponse.reasoning || '',
-            source,
-          });
+          const r = await callWorkersAI(query, candidates, allowRecommend, env);
+          reply = r.reply;
+          items = r.items;
+          if (reply || items.length) source = 'workers-ai';
         } catch (e: any) {
-          ollamaDebug = `fail: ${e.message || e}`;
-          console.warn('[AI] Ollama failed:', ollamaDebug, '→ 降级');
+          aiError = e.message || String(e);
+          console.warn('[AI] Workers AI failed:', aiError);
         }
-      } else {
-        ollamaDebug = 'skipped(no tunnel url)';
       }
 
-      // 2. 降级到 Workers AI (Cloudflare 内置 Llama 3.1)
-      try {
-        aiResponse = await getConversationalAI(messages, projects, env, data.context);
-        source = 'workers';
-        if (!aiResponse.text && aiResponse.recommendations.length === 0) {
-          throw new Error('Workers AI 空响应');
+      // 第三步：本地 Ollama 只兜底文本，推荐列表仍用本地检索结果
+      if (!reply && !items.length) {
+        const tunnelUrl = env.OLLAMA_TUNNEL_URL || '';
+        if (tunnelUrl) {
+          try {
+            const r = await callOllamaAI(messages, tunnelUrl, candidates, query);
+            if (r.text) {
+              reply = r.text;
+              source = 'ollama';
+            }
+          } catch (e: any) {
+            console.warn('[AI] Ollama fallback failed:', e.message || e);
+          }
         }
-      } catch {
-        // 3. 最后降级到 Zhipu AI
-        try {
-          aiResponse = await getConversationalAI(messages, projects, env, data.context, 'glm-4.7-flash');
-          source = 'zhipu';
-        } catch {
-          return errorResponse('AI 服务暂不可用（本地模型 + Workers AI + 智谱 AI 全部失败）', 503);
-        }
+      }
+
+      // 第四步：不依赖任何模型也能给出推荐
+      let recommendations: any[] = items.length ? itemsToRecommendations(items, candidates, query) : [];
+      if (!recommendations.length && allowRecommend) {
+        recommendations = buildLocalRecommendations(candidates, query);
+      }
+
+      if (!reply) {
+        reply = recommendations.length
+          ? `根据你的需求，我挑了这 ${recommendations.length} 个项目：`
+          : '暂时没找到特别匹配的项目，换个说法试试？';
       }
 
       return jsonResponse({
         success: true,
-        response: aiResponse.text,
-        recommendations: aiResponse.recommendations || [],
-        reasoning: aiResponse.reasoning || '',
+        response: reply,
+        recommendations,
+        reasoning: '',
         source,
-        _ollama_debug: ollamaDebug,
+        _ai_error: aiError || undefined,
       });
     } catch (e: any) {
       return errorResponse(`请求失败: ${e.message || e}`, 500);
@@ -2298,80 +2301,204 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 // AI 对话辅助函数
 // ------------------------------------------------------------
 
-const AI_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
-const ZHIPU_API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-const ZHIPU_MODEL = 'glm-4.7-flash';
+// Workers AI 免费额度内的模型：与智谱 glm-4.7-flash 同款，但由 Cloudflare 边缘托管，
+// 无需外部 API Key，也不用跨网到 ECS，实际延迟通常在 1-3 秒。
+const AI_MODEL = '@cf/zai-org/glm-4.7-flash';
 const OLLAMA_MODEL = 'qwen2.5:1.5b';
-const AI_CACHE_TTL = 3600;
+const AI_TIMEOUT_MS = 12000;
+const OLLAMA_TIMEOUT_MS = 8000;
+const MAX_CANDIDATES = 8;
 
-function simpleHashForAI(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash |= 0;
-  }
-  return hash.toString(36);
+type ProjectItem = {
+  name?: string;
+  path?: string;
+  type?: string;
+  label?: string;
+  desc?: string;
+  description?: string;
+  mainFile?: string;
+  themeColor?: string;
+  lastModified?: number;
+};
+
+const TYPE_LABELS_LOCAL: Record<string, string> = {
+  game: '游戏', ai: 'AI', tool: '工具', other: '其他',
+  'web-game': '网页游戏', 'system-file': '系统文件', 'popup-preview': '弹出预览',
+};
+
+const TYPE_INTENT: Array<{ re: RegExp; types: string[] }> = [
+  { re: /游戏|小游戏|好玩|娱乐|玩一?下/, types: ['game', 'web-game'] },
+  { re: /人工智能|ai|机器学习|算法|模型|智能|大模型/, types: ['ai'] },
+  { re: /工具|实用|效率|脚本|助手/, types: ['tool'] },
+  { re: /网页|网站|web|前端/, types: ['web-game', 'tool'] },
+];
+
+// 常见虚词，避免把「我想找」「相关的项目」这类词当成检索关键词
+const SEARCH_STOP_TERMS = new Set([
+  '我', '你', '的', '了', '要', '有', '想', '找', '看', '和', '与', '请', '帮',
+  '我想', '想找', '帮我', '推荐', '相关', '项目', '一个', '一些', '可以',
+  '什么', '有没有', '关于', '类似', '适合', '比较', '一下', '推荐一下',
+]);
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`${label} 超时 ${ms}ms`)), ms);
+    promise.then(
+      v => { clearTimeout(timer); resolve(v); },
+      e => { clearTimeout(timer); reject(e); }
+    );
+  });
 }
 
-async function loadProjectsForRecommend(env: Env): Promise<any[]> {
+async function loadProjectsForRecommend(env: Env): Promise<ProjectItem[]> {
   const CACHE_KEY = 'cache:project-meta-v2';
   try {
-    const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' });
-    if (cached && cached.projects) return cached.projects;
+    const cached = await env.CODE_EXPLORER_KV.get(CACHE_KEY, { type: 'json' }) as any;
+    if (cached && Array.isArray(cached.projects) && cached.projects.length) return cached.projects;
   } catch {}
-  const listResp = await fetchAsset('/project-list.json', env);
-  if (!listResp.ok) return [];
-  try { return await listResp.json(); } catch { return []; }
+  try {
+    const listResp = await fetchAsset('/project-list.json', env);
+    if (listResp.ok) {
+      const data = await listResp.json() as any;
+      if (Array.isArray(data) && data.length) return data;
+    }
+  } catch {}
+  // 兜底：Assets 未命中时从 GitHub 仓库当前分支读取
+  try {
+    const ghResp = await fetchFromGitHub('public/project-list.json', env);
+    if (ghResp.ok) {
+      const data = await ghResp.json() as any;
+      if (Array.isArray(data)) return data;
+    }
+  } catch {}
+  return [];
 }
 
-function buildConversationalPrompt(projects: any[], contextInfo?: { folder?: string }): string {
-  let projectSection = '';
-  if (projects && projects.length > 0) {
-    const projectList = projects.map((p: any) =>
-      `- ${p.name} (path: ${p.path}, type: ${p.type || 'unknown'}, desc: ${p.description || 'none'})`
-    ).join('\n');
-    projectSection = `\n可用的项目列表：\n${projectList}\n`;
+// ---------------- 本地检索：先保证 path 真实、结果稳定 ----------------
+
+function buildSearchTerms(query: string): string[] {
+  const lower = query.toLowerCase();
+  const terms: string[] = [];
+  for (const w of lower.match(/[a-z0-9_]+/g) || []) {
+    if (w.length >= 2 && !SEARCH_STOP_TERMS.has(w)) terms.push(w);
   }
-
-  let contextNote = '';
-  if (contextInfo?.folder) {
-    contextNote = `\n用户当前关注的文件夹：${contextInfo.folder}\n`;
+  // 中文按双字切分，足够覆盖「象棋」「语音」「微信」这类短语
+  for (const run of lower.match(/[\u4e00-\u9fff]+/g) || []) {
+    if (run.length <= 2) {
+      terms.push(run);
+    } else {
+      for (let i = 0; i + 2 <= run.length; i++) terms.push(run.slice(i, i + 2));
+    }
   }
-
-  // 如果有项目列表，包含推荐指令；否则只是普通聊天
-  const recommendInstruction = projects && projects.length > 0
-    ? `\n当用户表达兴趣或需求时，推荐 3-5 个最相关的项目。推荐时在回复末尾附上 JSON 格式：
----RECOMMEND---
-[{"path": "项目路径", "reason": "推荐理由", "name": "项目名称"}]
----END---
-没有推荐需求时正常聊天，不要强行推荐。`
-    : '';
-
-  return `你是一个热情友好的编程助手，名叫"小码"。你可以和用户自然地聊天、解答编程问题，也可以推荐项目。
-
-你的性格：
-- 说话语气像朋友一样自然，不要太正式
-- 推荐项目时要说明推荐理由，让人觉得有说服力
-- 如果用户问了具体需求，就帮他匹配最合适的项目
-- 如果只是聊天，就轻松愉快地聊，不用每次都推荐项目
-${projectSection}${contextNote}${recommendInstruction}`;
+  return Array.from(new Set(terms.filter(t => !SEARCH_STOP_TERMS.has(t)))).slice(0, 32);
 }
 
-async function callOllamaAI(messages: { role: string; content: string }[], tunnelUrl: string, projects: any[], contextInfo?: { folder?: string }): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {
-  const systemPrompt = buildConversationalPrompt(projects, contextInfo);
+function scoreProject(p: ProjectItem, terms: string[], qLower: string): number {
+  const name = (p.name || '').toLowerCase();
+  const path = (p.path || '').toLowerCase();
+  const type = ((p.type || '') + ' ' + (p.label || '')).toLowerCase();
+  const desc = (p.desc || p.description || '').toLowerCase();
+  const main = (p.mainFile || '').toLowerCase();
+
+  let score = 0;
+  for (const t of terms) {
+    if (name.includes(t)) score += 10;
+    if (path.includes(t)) score += 5;
+    if (type.includes(t)) score += 4;
+    if (desc.includes(t)) score += 3;
+    if (main.includes(t)) score += 2;
+  }
+  for (const hint of TYPE_INTENT) {
+    if (hint.re.test(qLower) && hint.types.includes(p.type || 'other')) score += 8;
+  }
+  return score;
+}
+
+function pickDiverseProjects(projects: ProjectItem[], limit = 3): ProjectItem[] {
+  const out: ProjectItem[] = [];
+  for (const t of ['ai', 'game', 'web-game', 'tool', 'other']) {
+    const cand = projects
+      .filter(p => (p.type || 'other') === t)
+      .sort((a, b) => (b.lastModified || 0) - (a.lastModified || 0));
+    if (cand[0]) out.push(cand[0]);
+    if (out.length >= limit) break;
+  }
+  if (out.length < limit) {
+    const rest = [...projects].sort((a, b) => (b.lastModified || 0) - (a.lastModified || 0));
+    for (const p of rest) {
+      if (!out.includes(p)) out.push(p);
+      if (out.length >= limit) break;
+    }
+  }
+  return out;
+}
+
+function searchProjects(projects: ProjectItem[], query: string, limit = MAX_CANDIDATES): ProjectItem[] {
+  const terms = buildSearchTerms(query);
+  const qLower = query.toLowerCase();
+  const hits = projects
+    .map(p => ({ p, score: scoreProject(p, terms, qLower) }))
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score || (b.p.lastModified || 0) - (a.p.lastModified || 0))
+    .map(x => x.p);
+
+  // 关键词完全没命中时，给一组按类型去重的最新项目，避免推荐结果为空
+  return hits.length ? hits.slice(0, limit) : pickDiverseProjects(projects, 3);
+}
+
+// ---------------- 给模型的接地（grounding）提示词 ----------------
+
+function projectLine(p: ProjectItem): string {
+  const desc = (p.desc || p.description || '').trim();
+  const label = p.label || TYPE_LABELS_LOCAL[p.type || ''] || p.type || '未知';
+  const main = p.mainFile ? `，入口: ${p.mainFile}` : '';
+  return `${p.name || p.path || ''}（path: ${p.path || p.name || ''}，类型: ${label}${desc ? '，简介: ' + desc.slice(0, 60) : ''}${main}）`;
+}
+
+function buildGroundedPrompt(query: string, candidates: ProjectItem[], allowRecommend: boolean): string {
+  const list = candidates.map((p, i) => `${i + 1}. ${projectLine(p)}`).join('\n');
+  return `用户需求：${query || '（未填写）'}
+
+站点里可推荐的项目（只能从这里挑，path 必须逐字照抄）：
+${list || '（没有候选项目）'}
+
+请输出一个 JSON 对象，不要任何多余文字：
+{"reply": "给用户的回复，1-3 句自然的中文", "items": [{"path": "候选里的 path", "reason": "20 字以内的推荐理由"}]}
+
+规则：
+- items ${allowRecommend ? '选 3-5 个最相关的；没有合适的就返回空数组' : '必须返回空数组'}
+- path 只能取自上面的候选列表，禁止编造、禁止改写
+- reply 简单说明为什么推荐这几个，不要把所有项目再罗列一遍`;
+}
+
+function parseGroundedJSON(text: string): { reply?: string; items?: any[] } {
+  let s = (text || '').trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+  const start = s.indexOf('{');
+  const end = s.lastIndexOf('}');
+  if (start >= 0 && end > start) s = s.slice(start, end + 1);
+  try {
+    const obj = JSON.parse(s);
+    if (obj && typeof obj === 'object') return obj;
+  } catch {}
+  // 解析失败就把整段文本当回复，推荐列表交给本地兜底
+  return { reply: (text || '').trim() };
+}
+
+// 本地 Ollama 只作为最后兜底：只取文本回复，推荐列表一律由本地检索决定，
+// 避免小模型编造 path 或输出被截断导致推荐为空。
+async function callOllamaAI(messages: { role: string; content: string }[], tunnelUrl: string, candidates: ProjectItem[], query: string): Promise<{ text: string }> {
   const payload = {
     model: OLLAMA_MODEL,
     messages: [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: buildGroundedPrompt(query, candidates, false) },
       ...messages
     ],
     stream: false,
-    options: { num_predict: 100, temperature: 0.7 }
+    options: { num_predict: 300, temperature: 0.7 }
   };
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 85000);
+  const timeoutId = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT_MS);
 
   try {
     const resp = await fetch(`${tunnelUrl.replace(/\/$/, '')}/api/chat`, {
@@ -2379,7 +2506,6 @@ async function callOllamaAI(messages: { role: string; content: string }[], tunne
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
       signal: controller.signal,
-      cf: { connectTimeout: 85 }
     });
 
     if (!resp.ok) {
@@ -2388,145 +2514,105 @@ async function callOllamaAI(messages: { role: string; content: string }[], tunne
     }
 
     const data: any = await resp.json();
-    let text = data.message?.content || '';
-
-    // 解析推荐 JSON
-    const recMatch = text.match(/---RECOMMEND---\n?([\s\S]*?)\n?---END---/);
-    let recommendations: any[] = [];
-    if (recMatch) {
-      try {
-        const parsed = JSON.parse(recMatch[1]);
-        if (Array.isArray(parsed)) {
-          recommendations = parsed.filter((r: any) => r.path && r.reason).map((r: any) => ({
-            path: r.path, reason: r.reason, name: r.name || r.path
-          })).slice(0, 5);
-        }
-      } catch {}
-      text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
-    }
-
-    if (!text && recommendations.length > 0) {
-      text = '为你推荐以下项目：';
-    } else if (!text) {
-      text = '抱歉，AI 暂时无法生成回复，请稍后再试。';
-    }
-    return { text, recommendations };
+    const raw = String(data.message?.content || '').trim();
+    const parsed = parseGroundedJSON(raw);
+    return { text: (parsed.reply || raw).trim() };
   } finally {
     clearTimeout(timeoutId);
   }
 }
 
-async function callZhipuAI(messages: { role: string; content: string }[], apiKey: string, projects: any[], contextInfo?: { folder?: string }, model: string = ZHIPU_MODEL): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {
-  const systemPrompt = buildConversationalPrompt(projects, contextInfo);
-  const payload = {
-    model,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      ...messages
-    ],
-    temperature: 0.7,
-    max_tokens: 800,
-    stream: false,
-    thinking: { type: 'enabled' }
+// Workers AI 主链路：模型只负责排序和写理由，候选项目由本地检索给定，
+// 返回的 path 会逐一校验，模型编造的路径直接丢弃。
+async function callWorkersAI(query: string, candidates: ProjectItem[], allowRecommend: boolean, env: Env): Promise<{ reply: string; items: { path: string; reason: string }[] }> {
+  const ai = (env as any).AI;
+  if (!ai) throw new Error('未绑定 Workers AI');
+
+  const resp: any = await withTimeout(
+    ai.run(AI_MODEL, {
+      messages: [
+        { role: 'system', content: '你是站点编程助手"小码"，语气自然、简短。只输出 JSON，不要输出解释或 Markdown 代码块。' },
+        { role: 'user', content: buildGroundedPrompt(query, candidates, allowRecommend) },
+      ],
+      max_tokens: 700,
+      temperature: 0.3,
+    }),
+    AI_TIMEOUT_MS,
+    'Workers AI'
+  );
+
+  let text = '';
+  if (typeof resp === 'string') text = resp;
+  else if (Array.isArray(resp)) text = resp.map((x: any) => x?.response || '').join('');
+  else if (resp?.response) text = resp.response;
+  else if (resp?.content) text = typeof resp.content === 'string' ? resp.content : JSON.stringify(resp.content);
+
+  const parsed = parseGroundedJSON(text);
+  return {
+    reply: String(parsed.reply || '').trim(),
+    items: validateItems(parsed.items, candidates),
   };
-
-  const resp = await fetch(ZHIPU_API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error(`Zhipu API error: ${resp.status} ${err}`);
-  }
-
-  const data = await resp.json();
-  let text = data.choices?.[0]?.message?.content || '';
-  const reasoning = data.choices?.[0]?.message?.reasoning_content || '';
-
-  const recMatch = text.match(/---RECOMMEND---\n?([\s\S]*?)\n?---END---/);
-  let recommendations: any[] = [];
-  if (recMatch) {
-    try {
-      const parsed = JSON.parse(recMatch[1]);
-      if (Array.isArray(parsed)) {
-        recommendations = parsed.filter((r: any) => r.path && r.reason).map((r: any) => ({
-          path: r.path, reason: r.reason, name: r.name || r.path
-        })).slice(0, 5);
-      }
-    } catch {}
-    text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
-  }
-
-  if (!text && recommendations.length > 0) {
-    text = '为你推荐以下项目：';
-  } else if (!text) {
-    text = '抱歉，AI 暂时无法生成回复，请稍后再试。';
-  }
-  return { text, recommendations, reasoning };
 }
 
-async function getConversationalAI(messages: { role: string; content: string }[], projects: any[], env: Env, contextInfo?: { folder?: string }, model?: string): Promise<{ text: string; recommendations: any[]; reasoning?: string }> {
-  // Zhipu AI (glm-4.7-flash)
-  if (model === 'glm-4.7-flash') {
-    const apiKey = env.ZHIPU_API_KEY;
-    if (apiKey) {
-      try {
-        return await callZhipuAI(messages, apiKey, projects, contextInfo);
-      } catch (e: any) {
-        console.error('Zhipu AI call failed:', e);
-      }
-    }
+function validateItems(items: any, candidates: ProjectItem[]): { path: string; reason: string }[] {
+  if (!Array.isArray(items)) return [];
+  const byKey = new Map<string, ProjectItem>();
+  for (const p of candidates) {
+    const path = String(p.path || '').trim();
+    const name = String(p.name || '').trim();
+    if (path) byKey.set(path, p);
+    if (name) byKey.set(name, p);
   }
-
-  // 默认使用 Cloudflare Workers AI (Llama 3.1)
-  const ai = (env as any).AI;
-  if (ai) {
-    try {
-      const systemPrompt = buildConversationalPrompt(projects, contextInfo);
-      const response = await ai.run(AI_MODEL, {
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...messages
-        ],
-        max_tokens: 800,
-        temperature: 0.7
-      });
-
-      let text = '';
-      if (typeof response === 'string') text = response;
-      else if (response.response) text = response.response;
-      else if (response.content) text = typeof response.content === 'string' ? response.content : JSON.stringify(response.content);
-
-      const recMatch = text.match(/---RECOMMEND---\n?([\s\S]*?)\n?---END---/);
-      let recommendations: any[] = [];
-      if (recMatch) {
-        try {
-          const parsed = JSON.parse(recMatch[1]);
-          if (Array.isArray(parsed)) {
-            recommendations = parsed.filter((r: any) => r.path && r.reason).map((r: any) => ({
-              path: r.path, reason: r.reason, name: r.name || r.path
-            })).slice(0, 5);
-          }
-        } catch {}
-        text = text.replace(/---RECOMMEND---[\s\S]*?---END---/, '').trim();
-      }
-
-      if (!text && recommendations.length > 0) {
-        text = '为你推荐以下项目：';
-      } else if (!text) {
-        text = '抱歉，AI 暂时无法生成回复，请稍后再试。';
-      }
-      return { text, recommendations };
-    } catch (e: any) {
-      console.error('AI call failed:', e);
-    }
+  const out: { path: string; reason: string }[] = [];
+  for (const it of items) {
+    const key = String((it && it.path) || '').trim();
+    const p = byKey.get(key);
+    if (!p) continue;
+    out.push({
+      path: String(p.path || p.name || '').trim(),
+      reason: String((it && it.reason) || '').trim().slice(0, 60),
+    });
+    if (out.length >= 5) break;
   }
-  return { text: '', recommendations: [] };
+  return out;
+}
+
+function localReason(p: ProjectItem, query: string): string {
+  const desc = String(p.desc || p.description || '').trim();
+  if (desc) return desc.slice(0, 40);
+  const label = TYPE_LABELS_LOCAL[p.type || ''] || '项目';
+  return query ? `与「${query.slice(0, 12)}」相关的${label}` : `最近更新的${label}`;
+}
+
+function toRecommendation(p: ProjectItem, reason: string, query = '') {
+  const path = String(p.path || p.name || '').trim();
+  return {
+    path,
+    name: String(p.name || path),
+    reason: reason || localReason(p, query),
+    type: p.type || '',
+    themeColor: p.themeColor || '',
+  };
+}
+
+function itemsToRecommendations(items: { path: string; reason: string }[], candidates: ProjectItem[], query: string) {
+  const byKey = new Map<string, ProjectItem>();
+  for (const p of candidates) {
+    const path = String(p.path || '').trim();
+    const name = String(p.name || '').trim();
+    if (path) byKey.set(path, p);
+    if (name) byKey.set(name, p);
+  }
+  return items
+    .map(it => {
+      const p = byKey.get(it.path);
+      return p ? toRecommendation(p, it.reason, query) : null;
+    })
+    .filter(Boolean);
+}
+
+function buildLocalRecommendations(candidates: ProjectItem[], query: string) {
+  return candidates.slice(0, 5).map(p => toRecommendation(p, '', query));
 }
 
 // ------------------------------------------------------------
@@ -2685,20 +2771,6 @@ async function handleStatic(request: Request, env: Env, path: string): Promise<R
     if (isBrowserRequest(request)) {
       const authenticated = await checkAuth(request, env);
       if (!authenticated) return redirectResponse('/account/login');
-    }
-  }
-
-  // 积分规划页：无扩展名访问显式映射到 .html，
-  // 不依赖 Assets 的 html_handling（那条规则一变就会 404）
-  if (path === '/articles/credit-plan' || path === '/articles/credit-plan/') {
-    path = '/articles/credit-plan.html';
-  }
-
-  // 积分规划页保护：含三家平台真实余额，必须登录才能看
-  if (path === '/articles/credit-plan.html') {
-    if (isBrowserRequest(request)) {
-      const authenticated = await checkAuth(request, env);
-      if (!authenticated) return redirectResponse('/account/login?redirect=/articles/credit-plan');
     }
   }
 
@@ -3168,6 +3240,17 @@ export default {
     if (path === '/docs/articles' || path.startsWith('/docs/articles/')) {
       return handleArticles(request, env, '/articles' + path.substring('/docs/articles'.length));
     }
+    // 积分规划页含三家平台真实余额，必须登录才能看。
+    // 注意：/articles/* 全程走 handleArticles()，不会进 handleStatic()，
+    // 所以登录墙必须放在这里，放 handleStatic 里是死代码（2026-10-31 踩过）。
+    if (path === '/articles/credit-plan' || path === '/articles/credit-plan/'
+      || path === '/articles/credit-plan.html') {
+      if (isBrowserRequest(request)) {
+        const authenticated = await checkAuth(request, env);
+        if (!authenticated) return redirectResponse('/account/login?redirect=/articles/credit-plan');
+      }
+    }
+
     if (path === '/articles' || path.startsWith('/articles/')) {
       return handleArticles(request, env, path);
     }
