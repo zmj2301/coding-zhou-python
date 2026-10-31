@@ -426,16 +426,22 @@ def init_db():
     )''')
     db.commit()
     # 强制重置管理员密码（每次启动都生效）
-    admin_id_row = db.execute("SELECT id FROM users WHERE username = ?", ('zmj2013',)).fetchone()
-    h, s = hash_password('ZHOUmj32842510*')
-    if admin_id_row:
-        db.execute("UPDATE users SET password_hash=?, salt=? WHERE username=?", (h, s, 'zmj2013'))
-        print(f'[init_db] 管理员密码已重置: zmj2013', file=sys.stderr)
+    # 密码必须从环境变量读取，不要硬编码：2026-10-31 发现明文曾随公开仓库泄露，
+    # 任何人都能用它登录站点管理员账号。未设置时跳过重置，保留库里现有密码。
+    admin_pwd = os.environ.get('ADMIN_INIT_PASSWORD', '')
+    if admin_pwd:
+        admin_id_row = db.execute("SELECT id FROM users WHERE username = ?", ('zmj2013',)).fetchone()
+        h, s = hash_password(admin_pwd)
+        if admin_id_row:
+            db.execute("UPDATE users SET password_hash=?, salt=? WHERE username=?", (h, s, 'zmj2013'))
+            print('[init_db] 管理员密码已按环境变量重置: zmj2013', file=sys.stderr)
+        else:
+            db.execute("INSERT INTO users (username, password_hash, salt, role, created_at) VALUES (?, ?, ?, 'admin', ?)",
+                       ('zmj2013', h, s, int(time.time())))
+            print('[init_db] 管理员账号已创建: zmj2013', file=sys.stderr)
+        db.commit()
     else:
-        db.execute("INSERT INTO users (username, password_hash, salt, role, created_at) VALUES (?, ?, ?, 'admin', ?)",
-                   ('zmj2013', h, s, int(time.time())))
-        print(f'[init_db] 管理员账号已创建: zmj2013', file=sys.stderr)
-    db.commit()
+        print('[init_db] 未设置 ADMIN_INIT_PASSWORD，跳过管理员密码重置（沿用库中现有密码）', file=sys.stderr)
     db.close()
 
 

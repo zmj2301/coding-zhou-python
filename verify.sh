@@ -1,10 +1,19 @@
 #!/bin/bash
+# 密码不再写死在脚本里：2026-10-31 发现明文曾随公开仓库泄露。
+# 用法： ADMIN_PASSWORD='你的站点管理员密码' ./verify.sh
 BASE="https://codingzhou.dpdns.org"
 COOKIE="/tmp/wg_cookie.txt"
 rm -f "$COOKIE"
 
+if [ -z "$ADMIN_PASSWORD" ]; then
+  echo "错误：未设置 ADMIN_PASSWORD 环境变量。" >&2
+  echo "      用法： ADMIN_PASSWORD='***' ./verify.sh" >&2
+  exit 1
+fi
+
 echo "=== 1. 登录 ==="
-curl -sk -c "$COOKIE" -X POST "$BASE/api/login" -H 'Content-Type: application/json' -d '{"username":"zmj2013","password":"ZHOUmj32842510"}'
+curl -sk -c "$COOKIE" -X POST "$BASE/api/login" -H 'Content-Type: application/json' \
+  -d "{\"username\":\"zmj2013\",\"password\":\"$ADMIN_PASSWORD\"}"
 echo ""
 
 echo "=== 2. auth-check (带 cookie) ==="

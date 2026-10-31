@@ -90,3 +90,10 @@ output/
 # font.ttf (根目录下的字体文件)
 *.ttf
 *.ttc
+
+# 凭据类文件一律不入库
+# 2026-10-31：codinghou/codinghou_password.txt 曾因明文入库，随公开仓库暴露站点管理员密码
+*password*.txt
+*_password*
+*password*.json
+secret*.txt
