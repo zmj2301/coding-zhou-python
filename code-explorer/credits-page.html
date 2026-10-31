@@ -17,6 +17,10 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px}
 h1{font-size:22px;font-weight:600;margin:0 0 6px}
 .sub{color:var(--ink3);font-size:13px;margin-bottom:22px}
+.sub .age{font-weight:600}
+.sub .age.fresh{color:var(--ok)}
+.sub .age.mid{color:var(--warn)}
+.sub .age.old{color:var(--bad)}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
 .card .k{color:var(--ink3);font-size:12px}
@@ -245,11 +249,38 @@ tr.exp td{color:var(--bad)}
     return sec;
   }
 
+  // 页面上的数字是「某一次采集出来的快照」，不会自己变新。
+  // 只显示静态时间戳会误导：下午四点打开却看到早上 12:27，会以为页面坏了。
+  // 所以这里把「距今多久」直接算出来，并按时效上色。
+  function agoText(iso) {
+    if (!iso) return null;
+    var m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+    if (!m) return null;
+    var t = new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]).getTime();
+    var mins = Math.round((Date.now() - t) / 60000);
+    if (!isFinite(mins) || mins < 0) return null;
+    var cls = mins < 180 ? 'fresh' : (mins < 720 ? 'mid' : 'old');
+    var text = mins < 1 ? '刚刚'
+      : mins < 60 ? mins + ' 分钟前'
+        : mins < 1440 ? Math.floor(mins / 60) + ' 小时前'
+          : Math.floor(mins / 1440) + ' 天前';
+    return { text: text, cls: cls, mins: mins };
+  }
+
   function render(d) {
     var t = d.totals || {};
     document.getElementById('foot').hidden = false;
-    sub.textContent = '生成时间 ' + (d.generated_at || '—') + ' · 每平台预留 ' +
-      (d.buffer || 0) + ' 分缓冲';
+
+    var age = agoText(d.generated_at);
+    sub.innerHTML = '';
+    sub.appendChild(document.createTextNode('数据快照 ' + (d.generated_at || '—')));
+    if (age) {
+      sub.appendChild(el('span', 'age ' + age.cls, '（' + age.text + '）'));
+      if (age.mins >= 720) {
+        sub.appendChild(document.createTextNode(' · 数据偏旧，双击「更新积分数据.bat」可刷新'));
+      }
+    }
+    sub.appendChild(document.createTextNode(' · 每平台预留 ' + (d.buffer || 0) + ' 分缓冲'));
 
     app.innerHTML = '';
     var cards = el('div', 'cards');
