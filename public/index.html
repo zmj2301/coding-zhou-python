@@ -8412,6 +8412,11 @@ async function fetchAIRecommend() {
   if (!input || !btn || !container) return;
 
   const preferences = input.value.trim();
+  if (!preferences) {
+    input.focus();
+    container.innerHTML = '<div class="ai-recommend-empty">先说一下你想找什么，比如「AI 相关的项目」「好玩的游戏」</div>';
+    return;
+  }
 
   btn.disabled = true;
   btn.textContent = '思考中...';
@@ -8422,11 +8427,16 @@ async function fetchAIRecommend() {
     </div>
   `;
 
+  // 服务端最坏情况是 Workers AI 9s + Ollama 6s，客户端 20s 兜底避免一直转圈
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 20000);
+
   try {
     const resp = await fetch('/api/recommend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ preferences })
+      body: JSON.stringify({ preferences }),
+      signal: ctrl.signal
     });
 
     const data = await resp.json();
@@ -8437,8 +8447,10 @@ async function fetchAIRecommend() {
       container.innerHTML = `<div class="ai-recommend-empty">${data.error || '推荐服务暂时不可用'}</div>`;
     }
   } catch (e) {
-    container.innerHTML = `<div class="ai-recommend-empty">请求失败，请稍后再试</div>`;
+    const msg = e.name === 'AbortError' ? 'AI 响应超时，请稍后再试' : '请求失败，请稍后再试';
+    container.innerHTML = `<div class="ai-recommend-empty">${msg}</div>`;
   } finally {
+    clearTimeout(timer);
     btn.disabled = false;
     btn.textContent = '推荐';
     fetchAIQuota();

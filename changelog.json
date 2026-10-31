@@ -1,6 +1,20 @@
 [
     {
         "date": "2026-10-31",
+        "title": "AI 项目推荐改为「本地检索 + Workers AI」，恢复推荐能力并把响应从 1 分钟压到秒级",
+        "version": "2.11.0",
+        "changes": [
+            "定位到推荐为空与响应慢的根因：主链路固定走 ECS 上的 Ollama qwen2.5:1.5b，单次 54-70 秒；同时 num_predict=100 截断了输出，---RECOMMEND--- 的结束标记被切掉，推荐数组恒为空",
+            "优先级链重排：本地检索先筛出候选项目（path 一定真实），再由 Cloudflare Workers AI 的 @cf/zai-org/glm-4.7-flash 排序并写推荐理由，模型返回的 path 会逐一校验，编造的路径直接丢弃",
+            "关闭 GLM-4.7-Flash 默认的思考模式（chat_template_kwargs.enable_thinking=false）：实测同一请求从 7-10 秒且 content 为空，降到约 2 秒返回完整 JSON",
+            "Ollama 移出主链路，仅在 Workers AI 失败时兜底文本回复，超时从 85 秒降到 6 秒，num_predict 从 100 提到 300",
+            "新增纯本地兜底：即使所有模型都不可用，也会按类型返回 3-5 个候选项目，不再出现「AI 无法推荐」",
+            "移除失效的智谱直连降级（ZHIPU_API_KEY 从未配置）与已下线的 @cf/meta/llama-3.1-8b-instruct-fp8 模型",
+            "AI 额度接口不再先代理 ECS，弹窗打开即时返回；前端推荐请求增加 20 秒超时与超时提示，空输入给出引导文案"
+        ]
+    },
+    {
+        "date": "2026-10-31",
         "title": "Windows 专区版本列表支持折叠，默认只显示 3 个版本",
         "version": "2.10.0",
         "changes": [

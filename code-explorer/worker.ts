@@ -1756,26 +1756,16 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
   }
 
   if (path === '/api/ai-quota') {
+    // 直接读 Workers AI 免费额度统计，不再代理 ECS（原实现要等 ECS 超时才返回）
+    const today = new Date().toISOString().slice(0, 10);
+    let usage = 0;
     try {
-      const ecsUrl = env.ECS_SERVER_URL || 'http://39.107.96.165.nip.io';
-      const resp = await fetchFromEcs('/api/ai-quota', env, request);
-      if (resp.ok) {
-        return new Response(await resp.text(), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-      // 回退到 KV 统计
-      const today = new Date().toISOString().slice(0, 10);
-      const usageKey = `ai-usage:${today}`;
-      const usage = parseInt(await env.CODE_EXPLORER_KV.get(usageKey) || '0', 10);
-      const DAILY_LIMIT = 10000;
-      const neuronsPerRequest = 100;
-      const remaining = Math.max(0, DAILY_LIMIT - usage * neuronsPerRequest);
-      return jsonResponse({ usage, remaining, limit: DAILY_LIMIT, neuronsPerRequest });
-    } catch (e: any) {
-      return jsonResponse({ usage: 0, remaining: 10000, limit: 10000, neuronsPerRequest: 100 });
-    }
+      usage = parseInt(await env.CODE_EXPLORER_KV.get(`ai-usage:${today}`) || '0', 10);
+    } catch {}
+    const DAILY_LIMIT = 10000;
+    const neuronsPerRequest = 100;
+    const remaining = Math.max(0, DAILY_LIMIT - usage * neuronsPerRequest);
+    return jsonResponse({ usage, remaining, limit: DAILY_LIMIT, neuronsPerRequest, provider: 'Cloudflare Workers AI' });
   }
 
   // ---- 资源下载 API ----
@@ -2305,8 +2295,8 @@ async function handleApi(request: Request, env: Env, path: string): Promise<Resp
 // 无需外部 API Key，也不用跨网到 ECS，实际延迟通常在 1-3 秒。
 const AI_MODEL = '@cf/zai-org/glm-4.7-flash';
 const OLLAMA_MODEL = 'qwen2.5:1.5b';
-const AI_TIMEOUT_MS = 12000;
-const OLLAMA_TIMEOUT_MS = 8000;
+const AI_TIMEOUT_MS = 9000;
+const OLLAMA_TIMEOUT_MS = 6000;
 const MAX_CANDIDATES = 8;
 
 type ProjectItem = {
@@ -2456,6 +2446,13 @@ function projectLine(p: ProjectItem): string {
 }
 
 function buildGroundedPrompt(query: string, candidates: ProjectItem[], allowRecommend: boolean): string {
+  // 纯聊天场景不塞候选项目，避免模型在不需要推荐时也把项目名念一遍
+  if (!allowRecommend) {
+    return `用户需求：${query || '（未填写）'}
+
+你是站点编程助手"小码"，语气自然、简短。当前不需要推荐项目。
+只输出 JSON：{"reply": "给用户的回复，1-3 句中文"}`;
+  }
   const list = candidates.map((p, i) => `${i + 1}. ${projectLine(p)}`).join('\n');
   return `用户需求：${query || '（未填写）'}
 
@@ -2536,6 +2533,9 @@ async function callWorkersAI(query: string, candidates: ProjectItem[], allowReco
       ],
       max_tokens: 700,
       temperature: 0.3,
+      // GLM-4.7-Flash 默认带思考过程，会把输出预算耗在 reasoning 上（实测 7-10 秒且 content 为空）。
+      // 关掉思考后同样的请求约 2 秒即可返回完整 JSON。
+      chat_template_kwargs: { enable_thinking: false },
     }),
     AI_TIMEOUT_MS,
     'Workers AI'
@@ -2543,7 +2543,8 @@ async function callWorkersAI(query: string, candidates: ProjectItem[], allowReco
 
   let text = '';
   if (typeof resp === 'string') text = resp;
-  else if (Array.isArray(resp)) text = resp.map((x: any) => x?.response || '').join('');
+  else if (Array.isArray(resp)) text = resp.map((x: any) => x?.choices?.[0]?.message?.content || x?.response || '').join('');
+  else if (resp?.choices?.[0]?.message?.content) text = resp.choices[0].message.content;
   else if (resp?.response) text = resp.response;
   else if (resp?.content) text = typeof resp.content === 'string' ? resp.content : JSON.stringify(resp.content);
 
